@@ -3,7 +3,7 @@ import type { Entity } from '@digital-net/dto';
 /**
  * Indexed database store accessor utilities
  */
-export default class IDbStore {
+export class IDbStore {
     private static validateStore(db: IDBDatabase, store: string): void {
         if (![...db.objectStoreNames].includes(store)) {
             throw new Error(`IDbStore: error getting data: store "${store}" does not exist`);

@@ -1,5 +1,8 @@
 import { QueryClient } from '@tanstack/react-query';
 import axios, { type AxiosInstance, type AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
+import { type DigitalEndpoint, digitalEndpoints } from './digitalEndpoints';
+import type { Result } from '@digital-lib/dto';
+import { headersDictionary } from './headersDictionary';
 
 type AugmentedRequestConfig = InternalAxiosRequestConfig<any> & { _retry: boolean | undefined };
 
@@ -12,6 +15,14 @@ export class DigitalClient {
         },
     });
 
+    public static headersDictionary = headersDictionary;
+    public static urls = digitalEndpoints;
+    public static getUrl = (endpoint: DigitalEndpoint) => this.urls[endpoint];
+
+    public static request: AxiosInstance['request'] = async config => await this.axiosInstance.request(config);
+    public static get: AxiosInstance['get'] = async (url, config) => await this.axiosInstance.get(url, config);
+
+    // TODO: Move from /digital-api
     public static queryClient = new QueryClient({
         defaultOptions: {
             queries: {
@@ -26,13 +37,17 @@ export class DigitalClient {
             },
         },
     });
-
     public static invalidate(url: string) {
         (async () => await this.queryClient.invalidateQueries({ queryKey: [url], refetchType: 'all' }))();
     }
 
-    public static request: AxiosInstance['request'] = async config => await this.axiosInstance.request(config);
-    public static get: AxiosInstance['get'] = async (url, config) => await this.axiosInstance.get(url, config);
+    public static async refreshTokens() {
+        return await DigitalClient.request<Result<string>>({
+            method: 'POST',
+            url: digitalEndpoints['authentication/user/refresh'],
+            withCredentials: true,
+        });
+    }
 
     public static setRequestHandler(
         onRequest?: (request: InternalAxiosRequestConfig) => Promise<InternalAxiosRequestConfig>,

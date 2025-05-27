@@ -1,6 +1,6 @@
 import React from 'react';
 import { useClassName } from '@digital-lib/core';
-import { Localization } from '../../../react-digital/Localization';
+import { Localization } from '../../../react-app/Localization';
 import { type SafariNode } from '../types';
 import { type BoxProps, Box } from '../Box';
 import type { InputCustomError } from '../Input/types';

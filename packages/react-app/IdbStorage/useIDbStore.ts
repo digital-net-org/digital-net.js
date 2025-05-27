@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Entity } from '@digital-net/dto';
 import { DigitalIdbContext, type DigitalIdbContextState } from './DigitalIdbContext';
-import IDbStore from './IDbStore';
+import { IDbStore } from './IDbStore';
 
 /**
  * IndexedDb store accessor hook
@@ -12,7 +12,7 @@ import IDbStore from './IDbStore';
  *  - delete: delete an entity from the store
  *  - isLoading: indicates if the store is currently loading
  */
-export default function useIDbStore<T extends Entity>(store: string) {
+export function useIDbStore<T extends Entity>(store: string) {
     const { database, outdatedQueries, addOutdatedQuery, deleteOutdatedQuery, ...context }: DigitalIdbContextState =
         React.useContext(DigitalIdbContext);
     const [isLoading, setIsLoading] = React.useState(false);

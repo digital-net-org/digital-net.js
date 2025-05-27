@@ -1,7 +1,7 @@
 import React from 'react';
 import { EntityHelper, type Entity, type EntityRaw, type Result } from '@digital-lib/dto';
 import type { QueryOptions, RequestCallbacks } from '../types';
-import { DigitalClient } from '../DigitalClient';
+import { DigitalClient } from '../../core/digital-api/DigitalClient';
 import { useDigitalQuery } from '../useDigitalQuery';
 
 export function useGetById<T extends Entity>(

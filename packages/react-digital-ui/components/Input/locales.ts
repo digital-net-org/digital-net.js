@@ -1,4 +1,4 @@
-import { type Namespace } from '@digital-lib/react-digital';
+import { type Namespace } from '@digital-net/react-app';
 
 export default {
     namespace: 'ui-input',

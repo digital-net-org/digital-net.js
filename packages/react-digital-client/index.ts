@@ -8,6 +8,5 @@ export { useCreate } from './crud/useCreate';
 export { usePatch } from './crud/usePatch';
 export { useDelete } from './crud/useDelete';
 export { useSchema } from './crud/useSchema';
-export { DigitalClient } from './DigitalClient';
-export * from './config';
+export * from '../core/digital-api/headersDictionary';
 export * from './types';

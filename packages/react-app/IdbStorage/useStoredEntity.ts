@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Entity } from '@digital-net/dto';
-import useIDbStore from './useIDbStore';
+import { useIDbStore } from './useIDbStore';
 
 /**
  * IndexedDb stored entity accessor hook
@@ -13,7 +13,7 @@ import useIDbStore from './useIDbStore';
  *  - deleteEntity: delete the entity from the store
  *  - isLoading: indicates if the store is currently loading
  */
-export default function useStoredEntity<T extends Entity>(store: string, id: string | number | undefined) {
+export function useStoredEntity<T extends Entity>(store: string, id: string | number | undefined) {
     const { isLoading, get, save, delete: _delete, outdatedQueries } = useIDbStore<T>(store);
 
     const [storedExists, setStoredExists] = React.useState(false);

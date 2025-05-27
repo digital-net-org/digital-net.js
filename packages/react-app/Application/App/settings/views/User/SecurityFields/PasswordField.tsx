@@ -3,12 +3,13 @@ import { useDigitalQuery } from '@digital-lib/react-digital-client';
 import { Box, Form, IconButton, InputText } from '@digital-lib/react-digital-ui';
 import { Localization } from '../../../../../../Localization';
 import { SubmitDialog } from './SubmitDialog';
+import { digitalEndpoints } from '@digital-lib/core';
 
 const defaultState = '*********';
 const allowedSymboles = '!"#$%&\'()*+-./:;<=>?@[\\]^_{|}~';
 
 export function PasswordField() {
-    const { data: pattern } = useDigitalQuery<string>(`${DIGITAL_API_URL}/validation/pattern/password`);
+    const { data: pattern } = useDigitalQuery<string>(digitalEndpoints['validation/pattern/password']);
 
     const [newPassword, setNewPassword] = React.useState<string | undefined>(defaultState);
     const [confirmPassword, setConfirmPassword] = React.useState<string | undefined>();

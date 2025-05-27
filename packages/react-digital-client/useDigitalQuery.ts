@@ -1,10 +1,9 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ObjectMatcher } from '@digital-lib/core';
+import { headersDictionary, ObjectMatcher } from '@digital-lib/core';
 import { type QueryConfig } from './types';
-import { skipRefreshHeader } from './config';
 import { ResponseHandler } from './ResponseHandler';
-import { DigitalClient } from './DigitalClient';
+import { DigitalClient } from '@digital-net/core';
 
 export function useDigitalQuery<T>(
     key: string | undefined,
@@ -25,7 +24,7 @@ export function useDigitalQuery<T>(
                     ...options,
                     headers: {
                         ...options.headers,
-                        [skipRefreshHeader]: skipRefresh ? 'true' : 'false',
+                        [headersDictionary.skipRefresh]: skipRefresh ? 'true' : 'false',
                     },
                 }),
                 { onError, onSuccess }

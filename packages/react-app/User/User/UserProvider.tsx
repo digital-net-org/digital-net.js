@@ -1,6 +1,7 @@
 import React from 'react';
 import { type EntityRaw, type Result, EntityHelper, type User } from '@digital-net/dto';
-import { DigitalClient, useDigitalQuery } from '@digital-net/react-digital-client';
+import { useDigitalQuery } from '@digital-net/react-digital-client';
+import { DigitalClient } from '@digital-net/core';
 import { useToaster } from '../../Toaster';
 import { useJwt } from './useJwt';
 

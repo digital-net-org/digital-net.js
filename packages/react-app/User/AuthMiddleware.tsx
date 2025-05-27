@@ -1,9 +1,6 @@
 import React from 'react';
-import { type Result } from '@digital-lib/dto';
-import { skipRefreshHeader, DigitalClient } from '@digital-lib/react-digital-client';
+import { digitalEndpoints, DigitalClient, headersDictionary } from '@digital-net/core';
 import { useJwt } from './User';
-
-const refreshTokenUrl = `${DIGITAL_API_URL}/authentication/user/refresh`;
 
 export default function AuthMiddleware() {
     const [token, setToken] = useJwt();
@@ -17,13 +14,13 @@ export default function AuthMiddleware() {
             response => response,
             async (error, response, originalRequest) => {
                 const isUnauthorized = response.status === 401;
-                const skipRefresh = originalRequest.headers?.[skipRefreshHeader] === 'true';
+                const skipRefresh = originalRequest.headers?.[headersDictionary.skipRefresh] === 'true';
 
                 if (!isUnauthorized || !token || skipRefresh) {
                     return Promise.resolve(response);
                 }
 
-                const isRefreshing = originalRequest.url === refreshTokenUrl;
+                const isRefreshing = originalRequest.url === digitalEndpoints['authentication/user/refresh'];
 
                 if (isRefreshing) {
                     setToken(undefined);
@@ -35,11 +32,7 @@ export default function AuthMiddleware() {
                 }
 
                 originalRequest._retry = true;
-                const { status, data } = await DigitalClient.request<Result<string>>({
-                    method: 'POST',
-                    url: refreshTokenUrl,
-                    withCredentials: true,
-                });
+                const { status, data } = await DigitalClient.refreshTokens();
                 if (status !== 200 || !data.value) {
                     setToken(undefined);
                     return Promise.reject(error);

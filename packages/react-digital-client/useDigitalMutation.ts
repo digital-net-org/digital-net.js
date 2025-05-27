@@ -1,8 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { type MutationConfig, type MutationPayload } from './types';
-import { skipRefreshHeader } from './config';
 import { ResponseHandler } from './ResponseHandler';
-import { DigitalClient } from './DigitalClient';
+import { DigitalClient, headersDictionary } from '@digital-net/core';
 
 export function useDigitalMutation<T, P = object>(
     key: ((payload: P) => string) | string,
@@ -18,7 +17,7 @@ export function useDigitalMutation<T, P = object>(
                     data: payload.patch ?? payload.body ?? {},
                     headers: {
                         ...options.headers,
-                        [skipRefreshHeader]: skipRefresh ? 'true' : 'false',
+                        [headersDictionary.skipRefresh]: skipRefresh ? 'true' : 'false',
                     },
                     ...options,
                 }),

@@ -3,7 +3,7 @@ import type { IDbConfig } from './types/IDbConfig';
 /**
  * Indexed database accessor utilities
  */
-export default class IDbAccessor {
+export class IDbAccessor {
     private static pkName = 'id';
     private static pkIndex = 'unique_id';
 
@@ -16,11 +16,11 @@ export default class IDbAccessor {
      * @param config - database configuration, contains name, version and available stores
      */
     public static async initDatabase(config: IDbConfig): Promise<IDBDatabase | null> {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             const request = indexedDB.open(config.name, config.version);
             request.onupgradeneeded = () => {
                 const db = request.result;
-                config.stores.forEach((store) => {
+                config.stores.forEach(store => {
                     if (!this.storeExists(db, store)) {
                         const objectStore = db.createObjectStore(store, { keyPath: 'id' });
                         objectStore.createIndex(`${store}_${this.pkIndex}`, this.pkName, { unique: true });
@@ -29,7 +29,7 @@ export default class IDbAccessor {
             };
             request.onerror = () => {
                 throw new Error(
-                    `IDbAccessor: Unhandled error while initializing ${config.name}" database v${config.version}`,
+                    `IDbAccessor: Unhandled error while initializing ${config.name}" database v${config.version}`
                 );
             };
             request.onsuccess = () => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ObjectMatcher } from '@digital-lib/core';
 import { ResultBuilder } from '@digital-lib/dto';
-import { DigitalClient } from './DigitalClient';
+import { DigitalClient } from '../core/digital-api/DigitalClient';
 import { type QueryOptions, type RequestCallbacks } from './types';
 
 export function useDigitalImport<T>(key: string, { trigger, onError, onSuccess }: RequestCallbacks<T> & QueryOptions) {

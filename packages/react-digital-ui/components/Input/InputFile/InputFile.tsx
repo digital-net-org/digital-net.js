@@ -1,6 +1,6 @@
 import React from 'react';
 import { StringResolver, useClassName } from '@digital-lib/core';
-import { Localization } from '@digital-lib/react-digital/Localization';
+import { Localization } from '@digital-lib/react-app/Localization';
 import type { ControlledHandler } from '../../types';
 import { IconButton } from '../../Button';
 import { Box } from '../../Box';
