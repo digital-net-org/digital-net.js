@@ -1,3 +1,2 @@
 export * from './BaseEditor';
-export * from './FrameEditor';
-export * from './FrameConfig';
+export * from './PageEditor';

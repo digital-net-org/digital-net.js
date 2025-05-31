@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { ErrorView, LoginView } from '../Application';
-import { RootPage } from '../Pages';
+import { RootPage, LoginPage, ErrorPage } from '../Pages';
 import { type RouteObject } from './RouteObject';
 
 export const RouterDefault = [
@@ -12,13 +11,13 @@ export const RouterDefault = [
     },
     {
         path: '/login',
-        element: <LoginView />,
+        element: <LoginPage />,
         isPublic: true,
         displayed: false,
     },
     {
         path: '*',
-        element: <ErrorView error="404" />,
+        element: <ErrorPage error="404" />,
         isPublic: false,
         displayed: false,
     },

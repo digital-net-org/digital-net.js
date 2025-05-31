@@ -1,5 +1,5 @@
-import { FrameEditor } from './components';
+import { PageEditor } from './components';
 
 export function EditorPage() {
-    return <FrameEditor />;
+    return <PageEditor />;
 }

@@ -4,7 +4,7 @@ import { DigitalIdbContext } from './DigitalIdbContext';
 import { IDbAccessor } from './IDbAccessor';
 
 const defaultIdbConfig: IDbConfig = {
-    stores: ['frame'],
+    stores: ['pages'],
     name: 'safari-digital',
     version: 1,
 };

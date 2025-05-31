@@ -16,7 +16,11 @@ export class DigitalReactClient extends DigitalClient {
             },
         },
     });
-    public static invalidate(url: string) {
-        (async () => await this.queryClient.invalidateQueries({ queryKey: [url], refetchType: 'all' }))();
+    public static invalidate(...params: Array<string>) {
+        (async () => {
+            for (const url of params) {
+                await this.queryClient.invalidateQueries({ queryKey: [url], refetchType: 'all' });
+            }
+        })();
     }
 }
