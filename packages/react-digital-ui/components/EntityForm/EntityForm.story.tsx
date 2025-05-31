@@ -1,7 +1,7 @@
 /* eslint react-hooks/rules-of-hooks: 0 */
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import type { Entity } from '@digital-net/dto';
+import type { Entity } from '@digital-net/core';
 import { Box } from '../Box';
 import EntityForm, { type EntityFormProps } from './EntityForm';
 import { type TestEntity, testEntity, testSchema } from './EntityForm.story.helper';

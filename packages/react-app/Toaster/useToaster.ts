@@ -1,5 +1,5 @@
 import React from 'react';
-import { type ToastProps } from '@digital-lib/react-digital-ui';
+import { type ToastProps } from '@digital-net/react-digital-ui';
 import { Localization } from '../Localization';
 import { ToasterContext } from './ToasterProvider';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Toast, animationDuration, type ToastProps } from '@digital-lib/react-digital-ui';
+import { Toast, animationDuration, type ToastProps } from '@digital-net/react-digital-ui';
 
 interface Toast {
     type: ToastProps['variant'];

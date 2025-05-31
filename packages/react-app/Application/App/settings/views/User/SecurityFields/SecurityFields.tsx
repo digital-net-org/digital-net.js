@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text } from '@digital-lib/react-digital-ui';
+import { Box, Text } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../../../../Localization';
 
 export function SecurityFields({ children }: React.PropsWithChildren) {

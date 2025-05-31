@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Result } from '@digital-lib/dto';
-import { useDigitalMutation } from '@digital-lib/react-digital-client';
+import type { Result } from '@digital-net/core';
+import { useDigitalMutation } from '@digital-net/react-digital-client';
 import { useToaster } from '../../Toaster';
 import { UserContext } from './UserProvider';
 import type { ApplicationUser } from './ApplicationUser';

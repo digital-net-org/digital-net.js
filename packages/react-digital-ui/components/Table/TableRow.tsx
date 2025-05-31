@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Entity } from '@digital-lib/dto';
+import { type Entity } from '@digital-net/core';
 import { Text } from '../Text';
 import { Box } from '../Box';
 import { IconButton } from '../Button';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { EntityHelper, type Entity, type EntityRaw, type QueryResult } from '@digital-lib/dto';
+import { EntityHelper, type Entity, type EntityRaw, type QueryResult } from '@digital-net/core';
 import { type QueryOptions, type RequestCallbacks } from '../types';
 import { useDigitalQuery } from '../useDigitalQuery';
 

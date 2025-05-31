@@ -1,5 +1,5 @@
 import React from 'react';
-import { useClassName, useOnClickOutside } from '@digital-lib/core';
+import { useClassName, useOnClickOutside } from '@digital-net/core';
 import { Box } from '../Box';
 import { Icon } from '../Icon';
 import { Text } from '../Text';

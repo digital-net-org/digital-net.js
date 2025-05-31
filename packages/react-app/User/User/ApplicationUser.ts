@@ -1,4 +1,4 @@
-import type { User } from '@digital-net/dto';
+import type { User } from '@digital-net/core';
 
 export interface ApplicationUser extends User {
     authenticate: (body: Record<string, any>) => void;

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { headersDictionary, ObjectMatcher } from '@digital-lib/core';
+import { headersDictionary, ObjectMatcher } from '@digital-net/core';
 import { type QueryConfig } from './types';
 import { ResponseHandler } from './ResponseHandler';
-import { DigitalClient } from '@digital-net/core';
+import { DigitalReactClient } from './DigitalReactClient';
 
 export function useDigitalQuery<T>(
     key: string | undefined,
@@ -20,7 +20,7 @@ export function useDigitalQuery<T>(
                 return {} as T;
             }
             return ResponseHandler.handle(
-                await DigitalClient.get<T>(resolvedKey, {
+                await DigitalReactClient.get<T>(resolvedKey, {
                     ...options,
                     headers: {
                         ...options.headers,

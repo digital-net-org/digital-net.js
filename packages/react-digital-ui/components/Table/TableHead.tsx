@@ -1,4 +1,4 @@
-import type { Entity } from '@digital-lib/dto';
+import type { Entity } from '@digital-net/core';
 import { Text } from '../Text';
 import { IconButton } from '../Button';
 import { Box } from '../Box';

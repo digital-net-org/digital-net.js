@@ -1,4 +1,4 @@
-import type { Entity, EntitySchema } from '../../../dto';
+import type { Entity, EntitySchema } from '@digital-net/core';
 
 export interface TestEntity extends Entity {
     name: string;

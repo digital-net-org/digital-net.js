@@ -1,6 +1,5 @@
 import React from 'react';
-import { StringResolver } from '../../../core';
-import { type Entity, type EntitySchema } from '../../../dto';
+import { StringResolver, type Entity, type EntitySchema } from '@digital-net/core';
 import { type BoxProps, Box } from '../Box';
 import { InputSwitch, InputText } from '../Input';
 import { Text } from '../Text';

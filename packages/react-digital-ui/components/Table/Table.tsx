@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Entity, Pagination } from '@digital-lib/dto';
+import type { Entity, Pagination } from '@digital-net/core';
 import { Box } from '../Box';
 import { Loader } from '../Loader';
 import { Text } from '../Text';

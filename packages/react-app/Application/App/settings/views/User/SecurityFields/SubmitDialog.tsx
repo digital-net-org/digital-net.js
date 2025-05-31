@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Button, Dialog, Form, InputText } from '@digital-lib/react-digital-ui';
-import { useDigitalMutation } from '@digital-lib/react-digital-client';
+import { Box, Button, Dialog, Form, InputText } from '@digital-net/react-digital-ui';
+import { useDigitalMutation } from '@digital-net/react-digital-client';
 import { useToaster } from '../../../../../../Toaster';
 import { Localization } from '../../../../../../Localization';
 import { useApplicationUser } from '../../../../../../User';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader } from '@digital-lib/react-digital-ui';
+import { Loader } from '@digital-net/react-digital-ui';
 import { useChildren, useClassName } from '../../../core';
 import type { SafariNodeWithChildren } from '../types';
 import { Button } from '../Button';

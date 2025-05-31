@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Icon, InputNavButton } from '@digital-lib/react-digital-ui';
+import { Box, Icon, InputNavButton } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../Localization';
 import { useDigitalRouter } from '../../../Router';
 import { AppLogo } from '../../AppLogo';

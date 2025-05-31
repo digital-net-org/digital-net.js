@@ -14,7 +14,7 @@ export interface DigitalRoute {
  * Hook to manage the router.
  * @returns A tuple with the router and the current route.
  */
-export default function useDigitalRouter() {
+export function useDigitalRouter() {
     const { router: contextRouter } = React.useContext(RouterContext);
     const navigate = useNavigate();
     const { pathname } = useLocation();

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog } from '@digital-lib/react-digital-ui';
+import { Dialog } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../Localization';
 import { Panel } from './components';
 import { defaultViews } from './views';

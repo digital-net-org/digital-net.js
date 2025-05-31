@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, InputNavButton } from '@digital-lib/react-digital-ui';
+import { Avatar, InputNavButton } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../Localization';
 import { useApplicationUser } from '../../../User';
 

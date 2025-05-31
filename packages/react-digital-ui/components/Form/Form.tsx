@@ -1,5 +1,5 @@
 import React from 'react';
-import { useClassName } from '@digital-lib/core';
+import { useClassName } from '@digital-net/core';
 import { Localization } from '../../../react-app/Localization';
 import { type SafariNode } from '../types';
 import { type BoxProps, Box } from '../Box';

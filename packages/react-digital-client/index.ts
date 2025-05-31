@@ -1,4 +1,5 @@
 export { default as DigitalClientProvider } from './DigitalClientProvider';
+export { DigitalReactClient } from './DigitalReactClient';
 export { useDigitalMutation } from './useDigitalMutation';
 export { useDigitalQuery } from './useDigitalQuery';
 export { useDigitalImport } from './useDigitalImport';

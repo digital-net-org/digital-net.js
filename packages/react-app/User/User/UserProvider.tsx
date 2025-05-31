@@ -1,7 +1,7 @@
 import React from 'react';
-import { type EntityRaw, type Result, EntityHelper, type User } from '@digital-net/dto';
-import { useDigitalQuery } from '@digital-net/react-digital-client';
-import { DigitalClient } from '@digital-net/core';
+import { type EntityRaw, type Result, EntityHelper, type User } from '@digital-net/core';
+import { DigitalReactClient, useDigitalQuery } from '@digital-net/react-digital-client';
+
 import { useToaster } from '../../Toaster';
 import { useJwt } from './useJwt';
 
@@ -42,7 +42,7 @@ export function ApplicationUserProvider({ children }: React.PropsWithChildren) {
         [userData]
     );
 
-    React.useEffect(() => (token !== undefined ? DigitalClient.invalidate(getSelfUrl) : void 0), [token]);
+    React.useEffect(() => (token !== undefined ? DigitalReactClient.invalidate(getSelfUrl) : void 0), [token]);
 
     return <UserContext.Provider value={{ isLoading, refresh, ...user }}>{children}</UserContext.Provider>;
 }

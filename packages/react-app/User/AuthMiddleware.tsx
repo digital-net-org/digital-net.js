@@ -1,16 +1,17 @@
 import React from 'react';
-import { digitalEndpoints, DigitalClient, headersDictionary } from '@digital-net/core';
+import { digitalEndpoints, headersDictionary } from '@digital-net/core';
+import { DigitalReactClient } from '@digital-net/react-digital-client';
 import { useJwt } from './User';
 
 export default function AuthMiddleware() {
     const [token, setToken] = useJwt();
 
     React.useEffect(() => {
-        const disposeReqHandler = DigitalClient.setRequestHandler(async req => {
+        const disposeReqHandler = DigitalReactClient.setRequestHandler(async req => {
             if (token) req.headers['Authorization'] = `Bearer ${token}`;
             return req;
         });
-        const disposeResHandler = DigitalClient.setResponseHandler(
+        const disposeResHandler = DigitalReactClient.setResponseHandler(
             response => response,
             async (error, response, originalRequest) => {
                 const isUnauthorized = response.status === 401;
@@ -32,14 +33,14 @@ export default function AuthMiddleware() {
                 }
 
                 originalRequest._retry = true;
-                const { status, data } = await DigitalClient.refreshTokens();
+                const { status, data } = await DigitalReactClient.refreshTokens();
                 if (status !== 200 || !data.value) {
                     setToken(undefined);
                     return Promise.reject(error);
                 }
                 setToken(data.value);
                 originalRequest.headers['Authorization'] = `Bearer ${data.value}`;
-                return DigitalClient.request(originalRequest);
+                return DigitalReactClient.request(originalRequest);
             }
         );
         return () => {

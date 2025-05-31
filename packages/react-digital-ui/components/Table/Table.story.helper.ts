@@ -1,5 +1,5 @@
-import { generateArray, StringRandomizer } from '@digital-lib/core';
-import type { Entity } from '@digital-lib/dto';
+import { generateArray, StringRandomizer } from '@digital-net/core';
+import type { Entity } from '@digital-net/core';
 
 export interface TestEntity extends Entity {
     name: string;

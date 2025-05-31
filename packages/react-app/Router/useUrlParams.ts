@@ -6,27 +6,23 @@ import { ObjectMutator } from '../../core';
  * Hook to manage URL parameters.
  * @returns A tuple with the current URL parameters and a function to update them.
  */
-export default function useUrlParams<T extends Record<string, any>>(): [T, (value: T | ((prev: T) => T)) => void] {
+export function useUrlParams<T extends Record<string, any>>(): [T, (value: T | ((prev: T) => T)) => void] {
     const location = useLocation();
     const navigate = useNavigate();
 
     const params = React.useMemo(
         () => Object.fromEntries(new URLSearchParams(location.search).entries()) as T,
-        [location.search],
+        [location.search]
     );
 
     const setParams = React.useCallback(
         (value: T | ((prev: T) => T)) => {
-            const resolved = typeof value === 'function'
-                ? value(params)
-                : value;
-            navigate(
-                {
-                    search: new URLSearchParams(ObjectMutator.deleteUndefinedEntries(resolved)).toString(),
-                },
-            );
+            const resolved = typeof value === 'function' ? value(params) : value;
+            navigate({
+                search: new URLSearchParams(ObjectMutator.deleteUndefinedEntries(resolved)).toString(),
+            });
         },
-        [navigate, params],
+        [navigate, params]
     );
 
     return [params, setParams];

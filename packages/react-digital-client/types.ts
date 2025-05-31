@@ -1,5 +1,5 @@
 import type { AxiosRequestConfig } from 'axios';
-import type { Result } from '@digital-lib/dto';
+import type { Result } from '@digital-net/core';
 
 export type RequestConfig = Omit<AxiosRequestConfig, 'url' | 'baseURL' | 'method'>;
 

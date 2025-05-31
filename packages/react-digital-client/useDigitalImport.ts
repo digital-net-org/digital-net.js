@@ -1,8 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ObjectMatcher } from '@digital-lib/core';
-import { ResultBuilder } from '@digital-lib/dto';
-import { DigitalClient } from '../core/digital-api/DigitalClient';
+import { ObjectMatcher, ResultBuilder } from '@digital-net/core';
+import { DigitalReactClient } from './DigitalReactClient';
 import { type QueryOptions, type RequestCallbacks } from './types';
 
 export function useDigitalImport<T>(key: string, { trigger, onError, onSuccess }: RequestCallbacks<T> & QueryOptions) {
@@ -13,7 +12,7 @@ export function useDigitalImport<T>(key: string, { trigger, onError, onSuccess }
             if (trigger === false) {
                 return result;
             }
-            const { data, status } = await DigitalClient.get(key, {
+            const { data, status } = await DigitalReactClient.get(key, {
                 headers: {
                     'Content-Type': 'application/javascript',
                 },

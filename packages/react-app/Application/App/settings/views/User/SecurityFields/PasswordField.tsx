@@ -1,9 +1,9 @@
 import React from 'react';
-import { useDigitalQuery } from '@digital-lib/react-digital-client';
-import { Box, Form, IconButton, InputText } from '@digital-lib/react-digital-ui';
+import { useDigitalQuery } from '@digital-net/react-digital-client';
+import { Box, Form, IconButton, InputText } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../../../../Localization';
 import { SubmitDialog } from './SubmitDialog';
-import { digitalEndpoints } from '@digital-lib/core';
+import { digitalEndpoints } from '@digital-net/core';
 
 const defaultState = '*********';
 const allowedSymboles = '!"#$%&\'()*+-./:;<=>?@[\\]^_{|}~';

@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { type MutationConfig, type MutationPayload } from './types';
 import { ResponseHandler } from './ResponseHandler';
-import { DigitalClient, headersDictionary } from '@digital-net/core';
+import { headersDictionary } from '@digital-net/core';
+import { DigitalReactClient } from './DigitalReactClient';
 
 export function useDigitalMutation<T, P = object>(
     key: ((payload: P) => string) | string,
@@ -11,7 +12,7 @@ export function useDigitalMutation<T, P = object>(
         mutationFn: async payload => {
             const url = key instanceof Function && payload.params ? key(payload.params) : (key as string);
             return ResponseHandler.handle(
-                await DigitalClient.request<T>({
+                await DigitalReactClient.request<T>({
                     method: method ?? 'POST',
                     url,
                     data: payload.patch ?? payload.body ?? {},

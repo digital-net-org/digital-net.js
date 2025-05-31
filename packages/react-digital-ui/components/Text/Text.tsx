@@ -2,7 +2,7 @@ import React from 'react';
 import { Property, useClassName } from '../../../core';
 import type { SafariNode } from '../types';
 import './Text.styles.css';
-import { Box } from '@digital-lib/react-digital-ui';
+import { Box } from '@digital-net/react-digital-ui';
 
 export interface TextProps extends SafariNode {
     children: any;

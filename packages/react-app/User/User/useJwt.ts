@@ -1,4 +1,4 @@
-import { useLocalStorage } from '@digital-lib/core';
+import { useLocalStorage } from '@digital-net/core';
 
 export function useJwt() {
     return useLocalStorage<string | undefined>(STORAGE_KEY_AUTH);

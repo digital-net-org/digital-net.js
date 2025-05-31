@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, IconButton, PopOver, Text } from '@digital-lib/react-digital-ui';
+import { Box, IconButton, PopOver, Text } from '@digital-net/react-digital-ui';
 import './Alerts.styles.css';
 
 export interface AppAlert {

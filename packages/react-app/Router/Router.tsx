@@ -1,8 +1,7 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider as ReactRouter } from 'react-router-dom';
-import RouterBuilder from './builder/RouterBuilder';
 import type { RouteObject } from './RouteObject';
-import DefaultRouter from './DefaultRouter';
+import { RouterDefault } from './RouterDefault';
 import Route from './Route';
 
 export interface RouterProps {
@@ -15,7 +14,7 @@ export const RouterContext = React.createContext<Omit<RouterProps, 'renderLayout
 });
 
 export function Router({ renderLayout, router }: RouterProps) {
-    const resolved = React.useMemo(() => [...router, ...RouterBuilder.build(), ...DefaultRouter], [router]);
+    const resolved = React.useMemo(() => [...router, ...RouterDefault], [router]);
     return (
         <RouterContext.Provider value={{ router: resolved }}>
             <ReactRouter

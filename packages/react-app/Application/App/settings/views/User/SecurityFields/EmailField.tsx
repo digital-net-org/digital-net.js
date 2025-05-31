@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputText } from '@digital-lib/react-digital-ui';
+import { InputText } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../../../../Localization';
 import { useApplicationUser } from '../../../../../../User';
 

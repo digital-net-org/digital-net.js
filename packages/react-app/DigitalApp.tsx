@@ -1,19 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ErrorBoundary } from '@digital-lib/core';
-import { DigitalClientProvider } from '@digital-lib/react-digital-client';
+import { ErrorBoundary } from '@digital-net/core';
+import { DigitalClientProvider } from '@digital-net/react-digital-client';
 import { LocalizationMiddleware } from './Localization';
-import { DigitalIdbProvider, type IDbConfig } from './IdbStorage';
+import { DigitalIdbProvider } from './Storage';
 import { ApplicationUserProvider, AuthMiddleware } from './User';
 import { ThemeProvider } from './Theme';
 import { Router, type RouterProps } from './Router';
 import { ToasterProvider } from './Toaster';
-import '@digital-lib/react-digital-ui/digital.net.defaults.css';
+import '@digital-net/react-digital-ui/digital.net.defaults.css';
 import { AppSettingsProvider } from './Application/App/settings';
 
 interface DigitalConfig {
     strictMode?: boolean;
-    idbConfig: IDbConfig;
     router?: RouterProps['router'];
 }
 
@@ -28,7 +27,7 @@ export default class DigitalApp {
      * @param config.idbConfig - Indexed database configuration object
      * @param config.router - Application additional routes
      */
-    public static create(renderLayout: RouterProps['renderLayout'], { strictMode, idbConfig, router }: DigitalConfig) {
+    public static create(renderLayout: RouterProps['renderLayout'], { strictMode, router }: DigitalConfig) {
         const appRoot = document.getElementById(APP_ROOT);
         if (appRoot === null) {
             throw new Error("ReactDigital: Root element not found. Please add a 'root' id to the root element");
@@ -40,7 +39,7 @@ export default class DigitalApp {
                     <ErrorBoundary>
                         <LocalizationMiddleware />
                         <ToasterProvider>
-                            <DigitalIdbProvider {...idbConfig}>
+                            <DigitalIdbProvider>
                                 <DigitalClientProvider>
                                     <AuthMiddleware />
                                     <ApplicationUserProvider>

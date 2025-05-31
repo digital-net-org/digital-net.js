@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDelete, useGetById, usePatch, useSchema } from '../../../react-digital-client';
-import type { Entity } from '@digital-net/dto';
-import { ObjectMatcher } from '@digital-lib/core';
+import type { Entity } from '@digital-net/core';
+import { ObjectMatcher } from '@digital-net/core';
 
 /* TODO: @horameus
     - PATCH: Handle schema for constraints

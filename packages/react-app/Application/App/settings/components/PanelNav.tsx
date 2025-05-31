@@ -1,5 +1,5 @@
 import React from 'react';
-import { type InputNavProps, InputNav, Text, Box } from '@digital-lib/react-digital-ui';
+import { type InputNavProps, InputNav, Text, Box } from '@digital-net/react-digital-ui';
 
 export interface PanelNavProps extends InputNavProps {
     label: string;

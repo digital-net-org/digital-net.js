@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Entity, Result } from '@digital-lib/dto';
+import type { Entity, Result } from '@digital-net/core';
 import type { RequestCallbacks } from '../types';
 import { useDigitalMutation } from '../useDigitalMutation';
 

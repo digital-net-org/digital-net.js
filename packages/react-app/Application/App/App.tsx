@@ -1,5 +1,5 @@
 import React, { type PropsWithChildren } from 'react';
-import { Box, Button, Icon } from '@digital-lib/react-digital-ui';
+import { Box, Button, Icon } from '@digital-net/react-digital-ui';
 import { Localization } from '../../Localization';
 import { useApplicationUser } from '../../User';
 import { ThemeSwitch } from '../../Theme';

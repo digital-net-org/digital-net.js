@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios';
-import { ResultBuilder } from '@digital-lib/dto';
+import { ResultBuilder } from '@digital-net/core';
 import type { RequestCallbacks } from './types';
 
 export class ResponseHandler {

@@ -1,4 +1,4 @@
-import { Box, InputSelect } from '@digital-lib/react-digital-ui';
+import { Box, InputSelect } from '@digital-net/react-digital-ui';
 import { Localization, useLocalization } from '../../../../../Localization';
 
 export function PreferencesView() {

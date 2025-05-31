@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Box, InputText, Form } from '@digital-lib/react-digital-ui';
+import { Button, Box, InputText, Form } from '@digital-net/react-digital-ui';
 import { useApplicationUser } from '../../../User';
 import { Localization } from '../../../Localization';
 import { AppLogo } from '../../AppLogo';
