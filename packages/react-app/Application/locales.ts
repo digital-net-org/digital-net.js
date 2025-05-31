@@ -12,8 +12,8 @@ export default {
         },
         alerts: {
             errors: {
-                noFrameValidation: {
-                    noFrame: 'Aucune librairie de composants',
+                puckConfigValidation: {
+                    notFound: 'Aucune librairie de composants',
                     action: 'Cliquez pour importer une librairie.',
                     invalid:
                         "La librarie {{ version }} n'est pas valide. Le fichier doit être au format ESM renvoyer un export default.",
@@ -33,8 +33,8 @@ export default {
         },
         alerts: {
             errors: {
-                noFrameValidation: {
-                    noFrame: 'No component library',
+                puckConfigValidation: {
+                    notFound: 'No component library',
                     action: 'Click to import a library.',
                     invalid:
                         'The library {{ version }} is invalid. The file must be in ESM format and return a default export.',

@@ -13,8 +13,8 @@ export function useAppAlerts(): Array<AppAlertsProps['alerts'][number]> {
             : [
                   {
                       key: 'no-frame-config',
-                      title: Localization.translate('app:alerts.errors.noFrameValidation.noFrame'),
-                      message: Localization.translate('app:alerts.errors.noFrameValidation.action'),
+                      title: Localization.translate('app:alerts.errors.puckConfigValidation.notFound'),
+                      message: Localization.translate('app:alerts.errors.puckConfigValidation.action'),
                       onClick: () => openAppSettings('pages-puck'),
                   },
               ]),

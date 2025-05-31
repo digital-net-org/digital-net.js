@@ -24,6 +24,7 @@ export function useDigitalImport<T>(key: string, { trigger, onError, onSuccess }
                 try {
                     const blob = new Blob([data], { type: 'application/javascript' });
                     const url = URL.createObjectURL(blob);
+                    /* @vite-ignore */
                     result = (await import(url)).default as T;
                     URL.revokeObjectURL(url);
                     await onSuccess?.(result);

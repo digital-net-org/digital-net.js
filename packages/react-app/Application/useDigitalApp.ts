@@ -1,7 +1,5 @@
 import React from 'react';
-import { type settingsViews, SettingsContext } from './AppSettings';
-
-export type SettingsViewKey = keyof (typeof settingsViews)['userViews'] | keyof (typeof settingsViews)['pagesViews'];
+import { type SettingsViewKey, SettingsContext } from './AppSettings';
 
 export function useDigitalApp() {
     const { navigate, open } = React.useContext(SettingsContext);

@@ -6,7 +6,7 @@ export const RouterDefault = [
     {
         path: '/',
         element: <RootPage />,
-        isPublic: true,
+        isPublic: false,
         displayed: false,
     },
     {

@@ -2,7 +2,8 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider as ReactRouter } from 'react-router-dom';
 import type { RouteObject } from './RouteObject';
 import { RouterDefault } from './RouterDefault';
-import Route from './Route';
+import { Route } from './Route';
+import { Application } from '../Application';
 
 export interface RouterProps {
     router: Array<RouteObject>;
@@ -23,7 +24,7 @@ export function Router({ renderLayout, router }: RouterProps) {
                         path,
                         element: (
                             <Route path={path} isPublic={isPublic}>
-                                {renderLayout({ children })}
+                                <Application>{renderLayout({ children })}</Application>
                             </Route>
                         ),
                     }))

@@ -11,11 +11,11 @@ export function usePuckConfigValidator() {
     const { isLoading: isValidating } = useDigitalQuery<Result>(digitalEndpoints['page/config/test'], {
         onSuccess: () => setIsConfigUploaded(true),
         onError: ({ errors }) => {
-            if (errors.find(e => e.reference === digitalErrorCodes.NoFrameConfig) !== undefined) {
+            if (errors.find(e => e.reference === digitalErrorCodes.NoPuckConfig) !== undefined) {
                 setIsConfigUploaded(false);
                 return;
             }
-            toast('pages-app:errors.noFrameValidation.unhandled', 'error');
+            toast('app:alerts.errors.puckConfigValidation.unhandled', 'error');
         },
         trigger: isLogged,
     });

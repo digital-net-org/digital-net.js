@@ -7,7 +7,7 @@ export interface RouteProps extends React.PropsWithChildren {
     isPublic?: boolean;
 }
 
-export default function Route({ children, path, isPublic }: RouteProps) {
+export function Route({ children, path, isPublic }: RouteProps) {
     const navigate = useNavigate();
     const [token] = useJwt();
 

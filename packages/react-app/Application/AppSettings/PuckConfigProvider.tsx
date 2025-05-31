@@ -47,7 +47,7 @@ export function PuckConfigProvider({ children }: React.PropsWithChildren<{}>) {
             onError: () =>
                 toast(
                     {
-                        key: 'pages-app:errors.noFrameValidation.invalid',
+                        key: 'app:alerts.errors.puckConfigValidation.invalid',
                         interpolation: { version },
                     },
                     'error'

@@ -5,15 +5,15 @@ import { useApplicationUser } from '../User';
 import { ThemeSwitch } from '../Theme';
 import { useDigitalRouter } from '../Router';
 import { useDigitalApp } from './useDigitalApp';
+import { useAppAlerts } from './useAppAlerts';
 import { AppAlerts } from './AppAlerts';
 import { AppActions } from './AppActions';
 import { AppSettings } from './AppSettings';
 import './fontsources';
-import './App.styles.css';
 import './AppBar.styles.css';
-import { useAppAlerts } from './useAppAlerts';
+import './Application.styles.css';
 
-export function App({ children }: PropsWithChildren) {
+export function Application({ children }: PropsWithChildren) {
     const { current } = useDigitalRouter();
     const { isLogged } = useApplicationUser();
     const { openAppSettings } = useDigitalApp();

@@ -18,11 +18,22 @@ export const views = {
 
 export function AppSettings() {
     const { state, open, close, navigate } = React.useContext(SettingsContext);
+    const settingFolder = React.useMemo(() => {
+        if (!state) {
+            return null;
+        }
+        if (views.userViews[state]) {
+            return 'user';
+        }
+        if (views.pagesViews[state]) {
+            return 'pages';
+        }
+    }, [state]);
 
     return (
         <React.Fragment>
             <Dialog open={open} onClose={close} className="DigitalUi-AppSettings">
-                <Dialog.Header>{Localization.translate(`app-settings:user.${state}.label`)}</Dialog.Header>
+                <Dialog.Header>{Localization.translate(`app-settings:${settingFolder}.${state}.label`)}</Dialog.Header>
                 <Dialog.Panel>
                     <AppSettingsPanel>
                         <AppSettingsPanel.Nav
