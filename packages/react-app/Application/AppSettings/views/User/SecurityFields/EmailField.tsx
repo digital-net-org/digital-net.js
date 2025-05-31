@@ -9,7 +9,7 @@ export function EmailField() {
     return (
         <React.Fragment>
             <InputText
-                label={Localization.translate('app:settings.user.account.form.security.email.label')}
+                label={Localization.translate('app-settings:user.account.form.security.email.label')}
                 onChange={() => void 0}
                 value={email}
                 type="email"

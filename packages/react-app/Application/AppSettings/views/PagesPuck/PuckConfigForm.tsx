@@ -33,15 +33,21 @@ export function PuckConfigForm({ onClose, ...dialogProps }: PuckConfigFormProps)
 
     return (
         <Dialog onClose={handleClose} {...dialogProps}>
-            <Dialog.Header>{Localization.translate(`settings:frame.actions.create.label`)}</Dialog.Header>
+            <Dialog.Header>
+                {Localization.translate(`app-settings:pages.pages-puck.actions.create.label`)}
+            </Dialog.Header>
             <Dialog.Content>
                 <Form id="create-version-form" onSubmit={handleSubmit} gap={2} align="end">
                     <InputText
                         type="text"
-                        help={Localization.translate('settings:frame.actions.create.form.version:pattern')}
+                        help={Localization.translate(
+                            'app-settings:pages.pages-puck.actions.create.form.version:pattern'
+                        )}
                         value={formState.version ?? ''}
                         onChange={setVersion}
-                        label={Localization.translate('settings:frame.actions.create.form.version:label')}
+                        label={Localization.translate(
+                            'app-settings:pages.pages-puck.actions.create.form.version:label'
+                        )}
                         loading={isPending}
                         pattern="^[A-Za-z0-9._\-]{3,24}$"
                         focusOnMount
@@ -50,7 +56,7 @@ export function PuckConfigForm({ onClose, ...dialogProps }: PuckConfigFormProps)
                     <InputFile
                         value={formState.file ? [formState.file] : []}
                         onChange={setFile}
-                        label={Localization.translate('settings:frame.actions.create.form.file:label')}
+                        label={Localization.translate('app-settings:pages.pages-puck.actions.create.form.file:label')}
                         accept={['application/javascript', 'text/javascript', 'application/x-javascript']}
                         required
                     />

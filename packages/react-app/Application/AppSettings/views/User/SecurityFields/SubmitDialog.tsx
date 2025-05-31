@@ -19,7 +19,7 @@ export function SubmitDialog({ open, payload, onCancel }: SubmitDialogProps) {
         method: 'PUT',
         onSuccess: () => {
             onCancel();
-            toast('app:settings.user.account.form.security.password.success', 'success');
+            toast('app-settings:user.account.form.security.password.success', 'success');
         },
         onError: () => {
             onCancel();
@@ -34,7 +34,7 @@ export function SubmitDialog({ open, payload, onCancel }: SubmitDialogProps) {
     return (
         <Dialog open={open} onClose={handleCancel}>
             <Dialog.Header>
-                {Localization.translate('app:settings.user.account.form.security.password.update')}
+                {Localization.translate('app-settings:user.account.form.security.password.update')}
             </Dialog.Header>
             <Dialog.Content>
                 <Box gap={2} align="end">
@@ -44,7 +44,7 @@ export function SubmitDialog({ open, payload, onCancel }: SubmitDialogProps) {
                                 type="password"
                                 value={currentPassword}
                                 onChange={setCurrentPassword}
-                                label={Localization.translate('app:settings.user.account.form.security.password.label')}
+                                label={Localization.translate('app-settings:user.account.form.security.password.label')}
                                 loading={isPending}
                                 required
                                 focusOnMount

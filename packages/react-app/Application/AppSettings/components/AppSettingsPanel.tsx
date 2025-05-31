@@ -12,7 +12,7 @@ export function AppSettingsPanel({ children }: React.PropsWithChildren) {
                 className="AppVersion"
                 variant="caption"
                 size="xsmall"
-            >{`${Localization.translate('app:settings.version')} ${APP_VERSION}`}</Text>
+            >{`${Localization.translate('app-settings:version')} ${APP_VERSION}`}</Text>
         </Box>
     );
 }

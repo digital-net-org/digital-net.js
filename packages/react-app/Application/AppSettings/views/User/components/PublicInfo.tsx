@@ -9,7 +9,7 @@ export function PublicInfo() {
             <Avatar size="large" />
             <InputText
                 onChange={() => void 0}
-                label={Localization.translate('app:settings.user.account.form.username.label')}
+                label={Localization.translate('app-settings:user.account.form.username.label')}
                 value={username}
                 disabled
             />

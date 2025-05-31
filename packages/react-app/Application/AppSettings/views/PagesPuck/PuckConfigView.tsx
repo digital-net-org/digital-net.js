@@ -23,7 +23,9 @@ export function PuckConfigView() {
                 onDelete={id => deleteConfig(id)}
                 entities={configs}
                 columns={['id', 'version', 'createdAt']}
-                renderHeader={key => Localization.translate(`settings:frame.result.headers.${String(key)}`)}
+                renderHeader={key =>
+                    Localization.translate(`app-settings:pages.pages-puck.result.headers.${String(key)}`)
+                }
                 renderRow={(key, row) => {
                     if (key === 'version') {
                         return <React.Fragment>{row.version}</React.Fragment>;
@@ -34,7 +36,7 @@ export function PuckConfigView() {
                 }}
                 loading={isLoading}
                 loadingActions={isDeleting}
-                renderEmpty={() => Localization.translate('settings:frame.result.empty')}
+                renderEmpty={() => Localization.translate('app-settings:pages.pages-puck.result.empty')}
             />
         </React.Fragment>
     );

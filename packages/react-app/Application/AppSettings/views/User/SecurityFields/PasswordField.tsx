@@ -39,8 +39,8 @@ export function PasswordField() {
                         type="password"
                         value={newPassword}
                         onChange={setNewPassword}
-                        label={Localization.translate('app:settings.user.account.form.security.password.label')}
-                        help={Localization.translate('app:settings.user.account.form.security.password.pattern', {
+                        label={Localization.translate('app-settings:user.account.form.security.password.label')}
+                        help={Localization.translate('app-settings:user.account.form.security.password.pattern', {
                             symboles: allowedSymboles,
                         })}
                         pattern={pattern}
@@ -60,8 +60,8 @@ export function PasswordField() {
                     <InputText
                         value={confirmPassword}
                         onChange={setConfirmPassword}
-                        label={Localization.translate('app:settings.user.account.form.security.password.labelConfirm')}
-                        help={Localization.translate('app:settings.user.account.form.security.password.pattern', {
+                        label={Localization.translate('app-settings:user.account.form.security.password.labelConfirm')}
+                        help={Localization.translate('app-settings:user.account.form.security.password.pattern', {
                             symboles: allowedSymboles,
                         })}
                         pattern={newPassword}

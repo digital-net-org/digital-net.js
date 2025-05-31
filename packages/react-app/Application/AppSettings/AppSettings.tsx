@@ -7,11 +7,11 @@ import { PreferencesView, UserView, PuckConfigView } from './views';
 import './AppSettings.styles.css';
 
 export const views = {
-    userViews: {
+    user: {
         account: <UserView />,
         preferences: <PreferencesView />,
     },
-    pagesViews: {
+    pages: {
         'pages-puck': <PuckConfigView />,
     },
 };
@@ -19,14 +19,10 @@ export const views = {
 export function AppSettings() {
     const { state, open, close, navigate } = React.useContext(SettingsContext);
     const settingFolder = React.useMemo(() => {
-        if (!state) {
-            return null;
-        }
-        if (views.userViews[state]) {
-            return 'user';
-        }
-        if (views.pagesViews[state]) {
-            return 'pages';
+        for (const folder in views) {
+            if (views[folder][state]) {
+                return folder as keyof typeof views;
+            }
         }
     }, [state]);
 
@@ -38,21 +34,21 @@ export function AppSettings() {
                     <AppSettingsPanel>
                         <AppSettingsPanel.Nav
                             value={state}
-                            options={Object.keys(views.userViews)}
+                            options={Object.keys(views.user)}
                             onSelect={navigate}
                             label={Localization.translate('app-settings:user.label')}
                             onRender={key => Localization.translate(`app-settings:user.${key}.label`)}
                         />
                         <AppSettingsPanel.Nav
                             value={state}
-                            options={Object.keys(views.pagesViews)}
+                            options={Object.keys(views.pages)}
                             onSelect={navigate}
                             label={Localization.translate('app-settings:pages.label')}
                             onRender={key => Localization.translate(`app-settings:pages.${key}.label`)}
                         />
                     </AppSettingsPanel>
                 </Dialog.Panel>
-                <Dialog.Content>{open && state ? views[state] : null}</Dialog.Content>
+                <Dialog.Content>{open && state && settingFolder ? views[settingFolder][state] : null}</Dialog.Content>
             </Dialog>
         </React.Fragment>
     );

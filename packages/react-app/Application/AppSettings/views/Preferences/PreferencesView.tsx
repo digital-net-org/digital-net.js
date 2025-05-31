@@ -8,11 +8,11 @@ export function PreferencesView() {
             <InputSelect
                 required
                 options={[...Localization.supportedLanguages]}
-                label={Localization.translate('app:settings.user.preferences.options.language.label')}
+                label={Localization.translate('app-settings:user.preferences.options.language.label')}
                 value={currentLanguage}
                 onChange={setLanguage}
                 onRender={value =>
-                    Localization.translate(`app:settings.user.preferences.options.language.inputs.${value}`)
+                    Localization.translate(`app-settings:user.preferences.options.language.inputs.${value}`)
                 }
             />
         </Box>
