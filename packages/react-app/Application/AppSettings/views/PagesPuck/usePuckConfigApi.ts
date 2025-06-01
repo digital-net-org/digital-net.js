@@ -17,9 +17,9 @@ export function usePuckConfigApi({ onDelete, onUpload }: PuckConfigApiConfig = {
         {
             method: 'POST',
             headers: { 'Content-Type': 'multipart/form-data' },
-            onError: ({ status }) => toast(`settings:frame.actions.create.error.${status}`, 'error'),
+            onError: ({ status }) => toast(`app-settings:pages.pages-puck.actions.create.error.${status}`, 'error'),
             onSuccess: () => {
-                toast('settings:frame.actions.create.success', 'success');
+                toast('app-settings:pages.pages-puck.actions.create.success', 'success');
                 invalidateApi();
                 onUpload?.();
             },
@@ -44,11 +44,11 @@ export function usePuckConfigApi({ onDelete, onUpload }: PuckConfigApiConfig = {
 
     const { delete: deleteConfig, isDeleting } = useDelete('page/config', {
         onSuccess: () => {
-            toast('settings:frame.actions.delete.success', 'success');
+            toast('app-settings:pages.pages-puck.actions.delete.success', 'success');
             invalidateApi();
             onDelete?.();
         },
-        onError: ({ status }) => toast(`settings:frame.actions.delete.error.${status}`, 'error'),
+        onError: ({ status }) => toast(`app-settings:pages.pages-puck.actions.delete.error.${status}`, 'error'),
     });
 
     return { uploadConfig, isUploading, deleteConfig, isDeleting };
