@@ -1,21 +1,13 @@
 import React from 'react';
-import { type Entity, EntityHelper, type Result } from '@digital-net/core';
-import { type RequestCallbacks } from '../types';
+import { type DigitalCrudEndpoint, type Entity, type Result, EntityHelper } from '@digital-net/core';
+import { type CrudConfig } from './CrudConfig';
 import { useDigitalMutation } from '../useDigitalMutation';
 
-export function usePatch<T extends Entity>(endpoint: string, options?: RequestCallbacks<Result<T>>) {
-    const { mutate, isPending: isPatching } = useDigitalMutation<Result<T>, { id: string }>(
-        ({ id }) => `${endpoint}/${id}`,
-        {
-            method: 'PATCH',
-            onSuccess: async e => {
-                await options?.onSuccess?.(e);
-            },
-            onError: async e => {
-                await options?.onError?.(e);
-            },
-        }
-    );
+export function usePatch<T extends Entity>(endpoint: DigitalCrudEndpoint, options: CrudConfig<Result<T>> = {}) {
+    const { mutate, isPending: isPatching } = useDigitalMutation<Result<T>, T>(`${endpoint}/:id`, {
+        method: 'PATCH',
+        ...options,
+    });
 
     const patch = React.useCallback(
         (id: string | number, patch: Partial<T>) =>

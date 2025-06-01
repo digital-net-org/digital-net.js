@@ -1,19 +1,14 @@
 import React from 'react';
-import { Localization, useToaster } from '@digital-net/react-app';
 import { Table } from '@digital-net/react-digital-ui';
+import { Localization } from '../../../../Localization';
 import { usePuckConfig } from '../../../usePuckConfig';
-import { usePuckConfigDelete } from './usePuckConfigDelete';
 import { PuckConfigForm } from './PuckConfigForm';
+import { usePuckConfigApi } from './usePuckConfigApi';
 
 export function PuckConfigView() {
-    const { toast } = useToaster();
-
     const [open, setOpen] = React.useState(false);
     const { configs, isLoading } = usePuckConfig();
-    const { deleteConfig, isDeleting } = usePuckConfigDelete({
-        onSuccess: () => toast('settings:frame.actions.delete.success', 'success'),
-        onError: ({ status }) => toast(`settings:frame.actions.delete.error.${status}`, 'error'),
-    });
+    const { deleteConfig, isDeleting } = usePuckConfigApi();
 
     return (
         <React.Fragment>

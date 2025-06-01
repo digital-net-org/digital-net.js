@@ -2,7 +2,7 @@ import React from 'react';
 import type { Config } from '@measured/puck';
 import { useGet, useDigitalImport } from '@digital-net/react-digital-client';
 import { useToaster, useApplicationUser } from '@digital-net/react-app';
-import { type PagePuckConfig, digitalEndpoints, EntityHelper } from '@digital-net/core';
+import { type PagePuckConfig, EntityHelper } from '@digital-net/core';
 import { usePuckConfigValidator } from './views';
 
 export interface PuckConfigState {
@@ -31,35 +31,32 @@ export function PuckConfigProvider({ children }: React.PropsWithChildren<{}>) {
 
     const [loadedConfig, setLoadedConfig] = React.useState<Config>();
     const [version, setVersion] = React.useState<Version>();
-    const { entities: configs, isQuerying } = useGet<PagePuckConfig>(digitalEndpoints['page/config'], {
-        onSuccess: result => {
+
+    const { entities: configs, isQuerying } = useGet<PagePuckConfig>('page/config', {
+        async onSuccess(result) {
             const defaultVersion = EntityHelper.getLatest(result.value ?? []);
             if (defaultVersion) {
                 setVersion(defaultVersion.version);
             }
         },
-        trigger: isLogged,
+        enabled: Boolean(isLogged),
     });
-    const { isLoading: isImporting } = useDigitalImport<(r: typeof React) => Config>(
-        `${digitalEndpoints['page/config/version']}/${version}`,
-        {
-            trigger: Boolean(version),
-            onError: () =>
-                toast(
-                    {
-                        key: 'app:alerts.errors.puckConfigValidation.invalid',
-                        interpolation: { version },
-                    },
-                    'error'
-                ),
-            onSuccess: (result: (r: typeof React) => Config) => {
-                const config = result(React);
-                setLoadedConfig(config);
-            },
-        }
-    );
 
-    React.useEffect(() => console.log(version, loadedConfig), [version, loadedConfig]);
+    const { isLoading: isImporting } = useDigitalImport<(r: typeof React) => Config>('page/config/version/:version', {
+        onError: () =>
+            toast(
+                {
+                    key: 'app:alerts.errors.puckConfigValidation.invalid',
+                    interpolation: { version },
+                },
+                'error'
+            ),
+        onSuccess: (result: (r: typeof React) => Config) => {
+            const config = result(React);
+            setLoadedConfig(config);
+        },
+        enabled: Boolean(version),
+    });
 
     const isLoading = React.useMemo(() => isQuerying || isImporting, [isQuerying, isImporting]);
 

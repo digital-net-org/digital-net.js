@@ -6,7 +6,7 @@ import { UserContext } from './UserProvider';
 import type { ApplicationUser } from './ApplicationUser';
 import { useJwt } from './useJwt';
 
-const authApiUrl = `${DIGITAL_API_URL}/authentication/user`;
+const authApiUrl = `authentication/user`;
 
 export function useApplicationUser(): ApplicationUser {
     const { toast } = useToaster();

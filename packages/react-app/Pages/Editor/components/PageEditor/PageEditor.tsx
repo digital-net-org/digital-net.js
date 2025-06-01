@@ -16,7 +16,14 @@ export function PageEditor() {
 
     const { currentTool, set } = usePageUrlState();
     const { storedEntity, storedExists, saveEntity, deleteEntity } = usePageStore();
-    const { frame, frameList, isLoading, handleCreate, handleDelete, handlePatch } = usePageCrud({
+    const {
+        page: frame,
+        pageList,
+        isLoading,
+        handleCreate,
+        handleDelete,
+        handlePatch,
+    } = usePageCrud({
         stored: storedEntity,
         onDelete: async () => await deleteEntity(),
         onPatch: async () => await deleteEntity(),
@@ -47,7 +54,7 @@ export function PageEditor() {
             renderPanel={() => (
                 <FrameNav
                     page={frame}
-                    pageList={frameList}
+                    pageList={pageList}
                     isLoading={isLoading}
                     onCreate={handleCreate}
                     onSelect={id => set('entity', id)}

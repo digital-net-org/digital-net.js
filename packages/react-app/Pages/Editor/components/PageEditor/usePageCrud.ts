@@ -1,6 +1,13 @@
 import React from 'react';
 import { StringIdentity, type Page, type PageLight } from '@digital-net/core';
-import { useCreate, useDelete, useGet, useGetById, usePatch } from '@digital-net/react-digital-client';
+import {
+    DigitalReactClient,
+    useCreate,
+    useDelete,
+    useGet,
+    useGetById,
+    usePatch,
+} from '@digital-net/react-digital-client';
 import { usePageUrlState } from './usePageUrlState';
 import { PuckEditorHelper } from './PuckEditor';
 import { PageEditorHelper } from './PageEditorHelper';
@@ -15,25 +22,23 @@ export function usePageCrud(config: {
     const { entity, ...getByIdApi } = useGetById<Page>(PageEditorHelper.apiUrl, currentPage);
 
     const { isCreating, ...createApi } = useCreate<Page>(PageEditorHelper.apiUrl, {
-        onSuccess: async () => {
-            PageEditorHelper.invalidateGetAll();
-        },
+        onSuccess: async () => PageEditorHelper.invalidateGetById(currentPage),
     });
 
     const { isDeleting, ...deleteApi } = useDelete(PageEditorHelper.apiUrl, {
         onSuccess: async () => {
             reset();
             await config.onDelete();
-            PageEditorHelper.invalidateGetById(currentPage);
             PageEditorHelper.invalidateGetAll();
+            PageEditorHelper.invalidateGetById(currentPage);
         },
     });
 
     const { isPatching, ...patchApi } = usePatch<Page>(PageEditorHelper.apiUrl, {
         onSuccess: async () => {
             await config.onPatch();
-            PageEditorHelper.invalidateGetById(currentPage);
             PageEditorHelper.invalidateGetAll();
+            PageEditorHelper.invalidateGetById(currentPage);
         },
     });
 
@@ -64,5 +69,5 @@ export function usePageCrud(config: {
         patchApi.patch(entity.id, { ...config.stored, data: JSON.stringify(config.stored.data) });
     }, [entity, isLoading, config.stored, patchApi]);
 
-    return { handleCreate, handleDelete, handlePatch, isLoading, frame: entity, frameList: entities };
+    return { handleCreate, handleDelete, handlePatch, isLoading, page: entity, pageList: entities };
 }

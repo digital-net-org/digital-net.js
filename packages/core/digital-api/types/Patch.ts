@@ -1,4 +1,4 @@
-export interface PatchOperation<T> {
+export interface PatchOperation<T = any> {
     op: string;
     path: string;
     value: Partial<T>[keyof T];

@@ -1,40 +1,18 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ObjectMatcher, ResultBuilder } from '@digital-net/core';
-import { DigitalReactClient } from './DigitalReactClient';
-import { type QueryOptions, type RequestCallbacks } from './types';
+import { type DigitalEndpoint, ObjectMatcher, URI } from '@digital-net/core';
+import { type DigitalImportConfig, DigitalReactClient } from './DigitalReactClient';
 
-export function useDigitalImport<T>(key: string, { trigger, onError, onSuccess }: RequestCallbacks<T> & QueryOptions) {
+export function useDigitalImport<T>(
+    endpoint: DigitalEndpoint,
+    { enabled, ...config }: DigitalImportConfig & { enabled?: boolean } = { enabled: true }
+) {
+    const queryKey = React.useMemo(() => URI.applyParams(endpoint, config.params), [config.params, endpoint]);
+
     const { data: content, ...response } = useQuery<T>({
-        queryKey: trigger !== false ? [key] : [],
-        queryFn: async () => {
-            let result = {} as T;
-            if (trigger === false) {
-                return result;
-            }
-            const { data, status } = await DigitalReactClient.get(key, {
-                headers: {
-                    'Content-Type': 'application/javascript',
-                },
-            });
-
-            if (status >= 400 || !data || typeof data !== 'string') {
-                await onError?.({ ...ResultBuilder.buildError(data), status });
-            } else {
-                try {
-                    const blob = new Blob([data], { type: 'application/javascript' });
-                    const url = URL.createObjectURL(blob);
-                    /* @vite-ignore */
-                    result = (await import(url)).default as T;
-                    URL.revokeObjectURL(url);
-                    await onSuccess?.(result);
-                } catch (e) {
-                    console.error('useImport: Could not load Javascript file, only ESM is supported.', e);
-                    await onError?.({ ...ResultBuilder.buildError(data), status });
-                }
-            }
-            return result;
-        },
+        queryKey: [queryKey],
+        queryFn: async () => DigitalReactClient.import<T>(endpoint, { ...config }),
+        enabled: enabled,
     });
 
     const data = React.useMemo(() => (ObjectMatcher.isEmptyObject(content) ? undefined : content), [content]);

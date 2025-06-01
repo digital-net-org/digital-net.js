@@ -1,42 +1,31 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { headersDictionary, ObjectMatcher } from '@digital-net/core';
-import { type QueryConfig } from './types';
-import { ResponseHandler } from './ResponseHandler';
+import { type DigitalEndpoint, type DigitalClientRequestConfig, URI } from '@digital-net/core';
 import { DigitalReactClient } from './DigitalReactClient';
 
+export interface QueryConfig<T = any>
+    extends Omit<DigitalClientRequestConfig<T>, 'options' | 'method' | 'body' | 'patch'> {
+    enabled?: boolean;
+    autoRefetch?: boolean;
+    skipRefresh?: boolean;
+}
+
 export function useDigitalQuery<T>(
-    key: string | undefined,
-    { onError, onSuccess, skipRefresh, trigger, ...options }: QueryConfig<T> = {
-        autoRefetch: true,
-    }
+    endpoint: DigitalEndpoint,
+    { skipRefresh, enabled, autoRefetch, ...config }: QueryConfig<T> = { enabled: true, autoRefetch: true }
 ) {
-    const resolvedKey = React.useMemo(() => (key && trigger !== false ? key : undefined), [key, trigger]);
+    const queryKey = React.useMemo(() => URI.applyParams(endpoint, config.params), [config.params, endpoint]);
 
-    const { data: queryResult, ...response } = useQuery<T>({
-        queryKey: resolvedKey ? [key] : [],
-        queryFn: async () => {
-            if (!resolvedKey) {
-                return {} as T;
-            }
-            return ResponseHandler.handle(
-                await DigitalReactClient.get<T>(resolvedKey, {
-                    ...options,
-                    headers: {
-                        ...options.headers,
-                        [headersDictionary.skipRefresh]: skipRefresh ? 'true' : 'false',
-                    },
-                }),
-                { onError, onSuccess }
-            );
-        },
-        ...options,
+    return useQuery<T>({
+        queryKey: [queryKey],
+        queryFn: async () =>
+            await DigitalReactClient.request<T>(endpoint, {
+                method: 'GET',
+                options: { skipRefresh },
+                ...(config ?? {}),
+            }),
+        enabled: enabled,
+        refetchOnWindowFocus: autoRefetch,
+        refetchOnReconnect: autoRefetch,
     });
-
-    const data = React.useMemo(
-        () => (ObjectMatcher.deepEquality(queryResult, {} as typeof queryResult) ? undefined : queryResult),
-        [queryResult]
-    );
-
-    return { data, ...response };
 }

@@ -24,8 +24,6 @@ const defaultState = {
 
 export const UserContext = React.createContext<ApplicationUserContextState>(defaultState);
 
-const getSelfUrl = `${DIGITAL_API_URL}/user/self`;
-
 export function ApplicationUserProvider({ children }: React.PropsWithChildren) {
     const { toast } = useToaster();
     const [token, _] = useJwt();
@@ -33,8 +31,9 @@ export function ApplicationUserProvider({ children }: React.PropsWithChildren) {
         data: userData,
         isLoading,
         refetch: refresh,
-    } = useDigitalQuery<Result<EntityRaw>>(!token ? undefined : getSelfUrl, {
+    } = useDigitalQuery<Result<EntityRaw>>('user/self', {
         onError: () => toast('global:errors.unhandled', 'error'),
+        enabled: !!token,
     });
 
     const user = React.useMemo(
@@ -42,7 +41,7 @@ export function ApplicationUserProvider({ children }: React.PropsWithChildren) {
         [userData]
     );
 
-    React.useEffect(() => (token !== undefined ? DigitalReactClient.invalidate(getSelfUrl) : void 0), [token]);
+    React.useEffect(() => (token !== undefined ? DigitalReactClient.invalidate('user/self') : void 0), [token]);
 
     return <UserContext.Provider value={{ isLoading, refresh, ...user }}>{children}</UserContext.Provider>;
 }

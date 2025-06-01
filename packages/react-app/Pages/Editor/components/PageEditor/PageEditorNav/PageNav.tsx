@@ -1,9 +1,9 @@
 import React from 'react';
-import { Localization } from '@digital-net/react-app';
+import { type PageLight } from '@digital-net/core';
 import { Box, IconButton, Text } from '@digital-net/react-digital-ui';
+import { Localization } from '../../../../../Localization';
 import { PageEditorHelper } from '../PageEditorHelper';
 import { PageNavItem } from './PageNavItem';
-import type { PageLight } from '@digital-net/core';
 
 export interface PageNavProps {
     page: PageLight | undefined;

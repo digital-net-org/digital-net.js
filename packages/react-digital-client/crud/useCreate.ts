@@ -1,20 +1,11 @@
 import React from 'react';
-import type { Entity, Result } from '@digital-net/core';
-import type { RequestCallbacks } from '../types';
+import type { DigitalCrudEndpoint, Entity, Result } from '@digital-net/core';
+import type { CrudConfig } from './CrudConfig';
 import { useDigitalMutation } from '../useDigitalMutation';
 
-export function useCreate<T extends Entity>(endpoint: string, options?: RequestCallbacks<Result<T>>) {
-    const { mutate, isPending: isCreating } = useDigitalMutation<Result<T>>(endpoint, {
-        onSuccess: async e => {
-            await options?.onSuccess?.(e);
-        },
-        onError: async e => {
-            await options?.onError?.(e);
-        },
-    });
-
+export function useCreate<T extends Entity>(endpoint: DigitalCrudEndpoint, config: CrudConfig<Result<T>> = {}) {
+    const { mutate, isPending: isCreating } = useDigitalMutation<Result<T>>(endpoint, { method: 'POST', ...config });
     const create = React.useCallback((body: Partial<T>) => mutate({ body }), [mutate]);
-
     return {
         create,
         isCreating,

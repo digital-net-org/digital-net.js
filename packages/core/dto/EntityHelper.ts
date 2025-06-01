@@ -1,5 +1,5 @@
-import { DateBuilder } from '@digital-net/core';
-import type { Patch } from './messages';
+import { DateBuilder } from '../modules';
+import type { Patch } from '../digital-api';
 import type { Entity } from './Entity';
 import type { EntityRaw } from './EntityRaw';
 

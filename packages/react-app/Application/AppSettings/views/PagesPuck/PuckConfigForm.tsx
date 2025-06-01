@@ -1,8 +1,8 @@
 import React from 'react';
-import { Localization, useToaster } from '@digital-net/react-app';
 import { type PagePuckConfigPayload } from '@digital-net/core';
 import { type DialogProps, Dialog, Form, InputText, InputFile, Button } from '@digital-net/react-digital-ui';
-import { usePuckConfigUpload } from './usePuckConfigUpload';
+import { Localization } from '../../../../Localization';
+import { usePuckConfigApi } from './usePuckConfigApi';
 
 export interface PuckConfigFormProps {
     open: DialogProps['open'];
@@ -11,13 +11,8 @@ export interface PuckConfigFormProps {
 }
 
 export function PuckConfigForm({ onClose, ...dialogProps }: PuckConfigFormProps) {
-    const { toast } = useToaster();
-    const { upload, isPending } = usePuckConfigUpload({
-        onError: ({ status }) => toast(`settings:frame.actions.create.error.${status}`, 'error'),
-        onSuccess: () => {
-            toast('settings:frame.actions.create.success', 'success');
-            handleClose();
-        },
+    const { uploadConfig, isUploading } = usePuckConfigApi({
+        onUpload: () => handleClose(),
     });
 
     const [formState, setFormState] = React.useState<Partial<PagePuckConfigPayload>>({});
@@ -29,7 +24,7 @@ export function PuckConfigForm({ onClose, ...dialogProps }: PuckConfigFormProps)
         onClose?.();
     }, [onClose]);
 
-    const handleSubmit = React.useCallback(() => upload(formState), [formState, upload]);
+    const handleSubmit = React.useCallback(() => uploadConfig(formState), [formState, uploadConfig]);
 
     return (
         <Dialog onClose={handleClose} {...dialogProps}>
@@ -48,7 +43,7 @@ export function PuckConfigForm({ onClose, ...dialogProps }: PuckConfigFormProps)
                         label={Localization.translate(
                             'app-settings:pages.pages-puck.actions.create.form.version:label'
                         )}
-                        loading={isPending}
+                        loading={isUploading}
                         pattern="^[A-Za-z0-9._\-]{3,24}$"
                         focusOnMount
                         required
@@ -60,7 +55,7 @@ export function PuckConfigForm({ onClose, ...dialogProps }: PuckConfigFormProps)
                         accept={['application/javascript', 'text/javascript', 'application/x-javascript']}
                         required
                     />
-                    <Button disabled={!formState.file} loading={isPending}>
+                    <Button disabled={!formState.file} loading={isUploading}>
                         {Localization.translate('global:actions.import')}
                     </Button>
                 </Form>

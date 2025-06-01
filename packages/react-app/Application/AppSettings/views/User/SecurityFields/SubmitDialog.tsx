@@ -15,7 +15,8 @@ export function SubmitDialog({ open, payload, onCancel }: SubmitDialogProps) {
     const { toast } = useToaster();
     const { id } = useApplicationUser();
     const [currentPassword, setCurrentPassword] = React.useState<string | undefined>();
-    const { mutate, isPending } = useDigitalMutation(`${DIGITAL_API_URL}/user/${id}/password`, {
+
+    const { mutate, isPending } = useDigitalMutation('user/:id/password', {
         method: 'PUT',
         onSuccess: () => {
             onCancel();
@@ -28,7 +29,12 @@ export function SubmitDialog({ open, payload, onCancel }: SubmitDialogProps) {
         skipRefresh: true,
     });
 
-    const handleSubmit = () => mutate({ body: { currentPassword, newPassword: payload ?? '' } });
+    const handleSubmit = () =>
+        mutate({
+            body: { currentPassword, newPassword: payload ?? '' },
+            params: { id: String(id) },
+        });
+
     const handleCancel = () => (!isPending ? onCancel() : void 0);
 
     return (

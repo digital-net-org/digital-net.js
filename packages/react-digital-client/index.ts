@@ -10,4 +10,3 @@ export { usePatch } from './crud/usePatch';
 export { useDelete } from './crud/useDelete';
 export { useSchema } from './crud/useSchema';
 export * from '../core/digital-api/headersDictionary';
-export * from './types';

@@ -44,4 +44,23 @@ const buildQuery = (url: string, query?: Record<string, any> | null): string => 
     return queryString.length > 0 ? `${url}?${queryString}` : url;
 };
 
-export default { resolve, buildParams, buildQuery };
+/**
+ * Applies parameters to a URL with path variables.
+ * @param url - The URL with path variables (e.g., '/users/:id').
+ * @param params - An object containing the parameters to apply.
+ * @returns The URL with the parameters applied.
+ *
+ * @example
+ * ```ts
+ * applyParams('/users/:id', { id: 123 }) // returns '/users/123'
+ * ```
+ */
+const applyParams = (url: string, params: Record<string, string | number | undefined> = {}): string => {
+    const [path, query] = url.split('?');
+    const parsed = path.replace(/:([a-zA-Z0-9_]+)/g, (match, key) =>
+        key in params ? encodeURIComponent(String(params[key])) : match
+    );
+    return query ? `${parsed}?${query}` : parsed;
+};
+
+export default { applyParams, resolve, buildParams, buildQuery };

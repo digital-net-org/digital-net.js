@@ -1,7 +1,9 @@
 import React from 'react';
-import { digitalEndpoints, headersDictionary } from '@digital-net/core';
+import { type DigitalEndpoint, headersDictionary } from '@digital-net/core';
 import { DigitalReactClient } from '@digital-net/react-digital-client';
 import { useJwt } from './User';
+
+const refreshEndpoint: DigitalEndpoint = 'authentication/user/refresh';
 
 export default function AuthMiddleware() {
     const [token, setToken] = useJwt();
@@ -21,7 +23,7 @@ export default function AuthMiddleware() {
                     return Promise.resolve(response);
                 }
 
-                const isRefreshing = originalRequest.url === digitalEndpoints['authentication/user/refresh'];
+                const isRefreshing = originalRequest.url === refreshEndpoint;
 
                 if (isRefreshing) {
                     setToken(undefined);
@@ -40,7 +42,7 @@ export default function AuthMiddleware() {
                 }
                 setToken(data.value);
                 originalRequest.headers['Authorization'] = `Bearer ${data.value}`;
-                return DigitalReactClient.request(originalRequest);
+                return DigitalReactClient.axiosRequest(originalRequest);
             }
         );
         return () => {
