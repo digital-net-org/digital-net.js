@@ -7,7 +7,7 @@ export function useDigitalImport<T>(
     endpoint: DigitalEndpoint,
     { enabled, ...config }: DigitalImportConfig & { enabled?: boolean } = { enabled: true }
 ) {
-    const queryKey = React.useMemo(() => URI.applyParams(endpoint, config.params), [config.params, endpoint]);
+    const queryKey = React.useMemo(() => URI.resolveSlugs(endpoint, config.slugs), [config.slugs, endpoint]);
 
     const { data: content, ...response } = useQuery<T>({
         queryKey: [queryKey],

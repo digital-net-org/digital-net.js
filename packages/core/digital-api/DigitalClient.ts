@@ -5,11 +5,11 @@ import { headersDictionary } from './headersDictionary';
 import { axiosInstance } from './axiosInstance';
 import { DigitalClientHandlers } from './DigitalClientHandlers';
 import {
-    type Params,
+    type Slugs,
     type Body,
     type Headers,
     type Patch,
-    type RequestParams,
+    type Params,
     type Method,
     type RequestCallbacks,
     type DigitalEndpoint,
@@ -17,6 +17,7 @@ import {
 
 export interface DigitalClientRequestConfig<T = any> extends RequestCallbacks<T> {
     method?: Method;
+    slugs?: Slugs;
     params?: Params;
     headers?: Headers;
     body?: Patch<T> | Body;
@@ -27,17 +28,17 @@ export interface DigitalClientRequestConfig<T = any> extends RequestCallbacks<T>
 }
 
 export class DigitalClient extends DigitalClientHandlers {
-    private static resolveEndpoint = (endpoint: DigitalEndpoint, params?: RequestParams) =>
-        URI.resolve(DIGITAL_API_URL, URI.applyParams(endpoint, params ?? {}));
+    protected static resolveEndpoint = (endpoint: DigitalEndpoint, slugs?: Slugs) =>
+        URI.resolve(DIGITAL_API_URL, URI.resolveSlugs(endpoint, slugs ?? {}));
 
     public static axiosRequest: AxiosInstance['request'] = async config => await axiosInstance.request(config);
 
     public static async request<T = any>(
         endpoint: DigitalEndpoint,
-        { options, method, params, headers, body, ...callbacks }: DigitalClientRequestConfig<T> = {}
+        { options, method, slugs, headers, body, ...callbacks }: DigitalClientRequestConfig<T> = {}
     ) {
         const result = await DigitalClient.axiosRequest({
-            url: this.resolveEndpoint(endpoint, params),
+            url: this.resolveEndpoint(endpoint, slugs),
             method: method ?? 'GET',
             data: body,
             headers: {

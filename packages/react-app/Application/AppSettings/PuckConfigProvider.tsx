@@ -43,6 +43,7 @@ export function PuckConfigProvider({ children }: React.PropsWithChildren<{}>) {
     });
 
     const { isLoading: isImporting } = useDigitalImport<(r: typeof React) => Config>('page/config/version/:version', {
+        slugs: { version },
         onError: () =>
             toast(
                 {

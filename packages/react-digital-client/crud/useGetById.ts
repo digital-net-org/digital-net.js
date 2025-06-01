@@ -6,7 +6,7 @@ import { useDigitalQuery } from '../useDigitalQuery';
 export function useGetById<T extends Entity>(
     endpoint: DigitalCrudEndpoint,
     id: string | number | undefined,
-    { onError, onSuccess, params, ...options }: CrudQueryConfig<Result<T>> = {}
+    { onError, onSuccess, slugs, ...options }: CrudQueryConfig<Result<T>> = {}
 ) {
     const [entity, setEntity] = React.useState<T | undefined>(undefined);
     const { isLoading } = useDigitalQuery<Result<EntityRaw>>(`${endpoint}/:id`, {
@@ -19,7 +19,7 @@ export function useGetById<T extends Entity>(
         onError: async e => {
             await onError?.(e);
         },
-        params: { ...(params ?? {}), id: String(id) },
+        slugs: { ...(slugs ?? {}), id: String(id) },
         enabled: !!id,
     });
 

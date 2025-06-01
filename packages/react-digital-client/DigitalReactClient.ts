@@ -21,7 +21,7 @@ export class DigitalReactClient extends DigitalClient {
 
     public static async import<T>(
         endpoint: DigitalEndpoint,
-        { onError, onSuccess, ...config }: DigitalImportConfig = {}
+        { onError, onSuccess, slugs, ...config }: DigitalImportConfig = {}
     ) {
         let result = {} as T;
         const contentType = 'application/javascript';
@@ -29,7 +29,7 @@ export class DigitalReactClient extends DigitalClient {
         const { data, status } = await this.axiosRequest({
             ...config,
             method: 'GET',
-            url: endpoint,
+            url: this.resolveEndpoint(endpoint, slugs),
             headers: { 'Content-Type': contentType },
         });
 

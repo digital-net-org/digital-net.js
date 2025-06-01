@@ -21,7 +21,7 @@ const resolve = (...paths: Array<string>) => paths.map(str => str.replace(new Re
  * // returns 'key=value&key2=value2&key3=value3'
  * ```
  */
-const buildParams = (obj?: Record<string, any> | null): string =>
+const buildParams = (obj?: Record<string, any> | null | undefined): string =>
     Object.keys(obj ?? [])
         .filter(x => obj?.[x] || (!obj?.[x] && (typeof obj?.[x] === 'number' || typeof obj?.[x] === 'boolean')))
         .map(key => `${key}=${obj?.[key]}`)
@@ -39,7 +39,7 @@ const buildParams = (obj?: Record<string, any> | null): string =>
  * // returns 'https://localhost:3000/?key=value&key2=value2&key3=value3'
  * ```
  */
-const buildQuery = (url: string, query?: Record<string, any> | null): string => {
+const buildQuery = (url: string, query?: Record<string, any> | null | undefined): string => {
     const queryString = buildParams(query ?? {});
     return queryString.length > 0 ? `${url}?${queryString}` : url;
 };
@@ -47,20 +47,20 @@ const buildQuery = (url: string, query?: Record<string, any> | null): string => 
 /**
  * Applies parameters to a URL with path variables.
  * @param url - The URL with path variables (e.g., '/users/:id').
- * @param params - An object containing the parameters to apply.
+ * @param slugs - An object containing the slugs to apply.
  * @returns The URL with the parameters applied.
  *
  * @example
  * ```ts
- * applyParams('/users/:id', { id: 123 }) // returns '/users/123'
+ * resolveSlugs('/users/:id', { id: 123 }) // returns '/users/123'
  * ```
  */
-const applyParams = (url: string, params: Record<string, string | number | undefined> = {}): string => {
+const resolveSlugs = (url: string, slugs: Record<string, string | number | undefined> = {}): string => {
     const [path, query] = url.split('?');
     const parsed = path.replace(/:([a-zA-Z0-9_]+)/g, (match, key) =>
-        key in params ? encodeURIComponent(String(params[key])) : match
+        key in slugs ? encodeURIComponent(String(slugs[key])) : match
     );
     return query ? `${parsed}?${query}` : parsed;
 };
 
-export default { applyParams, resolve, buildParams, buildQuery };
+export default { resolveSlugs, resolve, buildParams, buildQuery };

@@ -14,7 +14,7 @@ export function useDigitalQuery<T>(
     endpoint: DigitalEndpoint,
     { skipRefresh, enabled, autoRefetch, ...config }: QueryConfig<T> = { enabled: true, autoRefetch: true }
 ) {
-    const queryKey = React.useMemo(() => URI.applyParams(endpoint, config.params), [config.params, endpoint]);
+    const queryKey = React.useMemo(() => URI.resolveSlugs(endpoint, config.slugs), [config.slugs, endpoint]);
 
     return useQuery<T>({
         queryKey: [queryKey],

@@ -54,6 +54,6 @@ test('applyParams(), Should replace slugs in the path with given params', () => 
             result: '/static/path',
         },
     ].forEach(({ url, params, result }) => {
-        expect(URI.applyParams(url, params)).toBe(result);
+        expect(URI.resolveSlugs(url, params)).toBe(result);
     });
 });
