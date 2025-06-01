@@ -8,7 +8,7 @@ interface PuckConfigApiConfig {
     onDelete?: () => void;
 }
 
-const invalidateApi = () => DigitalReactClient.invalidate('page/config/upload', 'page/config/test');
+const invalidateApi = () => DigitalReactClient.invalidate('page/config');
 
 export function usePuckConfigApi({ onDelete, onUpload }: PuckConfigApiConfig = {}) {
     const { toast } = useToaster();
@@ -20,7 +20,7 @@ export function usePuckConfigApi({ onDelete, onUpload }: PuckConfigApiConfig = {
             onError: ({ status }) => toast(`app-settings:pages.pages-puck.actions.create.error.${status}`, 'error'),
             onSuccess: () => {
                 toast('app-settings:pages.pages-puck.actions.create.success', 'success');
-                invalidateApi();
+                DigitalReactClient.invalidate('page/config');
                 onUpload?.();
             },
         }
@@ -45,7 +45,8 @@ export function usePuckConfigApi({ onDelete, onUpload }: PuckConfigApiConfig = {
     const { delete: deleteConfig, isDeleting } = useDelete('page/config', {
         onSuccess: () => {
             toast('app-settings:pages.pages-puck.actions.delete.success', 'success');
-            invalidateApi();
+            DigitalReactClient.invalidate('page/config');
+            DigitalReactClient.invalidateLike('page/config/version');
             onDelete?.();
         },
         onError: ({ status }) => toast(`app-settings:pages.pages-puck.actions.delete.error.${status}`, 'error'),
