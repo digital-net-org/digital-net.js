@@ -8,7 +8,7 @@ import {
     type DigitalEndpoint,
     URI,
 } from '@digital-net/core';
-import { DigitalReactClient } from './DigitalReactClient';
+import { digitalClientInstance } from './digitalClientInstance';
 
 export interface MutationPayload<T = any> {
     body?: Body;
@@ -30,7 +30,7 @@ export function useDigitalMutation<T, P = object>(
 
     const mutation = useMutation<T, any, MutationPayload<P>>({
         mutationFn: async ({ body, patch, params }) => {
-            return await DigitalReactClient.request<T>(url as DigitalEndpoint, {
+            return await digitalClientInstance.request<T>(url as DigitalEndpoint, {
                 method: method ?? 'POST',
                 ...(config ?? {}),
                 slugs: { ...(config?.slugs ?? {}), ...(params ?? {}) },

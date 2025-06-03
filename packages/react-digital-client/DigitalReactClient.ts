@@ -1,25 +1,40 @@
-import { type DigitalClientRequestConfig, type DigitalEndpoint, DigitalClient, ResultBuilder } from '@digital-net/core';
-import { QueryClient } from '@tanstack/react-query';
+import {
+    type DigitalClientConstructor,
+    type DigitalClientRequestConfig,
+    type DigitalEndpoint,
+    ClientRequest,
+    DigitalClient,
+    ResultBuilder,
+} from '@digital-net/core';
+import type { QueryClient } from '@tanstack/react-query';
 
 export type DigitalImportConfig = Omit<DigitalClientRequestConfig, 'body' | 'method' | 'headers'>;
 
-export class DigitalReactClient extends DigitalClient {
-    public static queryClient = new QueryClient({
-        defaultOptions: {
-            queries: {
-                refetchOnWindowFocus: false,
-                refetchOnMount: false,
-                refetchOnReconnect: false,
-                retry: 0,
-                staleTime: 60000,
-            },
-            mutations: {
-                retry: 0,
-            },
-        },
-    });
+export interface DigitalReactClientConstructor extends DigitalClientConstructor {
+    queryClient: QueryClient;
+}
 
-    public static async import<T>(
+export class DigitalReactClient extends DigitalClient {
+    public queryClient: QueryClient;
+
+    constructor({ queryClient, ...clientConfig }: DigitalReactClientConstructor) {
+        super(clientConfig);
+        this.queryClient = queryClient;
+    }
+
+    public invalidate(...params: Array<string>) {
+        (async () => await this.queryClient.invalidateQueries({ queryKey: params, refetchType: 'all' }))();
+    }
+
+    public invalidateLike(...params: Array<string>) {
+        (async () =>
+            await this.queryClient.invalidateQueries({
+                predicate: query => params.some(param => query.queryKey.some(key => String(key).includes(param))),
+                refetchType: 'all',
+            }))();
+    }
+
+    public async import<T>(
         endpoint: DigitalEndpoint,
         { onError, onSuccess, slugs, ...config }: DigitalImportConfig = {}
     ) {
@@ -29,7 +44,7 @@ export class DigitalReactClient extends DigitalClient {
         const { data, status } = await this.axiosRequest({
             ...config,
             method: 'GET',
-            url: this.resolveEndpoint(endpoint, slugs),
+            url: ClientRequest.resolveEndpoint(endpoint, slugs),
             headers: { 'Content-Type': contentType },
         });
 
@@ -48,17 +63,5 @@ export class DigitalReactClient extends DigitalClient {
             await onError?.({ ...ResultBuilder.buildError(data), status });
         }
         return result;
-    }
-
-    public static invalidate(...params: Array<string>) {
-        (async () => await this.queryClient.invalidateQueries({ queryKey: params, refetchType: 'all' }))();
-    }
-
-    public static invalidateLike(...params: Array<string>) {
-        (async () =>
-            await this.queryClient.invalidateQueries({
-                predicate: query => params.some(param => query.queryKey.some(key => String(key).includes(param))),
-                refetchType: 'all',
-            }))();
     }
 }

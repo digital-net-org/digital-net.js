@@ -1,5 +1,5 @@
 import React from 'react';
-import { DigitalReactClient, useDelete, useDigitalMutation } from '@digital-net/react-digital-client';
+import { digitalClientInstance, useDelete, useDigitalMutation } from '@digital-net/react-digital-client';
 import { type Result, type PagePuckConfigPayload, type PagePuckConfig } from '@digital-net/core';
 import { useToaster } from '../../../../Toaster';
 
@@ -7,8 +7,6 @@ interface PuckConfigApiConfig {
     onUpload?: () => void;
     onDelete?: () => void;
 }
-
-const invalidateApi = () => DigitalReactClient.invalidate('page/config');
 
 export function usePuckConfigApi({ onDelete, onUpload }: PuckConfigApiConfig = {}) {
     const { toast } = useToaster();
@@ -20,7 +18,7 @@ export function usePuckConfigApi({ onDelete, onUpload }: PuckConfigApiConfig = {
             onError: ({ status }) => toast(`app-settings:pages.pages-puck.actions.create.error.${status}`, 'error'),
             onSuccess: () => {
                 toast('app-settings:pages.pages-puck.actions.create.success', 'success');
-                DigitalReactClient.invalidate('page/config');
+                digitalClientInstance.invalidate('page/config');
                 onUpload?.();
             },
         }
@@ -45,8 +43,8 @@ export function usePuckConfigApi({ onDelete, onUpload }: PuckConfigApiConfig = {
     const { delete: deleteConfig, isDeleting } = useDelete('page/config', {
         onSuccess: () => {
             toast('app-settings:pages.pages-puck.actions.delete.success', 'success');
-            DigitalReactClient.invalidate('page/config');
-            DigitalReactClient.invalidateLike('page/config/version');
+            digitalClientInstance.invalidate('page/config');
+            digitalClientInstance.invalidateLike('page/config/version');
             onDelete?.();
         },
         onError: ({ status }) => toast(`app-settings:pages.pages-puck.actions.delete.error.${status}`, 'error'),

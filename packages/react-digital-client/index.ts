@@ -1,5 +1,6 @@
 export { default as DigitalClientProvider } from './DigitalClientProvider';
 export { DigitalReactClient } from './DigitalReactClient';
+export { digitalClientInstance } from './digitalClientInstance';
 export { useDigitalMutation } from './useDigitalMutation';
 export { useDigitalQuery } from './useDigitalQuery';
 export { useDigitalImport } from './useDigitalImport';
@@ -9,4 +10,3 @@ export { useCreate } from './crud/useCreate';
 export { usePatch } from './crud/usePatch';
 export { useDelete } from './crud/useDelete';
 export { useSchema } from './crud/useSchema';
-export * from '../core/digital-api/headersDictionary';

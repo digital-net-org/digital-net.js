@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { type DigitalEndpoint, type DigitalClientRequestConfig, URI } from '@digital-net/core';
-import { DigitalReactClient } from './DigitalReactClient';
+import { digitalClientInstance } from './digitalClientInstance';
 
 export interface QueryConfig<T = any>
     extends Omit<DigitalClientRequestConfig<T>, 'options' | 'method' | 'body' | 'patch'> {
@@ -19,7 +19,7 @@ export function useDigitalQuery<T>(
     return useQuery<T>({
         queryKey: [queryKey],
         queryFn: async () =>
-            await DigitalReactClient.request<T>(endpoint, {
+            await digitalClientInstance.request<T>(endpoint, {
                 method: 'GET',
                 options: { skipRefresh },
                 ...(config ?? {}),

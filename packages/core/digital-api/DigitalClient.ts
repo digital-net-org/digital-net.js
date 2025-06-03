@@ -1,19 +1,8 @@
-import { type AxiosResponse, type AxiosInstance } from 'axios';
-import { URI } from '../modules';
-import { type Result, ResultBuilder } from '../dto';
-import { headersDictionary } from './headersDictionary';
-import { axiosInstance } from './axiosInstance';
-import { DigitalClientHandlers } from './DigitalClientHandlers';
-import {
-    type Slugs,
-    type Body,
-    type Headers,
-    type Patch,
-    type Params,
-    type Method,
-    type RequestCallbacks,
-    type DigitalEndpoint,
-} from './types';
+import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import type { Slugs, Body, Headers, Patch, Params, Method, RequestCallbacks, DigitalEndpoint } from './types';
+import { type Result } from '../dto';
+import { ClientRequest, type DigitalHeader } from './ClientRequest';
+import { ClientResponse } from './ClientResponse';
 
 export interface DigitalClientRequestConfig<T = any> extends RequestCallbacks<T> {
     method?: Method;
@@ -27,47 +16,130 @@ export interface DigitalClientRequestConfig<T = any> extends RequestCallbacks<T>
     };
 }
 
-export class DigitalClient extends DigitalClientHandlers {
-    protected static resolveEndpoint = (endpoint: DigitalEndpoint, slugs?: Slugs) =>
-        URI.resolve(DIGITAL_API_URL, URI.resolveSlugs(endpoint, slugs ?? {}));
+export interface DigitalClientConstructor {
+    axios: AxiosInstance;
+    initToken?: string | undefined;
+}
 
-    public static axiosRequest: AxiosInstance['request'] = async config => await axiosInstance.request(config);
+export class DigitalClient {
+    private handlers: Array<() => void> = [];
+    protected instance: AxiosInstance;
+    protected token: string | undefined;
+    protected refreshPromise: Promise<void> | null = null;
 
-    public static async request<T = any>(
+    public setToken(token?: string) {
+        this.token = token;
+    }
+
+    public getToken() {
+        return this.token;
+    }
+
+    constructor({ axios, initToken }: DigitalClientConstructor) {
+        this.instance = axios;
+        this.token = initToken;
+    }
+
+    public async request<T = any>(
         endpoint: DigitalEndpoint,
         { options, method, slugs, headers, body, ...callbacks }: DigitalClientRequestConfig<T> = {}
     ) {
-        const result = await DigitalClient.axiosRequest({
-            url: this.resolveEndpoint(endpoint, slugs),
+        const result = await this.axiosRequest({
+            url: ClientRequest.resolveEndpoint(endpoint, slugs),
             method: method ?? 'GET',
             data: body,
             headers: {
                 ...(headers ?? {}),
-                [headersDictionary.skipRefresh]: options?.skipRefresh ? 'true' : 'false',
+                ...(options?.skipRefresh ? { ['x-skip-refresh' satisfies DigitalHeader]: 'true' } : {}),
             },
             withCredentials: options?.withCredentials,
         });
-        return this.handleResponse<T>(result, callbacks);
+        return ClientResponse.handleResponse<T>(result, callbacks);
     }
 
-    private static async handleResponse<T = any>(
-        { data, status }: AxiosResponse<T>,
-        { onError, onSuccess }: RequestCallbacks<T> = {}
-    ) {
-        if (status >= 400) {
-            await onError?.({ ...ResultBuilder.buildError(data), status });
-        } else {
-            await onSuccess?.(data);
-        }
-        return data;
+    public async retry(req: InternalAxiosRequestConfig) {
+        req.headers.set('x-is-retrying' satisfies DigitalHeader, 'true');
+        req.headers.set('Authorization', `Bearer ${this.token}`);
+        return this.axiosRequest(req);
     }
 
-    public static async refreshTokens() {
-        const url: DigitalEndpoint = 'authentication/user/refresh';
-        return await DigitalClient.axiosRequest<Result<string>>({
+    public dispose() {
+        this.handlers.forEach(handler => handler());
+        this.handlers = [];
+    }
+
+    protected axiosRequest: AxiosInstance['request'] = async config => await this.instance.request(config);
+
+    private async refreshTokens() {
+        const endpoint: DigitalEndpoint = 'authentication/user/refresh';
+        return await this.axiosRequest<Result<string>>({
+            headers: {
+                'Content-Type': 'application/json',
+                ['x-skip-refresh' satisfies DigitalHeader]: 'true',
+                ['x-is-refreshing' satisfies DigitalHeader]: 'true',
+            },
             method: 'POST',
-            url,
+            url: ClientRequest.resolveEndpoint(endpoint),
             withCredentials: true,
         });
+    }
+
+    mountInterceptors() {
+        this.handlers.push(this.setRequestInterceptor());
+        this.handlers.push(this.setResponseInterceptor());
+    }
+
+    private setRequestInterceptor() {
+        return ClientRequest.setRequestHandler(this.instance, async req => {
+            if (this.refreshPromise && !ClientRequest.hasHeader(req, 'x-is-refreshing')) {
+                await this.refreshPromise;
+            }
+            if (!ClientRequest.hasBearerToken(req)) {
+                req.headers['Authorization'] = `Bearer ${this.token}`;
+            }
+            return req;
+        });
+    }
+
+    private setResponseInterceptor() {
+        return ClientResponse.setResponseHandler(
+            this.instance,
+            response => response,
+            async (error, response, originalRequest) => {
+                if (
+                    response.status !== 401 ||
+                    !ClientRequest.hasBearerToken(originalRequest) ||
+                    ClientRequest.hasHeader(originalRequest, 'x-skip-refresh')
+                ) {
+                    return Promise.resolve(response);
+                }
+
+                if (
+                    ClientRequest.hasHeader(originalRequest, 'x-is-retrying') ||
+                    ClientRequest.hasHeader(originalRequest, 'x-is-refreshing')
+                ) {
+                    this.setToken(undefined);
+                    return Promise.reject(error);
+                }
+
+                if (!this.refreshPromise) {
+                    this.refreshPromise = (async () => {
+                        try {
+                            const { data } = await this.refreshTokens();
+                            if (!data.value) throw new Error();
+                            this.setToken(data.value);
+                        } catch (e) {
+                            this.setToken(undefined);
+                            throw e;
+                        } finally {
+                            this.refreshPromise = null;
+                        }
+                    })();
+                }
+
+                await this.refreshPromise;
+                return this.retry(originalRequest);
+            }
+        );
     }
 }

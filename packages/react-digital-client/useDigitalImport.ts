@@ -1,7 +1,8 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { type DigitalEndpoint, ObjectMatcher, URI } from '@digital-net/core';
-import { type DigitalImportConfig, DigitalReactClient } from './DigitalReactClient';
+import { type DigitalImportConfig } from './DigitalReactClient';
+import { digitalClientInstance } from './digitalClientInstance';
 
 export function useDigitalImport<T>(
     endpoint: DigitalEndpoint,
@@ -11,7 +12,7 @@ export function useDigitalImport<T>(
 
     const { data: content, ...response } = useQuery<T>({
         queryKey: [queryKey],
-        queryFn: async () => DigitalReactClient.import<T>(endpoint, { ...config }),
+        queryFn: async () => digitalClientInstance.import<T>(endpoint, { ...config }),
         enabled: enabled,
     });
 
