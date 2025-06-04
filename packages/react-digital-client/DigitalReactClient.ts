@@ -55,7 +55,7 @@ export class DigitalReactClient extends DigitalClient {
 
             const blob = new Blob([data], { type: contentType });
             const url = URL.createObjectURL(blob);
-            result = /* @vite-ignore */ (await import(url)).default as T;
+            result = (await import(/* @vite-ignore */ url)).default as T;
             URL.revokeObjectURL(url);
             await onSuccess?.(result);
         } catch (e) {
