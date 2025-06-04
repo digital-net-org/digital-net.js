@@ -1,5 +1,5 @@
 import React from 'react';
-import { useClassName } from '../../../../core';
+import { useClassName } from '@digital-net/react-core';
 import type { ControlledHandler } from '../../types';
 import type { SafariInputNode } from '../types';
 import { useInputRef } from '../useInputRef';

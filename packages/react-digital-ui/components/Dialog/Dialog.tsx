@@ -1,6 +1,6 @@
 import React from 'react';
 import { Loader } from '@digital-net/react-digital-ui';
-import { useChildren, useClassName } from '../../../core';
+import { useChildren, useClassName } from '@digital-net/react-core';
 import type { SafariNodeWithChildren } from '../types';
 import { Button } from '../Button';
 import { Box } from '../Box';

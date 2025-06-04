@@ -1,5 +1,5 @@
 import React from 'react';
-import { Property, useClassName } from '../../../core';
+import { Property, useClassName } from '@digital-net/react-core';
 import type { SafariNode } from '../types';
 import './Text.styles.css';
 import { Box } from '@digital-net/react-digital-ui';

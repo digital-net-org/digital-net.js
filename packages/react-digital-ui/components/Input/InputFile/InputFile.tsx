@@ -1,5 +1,6 @@
 import React from 'react';
-import { StringResolver, useClassName } from '@digital-net/core';
+import { StringResolver } from '@digital-net/core';
+import { useClassName } from '@digital-net/react-core';
 import { Localization } from '@digital-net/react-app/Localization';
 import type { ControlledHandler } from '../../types';
 import { IconButton } from '../../Button';

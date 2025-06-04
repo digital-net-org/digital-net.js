@@ -1,5 +1,5 @@
 import React from 'react';
-import { useClassName, useOnClickOutside } from '@digital-net/core';
+import { useClassName, useOnClickOutside } from '@digital-net/react-core';
 import { Localization } from '@digital-net/react-app';
 import { Box, Text, type IconButtonProps, type SafariNodeWithChildren } from '@digital-net/react-digital-ui';
 import { Actions } from './Actions';

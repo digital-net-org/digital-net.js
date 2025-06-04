@@ -1,5 +1,6 @@
 import React from 'react';
-import { useClassName } from '@digital-net/core';
+import { useClassName } from '@digital-net/react-core';
+// TODO: Should not import from react-app, replace with a prop
 import { Localization } from '../../../react-app/Localization';
 import { type SafariNode } from '../types';
 import { type BoxProps, Box } from '../Box';

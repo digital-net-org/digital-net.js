@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useClassName, useProps } from '../../../core';
+import { useClassName, useProps } from '@digital-net/react-core';
 import type { SafariNode } from '../types';
 import './Icon.styles.css';
 

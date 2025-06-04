@@ -1,5 +1,5 @@
 import React from 'react';
-import { useClassName } from '@digital-net/core';
+import { useClassName } from '@digital-net/react-core';
 import { Icon } from '../../Icon';
 import { type ControlledState } from '../../types';
 import { InputBox } from '../InputBox';

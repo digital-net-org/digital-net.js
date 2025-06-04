@@ -1,5 +1,5 @@
 import React from 'react';
-import { useElement, useWindow } from '@digital-net/core';
+import { useElement, useWindow } from '@digital-net/react-core';
 import { type PopOverProps } from './PopOver';
 
 type Element = HTMLElement | null;

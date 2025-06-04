@@ -1,5 +1,5 @@
 import React from 'react';
-import { useClassName, useProps } from '../../../core';
+import { useClassName, useProps } from '@digital-net/react-core';
 import type { SafariNodeWithChildren } from '../types';
 import { useOnOpen } from './useOnOpen';
 import { useAnchor } from './useAnchor';

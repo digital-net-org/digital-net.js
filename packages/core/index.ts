@@ -8,6 +8,16 @@
     - axios
     - vitest
 */
-export * from './digital-api';
-export * from './modules';
-export * from './dto';
+export * from './DigitalClient';
+export * from './Array';
+export * from './ClassName';
+export * from './Color';
+export * from './Date';
+export * from './Event';
+export * from './JSON';
+export * from './LocalStorage';
+export * from './Object';
+export * from './Spacing';
+export * from './String';
+export * from './URI';
+export * from './Dto';

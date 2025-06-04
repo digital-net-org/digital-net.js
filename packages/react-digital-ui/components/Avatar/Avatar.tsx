@@ -1,5 +1,5 @@
 import React, { type PropsWithChildren } from 'react';
-import { useClassName, useImage, useProps } from '../../../core';
+import { useClassName, useImage, useProps } from '@digital-net/react-core';
 import { Icon } from '../Icon';
 import type { SafariNode } from '../types';
 import './Avatar.styles.css';

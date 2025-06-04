@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ErrorBoundary } from '@digital-net/core';
+import { ErrorBoundary } from '@digital-net/react-core';
 import { DigitalClientInterceptors, DigitalClientProvider } from '@digital-net/react-digital-client';
 import { LocalizationMiddleware } from './Localization';
 import { DigitalIdbProvider } from './Storage';

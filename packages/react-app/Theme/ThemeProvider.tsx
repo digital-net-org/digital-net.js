@@ -1,5 +1,5 @@
 import React, { type PropsWithChildren } from 'react';
-import { useLocalStorage } from '@digital-net/core';
+import { useLocalStorage } from '@digital-net/react-core';
 
 export type ThemeOption = 'dark' | 'light';
 

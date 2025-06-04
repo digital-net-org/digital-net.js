@@ -1,5 +1,5 @@
 import React from 'react';
-import { useClassName } from '../../../../core';
+import { useClassName } from '@digital-net/react-core';
 import { Button } from '../../Button';
 import { type BoxProps, Box } from '../../Box';
 import './InputNav.styles.css';

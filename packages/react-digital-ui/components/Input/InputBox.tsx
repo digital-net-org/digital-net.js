@@ -1,5 +1,5 @@
 import React, { type PropsWithChildren } from 'react';
-import { useClassName } from '@digital-net/core';
+import { useClassName } from '@digital-net/react-core';
 import { Box } from '../Box';
 import { Text } from '../Text';
 import type { SafariNode } from '../types';
