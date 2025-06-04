@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useJwt } from '../User';
+import { useApplicationUser } from '../User';
 
 export interface RouteProps extends React.PropsWithChildren {
     path: string;
@@ -9,16 +9,16 @@ export interface RouteProps extends React.PropsWithChildren {
 
 export function Route({ children, path, isPublic }: RouteProps) {
     const navigate = useNavigate();
-    const [token] = useJwt();
+    const { isLogged } = useApplicationUser();
 
     React.useEffect(() => {
-        if (!token && !isPublic) {
+        if (!isLogged && !isPublic) {
             navigate(ROUTER_LOGIN);
         }
-        if (token && path === ROUTER_LOGIN) {
+        if (isLogged && path === ROUTER_LOGIN) {
             navigate(ROUTER_HOME);
         }
-    }, [token, navigate, isPublic, path]);
+    }, [isLogged, navigate, isPublic, path]);
 
     return <React.Fragment>{children}</React.Fragment>;
 }

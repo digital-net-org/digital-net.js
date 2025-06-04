@@ -7,6 +7,7 @@ import { useJwt } from './useJwt';
 
 interface ApplicationUserContextState extends User {
     isLoading: boolean;
+    isLogged: boolean;
     refresh: () => void;
 }
 
@@ -17,6 +18,7 @@ const defaultState = {
     login: '',
     email: '',
     isActive: false,
+    isLogged: false,
     id: '',
     createdAt: new Date(),
     updatedAt: undefined,
@@ -26,7 +28,8 @@ export const UserContext = React.createContext<ApplicationUserContextState>(defa
 
 export function ApplicationUserProvider({ children }: React.PropsWithChildren) {
     const { toast } = useToaster();
-    const [token, _] = useJwt();
+    const token = useJwt();
+
     const {
         data: userData,
         isLoading,
@@ -43,5 +46,7 @@ export function ApplicationUserProvider({ children }: React.PropsWithChildren) {
 
     React.useEffect(() => (token !== undefined ? digitalClientInstance.invalidate('user/self') : void 0), [token]);
 
-    return <UserContext.Provider value={{ isLoading, refresh, ...user }}>{children}</UserContext.Provider>;
+    const isLogged = React.useMemo(() => token !== undefined && token !== null, [token]);
+
+    return <UserContext.Provider value={{ isLoading, isLogged, refresh, ...user }}>{children}</UserContext.Provider>;
 }

@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ErrorBoundary } from '@digital-net/core';
-import { DigitalClientProvider } from '@digital-net/react-digital-client';
+import { DigitalClientInterceptors, DigitalClientProvider } from '@digital-net/react-digital-client';
 import { LocalizationMiddleware } from './Localization';
 import { DigitalIdbProvider } from './Storage';
-import { ApplicationUserProvider, AuthMiddleware } from './User';
+import { ApplicationUserProvider } from './User';
 import { ThemeProvider } from './Theme';
 import { Router, type RouterProps } from './Router';
 import { ToasterProvider } from './Toaster';
@@ -36,11 +36,11 @@ export default class DigitalApp {
             React.createElement(strictMode ? React.StrictMode : React.Fragment, {
                 children: (
                     <ErrorBoundary>
+                        <DigitalClientInterceptors />
                         <LocalizationMiddleware />
                         <ToasterProvider>
                             <DigitalIdbProvider>
                                 <DigitalClientProvider>
-                                    <AuthMiddleware />
                                     <ApplicationUserProvider>
                                         <SettingsProvider>
                                             <PuckConfigProvider>

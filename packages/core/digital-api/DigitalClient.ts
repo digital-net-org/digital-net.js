@@ -1,8 +1,18 @@
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
-import type { Slugs, Body, Headers, Patch, Params, Method, RequestCallbacks, DigitalEndpoint } from './types';
+import {
+    type Slugs,
+    type Body,
+    type Headers,
+    type Patch,
+    type Params,
+    type Method,
+    type RequestCallbacks,
+    type DigitalEndpoint,
+} from './types';
 import { type Result } from '../dto';
 import { ClientRequest, type DigitalHeader } from './ClientRequest';
 import { ClientResponse } from './ClientResponse';
+import { DigitalEvent } from '../modules';
 
 export interface DigitalClientRequestConfig<T = any> extends RequestCallbacks<T> {
     method?: Method;
@@ -22,24 +32,30 @@ export interface DigitalClientConstructor {
 }
 
 export class DigitalClient {
-    private handlers: Array<() => void> = [];
+    private tokenChangeEvent = new DigitalEvent<string | undefined>();
     protected instance: AxiosInstance;
-    protected token: string | undefined;
-    protected refreshPromise: Promise<void> | null = null;
-
-    public setToken(token?: string) {
-        this.token = token;
-    }
-
-    public getToken() {
-        return this.token;
-    }
 
     constructor({ axios, initToken }: DigitalClientConstructor) {
         this.instance = axios;
         this.token = initToken;
     }
 
+    /**
+     * Performs a request to the Digital API.
+     * @param endpoint - The endpoint to which the request is made.
+     * @param options - The options for the request, including method, slugs, headers, body, and callbacks.
+     * @template T - The type of the response data.
+     * @example
+     * ```ts
+     * const response = await digitalClientInstance.request('/api/some-endpoint/:id', {
+     *     method: 'POST',
+     *     slugs: { id: '123' },
+     *     headers: { 'Custom-Header': 'value' },
+     *     body: { key: 'value' },
+     *     onSuccess: (data) => console.log('Success:', data),
+     *     onError: (error) => console.error('Error:', error),
+     * });
+     */
     public async request<T = any>(
         endpoint: DigitalEndpoint,
         { options, method, slugs, headers, body, ...callbacks }: DigitalClientRequestConfig<T> = {}
@@ -57,18 +73,70 @@ export class DigitalClient {
         return ClientResponse.handleResponse<T>(result, callbacks);
     }
 
+    /**
+     * Retries the request with the latest token. Sets the 'x-is-retrying' header to indicate that this is a retry.
+     * @param req - The Axios request configuration to retry.
+     * @example
+     * ```ts
+     * const retriedResponse = await digitalClientInstance.retry(originalRequest);
+     * ```
+     */
     public async retry(req: InternalAxiosRequestConfig) {
         req.headers.set('x-is-retrying' satisfies DigitalHeader, 'true');
         req.headers.set('Authorization', `Bearer ${this.token}`);
         return this.axiosRequest(req);
     }
 
-    public dispose() {
-        this.handlers.forEach(handler => handler());
-        this.handlers = [];
+    /**
+     * Performs an Axios request using the instance. Without any predefined headers or configurations.
+     * @param config - The Axios request configuration.
+     * @template T - The type of the response data.
+     * @template R - The type of the response.
+     * @example
+     * ```ts
+     * const response = await digitalClientInstance.axiosRequest<Result<string>>({
+     *     method: 'POST',
+     *     url: '/api/some-endpoint',
+     *     data: { key: 'value' },
+     *     headers: { 'Content-Type': 'application/json' },
+     * });
+     * ```
+     */
+    protected axiosRequest: AxiosInstance['request'] = async config => await this.instance.request(config);
+
+    /**
+     * Sets the bearer token for the client.
+     * @param token - The token to set for the client. If not provided, the token will be set to undefined.
+     */
+    public setToken(token?: string) {
+        this.token = token;
+        this.tokenChangeEvent.emit(token);
     }
 
-    protected axiosRequest: AxiosInstance['request'] = async config => await this.instance.request(config);
+    /**
+     * Getter for the latest token.
+     */
+    public getToken() {
+        return this.token;
+    }
+
+    /**
+     * Subscribes to token changes.
+     * @param cb - Callback function that will be called when the token changes.
+     * The callback receives the new token as an argument, or undefined if the token was cleared.
+     * @example
+     * ```ts
+     * digitalClientInstance.onTokenChange((newToken) => {
+     *     console.log('Token changed:', newToken);
+     * });
+     * ```
+     */
+    public onTokenChange(cb: (token?: string) => void) {
+        return this.tokenChangeEvent.subscribe(cb);
+    }
+
+    protected token: string | undefined;
+    protected refreshPromise: Promise<void> | null = null;
 
     private async refreshTokens() {
         const endpoint: DigitalEndpoint = 'authentication/user/refresh';
@@ -84,10 +152,24 @@ export class DigitalClient {
         });
     }
 
-    mountInterceptors() {
-        this.handlers.push(this.setRequestInterceptor());
-        this.handlers.push(this.setResponseInterceptor());
+    /**
+     * Disposes all interceptors set on the instance.
+     * Ensures that no memory leaks occur and that the instance does not retain unnecessary references.
+     */
+    public disposeInterceptors() {
+        this.interceptors.forEach(handler => handler());
+        this.interceptors = [];
     }
+
+    /**
+     * Mounts request and response interceptors on the instance.
+     */
+    public mountInterceptors() {
+        this.interceptors.push(this.setRequestInterceptor());
+        this.interceptors.push(this.setResponseInterceptor());
+    }
+
+    private interceptors: Array<() => void> = [];
 
     private setRequestInterceptor() {
         return ClientRequest.setRequestHandler(this.instance, async req => {

@@ -1,21 +1,19 @@
 import React from 'react';
 import type { Result } from '@digital-net/core';
-import { useDigitalMutation } from '@digital-net/react-digital-client';
+import { digitalClientInstance, useDigitalMutation } from '@digital-net/react-digital-client';
 import { useToaster } from '../../Toaster';
 import { UserContext } from './UserProvider';
 import type { ApplicationUser } from './ApplicationUser';
-import { useJwt } from './useJwt';
 
 const authApiUrl = `authentication/user`;
 
 export function useApplicationUser(): ApplicationUser {
     const { toast } = useToaster();
-    const [token, setToken] = useJwt();
-    const { isLoading: isQuerying, refresh, ...user } = React.useContext(UserContext);
+    const { isLoading: isQuerying, refresh, isLogged, ...user } = React.useContext(UserContext);
 
     const { mutate: authenticate, isPending: loginLoading } = useDigitalMutation(`${authApiUrl}/login`, {
         onSuccess: async ({ value }: Result<string>) => {
-            setToken(value);
+            digitalClientInstance.setToken(value);
             toast('user:auth.success');
         },
         onError: () => toast('user:auth.error', 'error'),
@@ -24,11 +22,11 @@ export function useApplicationUser(): ApplicationUser {
 
     const { mutate: logout, isPending: logoutLoading } = useDigitalMutation(`${authApiUrl}/logout`, {
         onSuccess: () => {
-            setToken(undefined);
+            digitalClientInstance.setToken(undefined);
             toast('user:auth.revoked');
         },
         onError: () => {
-            setToken(undefined);
+            digitalClientInstance.setToken(undefined);
             toast('user:auth.revoked');
         },
         withCredentials: true,
@@ -39,8 +37,6 @@ export function useApplicationUser(): ApplicationUser {
         () => logoutLoading || loginLoading || isQuerying,
         [isQuerying, loginLoading, logoutLoading]
     );
-
-    const isLogged = React.useMemo(() => token !== undefined && token !== null, [token]);
 
     return {
         ...user,

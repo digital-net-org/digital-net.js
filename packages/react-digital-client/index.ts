@@ -1,5 +1,6 @@
-export { default as DigitalClientProvider } from './DigitalClientProvider';
+export { DigitalClientProvider } from './DigitalClientProvider';
 export { DigitalReactClient } from './DigitalReactClient';
+export { DigitalClientInterceptors } from './DigitalClientInterceptors';
 export { digitalClientInstance } from './digitalClientInstance';
 export { useDigitalMutation } from './useDigitalMutation';
 export { useDigitalQuery } from './useDigitalQuery';
