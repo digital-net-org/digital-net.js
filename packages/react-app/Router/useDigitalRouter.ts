@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { RouterContext } from './Router';
+import type { ValidRouteObject } from '@digital-net/react-app/Router/RouteObject';
 
 export interface DigitalRoute {
     path: string;
@@ -19,8 +20,16 @@ export function useDigitalRouter() {
     const navigate = useNavigate();
     const { pathname } = useLocation();
 
+    const validRoutes = React.useMemo(
+        () =>
+            (contextRouter ?? []).flatMap(({ element: _, ...route }) =>
+                route.children ? route.children.map(child => ({ ...child })) : { ...route }
+            ) as Array<ValidRouteObject>,
+        [contextRouter]
+    );
+
     const current: DigitalRoute | undefined = React.useMemo(() => {
-        const resolved = (contextRouter ?? [])
+        const resolved = validRoutes
             .sort((a, b) => b.path.length - a.path.length)
             .find(({ path }) => pathname.includes(path));
         return resolved?.path
@@ -32,18 +41,18 @@ export function useDigitalRouter() {
                   navigate: () => navigate(resolved.path),
               }
             : undefined;
-    }, [contextRouter, pathname, navigate]);
+    }, [validRoutes, contextRouter, pathname, navigate]);
 
     const router: Array<DigitalRoute> = React.useMemo(
         () =>
-            (contextRouter ?? []).map(({ element: _, displayed, isPublic, ...route }) => ({
+            validRoutes.map(({ displayed, isPublic, ...route }) => ({
                 navigate: () => navigate(route.path),
                 isCurrent: pathname === route.path,
                 displayed: Boolean(displayed),
                 isPublic: Boolean(isPublic),
                 ...route,
             })),
-        [contextRouter, pathname, navigate]
+        [validRoutes, pathname, navigate]
     );
 
     return { router, current };

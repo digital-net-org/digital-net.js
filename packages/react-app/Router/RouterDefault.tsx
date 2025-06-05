@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { RootPage, LoginPage, ErrorPage, EditorPage } from '../Pages';
 import { type RouteObject } from './RouteObject';
+import { EditorLayout } from '../Pages/Editor/EditorLayout';
 
 export const RouterDefault = [
     {
@@ -16,10 +17,21 @@ export const RouterDefault = [
         displayed: false,
     },
     {
-        path: ROUTER_EDITOR,
-        element: <EditorPage />,
-        isPublic: false,
-        displayed: true,
+        element: <EditorLayout />,
+        children: [
+            {
+                path: ROUTER_EDITOR,
+                element: <EditorPage />,
+                isPublic: false,
+                displayed: true,
+            },
+            {
+                path: `${ROUTER_EDITOR}/:id`,
+                element: <EditorPage />,
+                isPublic: false,
+                displayed: false,
+            },
+        ],
     },
     {
         path: '*',

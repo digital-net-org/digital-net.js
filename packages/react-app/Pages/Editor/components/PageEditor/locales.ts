@@ -1,7 +1,7 @@
 import { type Namespace } from '@digital-net/react-app';
 
 export default {
-    namespace: 'frame-editor',
+    namespace: 'page-editor',
     fr: {
         navigation: {
             title: 'Mes modèles',

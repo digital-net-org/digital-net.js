@@ -6,7 +6,7 @@ import { pageTools } from './Tools';
 import { usePageUrlState } from './usePageUrlState';
 import { usePageCrud } from './usePageCrud';
 import { PageEditorHelper } from './PageEditorHelper';
-import { FrameNav } from './PageEditorNav';
+import { PageNav } from './PageEditorNav';
 import { usePageStore } from './usePageStore';
 import './PageEditor.styles.css';
 
@@ -16,25 +16,18 @@ export function PageEditor() {
 
     const { currentTool, set } = usePageUrlState();
     const { storedEntity, storedExists, saveEntity, deleteEntity } = usePageStore();
-    const {
-        page: frame,
-        pageList,
-        isLoading,
-        handleCreate,
-        handleDelete,
-        handlePatch,
-    } = usePageCrud({
+    const { page, pageList, isLoading, handleCreate, handleDelete, handlePatch } = usePageCrud({
         stored: storedEntity,
         onDelete: async () => await deleteEntity(),
         onPatch: async () => await deleteEntity(),
     });
 
     const handlePuckChange = async (data: Data) => {
-        if (!isLoading || !frame) {
+        if (!isLoading || !page) {
             return;
         }
-        if (!PuckEditorHelper.deepEquality(data, frame.data)) {
-            await saveEntity({ ...frame, data: JSON.stringify(data) });
+        if (!PuckEditorHelper.deepEquality(data, page.data)) {
+            await saveEntity({ ...page, data: JSON.stringify(data) });
         } else {
             await deleteEntity();
         }
@@ -44,16 +37,16 @@ export function PageEditor() {
         <Editor
             className={PageEditorHelper.className}
             loading={isLoading}
-            modified={frame && storedExists}
-            saved={frame && !storedExists}
+            modified={page && storedExists}
+            saved={page && !storedExists}
             panelState={panelState}
             setPanelState={handlePanel}
             onSave={handlePatch}
             onDelete={handleDelete}
-            renderName={() => frame?.path}
+            renderName={() => page?.path}
             renderPanel={() => (
-                <FrameNav
-                    page={frame}
+                <PageNav
+                    page={page}
                     pageList={pageList}
                     isLoading={isLoading}
                     onCreate={handleCreate}
@@ -63,12 +56,12 @@ export function PageEditor() {
             )}
             actions={pageTools.map(tool => ({
                 ...tool,
-                disabled: !frame,
+                disabled: !page,
                 selected: currentTool?.id === tool.id,
                 onSelect: () => set('tool', tool.id),
             }))}
         >
-            <PuckEditor entity={frame} isLoading={isLoading} onChange={handlePuckChange} />
+            <PuckEditor entity={page} isLoading={isLoading} onChange={handlePuckChange} />
         </Editor>
     );
 }

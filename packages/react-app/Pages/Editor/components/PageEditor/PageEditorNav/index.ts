@@ -1,1 +1,1 @@
-export { FrameNav } from './PageNav';
+export { PageNav } from './PageNav';

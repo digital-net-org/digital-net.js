@@ -14,7 +14,7 @@ export interface PageNavProps {
     isLoading: boolean;
 }
 
-export function FrameNav({ page, pageList, onSelect, onCreate, onClose, isLoading }: PageNavProps) {
+export function PageNav({ page, pageList, onSelect, onCreate, onClose, isLoading }: PageNavProps) {
     return (
         <div className={`${PageEditorHelper.className}-Nav`}>
             <div className={`${PageEditorHelper.className}-Nav-Title`}>
