@@ -1,7 +1,7 @@
 import type { Entity, PageLight } from '@digital-net/core';
 import { Text, Box, Button, Icon } from '@digital-net/react-digital-ui';
-import { PageEditorHelper } from '../PageEditorHelper';
-import { useStoredEntity } from '../../../../../Storage';
+import { EditorApiHelper } from '../../state/EditorApiHelper';
+import { useStoredEntity } from '../../../../Storage';
 
 interface Props {
     page: PageLight;
@@ -10,8 +10,8 @@ interface Props {
     isLoading: boolean;
 }
 
-export function PageNavItem<T extends Entity>({ page, onSelect, selected, isLoading }: Props) {
-    const { storedExists } = useStoredEntity<T>(PageEditorHelper.store, page?.id);
+export function EditorNavItem<T extends Entity>({ page, onSelect, selected, isLoading }: Props) {
+    const { storedExists } = useStoredEntity<T>(EditorApiHelper.store, page?.id);
     return (
         <Box direction="row" align="center" justify="space-between" fullWidth gap={1}>
             <Button

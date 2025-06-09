@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { type RouteObject } from '../Router/RouteObject';
-import { EditorLayout } from './Editor/EditorLayout';
-import { RootPage } from './Root/RootPage';
-import { LoginPage } from './Login/LoginPage';
-import { EditorPage } from './Editor/EditorPage';
-import { ErrorPage } from './Error/ErrorPage';
+import { EditorPage, EditorOutlet } from './Editor';
+import { RootPage } from './Root';
+import { LoginPage } from './Login';
+import { ErrorPage } from './Error';
 
 export const DefaultRouter = [
     {
@@ -20,7 +19,7 @@ export const DefaultRouter = [
         displayed: false,
     },
     {
-        element: <EditorLayout />,
+        element: <EditorOutlet />,
         children: [
             {
                 path: ROUTER_EDITOR,

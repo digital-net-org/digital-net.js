@@ -1,12 +1,12 @@
 import React, { type PropsWithChildren } from 'react';
 import { Box, Text } from '@digital-net/react-digital-ui';
-import { PageEditorHelper } from '../PageEditorHelper';
+import { EditorHelper } from '../EditorHelper';
 
 export interface BaseToolProps {
     title?: string | React.ReactNode;
 }
 
-export const baseToolClassName = `${PageEditorHelper.className}-Tool`;
+export const baseToolClassName = `${EditorHelper.className}-Tool`;
 
 export function BaseTool({ children, title }: PropsWithChildren<BaseToolProps>) {
     return (

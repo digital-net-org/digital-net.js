@@ -1,0 +1,96 @@
+.Editor {
+    --panel-size: 350px;
+
+    position: relative;
+    background-color: var(--palette-background);
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+}
+
+.Editor .Editor-ToolBar {
+    background-color: var(--palette-paper);
+    border-right: 1px solid var(--palette-shadow-light);
+    border-bottom: 1px solid var(--palette-shadow-light);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: var(--spacing-1);
+
+    & .Editor-ToolBar-Custom {
+        display: flex;
+        flex-direction: row;
+    }
+
+    & .Editor-ToolBar-Title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--spacing-1);
+    }
+
+    & .Editor-ToolBar-separator {
+        background-color: var(--palette-border-disabled);
+        width: 1px;
+        height: 100%;
+        margin: 0 var(--spacing-1);
+    }
+}
+
+.Editor .Editor-Nav {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    & .Editor-Nav-Title {
+        padding: var(--spacing-1) var(--spacing-1) var(--spacing-2) var(--spacing-2);
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    & .Editor-Nav-List {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacing-1) * 0.75);
+        padding: 0px var(--spacing-3) 0px var(--spacing-2);
+    }
+
+    & .DigitalUi-Button {
+        justify-content: left;
+        padding: calc(var(--spacing-1) * 0.75);
+    }
+}
+
+.Editor .Editor-Panel {
+        position: absolute;
+        z-index: 10;
+
+        height: 100%;
+        width: var(--panel-size);
+        border-right: 1px solid var(--palette-shadow-light);
+        overflow: hidden;
+        background-color: var(--palette-paper);
+
+        &[data-panel-type='open'] {
+            transition: 0.4s;
+            left: 0px;
+            box-shadow: 0 2px 4px 0 var(--palette-shadow);
+        }
+        &[data-panel-type='closed'] {
+            transition: 0.275s;
+            left: calc(0px - var(--panel-size));
+        }
+    }
+
+.Editor .Editor-Content {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+    }
