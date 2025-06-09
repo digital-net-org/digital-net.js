@@ -9,6 +9,7 @@ import { ThemeProvider } from './Theme';
 import { Router, type RouterProps } from './Router';
 import { ToasterProvider } from './Toaster';
 import { SettingsProvider, PuckConfigProvider } from './Application';
+import { DefaultRouter } from './Pages';
 
 interface DigitalConfig {
     strictMode?: boolean;
@@ -43,7 +44,7 @@ export default class DigitalApp {
                                         <SettingsProvider>
                                             <PuckConfigProvider>
                                                 <ThemeProvider>
-                                                    <Router router={router ?? []} />
+                                                    <Router router={[...DefaultRouter, ...(router ?? [])]} />
                                                 </ThemeProvider>
                                             </PuckConfigProvider>
                                         </SettingsProvider>

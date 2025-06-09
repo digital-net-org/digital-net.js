@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { RouterContext } from './Router';
-import type { ValidRouteObject } from '@digital-net/react-app/Router/RouteObject';
+import { type ValidRouteObject } from './RouteObject';
 
 export interface DigitalRoute {
     path: string;
@@ -41,7 +41,7 @@ export function useDigitalRouter() {
                   navigate: () => navigate(resolved.path),
               }
             : undefined;
-    }, [validRoutes, contextRouter, pathname, navigate]);
+    }, [validRoutes, pathname, navigate]);
 
     const router: Array<DigitalRoute> = React.useMemo(
         () =>

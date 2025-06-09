@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { RootPage, LoginPage, ErrorPage, EditorPage } from '../Pages';
-import { type RouteObject } from './RouteObject';
-import { EditorLayout } from '../Pages/Editor/EditorLayout';
+import { type RouteObject } from '../Router/RouteObject';
+import { EditorLayout } from './Editor/EditorLayout';
+import { RootPage } from './Root/RootPage';
+import { LoginPage } from './Login/LoginPage';
+import { EditorPage } from './Editor/EditorPage';
+import { ErrorPage } from './Error/ErrorPage';
 
-export const RouterDefault = [
+export const DefaultRouter = [
     {
         path: ROUTER_HOME,
         element: <RootPage />,
