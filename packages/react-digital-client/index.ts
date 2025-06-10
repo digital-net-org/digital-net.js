@@ -1,4 +1,4 @@
-export { DigitalClientProvider } from './DigitalClientProvider';
+export { DigitalClientProvider, useDigitalClientState } from './DigitalClientProvider';
 export { DigitalReactClient } from './DigitalReactClient';
 export { DigitalClientInterceptors } from './DigitalClientInterceptors';
 export { digitalClientInstance } from './digitalClientInstance';

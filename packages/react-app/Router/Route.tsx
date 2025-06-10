@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useApplicationUser } from '../User';
+import { useDigitalClientState } from '@digital-net/react-digital-client';
 
 export interface RouteProps extends React.PropsWithChildren {
     path: string;
@@ -9,16 +9,19 @@ export interface RouteProps extends React.PropsWithChildren {
 
 export function Route({ children, path, isPublic }: RouteProps) {
     const navigate = useNavigate();
-    const { isLogged } = useApplicationUser();
+    const { isInitialized, token } = useDigitalClientState();
 
     React.useEffect(() => {
-        if (!isLogged && !isPublic) {
+        if (!isInitialized) {
+            return;
+        }
+        if (!token && !isPublic) {
             navigate(ROUTER_LOGIN);
         }
-        if (isLogged && path === ROUTER_LOGIN) {
+        if (token && path === ROUTER_LOGIN) {
             navigate(ROUTER_HOME);
         }
-    }, [isLogged, navigate, isPublic, path]);
+    }, [navigate, isPublic, path, isInitialized, token]);
 
     return <React.Fragment>{children}</React.Fragment>;
 }

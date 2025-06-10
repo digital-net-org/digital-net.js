@@ -138,7 +138,7 @@ export class DigitalClient {
     protected token: string | undefined;
     protected refreshPromise: Promise<void> | null = null;
 
-    private async refreshTokens() {
+    public async refreshTokens() {
         const endpoint: DigitalEndpoint = 'authentication/user/refresh';
         return await this.axiosRequest<Result<string>>({
             headers: {

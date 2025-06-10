@@ -17,6 +17,7 @@ export * from './Event';
 export * from './JSON';
 export * from './LocalStorage';
 export * from './Object';
+export * from './Promise';
 export * from './Spacing';
 export * from './String';
 export * from './URI';

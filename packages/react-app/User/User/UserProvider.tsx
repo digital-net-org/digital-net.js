@@ -1,9 +1,7 @@
 import React from 'react';
 import { type EntityRaw, type Result, EntityHelper, type User } from '@digital-net/core';
-import { digitalClientInstance, useDigitalQuery } from '@digital-net/react-digital-client';
-
+import { digitalClientInstance, useDigitalQuery, useDigitalClientState } from '@digital-net/react-digital-client';
 import { useToaster } from '../../Toaster';
-import { useJwt } from './useJwt';
 
 interface ApplicationUserContextState extends User {
     isLoading: boolean;
@@ -28,7 +26,7 @@ export const UserContext = React.createContext<ApplicationUserContextState>(defa
 
 export function ApplicationUserProvider({ children }: React.PropsWithChildren) {
     const { toast } = useToaster();
-    const token = useJwt();
+    const token = useDigitalClientState();
 
     const {
         data: userData,
@@ -46,7 +44,9 @@ export function ApplicationUserProvider({ children }: React.PropsWithChildren) {
 
     React.useEffect(() => (token !== undefined ? digitalClientInstance.invalidate('user/self') : void 0), [token]);
 
-    const isLogged = React.useMemo(() => token !== undefined && token !== null, [token]);
-
-    return <UserContext.Provider value={{ isLoading, isLogged, refresh, ...user }}>{children}</UserContext.Provider>;
+    return (
+        <UserContext.Provider value={{ isLoading, isLogged: Boolean(token), refresh, ...user }}>
+            {children}
+        </UserContext.Provider>
+    );
 }

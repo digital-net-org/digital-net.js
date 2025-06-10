@@ -7,7 +7,6 @@ export const digitalLibConstants = {
     APP_ROOT: 'root',
     DIGITAL_API_URL: env.DIGITAL_API_URL,
 
-    STORAGE_KEY_AUTH: 'data-user',
     STORAGE_KEY_THEME: 'data-theme',
 
     ROUTER_HOME: '/',
