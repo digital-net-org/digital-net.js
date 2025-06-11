@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { StringIdentity, type Page, type PageLight } from '@digital-net/core';
+import { type PagePuckConfig, StringIdentity, type Page, type PageLight, EntityHelper } from '@digital-net/core';
 import { useCreate, useDelete, useGet, useGetById, usePatch } from '@digital-net/react-digital-client';
 import { EditorHelper } from '../editor/EditorHelper';
 import { EditorApiHelper } from './EditorApiHelper';
@@ -13,8 +13,11 @@ export function useEditorCrud(config: {
 }) {
     const navigate = useNavigate();
 
-    const { entities, ...getAll } = useGet<PageLight>(EditorApiHelper.apiUrl);
-    const { entity, ...getByIdApi } = useGetById<Page>(EditorApiHelper.apiUrl, config.id);
+    const { entities: configs } = useGet<PagePuckConfig>('page/config');
+    const { entities, ...getAll } = useGet<PageLight>('page');
+    const { entity, ...getByIdApi } = useGetById<Page>('page', config.id);
+
+    const defaultConfig = React.useMemo(() => EntityHelper.getLatest(configs ?? []), [configs]);
 
     const reload = React.useCallback(
         (type: 'all' | 'current') => {
@@ -27,11 +30,11 @@ export function useEditorCrud(config: {
         [config.id]
     );
 
-    const { isCreating, ...createApi } = useCreate<Page>(EditorApiHelper.apiUrl, {
+    const { isCreating, ...createApi } = useCreate<Page>('page', {
         onSuccess: async () => reload('all'),
     });
 
-    const { isDeleting, ...deleteApi } = useDelete(EditorApiHelper.apiUrl, {
+    const { isDeleting, ...deleteApi } = useDelete('page', {
         onSuccess: async () => {
             await config.onDelete();
             reload('all');
@@ -60,9 +63,10 @@ export function useEditorCrud(config: {
                 title,
                 data: JSON.stringify(EditorHelper.defaultData),
                 path: '/' + title,
+                version: defaultConfig?.version,
             });
         }
-    }, [createApi, isLoading]);
+    }, [createApi, defaultConfig?.version, isLoading]);
 
     const handleDelete = React.useCallback(async () => {
         if (entity && !isLoading) {

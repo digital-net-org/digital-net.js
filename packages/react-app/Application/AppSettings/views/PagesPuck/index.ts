@@ -1,2 +1,2 @@
 export { PuckConfigView } from './PuckConfigView';
-export { usePuckConfigValidator } from './usePuckConfigValidator';
+export { usePuckConfigValidator } from '../../../usePuckConfigValidator';

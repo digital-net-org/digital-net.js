@@ -1,14 +1,14 @@
 import React from 'react';
 import { type Data, Puck } from '@measured/puck';
 import { Box, Loader } from '@digital-net/react-digital-ui';
-import { usePuckConfig } from '../../../Application';
+import { usePuckConfig } from './usePuckConfig';
 import { useEditorContext } from '../state';
 import { PuckTool } from './PuckTool';
 import { EditorHelper } from './EditorHelper';
 
 export function PuckEditor() {
     const { page, isLoading, localSave, localDelete } = useEditorContext();
-    const { configs, loadedConfig } = usePuckConfig();
+    const { puckConfig } = usePuckConfig(page?.version);
 
     const handlePuckChange = async (data: Data) => {
         if (!isLoading || !page) {
@@ -24,13 +24,13 @@ export function PuckEditor() {
     if (isLoading) {
         return <Loader size="large" />;
     }
-    if (!page || !loadedConfig) {
+    if (!page || !puckConfig) {
         return null;
     }
     return (
         <React.Fragment>
-            {JSON.stringify(loadedConfig?.components.Box ?? {})}
-            <Puck data={EditorHelper.resolveData(page.data)} config={loadedConfig} onChange={handlePuckChange}>
+            {JSON.stringify(puckConfig?.components.Box ?? {})}
+            <Puck data={EditorHelper.resolveData(page.data)} config={puckConfig} onChange={handlePuckChange}>
                 <PuckTool />
                 <Box direction="row" fullHeight fullWidth>
                     <Puck.Preview />

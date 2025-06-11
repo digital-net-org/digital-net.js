@@ -1,13 +1,14 @@
 import React from 'react';
+import type { PagePuckConfig } from '@digital-net/core';
 import { Table } from '@digital-net/react-digital-ui';
+import { useGet } from '@digital-net/react-digital-client';
 import { Localization } from '../../../../Localization';
-import { usePuckConfig } from '../../../usePuckConfig';
 import { PuckConfigForm } from './PuckConfigForm';
 import { usePuckConfigApi } from './usePuckConfigApi';
 
 export function PuckConfigView() {
     const [open, setOpen] = React.useState(false);
-    const { configs, isLoading } = usePuckConfig();
+    const { entities: configs, isQuerying } = useGet<PagePuckConfig>('page/config');
     const { deleteConfig, isDeleting } = usePuckConfigApi();
 
     return (
@@ -29,7 +30,7 @@ export function PuckConfigView() {
                         return <React.Fragment>{row.createdAt?.toLocaleString()}</React.Fragment>;
                     }
                 }}
-                loading={isLoading}
+                loading={isQuerying}
                 loadingActions={isDeleting}
                 renderEmpty={() => Localization.translate('app-settings:pages.pages-puck.result.empty')}
             />

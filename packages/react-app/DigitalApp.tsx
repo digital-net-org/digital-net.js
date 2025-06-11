@@ -8,7 +8,7 @@ import { ApplicationUserProvider } from './User';
 import { ThemeProvider } from './Theme';
 import { Router, type RouterProps } from './Router';
 import { ToasterProvider } from './Toaster';
-import { SettingsProvider, PuckConfigProvider } from './Application';
+import { SettingsProvider } from './Application';
 import { DefaultRouter } from './Pages';
 
 interface DigitalConfig {
@@ -42,11 +42,9 @@ export default class DigitalApp {
                                 <DigitalClientProvider>
                                     <ApplicationUserProvider>
                                         <SettingsProvider>
-                                            <PuckConfigProvider>
-                                                <ThemeProvider>
-                                                    <Router router={[...DefaultRouter, ...(router ?? [])]} />
-                                                </ThemeProvider>
-                                            </PuckConfigProvider>
+                                            <ThemeProvider>
+                                                <Router router={[...DefaultRouter, ...(router ?? [])]} />
+                                            </ThemeProvider>
                                         </SettingsProvider>
                                     </ApplicationUserProvider>
                                 </DigitalClientProvider>

@@ -1,11 +1,11 @@
 import { type AppAlertsProps } from './AppAlerts/AppAlerts';
 import { Localization } from '../Localization';
 import { useDigitalApp } from './useDigitalApp';
-import { usePuckConfig } from './usePuckConfig';
+import { usePuckConfigValidator } from './usePuckConfigValidator';
 
 export function useAppAlerts(): Array<AppAlertsProps['alerts'][number]> {
     const { openAppSettings } = useDigitalApp();
-    const { isConfigUploaded, isValidating } = usePuckConfig();
+    const { isConfigUploaded, isValidating } = usePuckConfigValidator();
 
     return [
         ...(!isValidating && isConfigUploaded

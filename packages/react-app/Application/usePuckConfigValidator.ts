@@ -1,7 +1,8 @@
 import React from 'react';
-import { useToaster, useApplicationUser } from '@digital-net/react-app';
-import { useDigitalQuery } from '@digital-net/react-digital-client';
 import { type Result, digitalErrorCodes } from '@digital-net/core';
+import { useDigitalQuery } from '@digital-net/react-digital-client';
+import { useToaster } from '../Toaster';
+import { useApplicationUser } from '../User';
 
 export function usePuckConfigValidator() {
     const { toast } = useToaster();

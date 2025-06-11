@@ -13,19 +13,13 @@ export function useGet<T extends Entity>(
     endpoint: DigitalCrudEndpoint,
     { onError, onSuccess, ...options }: CrudQueryConfig<QueryResult<T>> = {}
 ) {
-    const [entities, setEntities] = React.useState<T[]>([]);
-
-    const { isLoading } = useDigitalQuery<QueryResult<EntityRaw>>(endpoint, {
+    const { isLoading, data } = useDigitalQuery<QueryResult<EntityRaw>>(endpoint, {
         ...options,
-        onSuccess: async e => {
-            const result = { ...e, value: e.value.map(EntityHelper.build<T>) };
-            setEntities(result.value);
-            await onSuccess?.(result);
-        },
-        onError: async e => {
-            await onError?.(e);
-        },
+        onSuccess: async e => await onSuccess?.({ ...e, value: e.value.map(EntityHelper.build<T>) }),
+        onError: async e => await onError?.(e),
     });
+
+    const entities = React.useMemo(() => (data ? data.value.map(EntityHelper.build<T>) : []), [data]);
 
     return {
         entities,
