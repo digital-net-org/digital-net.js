@@ -28,7 +28,7 @@ export function useEditorCrud(config: {
     );
 
     const { isCreating, ...createApi } = useCreate<Page>(EditorApiHelper.apiUrl, {
-        onSuccess: async () => reload('current'),
+        onSuccess: async () => reload('all'),
     });
 
     const { isDeleting, ...deleteApi } = useDelete(EditorApiHelper.apiUrl, {

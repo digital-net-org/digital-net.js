@@ -36,7 +36,6 @@ export function EditorContextProvider({ children }: React.PropsWithChildren) {
     const editorUrlState = useEditorUrl();
 
     const { storedEntity, storedExists, saveEntity, deleteEntity } = useStoredEntity<Page>(EditorApiHelper.store, id);
-    // TODO: pageList call is working but state is empty Array
     const crud = useEditorCrud({
         id,
         stored: storedEntity,
