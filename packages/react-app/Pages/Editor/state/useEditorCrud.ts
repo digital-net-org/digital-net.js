@@ -38,7 +38,6 @@ export function useEditorCrud(config: {
         onSuccess: async () => {
             await config.onDelete();
             reload('all');
-            reload('current');
             navigate(ROUTER_EDITOR);
         },
     });

@@ -8,20 +8,15 @@ export function useGetById<T extends Entity>(
     id: string | number | undefined,
     { onError, onSuccess, slugs, ...options }: CrudQueryConfig<Result<T>> = {}
 ) {
-    const [entity, setEntity] = React.useState<T | undefined>(undefined);
-    const { isLoading } = useDigitalQuery<Result<EntityRaw>>(`${endpoint}/:id`, {
+    const { isLoading, data } = useDigitalQuery<Result<EntityRaw>>(`${endpoint}/:id`, {
         ...options,
-        onSuccess: async e => {
-            const result = { ...e, value: EntityHelper.build<T>(e.value) };
-            setEntity(result.value);
-            await onSuccess?.(result);
-        },
-        onError: async e => {
-            await onError?.(e);
-        },
+        onSuccess: async e => await onSuccess?.({ ...e, value: EntityHelper.build<T>(e.value) }),
+        onError: async e => await onError?.(e),
         slugs: { ...(slugs ?? {}), id: String(id) },
         enabled: !!id,
     });
+
+    const entity = React.useMemo(() => (id && data ? EntityHelper.build<T>(data.value) : undefined), [data, id]);
 
     return {
         entity,

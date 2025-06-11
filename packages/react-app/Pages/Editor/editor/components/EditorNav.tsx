@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Box, IconButton, Text } from '@digital-net/react-digital-ui';
 import { useOnClickOutside } from '@digital-net/react-core';
 import { Localization } from '../../../../Localization';
@@ -8,8 +7,7 @@ import { EditorHelper } from '../EditorHelper';
 import { EditorNavItem } from './EditorNavItem';
 
 export function EditorNav() {
-    const { page, pageList, isLoading, reload, handleCreate, togglePanel, isPanelOpen } = useEditorContext();
-    const navigate = useNavigate();
+    const { pageList, isLoading, reload, handleCreate, togglePanel, isPanelOpen } = useEditorContext();
     const panelRef = React.useRef<HTMLDivElement>(null);
     useOnClickOutside(panelRef, () => isPanelOpen && togglePanel());
 
@@ -31,13 +29,7 @@ export function EditorNav() {
                 <div className={`${EditorHelper.className}-Nav-List`}>
                     {(pageList ?? []).map(e => (
                         <React.Fragment key={e.id}>
-                            <EditorNavItem
-                                page={e}
-                                key={e.id}
-                                onSelect={id => navigate(`${ROUTER_EDITOR}/${id}`)}
-                                selected={e.id === page?.id}
-                                isLoading={isLoading}
-                            />
+                            <EditorNavItem page={e} isLoading={isLoading} />
                         </React.Fragment>
                     ))}
                 </div>
