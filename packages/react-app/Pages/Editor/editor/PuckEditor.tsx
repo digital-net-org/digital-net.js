@@ -28,15 +28,14 @@ export function PuckEditor() {
         return null;
     }
     return (
-        <React.Fragment>
-            {JSON.stringify(puckConfig?.components.Box ?? {})}
-            <Puck data={EditorHelper.resolveData(page.data)} config={puckConfig} onChange={handlePuckChange}>
-                <PuckTool />
-                <Box direction="row" fullHeight fullWidth>
-                    <Puck.Preview />
+        <Puck data={EditorHelper.resolveData(page.data)} config={puckConfig} onChange={handlePuckChange}>
+            <Box direction="row" fullHeight fullWidth>
+                <Puck.Preview />
+                <Box className={`${EditorHelper.className}-Tool-Panel`}>
                     <Puck.Fields />
+                    <PuckTool />
                 </Box>
-            </Puck>
-        </React.Fragment>
+            </Box>
+        </Puck>
     );
 }

@@ -7,7 +7,39 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+}
 
+.Editor .Editor-Tool {
+    flex: 3;
+    width: 100%;
+    overflow-y: scroll;
+    padding: var(--spacing-1);
+    border-top: 1px solid var(--palette-shadow-light);
+}
+
+.Editor .Editor-Tool-Panel {
+    width: calc(var(--panel-size) * 1.35);
+    border-left: 1px solid var(--palette-shadow-light);
+    background-color: var(--palette-paper);
+    height: 100%;
+}
+
+.Editor .Editor-Tool .Editor-Tool-tree {
+    width: 100%;
+
+    & ul[class*='_LayerTree'] {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+
+.Editor .Editor-Tool .Editor-Tool-Render {
+    overflow-y: auto;
+}
+
+.Editor .Editor-Tool .Editor-Tool-components {
+    width: 100%;
 }
 
 .Editor .Editor-ToolBar {
@@ -18,79 +50,80 @@
     flex-direction: row;
     justify-content: space-between;
     padding: var(--spacing-1);
+}
 
-    & .Editor-ToolBar-Custom {
-        display: flex;
-        flex-direction: row;
-    }
+.Editor .Editor-ToolBar .Editor-ToolBar-Actions {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-1);
+}
 
-    & .Editor-ToolBar-Title {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: var(--spacing-1);
-    }
+.Editor .Editor-ToolBar .Editor-ToolBar-Title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-1);
+}
 
-    & .Editor-ToolBar-separator {
-        background-color: var(--palette-border-disabled);
-        width: 1px;
-        height: 100%;
-        margin: 0 var(--spacing-1);
-    }
+.Editor .Editor-ToolBar .Editor-ToolBar-separator {
+    background-color: var(--palette-border-disabled);
+    width: 1px;
+    height: 100%;
+    margin: 0 var(--spacing-1);
 }
 
 .Editor .Editor-Nav {
     width: 100%;
     display: flex;
     flex-direction: column;
+}
 
-    & .Editor-Nav-Title {
-        padding: var(--spacing-1) var(--spacing-1) var(--spacing-2) var(--spacing-2);
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-    }
+.Editor .Editor-Nav .Editor-Nav-Title {
+    padding: var(--spacing-1) var(--spacing-1) var(--spacing-2) var(--spacing-2);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    & .Editor-Nav-List {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: calc(var(--spacing-1) * 0.75);
-        padding: 0px var(--spacing-3) 0px var(--spacing-2);
-    }
+.Editor .Editor-Nav .Editor-Nav-List {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-1) * 0.75);
+    padding: 0 var(--spacing-3) 0 var(--spacing-2);
+}
 
-    & .DigitalUi-Button {
-        justify-content: left;
-        padding: calc(var(--spacing-1) * 0.75);
-    }
+.Editor .Editor-Nav .DigitalUi-Button {
+    justify-content: left;
+    padding: calc(var(--spacing-1) * 0.75);
 }
 
 .Editor .Editor-Panel {
-        position: absolute;
-        z-index: 10;
+    position: absolute;
+    z-index: 10;
+    height: 100%;
+    width: var(--panel-size);
+    border-right: 1px solid var(--palette-shadow-light);
+    overflow: hidden;
+    background-color: var(--palette-paper);
+}
 
-        height: 100%;
-        width: var(--panel-size);
-        border-right: 1px solid var(--palette-shadow-light);
-        overflow: hidden;
-        background-color: var(--palette-paper);
+.Editor .Editor-Panel[data-panel-type='open'] {
+    transition: 0.4s;
+    left: 0;
+    box-shadow: 0 2px 4px 0 var(--palette-shadow);
+}
 
-        &[data-panel-type='open'] {
-            transition: 0.4s;
-            left: 0px;
-            box-shadow: 0 2px 4px 0 var(--palette-shadow);
-        }
-        &[data-panel-type='closed'] {
-            transition: 0.275s;
-            left: calc(0px - var(--panel-size));
-        }
-    }
+.Editor .Editor-Panel[data-panel-type='closed'] {
+    transition: 0.275s;
+    left: calc(0px - var(--panel-size));
+}
 
 .Editor .Editor-Content {
-        display: flex;
-        flex-direction: row;
-        overflow: hidden;
-        width: 100%;
-        height: 100%;
-    }
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}

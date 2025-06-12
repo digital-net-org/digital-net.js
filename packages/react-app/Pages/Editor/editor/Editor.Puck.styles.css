@@ -1,29 +1,82 @@
 .Puck {
+    overflow: hidden;
+}
+
+.Puck,
+#puck-preview,
+.Puck > div:first-child,
+.Puck div[id*=':rp:'],
+.Puck div[class*='_PuckPreview'] {
     height: 100%;
     width: 100%;
-    overflow: hidden;
+}
 
-    & iframe div[class*='_DraggableComponent-actions'] {
-        position: absolute;
-        z-index: 1000;
+.Puck iframe #frame-root {
+    background-color: #f0f !important;
+}
+
+.Puck [class*='_PuckFields'] {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.Puck [id*=':rp:'] #puck-preview {
+    border: 1px solid var(--palette-shadow-light);
+    box-shadow: var(--palette-shadow-light) 0.15rem 0.15rem 0.1rem;
+    margin: var(--spacing-2);
+}
+
+.Puck iframe div[class*='_DraggableComponent-actions'] {
+    position: absolute;
+    z-index: 1000;
+}
+
+.Puck div[class*='_DrawerItem-draggable'],
+.Puck textarea[class*='_Input-input'],
+.Puck input[class*='_Input-input'] {
+    border: 1px solid var(--palette-border);
+    border-radius: var(--spacing-radius-1);
+    background-color: var(--palette-paper);
+    color: var(--palette-text);
+    padding: var(--spacing-1);
+    outline-color: var(--palette-primary);
+    resize: none;
+}
+
+.Puck div[class*='_Input-labelIcon'] {
+    padding-right: var(--spacing-1);
+
+    & svg {
+        color: var(--palette-primary);
     }
+}
 
-    &[id*=':rp:'] {
-        /* Editor main wrapper */
-        height: 100%;
+.Puck div[class*='_Input-label'] {
+    align-items: center;
+    color: var(--palette-text);
+    letter-spacing: calc(var(--font-letter-spacing) * 2);
+    text-transform: uppercase;
+    font: var(--font-family);
+    font-size: var(--font-size-regular);
+}
 
-        & #puck-preview {
-            width: 100%;
-            height: 100%;
-            border: 1px solid var(--palette-shadow-light);
-            box-shadow: var(--palette-shadow-light) 0.15rem 0.15rem 0.1rem;
-            margin: var(--spacing-2);
-        }
-    }
+.Puck button[class*='_ComponentList-title'] {
+    transition: 0.2s;
+    color: var(--palette-text);
+}
 
-    & [class*='_PuckFields'] {
-        height: 100%;
-        border-left: 1px solid var(--palette-shadow-light);
-        min-width: 300px;
-    }
+.Puck button[class*='_ComponentList-title']:hover {
+    background-color: var(--palette-primary);
+}
+
+.Puck div[class*='_DragIcon'] {
+    transition: 0.2s;
+    scale: 1.4;
+}
+
+.Puck div[class*='_DragIcon']:hover {
+    background-color: var(--palette-primary);
+    color: var(--palette-text);
 }
