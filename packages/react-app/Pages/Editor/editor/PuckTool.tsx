@@ -11,7 +11,7 @@ export const baseToolClassName = `${EditorHelper.className}-Tool`;
 export function PuckTool() {
     const { page, selectedTool, selectTool } = useEditorContext();
     return (
-        <Box className={baseToolClassName} fullHeight overflow="hidden">
+        <Box className={baseToolClassName} fullHeight>
             <Box direction="row" justify="space-between" align="center" gap={1} fullWidth>
                 <Box p={1} gap={1} fullWidth direction="row" justify="space-between" align="center">
                     {selectedTool ? (

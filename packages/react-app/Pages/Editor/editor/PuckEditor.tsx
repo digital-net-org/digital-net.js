@@ -21,7 +21,11 @@ export function PuckEditor() {
     };
 
     if (isLoading) {
-        return <Loader size="large" />;
+        return (
+            <Box fullHeight fullWidth align="center" justify="center">
+                <Loader size="large" />
+            </Box>
+        );
     }
     if (!page || !puckConfig) {
         return (
@@ -40,7 +44,9 @@ export function PuckEditor() {
             onChange={handlePuckChange}
         >
             <Box direction="row" fullHeight fullWidth>
-                <Puck.Preview />
+                <Box className={`${EditorHelper.className}-Preview`}>
+                    <Puck.Preview />
+                </Box>
                 <Box className={`${EditorHelper.className}-Tool-Panel`}>
                     <Puck.Fields />
                     <PuckTool />

@@ -1,12 +1,21 @@
 .Editor {
     --panel-size: 350px;
-
     position: relative;
     background-color: var(--palette-background);
-    flex-direction: row;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+}
+
+.Editor .Editor-Preview {
+    width: 100%;
+    height: 100%;
+    padding: var(--spacing-2) var(--spacing-2);
+
+    & #puck-preview {
+        border: 1px solid var(--palette-border);
+    }
 }
 
 .Editor .Editor-Tool {
