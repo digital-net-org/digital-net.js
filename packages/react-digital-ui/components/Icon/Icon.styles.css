@@ -25,7 +25,7 @@
     --icon-color: var(--palette-text-disabled);
 }
 
-.DigitalUi-Icon-size-xsmall {
+.DigitalUi-Icon-size-x-small {
     --icon-size: calc((var(--font-size-regular) * 0.75));
 }
 

@@ -7,6 +7,7 @@ import {
     type PageLight,
     StringIdentity,
     EntityHelper,
+    ObjectMatcher,
 } from '@digital-net/core';
 import { useCreate, useDelete, useGet, useGetById, usePatch } from '@digital-net/react-digital-client';
 import { EditorHelper } from '../editor/EditorHelper';
@@ -73,7 +74,7 @@ export function useEditorCrud(config: {
             const title = StringIdentity.generate();
             createApi.create({
                 title,
-                data: JSON.stringify(EditorHelper.defaultData),
+                puckData: JSON.stringify(EditorHelper.defaultData),
                 path: '/' + title,
                 version: defaultConfig?.version,
             });
@@ -90,7 +91,22 @@ export function useEditorCrud(config: {
         if (!entity || !config.stored || isLoading) {
             return;
         }
-        patchApi.patch(entity.id, { ...config.stored, data: JSON.stringify(config.stored.data) });
+        patchApi.patch(
+            entity.id,
+            Object.keys(config.stored ?? {}).reduce<Partial<Page>>((acc, key) => {
+                if (key === 'puckData') {
+                    acc[key] = config.stored?.puckData;
+                } else if (
+                    key !== 'id' &&
+                    key !== 'createdAt' &&
+                    key !== 'updatedAt' &&
+                    !ObjectMatcher.deepEquality(config.stored?.[key], entity[key])
+                ) {
+                    acc[key] = config.stored?.[key];
+                }
+                return acc;
+            }, {})
+        );
     }, [entity, isLoading, config.stored, patchApi]);
 
     return { handleCreate, handleDelete, handlePatch, isLoading, reload, page: entity, pageList: entities };

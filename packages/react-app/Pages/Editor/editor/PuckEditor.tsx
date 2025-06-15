@@ -8,17 +8,15 @@ import { PuckTool } from './PuckTool';
 import { EditorHelper } from './EditorHelper';
 
 export function PuckEditor() {
-    const { page, isLoading, localSave, localDelete } = useEditorContext();
+    const { page, isLoading, localSave } = useEditorContext();
     const { puckConfig } = usePuckConfig(page?.version);
 
     const handlePuckChange = async (data: Data) => {
-        if (!isLoading || !page) {
+        if (isLoading || !page) {
             return;
         }
-        if (!EditorHelper.deepDataEquality(data, page.data)) {
-            await localSave({ ...page, data: JSON.stringify(data) });
-        } else {
-            await localDelete();
+        if (!EditorHelper.deepDataEquality(data, page.puckData)) {
+            await localSave({ ...page, puckData: JSON.stringify(data) });
         }
     };
 
@@ -35,7 +33,12 @@ export function PuckEditor() {
         );
     }
     return (
-        <Puck data={EditorHelper.resolveData(page.data)} config={puckConfig} onChange={handlePuckChange}>
+        <Puck
+            key={page.id}
+            data={EditorHelper.resolveData(page.puckData)}
+            config={puckConfig}
+            onChange={handlePuckChange}
+        >
             <Box direction="row" fullHeight fullWidth>
                 <Puck.Preview />
                 <Box className={`${EditorHelper.className}-Tool-Panel`}>

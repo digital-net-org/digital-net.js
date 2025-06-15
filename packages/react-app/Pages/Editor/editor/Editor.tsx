@@ -43,7 +43,7 @@ export function Editor() {
                             {
                                 onClick: handleDelete,
                                 icon: 'TrashIcon',
-                                disabled: isLoading || isModified || !page,
+                                disabled: isLoading || !page,
                             },
                         ]}
                     />

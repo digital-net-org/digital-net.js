@@ -46,6 +46,7 @@ export function EditorContextProvider({ children }: React.PropsWithChildren) {
     });
 
     const isModified = React.useMemo(() => Boolean(crud.page && storedExists), [crud.page, storedExists]);
+    const page = React.useMemo(() => storedEntity ?? crud.page, [crud.page, storedEntity]);
 
     React.useEffect(
         () => (!id && !editorUrlState.isPanelOpen ? editorUrlState.togglePanel() : void 0),
@@ -64,6 +65,7 @@ export function EditorContextProvider({ children }: React.PropsWithChildren) {
                 ...crud,
                 localDelete: deleteEntity,
                 localSave: saveEntity,
+                page,
                 isModified,
             }}
         >
