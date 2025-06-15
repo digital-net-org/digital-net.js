@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import type { Page } from '@digital-net/core';
 import { useStoredEntity } from '../../../Storage';
 import { type EditorUrlState, useEditorUrl } from './useEditorUrl';
@@ -33,6 +33,7 @@ export const EditorContext = React.createContext<EditorContextProps>(defaultEdit
 
 export function EditorContextProvider({ children }: React.PropsWithChildren) {
     const { id } = useParams();
+    const navigate = useNavigate();
     const editorUrlState = useEditorUrl();
 
     const { storedEntity, storedExists, saveEntity, deleteEntity } = useStoredEntity<Page>(EditorApiHelper.store, id);
@@ -41,9 +42,20 @@ export function EditorContextProvider({ children }: React.PropsWithChildren) {
         stored: storedEntity,
         onDelete: async () => await deleteEntity(),
         onPatch: async () => await deleteEntity(),
+        onCreate: createdId => navigate({ pathname: `${ROUTER_EDITOR}/${createdId}`, search: location.search }),
     });
 
     const isModified = React.useMemo(() => Boolean(crud.page && storedExists), [crud.page, storedExists]);
+
+    React.useEffect(
+        () => (!id && !editorUrlState.isPanelOpen ? editorUrlState.togglePanel() : void 0),
+        [editorUrlState, id]
+    );
+
+    React.useEffect(
+        () => (!editorUrlState.selectedTool ? editorUrlState.selectTool('components') : void 0),
+        [storedEntity, crud, editorUrlState]
+    );
 
     return (
         <EditorContext.Provider

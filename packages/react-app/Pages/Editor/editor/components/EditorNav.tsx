@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, IconButton, Text } from '@digital-net/react-digital-ui';
-import { useOnClickOutside } from '@digital-net/react-core';
 import { Localization } from '../../../../Localization';
 import { useEditorContext } from '../../state';
 import { EditorHelper } from '../EditorHelper';
@@ -8,12 +7,9 @@ import { EditorNavItem } from './EditorNavItem';
 
 export function EditorNav() {
     const { pageList, isLoading, reload, handleCreate, togglePanel, isPanelOpen } = useEditorContext();
-    const panelRef = React.useRef<HTMLDivElement>(null);
-    useOnClickOutside(panelRef, () => isPanelOpen && togglePanel());
 
     return (
         <div
-            ref={panelRef}
             className={`${EditorHelper.className}-Panel`}
             data-panel-type={isPanelOpen ? 'open' : 'closed'}
         >

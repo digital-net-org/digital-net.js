@@ -1,6 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { type PagePuckConfig, StringIdentity, type Page, type PageLight, EntityHelper } from '@digital-net/core';
+import {
+    type Entity,
+    type PagePuckConfig,
+    type Page,
+    type PageLight,
+    StringIdentity,
+    EntityHelper,
+} from '@digital-net/core';
 import { useCreate, useDelete, useGet, useGetById, usePatch } from '@digital-net/react-digital-client';
 import { EditorHelper } from '../editor/EditorHelper';
 import { EditorApiHelper } from './EditorApiHelper';
@@ -10,6 +17,7 @@ export function useEditorCrud(config: {
     stored: Page | undefined;
     onDelete: () => Promise<void> | void;
     onPatch: () => Promise<void> | void;
+    onCreate: (id: Entity['id']) => Promise<void> | void;
 }) {
     const navigate = useNavigate();
 
@@ -31,7 +39,12 @@ export function useEditorCrud(config: {
     );
 
     const { isCreating, ...createApi } = useCreate<Page>('page', {
-        onSuccess: async () => reload('all'),
+        onSuccess: async ({ value: id }) => {
+            reload('all');
+            if (id) {
+                config.onCreate(id);
+            }
+        },
     });
 
     const { isDeleting, ...deleteApi } = useDelete('page', {
