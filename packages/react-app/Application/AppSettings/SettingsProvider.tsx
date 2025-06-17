@@ -1,7 +1,7 @@
 import React, { type PropsWithChildren } from 'react';
 import { type views } from './AppSettings';
 
-export type SettingsViewKey = keyof (typeof views)['user'] | keyof (typeof views)['pages'];
+export type SettingsViewKey = keyof (typeof views)['user'];
 
 export interface SettingsState {
     open: boolean;

@@ -31,9 +31,6 @@ export function EditorNavItem<T extends Entity>({ page, isLoading }: Props) {
             <Button variant="icon" disabled={isLoading} selected={selected} onClick={handleClick} fullWidth>
                 <Box direction="row" justify="space-between" gap={1} fullWidth>
                     <Text>{page.path}</Text>
-                    <Text variant="span" size="small" italic disabled={!selected}>
-                        {page.version}
-                    </Text>
                 </Box>
             </Button>
             <Box visible={storedExists}>

@@ -5,7 +5,6 @@ import { useApplicationUser } from '../User';
 import { ThemeSwitch } from '../Theme';
 import { useDigitalRouter } from '../Router';
 import { useDigitalApp } from './useDigitalApp';
-import { useAppAlerts } from './useAppAlerts';
 import { AppAlerts } from './AppAlerts';
 import { AppActions } from './AppActions';
 import { AppSettings } from './AppSettings';
@@ -15,7 +14,6 @@ export function Application({ children }: PropsWithChildren) {
     const { current } = useDigitalRouter();
     const { isLogged } = useApplicationUser();
     const { openAppSettings } = useDigitalApp();
-    const alerts = useAppAlerts();
 
     return (
         <main className="Page">
@@ -27,7 +25,7 @@ export function Application({ children }: PropsWithChildren) {
                             {Localization.translate(`router:page.title.${current?.path}`)}
                         </Box>
                         <Box>
-                            <AppAlerts alerts={alerts} />
+                            <AppAlerts alerts={[]} />
                             <AppActions.User />
                             <ThemeSwitch />
                             <Button variant="icon" onClick={() => openAppSettings('account')}>

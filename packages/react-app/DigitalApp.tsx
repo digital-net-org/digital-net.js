@@ -12,7 +12,7 @@ import { SettingsProvider } from './Application';
 import { DefaultRouter } from './Pages';
 import type { DigitalConfig } from './types';
 import './defaults';
-
+import { PuckProvider } from './Puck';
 
 /**
  * Utility class to create a React tree.
@@ -22,8 +22,10 @@ export default class DigitalApp {
      * Creates a new instance of ReactDigital.
      * @param config - Configuration object.
      * @param config.router - Application additional routes
+     * @param config.strictMode - Whether to use React.StrictMode or not
+     * @param config.puckConfig - Puck configuration **(mandatory)**
      */
-    public static create({ strictMode, router }: DigitalConfig) {
+    public static create({ strictMode, router, puckConfig }: DigitalConfig) {
         const appRoot = document.getElementById(APP_ROOT);
         if (appRoot === null) {
             throw new Error("ReactDigital: Root element not found. Please add a 'root' id to the root element");
@@ -40,9 +42,11 @@ export default class DigitalApp {
                                 <DigitalClientProvider>
                                     <ApplicationUserProvider>
                                         <SettingsProvider>
-                                            <ThemeProvider>
-                                                <Router router={[...DefaultRouter, ...(router ?? [])]} />
-                                            </ThemeProvider>
+                                            <PuckProvider config={puckConfig}>
+                                                <ThemeProvider>
+                                                    <Router router={[...DefaultRouter, ...(router ?? [])]} />
+                                                </ThemeProvider>
+                                            </PuckProvider>
                                         </SettingsProvider>
                                     </ApplicationUserProvider>
                                 </DigitalClientProvider>

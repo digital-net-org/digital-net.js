@@ -3,16 +3,13 @@ import { Dialog } from '@digital-net/react-digital-ui';
 import { Localization } from '../../Localization';
 import { SettingsContext } from './SettingsProvider';
 import { AppSettingsPanel } from './components';
-import { PreferencesView, UserView, PuckConfigView } from './views';
+import { PreferencesView, UserView } from './views';
 import './AppSettings.styles.css';
 
 export const views = {
     user: {
         account: <UserView />,
         preferences: <PreferencesView />,
-    },
-    pages: {
-        'pages-puck': <PuckConfigView />,
     },
 };
 
@@ -38,13 +35,6 @@ export function AppSettings() {
                             onSelect={navigate}
                             label={Localization.translate('app-settings:user.label')}
                             onRender={key => Localization.translate(`app-settings:user.${key}.label`)}
-                        />
-                        <AppSettingsPanel.Nav
-                            value={state}
-                            options={Object.keys(views.pages)}
-                            onSelect={navigate}
-                            label={Localization.translate('app-settings:pages.label')}
-                            onRender={key => Localization.translate(`app-settings:pages.${key}.label`)}
                         />
                     </AppSettingsPanel>
                 </Dialog.Panel>

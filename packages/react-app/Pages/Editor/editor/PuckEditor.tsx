@@ -2,14 +2,13 @@ import React from 'react';
 import { type Data, Puck } from '@measured/puck';
 import { Box, Loader, Text } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../Localization';
+import { PuckStateProvider } from '../../../Puck';
 import { useEditorContext } from '../state';
-import { usePuckConfig } from './usePuckConfig';
 import { PuckTool } from './PuckTool';
 import { EditorHelper } from './EditorHelper';
 
 export function PuckEditor() {
     const { page, isLoading, localSave } = useEditorContext();
-    const { puckConfig } = usePuckConfig(page?.version);
 
     const handlePuckChange = async (data: Data) => {
         if (isLoading || !page) {
@@ -27,7 +26,7 @@ export function PuckEditor() {
             </Box>
         );
     }
-    if (!page || !puckConfig) {
+    if (!page) {
         return (
             <Box fullHeight fullWidth align="center" pt={3}>
                 <Text variant="span" italic>
@@ -37,12 +36,7 @@ export function PuckEditor() {
         );
     }
     return (
-        <Puck
-            key={page.id}
-            data={EditorHelper.resolveData(page.puckData)}
-            config={puckConfig}
-            onChange={handlePuckChange}
-        >
+        <PuckStateProvider key={page.id} data={EditorHelper.resolveData(page.puckData)} onChange={handlePuckChange}>
             <Box direction="row" fullHeight fullWidth>
                 <Box className={`${EditorHelper.className}-Preview`}>
                     <Puck.Preview />
@@ -52,6 +46,6 @@ export function PuckEditor() {
                     <PuckTool />
                 </Box>
             </Box>
-        </Puck>
+        </PuckStateProvider>
     );
 }

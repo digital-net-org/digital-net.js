@@ -1,14 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    type Entity,
-    type PagePuckConfig,
-    type Page,
-    type PageLight,
-    StringIdentity,
-    EntityHelper,
-    ObjectMatcher,
-} from '@digital-net/core';
+import { type Entity, type Page, type PageLight, StringIdentity, ObjectMatcher } from '@digital-net/core';
 import { useCreate, useDelete, useGet, useGetById, usePatch } from '@digital-net/react-digital-client';
 import { EditorHelper } from '../editor/EditorHelper';
 import { EditorApiHelper } from './EditorApiHelper';
@@ -22,11 +14,8 @@ export function useEditorCrud(config: {
 }) {
     const navigate = useNavigate();
 
-    const { entities: configs } = useGet<PagePuckConfig>('page/config');
     const { entities, ...getAll } = useGet<PageLight>('page');
     const { entity, ...getByIdApi } = useGetById<Page>('page', config.id);
-
-    const defaultConfig = React.useMemo(() => EntityHelper.getLatest(configs ?? []), [configs]);
 
     const reload = React.useCallback(
         (type: 'all' | 'current') => {
@@ -76,10 +65,9 @@ export function useEditorCrud(config: {
                 title,
                 puckData: JSON.stringify(EditorHelper.defaultData),
                 path: '/' + title,
-                version: defaultConfig?.version,
             });
         }
-    }, [createApi, defaultConfig?.version, isLoading]);
+    }, [createApi, isLoading]);
 
     const handleDelete = React.useCallback(async () => {
         if (entity && !isLoading) {

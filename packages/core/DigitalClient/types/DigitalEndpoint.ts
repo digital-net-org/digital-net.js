@@ -1,4 +1,4 @@
-export type DigitalCrudEndpoint = 'user' | 'page' | 'page/asset' | 'page/config';
+export type DigitalCrudEndpoint = 'user' | 'page' | 'page/asset';
 
 export type DigitalEndpoint =
     | 'authentication/user/login'
@@ -19,11 +19,6 @@ export type DigitalEndpoint =
     | 'page/asset/:id'
     | 'page/asset/path/:path'
     | 'page/asset/upload'
-    | 'page/config'
-    | 'page/config/:id'
-    | 'page/config/test'
-    | 'page/config/version/:version'
-    | 'page/config/upload'
     | 'validation/pattern/email'
     | 'validation/pattern/username'
     | 'validation/pattern/password'
