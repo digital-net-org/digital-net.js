@@ -7,7 +7,7 @@
         color: var(--palette-primary);
     }
 
-    & img {
+    & svg {
         padding-top: 0.2rem;
         width: 7.75rem;
     }

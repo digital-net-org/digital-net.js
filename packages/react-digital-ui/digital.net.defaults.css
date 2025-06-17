@@ -7,20 +7,6 @@
     --spacing-radius-3: 0.75rem;
     --spacing-radius-100: 100%;
 
-    --palette-primary: #007bff;
-    --palette-primary-light: #4da6ff;
-    --palette-text: #222222;
-    --palette-text-light: #2d2d2d;
-    --palette-text-disabled: #707070;
-    --palette-background: #f0f0f0;
-    --palette-background-disabled: #d2d2d2;
-    --palette-paper: #fcfcfc;
-    --palette-border: #707070;
-    --palette-border-disabled: #b2b2b2;
-    --palette-shadow: #00000050;
-    --palette-shadow-light: #00000020;
-    --palette-error: #b62929;
-
     --font-family: 'Roboto', monospace;
     --font-weight-light: 300;
     --font-weight-regular: 400;
@@ -33,4 +19,63 @@
     --font-size-large: calc(var(--font-size-medium) * 1.25);
     --font-size-xlarge: calc(var(--font-size-medium) * 1.5);
     --font-letter-spacing: 0.0375rem;
+
+    --palette-primary: rgba(0, 126, 109, 0.5);
+    --palette-primary-light: #56a9a0;
+    --palette-text: #222222;
+    --palette-text-light: #2d2d2d;
+    --palette-text-disabled: #707070;
+    --palette-background: #f0f0f0;
+    --palette-background-disabled: #d2d2d2;
+    --palette-paper: #fcfcfc;
+    --palette-border: #707070;
+    --palette-border-disabled: #b2b2b2;
+    --palette-shadow: #00000050;
+    --palette-shadow-light: #00000020;
+    --palette-error: #b62929;
+
+    --puck-color-azure-01: #4a3800;
+    --puck-color-azure-02: #665100;
+    --puck-color-azure-03: #806200;
+    --puck-color-azure-04: #997300;
+    --puck-color-azure-05: #b38419;
+    --puck-color-azure-06: #cc952f;
+    --puck-color-azure-07: #e4a745;
+    --puck-color-azure-08: #fbb85c;
+    --puck-color-azure-09: #ffca72;
+    --puck-color-azure-10: #ffdb89;
+    --puck-color-azure-11: #ffecaf;
+    --puck-color-azure-12: #fff6d5;
+}
+
+[data-theme='light'] {
+    --palette-primary: rgba(0, 126, 109, 0.5);
+    --palette-primary-light: #56a9a0;
+    --palette-text: #222222;
+    --palette-text-light: #2d2d2d;
+    --palette-text-disabled: #707070;
+    --palette-background: #f0f0f0;
+    --palette-background-disabled: #d2d2d2;
+    --palette-paper: #fcfcfc;
+    --palette-border: #707070;
+    --palette-border-disabled: #b2b2b2;
+    --palette-shadow: #00000050;
+    --palette-shadow-light: #00000020;
+    --palette-error: #b62929;
+}
+
+[data-theme='dark'] {
+    --palette-primary: rgba(9, 205, 178, 0.5);
+    --palette-primary-light: #56a9a0;
+    --palette-text: #f0f0f0;
+    --palette-text-light: #d0d0d0;
+    --palette-text-disabled: #707070;
+    --palette-background: #181818;
+    --palette-background-disabled: #353535;
+    --palette-paper: #222222;
+    --palette-border: #707070;
+    --palette-border-disabled: #b2b2b2;
+    --palette-shadow: #00000015;
+    --palette-shadow-light: #00000040;
+    --palette-error: #b62929;
 }

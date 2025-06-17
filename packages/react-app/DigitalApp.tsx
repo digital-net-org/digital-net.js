@@ -6,15 +6,13 @@ import { LocalizationMiddleware } from './Localization';
 import { DigitalIdbProvider } from './Storage';
 import { ApplicationUserProvider } from './User';
 import { ThemeProvider } from './Theme';
-import { Router, type RouterProps } from './Router';
+import { Router } from './Router';
 import { ToasterProvider } from './Toaster';
 import { SettingsProvider } from './Application';
 import { DefaultRouter } from './Pages';
+import type { DigitalConfig } from './types';
+import './defaults';
 
-interface DigitalConfig {
-    strictMode?: boolean;
-    router?: RouterProps['router'];
-}
 
 /**
  * Utility class to create a React tree.

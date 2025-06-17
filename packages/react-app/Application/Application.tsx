@@ -9,9 +9,7 @@ import { useAppAlerts } from './useAppAlerts';
 import { AppAlerts } from './AppAlerts';
 import { AppActions } from './AppActions';
 import { AppSettings } from './AppSettings';
-import './fontsources';
-import './AppBar.styles.css';
-import './Application.styles.css';
+import './Applications.styles.css';
 
 export function Application({ children }: PropsWithChildren) {
     const { current } = useDigitalRouter();
