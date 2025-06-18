@@ -26,6 +26,7 @@ export function useElement<T extends HTMLElement>(element: React.RefObject<T | n
     const rectState = useElementPosition(state);
 
     return {
+        element: state,
         id: state?.id,
         className: state?.className,
         getChildren: () => state?.children ?? [],

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box } from '@digital-net/react-digital-ui';
-import { useEditorContext } from '../state';
+import { Box, Text } from '@digital-net/react-digital-ui';
+import { useEditorContext, useEditorLayoutState } from '../state';
 import { EditorNav, EditorTitle, Actions } from './components';
 import { EditorHelper } from './EditorHelper';
 import { PuckEditor } from './PuckEditor';
@@ -8,16 +8,8 @@ import './Editor.Puck.styles.css';
 import './Editor.styles.css';
 
 export function Editor() {
-    const {
-        page,
-        togglePanel,
-        isPanelOpen,
-        handlePatch,
-        handleDelete,
-        isLoading,
-        isModified,
-    } = useEditorContext();
-
+    const { page, togglePanel, isPanelOpen, handlePatch, handleDelete, isLoading, isModified } = useEditorContext();
+    const { preview } = useEditorLayoutState();
     return (
         <div className={EditorHelper.className}>
             <div className={`${EditorHelper.className}-ToolBar`}>
@@ -32,6 +24,9 @@ export function Editor() {
                 />
                 <EditorTitle />
                 <div className={`${EditorHelper.className}-ToolBar-Actions`}>
+                    <Text variant="caption" className={`${EditorHelper.className}-ToolBar-PreviewSize`}>
+                        {preview.width} x {preview.height}
+                    </Text>
                     <Box className="Editor-ToolBar-separator" />
                     <Actions
                         actions={[

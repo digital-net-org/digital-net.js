@@ -4,8 +4,8 @@ import { Box, Loader, Text } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../Localization';
 import { PuckStateProvider } from '../../../Puck';
 import { useEditorContext } from '../state';
-import { PuckTool } from './PuckTool';
 import { EditorHelper } from './EditorHelper';
+import { PuckLayout } from './PuckLayout';
 
 export function PuckEditor() {
     const { page, isLoading, localSave } = useEditorContext();
@@ -37,15 +37,7 @@ export function PuckEditor() {
     }
     return (
         <PuckStateProvider key={page.id} data={EditorHelper.resolveData(page.puckData)} onChange={handlePuckChange}>
-            <Box direction="row" fullHeight fullWidth>
-                <Box className={`${EditorHelper.className}-Preview`}>
-                    <Puck.Preview />
-                </Box>
-                <Box className={`${EditorHelper.className}-Tool-Panel`}>
-                    <Puck.Fields />
-                    <PuckTool />
-                </Box>
-            </Box>
+            <PuckLayout />
         </PuckStateProvider>
     );
 }

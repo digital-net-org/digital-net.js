@@ -8,13 +8,11 @@
     height: 100%;
 }
 
-.Editor .Editor-Preview {
-    width: 100%;
-    height: 100%;
+.Editor .Editor-Preview  {
     padding: var(--spacing-2) var(--spacing-2);
-
     & #puck-preview {
-        border: 1px solid var(--palette-border);
+
+    border: 1px solid var(--palette-border);
     }
 }
 
@@ -27,10 +25,8 @@
 }
 
 .Editor .Editor-Tool-Panel {
-    width: calc(var(--panel-size) * 1.35);
     border-left: 1px solid var(--palette-shadow-light);
     background-color: var(--palette-paper);
-    height: 100%;
 }
 
 .Editor .Editor-Tool .Editor-Tool-tree {
@@ -65,6 +61,10 @@
     display: flex;
     flex-direction: row;
     gap: var(--spacing-1);
+}
+
+.Editor .Editor-ToolBar-PreviewSize {
+    align-self: center;
 }
 
 .Editor .Editor-ToolBar .Editor-ToolBar-Title {
@@ -130,9 +130,9 @@
 }
 
 .Editor .Editor-Content {
+    Position: relative;
     display: flex;
     flex-direction: row;
-    overflow: hidden;
     width: 100%;
     height: 100%;
 }

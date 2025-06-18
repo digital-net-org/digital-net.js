@@ -14,7 +14,7 @@ import { useFirstRender } from '../Effect';
  * ```
  */
 export function useLocalStorage<T>(key: string, defaultValue?: T) {
-    const [state, setState] = React.useState<T | undefined | null>(LocalStorage.get<T>(key));
+    const [state, setState] = React.useState<T | undefined | null>(defaultValue ?? LocalStorage.get<T>(key));
 
     useFirstRender(() => {
         const currentValue = LocalStorage.get<T>(key);
