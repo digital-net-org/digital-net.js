@@ -1,3 +1,0 @@
-export const digitalErrorCodes = {
-    NoPuckConfig: 'DIGITAL_NET_API_SERVICES_PAGES_EXCEPTIONS_NOPUCKCONFIGEXCEPTION',
-};
