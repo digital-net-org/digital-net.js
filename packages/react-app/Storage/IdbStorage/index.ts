@@ -6,4 +6,3 @@ export { IDbStore } from './IDbStore';
 export { type DigitalIdbContextState, defaultIdbConfig, DigitalIdbContext } from './DigitalIdbContext';
 export { DigitalIdbProvider } from './DigitalIdbProvider';
 export { useIDbStore } from './useIDbStore';
-export { useStoredEntity } from './useStoredEntity';

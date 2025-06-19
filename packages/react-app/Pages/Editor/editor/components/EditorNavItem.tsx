@@ -1,30 +1,31 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { Entity, PageLight } from '@digital-net/core';
+import type { PageLight } from '@digital-net/core';
 import { Text, Box, Button, Icon } from '@digital-net/react-digital-ui';
-import { useStoredEntity } from '../../../../Storage';
-import { EditorApiHelper } from '../../state';
+import { useEditorContext, useIsPageModified } from '../../state';
 
 interface Props {
     page: PageLight;
     isLoading: boolean;
 }
 
-export function EditorNavItem<T extends Entity>({ page, isLoading }: Props) {
+export function EditorNavItem({ page, isLoading }: Props) {
+    const { toggleLayoutLoading } = useEditorContext();
     const { id: currentPageId } = useParams();
-    const { storedExists } = useStoredEntity<T>(EditorApiHelper.store, page?.id);
+    const { isModified } = useIsPageModified(page.id);
     const navigate = useNavigate();
     const selected = React.useMemo(() => currentPageId === page.id, [currentPageId, page.id]);
 
     const handleClick = React.useCallback(() => {
-        if (isLoading) {
-            return;
-        }
+        const slug = currentPageId === page.id ? '' : `/${page.id}`;
         navigate({
-            pathname: `${ROUTER_EDITOR}${currentPageId === page.id ? '' : `/${page.id}`}`,
+            pathname: `${ROUTER_EDITOR}${slug}`,
             search: location.search,
         });
-    }, [currentPageId, isLoading, navigate, page.id]);
+        if (slug.length !== 0 && currentPageId) {
+            toggleLayoutLoading();
+        }
+    }, [currentPageId, navigate, page.id, toggleLayoutLoading]);
 
     return (
         <Box direction="row" align="center" justify="space-between" fullWidth gap={1}>
@@ -33,7 +34,7 @@ export function EditorNavItem<T extends Entity>({ page, isLoading }: Props) {
                     <Text>{page.path}</Text>
                 </Box>
             </Button>
-            <Box visible={storedExists}>
+            <Box visible={isModified}>
                 <Icon.CircleFill size="x-small" />
             </Box>
         </Box>

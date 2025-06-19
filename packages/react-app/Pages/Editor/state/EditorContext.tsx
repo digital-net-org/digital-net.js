@@ -1,15 +1,19 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import type { Page } from '@digital-net/core';
-import { useStoredEntity } from '../../../Storage';
 import { type EditorUrlState, useEditorUrl } from './useEditorUrl';
 import { useEditorCrud } from './useEditorCrud';
-import { EditorApiHelper } from './EditorApiHelper';
+import { useEditorDialogState } from './useEditorDialogState';
+import { useEditorLoaderState } from './useEditorLoaderState';
+import { useIsPageModified } from './useIsPageModified';
+import { usePageStore } from '@digital-net/react-app/Pages/Editor/state/usePageStore';
 
 interface EditorContextProps extends EditorUrlState, ReturnType<typeof useEditorCrud> {
     isModified: boolean;
-    localSave: (payload: Partial<Page>) => Promise<void>;
-    localDelete: () => Promise<void>;
+    isReloadPopupOpen: boolean;
+    isLayoutLoading: boolean;
+    toggleLayoutLoading: () => void;
+    toggleReloadPopup: () => void;
 }
 
 const defaultEditorContext: EditorContextProps = {
@@ -20,12 +24,14 @@ const defaultEditorContext: EditorContextProps = {
     page: undefined,
     pageList: [],
     isLoading: false,
+    isLayoutLoading: false,
     isModified: false,
+    isReloadPopupOpen: false,
+    toggleReloadPopup: () => void 0,
+    toggleLayoutLoading: () => void 0,
     handleCreate: async () => void 0,
     handleDelete: async () => void 0,
     handlePatch: async () => void 0,
-    localSave: async () => void 0,
-    localDelete: async () => void 0,
     reload: async () => void 0,
 };
 
@@ -33,38 +39,25 @@ export const EditorContext = React.createContext<EditorContextProps>(defaultEdit
 
 export function EditorContextProvider({ children }: React.PropsWithChildren) {
     const { id } = useParams();
-    const navigate = useNavigate();
+    const { isModified } = useIsPageModified(id);
+    const { page: crudPage, ...crud } = useEditorCrud();
+    const { get: localGet } = usePageStore();
     const editorUrlState = useEditorUrl();
+    const editorDialogState = useEditorDialogState();
+    const editorLoaderState = useEditorLoaderState();
 
-    const { storedEntity, storedExists, saveEntity, deleteEntity } = useStoredEntity<Page>(EditorApiHelper.store, id);
-    const crud = useEditorCrud({
-        id,
-        stored: storedEntity,
-        onDelete: async () => await deleteEntity(),
-        onPatch: async () => await deleteEntity(),
-        onCreate: createdId => navigate({ pathname: `${ROUTER_EDITOR}/${createdId}`, search: location.search }),
-    });
-
-    const isModified = React.useMemo(() => Boolean(crud.page && storedExists), [crud.page, storedExists]);
-    const page = React.useMemo(() => storedEntity ?? crud.page, [crud.page, storedEntity]);
-
-    React.useEffect(
-        () => (!id && !editorUrlState.isPanelOpen ? editorUrlState.togglePanel() : void 0),
-        [editorUrlState, id]
-    );
-
-    React.useEffect(
-        () => (!editorUrlState.selectedTool ? editorUrlState.selectTool('components') : void 0),
-        [storedEntity, crud, editorUrlState]
-    );
+    const [page, setPage] = React.useState<Page | undefined>();
+    React.useEffect(() => {
+        (async () => setPage(crudPage ? ((await localGet(id)) ?? crudPage) : undefined))();
+    }, [id, localGet, crudPage]);
 
     return (
         <EditorContext.Provider
             value={{
+                ...editorLoaderState,
                 ...editorUrlState,
                 ...crud,
-                localDelete: deleteEntity,
-                localSave: saveEntity,
+                ...editorDialogState,
                 page,
                 isModified,
             }}

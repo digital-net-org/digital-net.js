@@ -1,45 +1,42 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { type Entity, type Page, type PageLight, StringIdentity, ObjectMatcher } from '@digital-net/core';
+import { useNavigate, useParams } from 'react-router-dom';
+import { type Page, type PageLight, StringIdentity, ObjectMatcher } from '@digital-net/core';
 import { useCreate, useDelete, useGet, useGetById, usePatch } from '@digital-net/react-digital-client';
 import { EditorHelper } from '../editor/EditorHelper';
 import { EditorApiHelper } from './EditorApiHelper';
+import { usePageStore } from './usePageStore';
 
-export function useEditorCrud(config: {
-    id: string | undefined;
-    stored: Page | undefined;
-    onDelete: () => Promise<void> | void;
-    onPatch: () => Promise<void> | void;
-    onCreate: (id: Entity['id']) => Promise<void> | void;
-}) {
+export function useEditorCrud() {
+    const { id } = useParams();
     const navigate = useNavigate();
+    const { delete: localDelete, get: localGet } = usePageStore();
 
     const { entities, ...getAll } = useGet<PageLight>('page');
-    const { entity, ...getByIdApi } = useGetById<Page>('page', config.id);
+    const { entity, ...getByIdApi } = useGetById<Page>('page', id);
 
     const reload = React.useCallback(
         (type: 'all' | 'current') => {
             if (type === 'all') {
                 EditorApiHelper.invalidateGetAll();
-            } else if (type === 'current') {
-                EditorApiHelper.invalidateGetById(String(config.id));
+            } else if (type === 'current' && id) {
+                EditorApiHelper.invalidateGetById(id);
             }
         },
-        [config.id]
+        [id]
     );
 
     const { isCreating, ...createApi } = useCreate<Page>('page', {
         onSuccess: async ({ value: id }) => {
             reload('all');
             if (id) {
-                config.onCreate(id);
+                navigate({ pathname: `${ROUTER_EDITOR}/${id}`, search: location.search });
             }
         },
     });
 
     const { isDeleting, ...deleteApi } = useDelete('page', {
         onSuccess: async () => {
-            await config.onDelete();
+            await localDelete(id);
             reload('all');
             navigate(ROUTER_EDITOR);
         },
@@ -47,7 +44,7 @@ export function useEditorCrud(config: {
 
     const { isPatching, ...patchApi } = usePatch<Page>(EditorApiHelper.apiUrl, {
         onSuccess: async () => {
-            await config.onPatch();
+            await localDelete(id);
             reload('all');
             reload('current');
         },
@@ -76,26 +73,27 @@ export function useEditorCrud(config: {
     }, [entity, isLoading, deleteApi]);
 
     const handlePatch = React.useCallback(async () => {
-        if (!entity || !config.stored || isLoading) {
+        const storedEntity = await localGet(id);
+        if (!entity || !storedEntity || isLoading) {
             return;
         }
         patchApi.patch(
             entity.id,
-            Object.keys(config.stored ?? {}).reduce<Partial<Page>>((acc, key) => {
+            Object.keys(storedEntity ?? {}).reduce<Partial<Page>>((acc, key) => {
                 if (key === 'puckData') {
-                    acc[key] = config.stored?.puckData;
+                    acc[key] = storedEntity.puckData;
                 } else if (
                     key !== 'id' &&
                     key !== 'createdAt' &&
                     key !== 'updatedAt' &&
-                    !ObjectMatcher.deepEquality(config.stored?.[key], entity[key])
+                    !ObjectMatcher.deepEquality(storedEntity[key], entity[key])
                 ) {
-                    acc[key] = config.stored?.[key];
+                    acc[key] = storedEntity[key];
                 }
                 return acc;
             }, {})
         );
-    }, [entity, isLoading, config.stored, patchApi]);
+    }, [localGet, id, entity, isLoading, patchApi]);
 
     return { handleCreate, handleDelete, handlePatch, isLoading, reload, page: entity, pageList: entities };
 }

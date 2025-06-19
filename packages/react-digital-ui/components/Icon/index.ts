@@ -16,6 +16,7 @@ import { CollectionIcon } from './icons/CollectionIcon';
 import { CopyIcon } from './icons/CopyIcon';
 import { DiagramIcon } from './icons/DiagramIcon';
 import { DiamondIcon } from './icons/DiamondIcon';
+import { DownloadIcon } from './icons/DownloadIcon';
 import { EllipsisIcon } from './icons/EllipsisIcon';
 import { EyeIcon } from './icons/EyeIcon';
 import { EyeSlashedIcon } from './icons/EyeSlashedIcon';
@@ -59,6 +60,7 @@ export const Icon = Object.assign(Component, {
     CopyIcon,
     DiagramIcon,
     DiamondIcon,
+    DownloadIcon,
     EllipsisIcon,
     EyeIcon,
     EyeSlashedIcon,

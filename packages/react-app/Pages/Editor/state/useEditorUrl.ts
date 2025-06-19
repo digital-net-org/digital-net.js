@@ -1,5 +1,6 @@
 import React from 'react';
 import { useUrlParams } from '@digital-net/react-app';
+import { useParams } from 'react-router-dom';
 
 export type EditorToolKey = 'tree' | 'components';
 export type EditorUrlKey = 'panel' | 'toolbar';
@@ -12,6 +13,7 @@ export interface EditorUrlState {
 }
 
 export function useEditorUrl(): EditorUrlState {
+    const { id } = useParams();
     const [urlState, setUrlState] = useUrlParams<Record<EditorUrlKey, string | undefined>>();
 
     const set = React.useCallback(
@@ -27,6 +29,9 @@ export function useEditorUrl(): EditorUrlState {
 
     const isPanelOpen = React.useMemo(() => urlState['panel'] === 'open', [urlState]);
     const togglePanel = React.useCallback(() => set('panel', isPanelOpen ? undefined : 'open'), [set, isPanelOpen]);
+
+    React.useEffect(() => (!id && !isPanelOpen ? togglePanel() : void 0), [id, isPanelOpen, togglePanel]);
+    React.useEffect(() => (!selectedTool ? selectTool('components') : void 0), [selectTool, selectedTool]);
 
     return {
         selectedTool,

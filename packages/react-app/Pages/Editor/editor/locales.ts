@@ -14,6 +14,13 @@ export default {
                 title: 'Elements',
             },
         },
+        alerts: {
+            reload: {
+                title: 'Recharger le modèle',
+                content:
+                    'Êtes-vous sûr de vouloir recharger le modèle ? Toutes les modifications non enregistrées seront perdues.',
+            },
+        },
         noneSelected: 'Aucun modèle sélectionné',
     },
     en: {
@@ -26,6 +33,12 @@ export default {
             },
             tree: {
                 title: 'Tree',
+            },
+        },
+        alerts: {
+            reload: {
+                title: 'Reload Model',
+                content: 'Are you sure you want to reload the model? All unsaved changes will be lost.',
             },
         },
         noneSelected: 'No model selected',

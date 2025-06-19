@@ -63,6 +63,7 @@ export class IDbStore {
                     } else {
                         storeObject.add(payload);
                     }
+                    window?.dispatchEvent(new Event(`IDB_SET_${store}_${payload.id}`));
                     resolve();
                 };
                 result.onerror = () => console.error(result.error);
@@ -78,15 +79,46 @@ export class IDbStore {
      * @param store - store name
      * @param id - entity id
      */
-    public static async delete<T extends Entity>(db: IDBDatabase, store: string, id: string | number): Promise<void> {
+    public static async delete(db: IDBDatabase, store: string, id: string | number): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             try {
                 this.validateStore(db, store);
                 this.getStore(db, store, 'readwrite').delete(String(id));
+                window?.dispatchEvent(new Event(`IDB_REMOVE_${store}_${id}`));
                 resolve();
             } catch (error) {
                 reject(error);
             }
         });
+    }
+
+    /**
+     * Register an event listener for changes in the store
+     * @param store - store name
+     * @param id - entity id
+     * @param callback - callback to execute when the entity is set
+     */
+    public static onSet(store: string, id: string | number, callback: () => void) {
+        window?.addEventListener?.(`IDB_SET_${store}_${id}`, () => callback());
+    }
+
+    /**
+     * Register an event listener for changes in the store
+     * @param store - store name
+     * @param id - entity id
+     * @param callback - callback to execute when the entity is removed
+     */
+    public static onRemove(store: string, id: string | number, callback: () => void) {
+        window?.addEventListener?.(`IDB_REMOVE_${store}_${id}`, () => callback());
+    }
+
+    /**
+     * Clear event listeners for the store
+     * @param store - store name
+     * @param id - entity id
+     */
+    public static clearListeners(store: string, id: string | number) {
+        window?.removeEventListener?.(`IDB_SET_${store}_${id}`, () => void 0);
+        window?.removeEventListener?.(`IDB_REMOVE_${store}_${id}`, () => void 0);
     }
 }
