@@ -1,7 +1,7 @@
 import React from 'react';
 import { Resizable } from 're-resizable';
 import { Puck } from '@measured/puck';
-import { Box, type IconButtonProps, Text } from '@digital-net/react-digital-ui';
+import { Box, type IconButtonProps, Loader, Text } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../Localization';
 import { type EditorToolKey, useEditorContext, useEditorLayoutState } from '../state';
 import { Actions } from './components';
@@ -11,7 +11,7 @@ import { useElement } from '@digital-net/react-core';
 export const baseToolClassName = `${EditorHelper.className}-Tool`;
 
 export function PuckPanel() {
-    const { page, selectedTool, selectTool } = useEditorContext();
+    const { page, selectedTool, selectTool, isLayoutLoading } = useEditorContext();
     const { toolHeight, setToolHeight } = useEditorLayoutState();
 
     const parentRef = React.useRef<HTMLDivElement>(null);
@@ -27,7 +27,7 @@ export function PuckPanel() {
                 size={{ width: '100%', height: toolHeight }}
                 onResize={setToolHeight}
             >
-                <Puck.Fields />
+                {isLayoutLoading ? null : <Puck.Fields />}
             </Resizable>
             <Box className={baseToolClassName} fullHeight>
                 <Box direction="row" justify="space-between" align="center" gap={1} fullWidth>
@@ -48,17 +48,19 @@ export function PuckPanel() {
                             ).map(({ id, icon }) => ({
                                 icon,
                                 selected: selectedTool === id,
-                                disabled: !page,
+                                disabled: !page || isLayoutLoading,
                                 onClick: () => (id !== selectedTool ? selectTool(id) : void 0),
                             }))}
                         />
                     </Box>
                 </Box>
                 <Box className={`${baseToolClassName}-Render`} p={1} fullWidth fullHeight>
-                    <div className={`${baseToolClassName}-${selectedTool}`}>
-                        {selectedTool === 'components' && <Puck.Components />}
-                        {selectedTool === 'tree' && <Puck.Outline />}
-                    </div>
+                    {isLayoutLoading ? null : (
+                        <div className={`${baseToolClassName}-${selectedTool}`}>
+                            {selectedTool === 'components' && <Puck.Components />}
+                            {selectedTool === 'tree' && <Puck.Outline />}
+                        </div>
+                    )}
                 </Box>
             </Box>
         </Box>

@@ -1,13 +1,14 @@
 import React from 'react';
 import { Resizable } from 're-resizable';
 import { Puck } from '@measured/puck';
-import { Box } from '@digital-net/react-digital-ui';
+import { Box, Loader } from '@digital-net/react-digital-ui';
 import { useElement } from '@digital-net/react-core';
-import { useEditorLayoutState } from '../state';
+import { useEditorContext, useEditorLayoutState } from '../state';
 import { PuckPanel } from './PuckPanel';
 import { EditorHelper } from './EditorHelper';
 
 export function PuckLayout() {
+    const { isLayoutLoading } = useEditorContext();
     const { preview, setPreview, panelWidth, setPanelWidth } = useEditorLayoutState();
     const parentRef = React.useRef<HTMLDivElement>(null);
     const previewRef = React.useRef<HTMLDivElement>(null);
@@ -26,17 +27,28 @@ export function PuckLayout() {
 
     return (
         <Box ref={parentRef} direction="row" fullHeight fullWidth>
-            <Box ref={previewRef} className={`${EditorHelper.className}-Preview`} fullHeight fullWidth>
-                <Resizable
-                    enable={{ right: true, bottom: true, bottomRight: true }}
-                    grid={[8, 8]}
-                    maxWidth={maxPreviewWidth}
-                    maxHeight={maxPreviewHeight}
-                    size={preview}
-                    onResize={setPreview}
-                >
-                    <Puck.Preview />
-                </Resizable>
+            <Box
+                ref={previewRef}
+                className={`${EditorHelper.className}-Preview`}
+                fullHeight
+                fullWidth
+                align="center"
+                justify="center"
+            >
+                {isLayoutLoading ? (
+                    <Loader size="large" />
+                ) : (
+                    <Resizable
+                        enable={{ right: true, bottom: true, bottomRight: true }}
+                        grid={[8, 8]}
+                        maxWidth={maxPreviewWidth}
+                        maxHeight={maxPreviewHeight}
+                        size={preview}
+                        onResize={setPreview}
+                    >
+                        <Puck.Preview />
+                    </Resizable>
+                )}
             </Box>
             <Resizable
                 enable={{ left: true }}

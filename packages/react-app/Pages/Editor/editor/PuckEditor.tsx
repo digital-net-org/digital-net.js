@@ -11,7 +11,7 @@ import { usePuckEditorKey } from './usePuckEditorKey';
 
 export function PuckEditor() {
     const { save } = usePageStore();
-    const { page, isLoading, isLayoutLoading } = useEditorContext();
+    const { page, isLoading } = useEditorContext();
     const key = usePuckEditorKey();
 
     const handlePuckChange = async (data: Data) => {
@@ -23,7 +23,7 @@ export function PuckEditor() {
         }
     };
 
-    if (isLoading || isLayoutLoading) {
+    if (isLoading) {
         return (
             <Box fullHeight fullWidth align="center" justify="center">
                 <Loader size="large" />
