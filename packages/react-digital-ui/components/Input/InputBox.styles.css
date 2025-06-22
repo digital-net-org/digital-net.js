@@ -12,9 +12,14 @@
     background-color: var(--palette-paper);
     padding: var(--input-padding);
 
-    & input,
-    label {
+    & input, textarea, label {
         color: var(--palette-text);
+    }
+
+    & textarea {
+        width: 100%;
+        min-height: 100px;
+        resize: vertical;
     }
 
     &.DigitalUi-InputBox-fullWidth {
@@ -71,6 +76,7 @@
 
 .DigitalUi-Input-label {
     position: absolute;
+    width: 100%;
     display: flex;
     flex-direction: row;
     top: -1.1rem;
@@ -89,5 +95,10 @@
             top: -0.1rem;
             fill: var(--palette-primary);
         }
+    }
+
+    & .DigitalUi-Input-label-Counter {
+        position: absolute;
+        right: 0.1rem;
     }
 }

@@ -12,9 +12,10 @@ export interface InputTextProps extends SafariInputNode, InputPatternProps, Cont
     onEsc?: () => void;
     onSelect?: () => void;
     onBlur?: () => void;
-    type?: 'text' | 'password' | 'email';
+    type?: 'text' | 'password' | 'email' | 'area';
     disableAdornment?: boolean;
     focusOnMount?: boolean;
+    maxLength?: number;
 }
 
 export function InputText({
@@ -60,30 +61,54 @@ export function InputText({
         setHidden(!hidden);
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (e.key === 'Escape') {
             props.onEsc?.();
         }
     };
 
     return (
-        <InputBox id={props.id} label={label} error={props.disabled ? false : error} selected={selected} {...props}>
+        <InputBox
+            id={props.id}
+            label={label}
+            error={props.disabled ? false : error}
+            selected={selected}
+            characterCount={props.maxLength ? [props.value?.length ?? 0, props.maxLength] : undefined}
+            {...props}
+        >
             <div className={className}>
-                <input
-                    ref={ref}
-                    value={props.value}
-                    name={name}
-                    pattern={pattern}
-                    required={props.required}
-                    disabled={props.disabled}
-                    type={resolvedType}
-                    onKeyDown={handleKeyDown}
-                    onChange={handleChange}
-                    onSelect={handleSelect}
-                    onBlur={handleBlur}
-                    onError={handleError}
-                    onInvalid={handleInvalid}
-                />
+                {type !== 'area' && (
+                    <input
+                        ref={ref}
+                        value={props.value}
+                        name={name}
+                        pattern={pattern}
+                        required={props.required}
+                        disabled={props.disabled}
+                        type={resolvedType}
+                        onKeyDown={handleKeyDown}
+                        onChange={handleChange}
+                        onSelect={handleSelect}
+                        onBlur={handleBlur}
+                        onError={handleError}
+                        onInvalid={handleInvalid}
+                    />
+                )}
+                {type === 'area' && (
+                    <textarea
+                        ref={ref as React.RefObject<HTMLTextAreaElement | null>}
+                        value={props.value}
+                        name={name}
+                        required={props.required}
+                        disabled={props.disabled}
+                        onKeyDown={handleKeyDown}
+                        onChange={handleChange}
+                        onSelect={handleSelect}
+                        onBlur={handleBlur}
+                        onError={handleError}
+                        onInvalid={handleInvalid}
+                    />
+                )}
                 {type === 'password' && !disableAdornment && (
                     <button onClick={handleHidden} type="button" disabled={props.disabled}>
                         {hidden ? <Icon.EyeSlashedIcon variant="filled" /> : <Icon.EyeIcon variant="filled" />}

@@ -20,16 +20,19 @@ export function Editor() {
             <EditorDialogs />
             <div className={EditorHelper.className}>
                 <div className={`${EditorHelper.className}-ToolBar`}>
-                    <Actions
-                        actions={[
-                            {
-                                onClick: togglePanel,
-                                selected: isPanelOpen,
-                                icon: 'FolderIcon',
-                            },
-                        ]}
-                    />
-                    <EditorTitle key={key} />
+                    <Box direction="row" gap={1} align="center">
+                        <Actions
+                            actions={[
+                                {
+                                    onClick: togglePanel,
+                                    selected: isPanelOpen,
+                                    icon: 'FolderIcon',
+                                },
+                            ]}
+                        />
+                        <Box className="Editor-ToolBar-separator" />
+                        <EditorTitle key={key} />
+                    </Box>
                     <div className={`${EditorHelper.className}-ToolBar-Actions`}>
                         <Text variant="caption" className={`${EditorHelper.className}-ToolBar-PreviewSize`}>
                             {preview.width} x {preview.height}

@@ -5,7 +5,7 @@
     align-items: center;
     gap: .5rem;
 
-    & input {
+    & input, textarea {
         width: 100%;
         border: none;
         background-color: transparent;

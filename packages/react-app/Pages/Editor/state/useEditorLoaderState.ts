@@ -8,7 +8,7 @@ export function useEditorLoaderState() {
     React.useEffect(() => {
         (async () => {
             if (isLayoutLoading) {
-                await delay(500);
+                await delay(750);
                 setIsLayoutLoading(false);
             }
         })();

@@ -17,6 +17,7 @@ export interface InputBoxProps extends BaseInputProps {
     selected?: boolean | undefined;
     help?: string | undefined;
     label?: string;
+    characterCount?: [number, number] | undefined;
 }
 
 export type SafariInputNode = BaseInputProps & InputBoxProps & SafariNode;

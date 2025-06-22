@@ -40,11 +40,14 @@ export const EditorContext = React.createContext<EditorContextProps>(defaultEdit
 export function EditorContextProvider({ children }: React.PropsWithChildren) {
     const { id } = useParams();
     const { isModified } = useIsPageModified(id);
-    const { page: crudPage, ...crud } = useEditorCrud();
-    const { get: localGet } = usePageStore();
     const editorUrlState = useEditorUrl();
     const editorDialogState = useEditorDialogState();
     const editorLoaderState = useEditorLoaderState();
+
+    const { get: localGet } = usePageStore();
+    const { page: crudPage, ...crud } = useEditorCrud({
+        onLoading: () => editorLoaderState.toggleLayoutLoading(),
+    });
 
     const [page, setPage] = React.useState<Page | undefined>();
     React.useEffect(() => {

@@ -1,33 +1,37 @@
 import React from 'react';
 import { Resizable } from 're-resizable';
 import { Puck } from '@measured/puck';
-import { Box, type IconButtonProps, Loader, Text } from '@digital-net/react-digital-ui';
+import { useElement } from '@digital-net/react-core';
+import { Box, type IconButtonProps, Text } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../Localization';
 import { type EditorToolKey, useEditorContext, useEditorLayoutState } from '../state';
 import { Actions } from './components';
 import { EditorHelper } from './EditorHelper';
-import { useElement } from '@digital-net/react-core';
+import { PuckPageFields } from './PuckPageFields';
+import { usePuckEditorKey } from './usePuckEditorKey';
 
 export const baseToolClassName = `${EditorHelper.className}-Tool`;
 
 export function PuckPanel() {
     const { page, selectedTool, selectTool, isLayoutLoading } = useEditorContext();
     const { toolHeight, setToolHeight } = useEditorLayoutState();
+    const key = usePuckEditorKey();
 
     const parentRef = React.useRef<HTMLDivElement>(null);
     const { element: parentElement } = useElement(parentRef);
     const maxToolHeight = React.useMemo(() => (parentElement?.clientHeight ?? 0) / 1.5, [parentElement?.clientHeight]);
 
     return (
-        <Box ref={parentRef} className={`${EditorHelper.className}-Tool-Panel`} fullHeight>
+        <Box key={key} ref={parentRef} className={`${EditorHelper.className}-Tool-Panel`} fullHeight>
             <Resizable
+                className={`${EditorHelper.className}-Tool-Panel-Top`}
                 enable={{ bottom: true }}
                 minHeight={64}
                 maxHeight={maxToolHeight}
                 size={{ width: '100%', height: toolHeight }}
                 onResize={setToolHeight}
             >
-                {isLayoutLoading ? null : <Puck.Fields />}
+                {isLayoutLoading ? null : <PuckPageFields />}
             </Resizable>
             <Box className={baseToolClassName} fullHeight>
                 <Box direction="row" justify="space-between" align="center" gap={1} fullWidth>

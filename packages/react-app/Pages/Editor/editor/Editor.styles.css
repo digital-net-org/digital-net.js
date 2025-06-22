@@ -17,16 +17,26 @@
 }
 
 .Editor .Editor-Tool {
+    z-index: 1;
     flex: 3;
     width: 100%;
     overflow-y: scroll;
     padding: var(--spacing-1);
     border-top: 1px solid var(--palette-shadow-light);
+    background-color: var(--palette-paper);
 }
 
 .Editor .Editor-Tool-Panel {
     border-left: 1px solid var(--palette-shadow-light);
     background-color: var(--palette-paper);
+}
+
+.Editor .Editor-Tool-Panel-Top {
+    overflow: scroll;
+}
+
+.Editor .Editor-Page-Fields {
+    border-top: 1px solid var(--palette-text-disabled);
 }
 
 .Editor .Editor-Tool .Editor-Tool-tree {
@@ -72,17 +82,6 @@
     flex-direction: row;
     align-items: center;
     gap: var(--spacing-1);
-}
-
-.Editor .Editor-ToolBar .Editor-ToolBar-Title-Input {
-    min-width: 250px;
-    border: dashed 1px var(--palette-border);
-    border-radius: var(--spacing-radius-1);
-    padding: calc(calc(var(--spacing-1) * 0.5) - 1px) calc(var(--spacing-1) - 1px);
-
-    &:hover {
-        border-color: var(--palette-primary);
-    }
 }
 
 .Editor .Editor-ToolBar .Editor-ToolBar-separator {

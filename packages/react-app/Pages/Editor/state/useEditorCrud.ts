@@ -3,12 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { type Page, type PageLight, ClientError, StringIdentity, ObjectMatcher } from '@digital-net/core';
 import { useCreate, useDelete, useGet, useGetById, usePatch } from '@digital-net/react-digital-client';
 import { useToaster } from '../../../Toaster';
+import { Localization } from '../../../Localization';
 import { EditorHelper } from '../editor/EditorHelper';
 import { EditorApiHelper } from './EditorApiHelper';
 import { usePageStore } from './usePageStore';
-import { Localization } from '@digital-net/react-app';
 
-export function useEditorCrud() {
+export function useEditorCrud(config: { onLoading: () => void }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToaster();
@@ -30,6 +30,7 @@ export function useEditorCrud() {
 
     const { isCreating, ...createApi } = useCreate<Page>('page', {
         onSuccess: async ({ value: id }) => {
+            config.onLoading();
             reload('all');
             if (id) {
                 navigate({ pathname: `${ROUTER_EDITOR}/${id}`, search: location.search });
@@ -47,13 +48,19 @@ export function useEditorCrud() {
 
     const { isPatching, ...patchApi } = usePatch<Page>(EditorApiHelper.apiUrl, {
         onSuccess: async () => {
+            config.onLoading();
             await localDelete(id);
             reload('all');
             reload('current');
         },
         onError: error => {
             if (ClientError.isErrorOfType(error, 'Entity-validation-exception')) {
-                toast(Localization.translate('page-editor:error.path-duplicate'), 'error');
+                if (error.errors[0].message === '/description: Maximum length exceeded.') {
+                    toast(Localization.translate('page-editor:error.desc-max-length'), 'error');
+                }
+                if (error.errors[0].message === '/path: This value violates a unique constraint.') {
+                    toast(Localization.translate('page-editor:error.path-duplicate'), 'error');
+                }
             }
         },
     });
