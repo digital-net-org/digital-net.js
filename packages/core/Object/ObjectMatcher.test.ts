@@ -62,6 +62,20 @@ test('ObjectMatcher: objectKeysEquality(), Should return true only for objects w
     expect(ObjectMatcher.objectKeysEquality({ a: 1, b: { d: 1 } }, { a: 1, b: { c: 1 } }, ['c'])).toBe(false);
 });
 
+test('ObjectMatcher: deepEquality(), Should do a simple comparison for primitive values', () => {
+    expect(ObjectMatcher.deepEquality(42, 42)).toBe(true);
+    expect(ObjectMatcher.deepEquality('test', 'test')).toBe(true);
+    expect(ObjectMatcher.deepEquality(true, true)).toBe(true);
+    expect(ObjectMatcher.deepEquality(null, null)).toBe(true);
+    expect(ObjectMatcher.deepEquality(undefined, undefined)).toBe(true);
+
+    // @ts-ignore
+    expect(ObjectMatcher.deepEquality(42, '42')).toBe(false);
+    expect(ObjectMatcher.deepEquality('test', 'Test')).toBe(false);
+    expect(ObjectMatcher.deepEquality(true, false)).toBe(false);
+    expect(ObjectMatcher.deepEquality(null, undefined)).toBe(false);
+});
+
 test('ObjectMatcher: deepEquality(), Should return true only for deeply equal objects', () => {
     expect(ObjectMatcher.deepEquality({ a: 1, b: 2 }, { a: 1, b: 2 })).toBe(true);
     expect(ObjectMatcher.deepEquality({ a: 1, b: 2 }, { a: 1, b: 3 })).toBe(false);

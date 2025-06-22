@@ -18,7 +18,7 @@ export function InputBox({ children, id, label, help, ...props }: PropsWithChild
                 id={id}
                 className={className}
                 direction="row"
-                mt={label ? 2 : 1}
+                mt={label ? 2 : 0}
                 gap={2}
                 justify="space-between"
                 align="center"

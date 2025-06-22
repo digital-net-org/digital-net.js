@@ -125,7 +125,7 @@ export class ObjectMatcher {
         ignoreKeys?: Array<keyof T>
     ) {
         if (!this.isObject(a, b)) {
-            return this.typeEquality(a, b);
+            return a === b;
         }
         if (!this.objectKeysEquality(a, b, ignoreKeys as string[])) {
             return false;

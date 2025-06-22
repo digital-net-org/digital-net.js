@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Text } from '@digital-net/react-digital-ui';
 import { useEditorContext, useEditorLayoutState } from '../state';
+import { usePuckEditorKey } from './usePuckEditorKey';
 import { EditorNav, EditorTitle, Actions } from './components';
 import { EditorHelper } from './EditorHelper';
 import { EditorDialogs } from './EditorDialogs';
@@ -10,6 +11,7 @@ import './Editor.styles.css';
 
 export function Editor() {
     const { preview } = useEditorLayoutState();
+    const key = usePuckEditorKey();
     const { page, togglePanel, isPanelOpen, handlePatch, handleDelete, isLoading, isModified, toggleReloadPopup } =
         useEditorContext();
 
@@ -27,7 +29,7 @@ export function Editor() {
                             },
                         ]}
                     />
-                    <EditorTitle />
+                    <EditorTitle key={key} />
                     <div className={`${EditorHelper.className}-ToolBar-Actions`}>
                         <Text variant="caption" className={`${EditorHelper.className}-ToolBar-PreviewSize`}>
                             {preview.width} x {preview.height}

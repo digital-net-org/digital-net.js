@@ -9,6 +9,7 @@ import { useInputRef } from '../useInputRef';
 import './InputText.styles.css';
 
 export interface InputTextProps extends SafariInputNode, InputPatternProps, ControlledState<string | undefined> {
+    onEsc?: () => void;
     onSelect?: () => void;
     onBlur?: () => void;
     type?: 'text' | 'password' | 'email';
@@ -59,6 +60,12 @@ export function InputText({
         setHidden(!hidden);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Escape') {
+            props.onEsc?.();
+        }
+    };
+
     return (
         <InputBox id={props.id} label={label} error={props.disabled ? false : error} selected={selected} {...props}>
             <div className={className}>
@@ -70,6 +77,7 @@ export function InputText({
                     required={props.required}
                     disabled={props.disabled}
                     type={resolvedType}
+                    onKeyDown={handleKeyDown}
                     onChange={handleChange}
                     onSelect={handleSelect}
                     onBlur={handleBlur}

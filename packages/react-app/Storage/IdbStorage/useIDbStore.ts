@@ -27,12 +27,13 @@ export function useIDbStore<T extends Entity>(store: string) {
     );
 
     const save = React.useCallback(
-        async (payload: Partial<T>) => {
-            if (!database || !payload.id) {
+        async (id: T['id'] | undefined, payload: Partial<T> | ((prev: Partial<T>) => Partial<T>)) => {
+            if (!database || !id) {
                 return;
             }
-            await IDbStore.save<T>(database, store, payload);
-            addOutdatedQuery(store, String(payload.id));
+            const current = (await IDbStore.get<T>(database, store, id)) ?? ({ id } as Partial<T>);
+            await IDbStore.save<T>(database, store, typeof payload === 'function' ? payload(current) : payload);
+            addOutdatedQuery(store, String(id));
         },
         [addOutdatedQuery, database, store]
     );

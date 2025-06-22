@@ -1,6 +1,5 @@
 import React from 'react';
-import { type Data, Puck } from '@measured/puck';
-import { delay } from '@digital-net/core';
+import { type Data } from '@measured/puck';
 import { Box, Loader, Text } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../Localization';
 import { PuckStateProvider } from '../../../Puck';
@@ -19,7 +18,7 @@ export function PuckEditor() {
             return;
         }
         if (!EditorHelper.deepDataEquality(data, page.puckData)) {
-            await save({ ...page, puckData: JSON.stringify(data) });
+            await save(page.id, prev => ({ ...page, ...prev, puckData: JSON.stringify(data) }));
         }
     };
 

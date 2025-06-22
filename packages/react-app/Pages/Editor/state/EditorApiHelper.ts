@@ -1,4 +1,4 @@
-import type { DigitalCrudEndpoint } from '@digital-net/core';
+import type { DigitalCrudEndpoint, Page } from '@digital-net/core';
 import { digitalClientInstance } from '@digital-net/react-digital-client';
 
 export class EditorApiHelper {

@@ -21,6 +21,9 @@ export default {
                     'Êtes-vous sûr de vouloir recharger le modèle ? Toutes les modifications non enregistrées seront perdues.',
             },
         },
+        error: {
+            'path-duplicate': "Ce chemin d'acces est déjà utilisé par une autre page.",
+        },
         noneSelected: 'Aucun modèle sélectionné',
     },
     en: {
@@ -40,6 +43,9 @@ export default {
                 title: 'Reload Model',
                 content: 'Are you sure you want to reload the model? All unsaved changes will be lost.',
             },
+        },
+        error: {
+            'path-duplicate': 'This path is already used by another page.',
         },
         noneSelected: 'No model selected',
     },
