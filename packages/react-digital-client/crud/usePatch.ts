@@ -1,5 +1,5 @@
 import React from 'react';
-import { type DigitalCrudEndpoint, type Entity, type Result, EntityHelper } from '@digital-net/core';
+import { type Patch, type DigitalCrudEndpoint, type Entity, type Result } from '@digital-net/core';
 import { type CrudConfig } from './CrudConfig';
 import { useDigitalMutation } from '../useDigitalMutation';
 
@@ -10,11 +10,7 @@ export function usePatch<T extends Entity>(endpoint: DigitalCrudEndpoint, option
     });
 
     const patch = React.useCallback(
-        (id: string | number, patch: Partial<T>) =>
-            mutate({
-                params: { id: String(id) },
-                patch: EntityHelper.buildPatch<T>(patch),
-            }),
+        (id: string, patch: Patch) => mutate({ params: { id: String(id) }, patch }),
         [mutate]
     );
 

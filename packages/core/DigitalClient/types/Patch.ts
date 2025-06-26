@@ -1,7 +1,11 @@
+import type { Entity } from '../../Dto';
+
 export interface PatchOperation<T = any> {
-    op: string;
+    op: 'replace' | 'add' | 'remove';
     path: string;
-    value: Partial<T>[keyof T];
+    value: T;
 }
 
-export type Patch<T> = Array<PatchOperation<T>>;
+export interface StoredPatchOperation<T = any> extends Omit<Entity, 'createdAt' | 'updatedAt'>, PatchOperation<T> {}
+
+export type Patch = Array<PatchOperation>;

@@ -12,7 +12,7 @@ import { digitalClientInstance } from './digitalClientInstance';
 
 export interface MutationPayload<T = any> {
     body?: Body;
-    patch?: Patch<T>;
+    patch?: Patch;
     params?: Slugs;
 }
 

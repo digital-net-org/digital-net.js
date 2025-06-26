@@ -1,21 +1,35 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { type Page, type PageLight, ClientError, StringIdentity, ObjectMatcher } from '@digital-net/core';
-import { useCreate, useDelete, useGet, useGetById, usePatch } from '@digital-net/react-digital-client';
+import {
+    type Page,
+    type PageLight,
+    ClientError,
+    type Result,
+    type PageMeta,
+    EntityHelper,
+    type EntityRaw,
+} from '@digital-net/core';
+import { useCreate, useDelete, useDigitalQuery, useGet, useGetById, usePatch } from '@digital-net/react-digital-client';
 import { useToaster } from '../../../Toaster';
 import { Localization } from '../../../Localization';
-import { EditorHelper } from '../editor/EditorHelper';
 import { EditorApiHelper } from './EditorApiHelper';
 import { usePageStore } from './usePageStore';
+import { usePageMetaStore } from './usePageMetaStore';
 
 export function useEditorCrud(config: { onLoading: () => void }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToaster();
     const { delete: localDelete, get: localGet } = usePageStore();
+    const { clearStore, getPageMetas } = usePageMetaStore(undefined, []);
 
     const { entities, ...getAll } = useGet<PageLight>('page');
     const { entity, ...getByIdApi } = useGetById<Page>('page', id);
+    const { isLoading: isMetaLoading, data } = useDigitalQuery<Result<Array<EntityRaw>>>('page/:id/meta', {
+        slugs: { id },
+        enabled: Boolean(id),
+    });
+    const pageMetas = React.useMemo(() => (data?.value ?? []).map(EntityHelper.build<PageMeta>), [data]);
 
     const reload = React.useCallback(
         (type: 'all' | 'current') => {
@@ -41,6 +55,7 @@ export function useEditorCrud(config: { onLoading: () => void }) {
     const { isDeleting, ...deleteApi } = useDelete('page', {
         onSuccess: async () => {
             await localDelete(id);
+            await clearStore(id);
             reload('all');
             navigate(ROUTER_EDITOR);
         },
@@ -50,6 +65,7 @@ export function useEditorCrud(config: { onLoading: () => void }) {
         onSuccess: async () => {
             config.onLoading();
             await localDelete(id);
+            await clearStore(id);
             reload('all');
             reload('current');
         },
@@ -66,18 +82,13 @@ export function useEditorCrud(config: { onLoading: () => void }) {
     });
 
     const isLoading = React.useMemo(
-        () => getAll.isQuerying || getByIdApi.isQuerying || isCreating || isPatching || isDeleting,
-        [getAll.isQuerying, getByIdApi.isQuerying, isCreating, isPatching, isDeleting]
+        () => isMetaLoading || getAll.isQuerying || getByIdApi.isQuerying || isCreating || isPatching || isDeleting,
+        [isMetaLoading, getAll.isQuerying, getByIdApi.isQuerying, isCreating, isPatching, isDeleting]
     );
 
     const handleCreate = React.useCallback(async () => {
         if (!isLoading) {
-            const title = StringIdentity.generate();
-            createApi.create({
-                title,
-                puckData: JSON.stringify(EditorHelper.defaultData),
-                path: '/' + title,
-            });
+            createApi.create(EditorApiHelper.handleCreate());
         }
     }, [createApi, isLoading]);
 
@@ -88,28 +99,12 @@ export function useEditorCrud(config: { onLoading: () => void }) {
     }, [entity, isLoading, deleteApi]);
 
     const handlePatch = React.useCallback(async () => {
-        const storedEntity = await localGet(id);
-        if (!entity || !storedEntity || isLoading) {
-            return;
+        if (entity && id && !isLoading) {
+            const storedEntity = await localGet(id);
+            const storedMetas = await getPageMetas(id);
+            patchApi.patch(entity.id, EditorApiHelper.handlePagePatch(storedEntity, entity, storedMetas));
         }
-        const payload = Object.keys(storedEntity ?? {}).reduce<Partial<Page>>((acc, key) => {
-            if (key === 'puckData') {
-                acc[key] = storedEntity.puckData;
-            } else if (
-                key !== 'id' &&
-                key !== 'createdAt' &&
-                key !== 'updatedAt' &&
-                !ObjectMatcher.deepEquality(storedEntity[key], entity[key])
-            ) {
-                acc[key] = storedEntity[key];
-            }
-            return acc;
-        }, {});
-        if (payload.path && !/^\/.*/.test(payload.path)) {
-            payload.path = '/' + payload.path;
-        }
-        patchApi.patch(entity.id, payload);
-    }, [localGet, id, entity, isLoading, patchApi]);
+    }, [localGet, id, entity, isLoading, getPageMetas, patchApi]);
 
-    return { handleCreate, handleDelete, handlePatch, isLoading, reload, page: entity, pageList: entities };
+    return { handleCreate, handleDelete, handlePatch, isLoading, reload, page: entity, pageList: entities, pageMetas };
 }

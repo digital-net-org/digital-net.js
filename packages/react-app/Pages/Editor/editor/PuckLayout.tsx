@@ -26,7 +26,7 @@ export function PuckLayout() {
     );
 
     return (
-        <Box ref={parentRef} direction="row" fullHeight fullWidth>
+        <Box ref={parentRef} direction="row" fullHeight fullWidth overflow="hidden">
             <Box
                 ref={previewRef}
                 className={`${EditorHelper.className}-Preview`}
@@ -51,6 +51,7 @@ export function PuckLayout() {
                 )}
             </Box>
             <Resizable
+                className={`${EditorHelper.className}-Right-Panel`}
                 enable={{ left: true }}
                 grid={[8, 8]}
                 minWidth={280}

@@ -20,15 +20,19 @@ export class EntityHelper {
         } as T;
     }
 
-    public static buildPatch<T extends Entity>(patch: Partial<T>): Patch<T> {
+    /**
+     * Builds a 'Replace' patch from a partial entity.
+     * @param patch The partial entity to build the patch from.
+     * @returns The built patch.
+     */
+    public static buildPatch<T extends Entity>(patch: Partial<T>): Patch {
         delete patch.id;
         delete patch.createdAt;
         delete patch.updatedAt;
-
         return Object.keys(patch).map(key => ({
             op: 'replace',
             path: `/${key}`,
-            value: patch[key as unknown as keyof T],
+            value: patch[key as keyof T],
         }));
     }
 
@@ -50,7 +54,7 @@ export class EntityHelper {
      * @param id The ID of the entity to find.
      * @returns The entity with the given ID.
      */
-    public static getById<T extends Entity>(entities: T[], id: string | number | undefined): T | undefined {
+    public static getById<T extends Entity>(entities: T[], id: string | undefined): T | undefined {
         return entities.find(entity => String(entity.id) === String(id));
     }
 }

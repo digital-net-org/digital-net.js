@@ -4,4 +4,5 @@ export { EditorApiHelper } from './EditorApiHelper';
 export { type EditorToolKey, type EditorUrlKey } from './useEditorUrl';
 export { useEditorLayoutState } from './useEditorLayoutState';
 export { useIsPageModified } from './useIsPageModified';
+export { usePageMetaStore } from './usePageMetaStore';
 export { usePageStore } from './usePageStore';

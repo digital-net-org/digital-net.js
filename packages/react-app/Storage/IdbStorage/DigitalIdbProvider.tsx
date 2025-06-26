@@ -3,11 +3,14 @@ import type { IDbConfig } from './types/IDbConfig';
 import { DigitalIdbContext } from './DigitalIdbContext';
 import { IDbAccessor } from './IDbAccessor';
 
+export type DigitalIdbStore = (typeof stores)[number];
+const stores = ['pages', 'patch:pages-metas'] as const;
+
 const defaultIdbConfig: IDbConfig = {
-    stores: ['pages'],
+    stores,
     name: 'safari-digital',
     version: 1,
-};
+} as const;
 
 export function DigitalIdbProvider({ children }: PropsWithChildren) {
     const [isLoading, setIsLoading] = React.useState(false);

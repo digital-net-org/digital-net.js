@@ -1,5 +1,5 @@
 export interface IDbConfig {
-    stores: Array<string>;
+    stores: ReadonlyArray<string>;
     name: string;
     version?: number;
 }

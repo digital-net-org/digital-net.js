@@ -2,19 +2,22 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Button, Dialog, Text } from '@digital-net/react-digital-ui';
 import { Localization } from '../../../Localization';
-import { useEditorContext, usePageStore } from '../state';
+import { useEditorContext, usePageMetaStore, usePageStore } from '../state';
 import { EditorHelper } from './EditorHelper';
 
 export function EditorDialogs() {
     const { id } = useParams();
     const { delete: localDelete } = usePageStore();
+    const { clearStore } = usePageMetaStore(id, []);
     const { isReloadPopupOpen, toggleLayoutLoading, toggleReloadPopup } = useEditorContext();
 
     const reloadPage = React.useCallback(async () => {
+        if (!id) return;
         await localDelete(id);
+        await clearStore(id);
         toggleLayoutLoading();
         toggleReloadPopup();
-    }, [id, localDelete, toggleLayoutLoading, toggleReloadPopup]);
+    }, [clearStore, id, localDelete, toggleLayoutLoading, toggleReloadPopup]);
 
     return (
         <Dialog

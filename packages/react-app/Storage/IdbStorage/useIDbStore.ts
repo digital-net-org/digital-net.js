@@ -2,6 +2,7 @@ import React from 'react';
 import { type Entity } from '@digital-net/core';
 import { DigitalIdbContext } from './DigitalIdbContext';
 import { IDbStore } from './IDbStore';
+import { type DigitalIdbStore } from './DigitalIdbProvider';
 
 /**
  * IndexedDb store accessor hook
@@ -11,11 +12,22 @@ import { IDbStore } from './IDbStore';
  *  - save: save an entity to the store
  *  - delete: delete an entity from the store
  */
-export function useIDbStore<T extends Entity>(store: string) {
+export function useIDbStore<T extends { id: Entity['id'] }>(store: DigitalIdbStore) {
     const { database, outdatedQueries, addOutdatedQuery, deleteOutdatedQuery } = React.useContext(DigitalIdbContext);
 
+    const getAll = React.useCallback(
+        async (cb?: (entity: T) => boolean) => {
+            if (!database) {
+                return;
+            }
+            const result = (await IDbStore.getAll<T>(database, store)) ?? [];
+            return cb ? result.filter(cb) : result;
+        },
+        [database, store]
+    );
+
     const get = React.useCallback(
-        async (id: string | number | undefined) => {
+        async (id: T['id'] | undefined) => {
             if (!database || !id) {
                 return;
             }
@@ -39,7 +51,7 @@ export function useIDbStore<T extends Entity>(store: string) {
     );
 
     const _delete = React.useCallback(
-        async (id: string | number | undefined) => {
+        async (id: T['id'] | undefined) => {
             if (!database || !id) {
                 return;
             }
@@ -51,6 +63,7 @@ export function useIDbStore<T extends Entity>(store: string) {
 
     return {
         get,
+        getAll,
         save,
         delete: _delete,
         outdatedQueries,

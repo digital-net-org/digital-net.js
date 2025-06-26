@@ -23,6 +23,7 @@ const defaultEditorContext: EditorContextProps = {
     togglePanel: () => void 0,
     page: undefined,
     pageList: [],
+    pageMetas: [],
     isLoading: false,
     isLayoutLoading: false,
     isModified: false,

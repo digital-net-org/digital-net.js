@@ -10,9 +10,13 @@ type spacing = null | 0 | 1 | 2 | 3;
 export interface BoxProps extends BaseBoxProps {
     element?: 'div' | 'span' | 'form' | 'section' | 'main';
     p?: spacing;
+    px?: spacing;
+    py?: spacing;
     pt?: spacing;
     pb?: spacing;
     m?: spacing;
+    mx?: spacing;
+    my?: spacing;
     mt?: spacing;
     mb?: spacing;
     gap?: spacing;

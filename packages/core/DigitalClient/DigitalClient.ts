@@ -19,7 +19,7 @@ export interface DigitalClientRequestConfig<T = any> extends RequestCallbacks<T>
     slugs?: Slugs;
     params?: Params;
     headers?: Headers;
-    body?: Patch<T> | Body;
+    body?: Patch | Body;
     options?: {
         skipRefresh?: boolean;
         withCredentials?: boolean;

@@ -6,6 +6,7 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 .Editor .Editor-Preview  {
@@ -16,6 +17,22 @@
     }
 }
 
+.Editor .Editor-Fields .Editor-Fields-Meta {
+    & .DigitalUi-InputBox .DigitalUi-InputText {
+        margin: calc(var(--spacing-1) * 0.2) 0;
+    }
+}
+
+.Editor .Editor-Right-Panel {
+    border-left: 1px solid var(--palette-shadow-light);
+    background-color: var(--palette-paper);
+    overflow: hidden;
+}
+
+.Editor .Editor-Right-Panel-Top {
+    overflow: hidden;
+}
+
 .Editor .Editor-Tool {
     z-index: 1;
     flex: 3;
@@ -24,15 +41,6 @@
     padding: var(--spacing-1);
     border-top: 1px solid var(--palette-shadow-light);
     background-color: var(--palette-paper);
-}
-
-.Editor .Editor-Tool-Panel {
-    border-left: 1px solid var(--palette-shadow-light);
-    background-color: var(--palette-paper);
-}
-
-.Editor .Editor-Tool-Panel-Top {
-    overflow: scroll;
 }
 
 .Editor .Editor-Page-Fields {

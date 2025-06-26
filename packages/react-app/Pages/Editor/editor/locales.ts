@@ -7,8 +7,13 @@ export default {
             title: 'Mes modèles',
         },
         tools: {
-            'page-metas': {
-                title: 'Configuration de la page',
+            fields: {
+                page: {
+                    title: 'Configuration de la page',
+                },
+                metas: {
+                    title: 'Configuration des métadonnées',
+                },
             },
             components: {
                 title: 'Composants',
@@ -62,8 +67,13 @@ export default {
             title: 'My Models',
         },
         tools: {
-            'page-metas': {
-                title: 'Page configuration',
+            fields: {
+                page: {
+                    title: 'Page configuration',
+                },
+                metas: {
+                    title: 'Metadata configuration',
+                },
             },
             components: {
                 title: 'Components',

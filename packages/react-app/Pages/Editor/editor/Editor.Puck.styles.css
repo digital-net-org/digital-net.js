@@ -5,10 +5,10 @@
 .Puck,
 #puck-preview,
 .Puck > div:first-child,
-.Puck div[id*=':rp:'],
 .Puck div[class*='_PuckPreview'] {
     height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 
 .Puck iframe #frame-root {
