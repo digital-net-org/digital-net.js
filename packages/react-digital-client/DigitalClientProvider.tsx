@@ -14,18 +14,24 @@ export function DigitalClientProvider(props: PropsWithChildren) {
     const [token, setToken] = React.useState<string>();
 
     React.useEffect(() => {
+        let isMounted = true;
         (async () => {
             const [response] = await Promise.all([digitalClientInstance.refreshTokens(), delay(1500)]);
             const { status, data } = response;
-
-            if (status === 200 && data.value) {
+            if (isMounted && status === 200 && data.value) {
                 digitalClientInstance.setToken(data.value);
                 setToken(data.value);
             }
-            setIsInitialized(true);
+            if (isMounted) {
+                setIsInitialized(true);
+            }
         })();
 
-        return digitalClientInstance.onTokenChange(token => setToken(token));
+        const unsubscribe = digitalClientInstance.onTokenChange(setToken);
+        return () => {
+            isMounted = false;
+            unsubscribe();
+        };
     }, []);
 
     return isInitialized ? (

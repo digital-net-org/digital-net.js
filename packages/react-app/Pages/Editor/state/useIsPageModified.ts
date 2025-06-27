@@ -2,35 +2,42 @@ import React from 'react';
 import { IDbStore } from '../../../Storage';
 import { EditorApiHelper } from './EditorApiHelper';
 import { usePageStore } from './usePageStore';
-import { usePageMetaStore } from '@digital-net/react-app/Pages/Editor/state/usePageMetaStore';
+import { usePageMetaStore } from './usePageMetaStore';
 
 export function useIsPageModified(id: string | undefined) {
-    const [state, setState] = React.useState(false);
+    const [isModified, setIsModified] = React.useState(false);
     const { get } = usePageStore();
-    const { state: storedMetas } = usePageMetaStore(id, []);
-
-    const isModified = React.useMemo(() => Boolean(storedMetas.length) || state, [storedMetas.length, state]);
+    const { getPageMetas } = usePageMetaStore(undefined, []);
 
     React.useEffect(() => {
         if (!id) {
-            setState(false);
+            setIsModified(false);
             return;
         }
         (async () => {
             const storedPage = await get(id);
-            setState(Boolean(storedPage));
+            const storedMetas = await getPageMetas(id);
+            setIsModified(Boolean(storedPage) || storedMetas.length > 0);
         })();
-
-        const onSet = () => setState(true);
-        const onRemove = () => setState(false);
-
-        IDbStore.onSet(EditorApiHelper.store, id, () => onSet);
-        IDbStore.onRemove(EditorApiHelper.store, id, () => onRemove);
+        const unsubscribeMetaChangeEvent = IDbStore.subscribeEvent('onChange', payload =>
+            payload?.store === 'patch:pages-metas' ? setIsModified(true) : void 0
+        );
+        const unsubscribeMetaRemoveEvent = IDbStore.subscribeEvent('onRemove', payload =>
+            payload?.store === 'patch:pages-metas' ? setIsModified(false) : void 0
+        );
+        const unsubscribePageChangeEvent = IDbStore.subscribeEvent('onChange', payload =>
+            payload?.store === EditorApiHelper.store && payload.id === id ? setIsModified(true) : void 0
+        );
+        const unsubscribePageRemoveEvent = IDbStore.subscribeEvent('onRemove', payload =>
+            payload?.store === EditorApiHelper.store && payload.id === id ? setIsModified(false) : void 0
+        );
         return () => {
-            IDbStore.clearListeners(EditorApiHelper.store, id, onSet);
-            IDbStore.clearListeners(EditorApiHelper.store, id, onRemove);
+            unsubscribeMetaChangeEvent();
+            unsubscribeMetaRemoveEvent();
+            unsubscribePageChangeEvent();
+            unsubscribePageRemoveEvent();
         };
-    }, [id, get]);
+    }, [id, get, getPageMetas]);
 
     return { isModified };
 }

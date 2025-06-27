@@ -1,13 +1,37 @@
-import type { Entity } from '@digital-net/core';
+import { type Entity, DigitalEvent } from '@digital-net/core';
 
 interface IDbEntity {
     id: Entity['id'];
+}
+
+interface IdbEventPayload {
+    store: string;
+    id: string;
 }
 
 /**
  * Indexed database store accessor utilities
  */
 export class IDbStore {
+    private static changeEvent = new DigitalEvent<IdbEventPayload | undefined>();
+    private static removeEvent = new DigitalEvent<IdbEventPayload | undefined>();
+
+    /**
+     * Subscribe to changes in the store
+     * @param event - event type, either 'onChange' or 'onRemove'
+     * @param cb - callback function to execute when the event occurs, receives the store name and entity as parameters.
+     * @returns unsubscribe function
+     */
+    public static subscribeEvent(event: 'onChange' | 'onRemove', cb: (payload?: IdbEventPayload) => void): () => void {
+        if (event === 'onChange') {
+            return this.changeEvent.subscribe(cb);
+        }
+        if (event === 'onRemove') {
+            return this.removeEvent.subscribe(cb);
+        }
+        throw new Error(`IDbStore: error subscribing to event: unknown event "${event}"`);
+    }
+
     private static validateStore(db: IDBDatabase, store: string): void {
         if (![...db.objectStoreNames].includes(store)) {
             throw new Error(`IDbStore: error getting data: store "${store}" does not exist`);
@@ -81,8 +105,7 @@ export class IDbStore {
                     } else {
                         storeObject.add(payload);
                     }
-                    window?.dispatchEvent(new Event(`IDB_SET_${store}_${payload.id}`));
-                    window?.dispatchEvent(new Event(`IDB_SET_${store}_ANY`));
+                    IDbStore.changeEvent.emit({ store, id: payload.id! });
                     resolve();
                 };
                 result.onerror = () => console.error(result.error);
@@ -103,43 +126,11 @@ export class IDbStore {
             try {
                 this.validateStore(db, store);
                 this.getStore(db, store, 'readwrite').delete(String(id));
-                window?.dispatchEvent(new Event(`IDB_REMOVE_${store}_${id}`));
-                window?.dispatchEvent(new Event(`IDB_REMOVE_${store}_ANY`));
+                IDbStore.removeEvent.emit({ store, id });
                 resolve();
             } catch (error) {
                 reject(error);
             }
         });
-    }
-
-    /**
-     * Register an event listener for changes in the store
-     * @param store - store name
-     * @param id - entity id, if null, the listener will be registered for all entities in the store
-     * @param callback - callback to execute when the entity is set
-     */
-    public static onSet(store: string, id: string | null, callback: () => void) {
-        window?.addEventListener?.(`IDB_SET_${store}_${id ?? 'ANY'}`, () => callback());
-    }
-
-    /**
-     * Register an event listener for changes in the store
-     * @param store - store name
-     * @param id - entity id, if null, the listener will be registered for all entities in the store
-     * @param callback - callback to execute when the entity is removed
-     */
-    public static onRemove(store: string, id: string | null, callback: () => void) {
-        window?.addEventListener?.(`IDB_REMOVE_${store}_${id ?? 'ANY'}`, () => callback());
-    }
-
-    /**
-     * Clear event listeners for the store
-     * @param store - store name
-     * @param id - entity id, if null, the listener will be removed for all entities in the store
-     * @param callback - callback to remove
-     */
-    public static clearListeners(store: string, id: string | null, callback: () => void) {
-        window?.removeEventListener?.(`IDB_SET_${store}_${id ?? 'ANY'}`, callback);
-        window?.removeEventListener?.(`IDB_REMOVE_${store}_${id ?? 'ANY'}`, callback);
     }
 }

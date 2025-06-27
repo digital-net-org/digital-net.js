@@ -11,9 +11,14 @@ export function usePuckEditorKey() {
         if (!id) {
             return;
         }
-        const handler = () => setValue(`${id}-${Date.now().toString()}`);
-        IDbStore.onRemove(EditorApiHelper.store, id, handler);
-        return () => IDbStore.clearListeners(EditorApiHelper.store, id, handler);
+        const unsubscribeRemoveEvent = IDbStore.subscribeEvent('onRemove', payload =>
+            payload?.store === EditorApiHelper.store && payload.id === id
+                ? setValue(`${id}-${Date.now().toString()}`)
+                : void 0
+        );
+        return () => {
+            unsubscribeRemoveEvent();
+        };
     }, [id]);
 
     return value;
