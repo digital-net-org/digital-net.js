@@ -1,4 +1,5 @@
 import {
+    type PatchOperation,
     type Patch,
     type PageMeta,
     type DigitalCrudEndpoint,
@@ -21,6 +22,10 @@ export class EditorApiHelper {
 
     public static invalidateGetById(id: string) {
         digitalClientInstance.invalidate(`${EditorApiHelper.apiUrl}/${id}`);
+    }
+
+    public static invalidateMetas(id: string) {
+        digitalClientInstance.invalidate(`${EditorApiHelper.apiUrl}/${id}/meta`);
     }
 
     public static handleCreate(): Partial<Page> {
@@ -55,19 +60,34 @@ export class EditorApiHelper {
         }
         return [
             ...EntityHelper.buildPatch<Page>(payload),
-            ...metas.map(({ path, op, value }) => ({
-                path,
-                op,
-                ...(op === 'remove'
-                    ? { value: undefined }
-                    : {
-                          value: {
-                              content: value.content,
-                              key: value.key,
-                              value: value.value,
-                          },
-                      }),
-            })),
+            ...metas.reduce<Array<PatchOperation>>((acc, { path, op, value }) => {
+                if (op === 'remove') {
+                    return [...acc, { path, op, value: undefined }];
+                }
+                if (op === 'add') {
+                    return [
+                        ...acc,
+                        {
+                            path,
+                            op,
+                            value: {
+                                content: value.content,
+                                key: value.key,
+                                value: value.value,
+                            },
+                        },
+                    ];
+                }
+                if (op === 'replace') {
+                    return [
+                        ...acc,
+                        { path: `${path}/content`, op, value: value.content },
+                        { path: `${path}/key`, op, value: value.key },
+                        { path: `${path}/value`, op, value: value.value },
+                    ];
+                }
+                return acc;
+            }, []),
         ];
     }
 }

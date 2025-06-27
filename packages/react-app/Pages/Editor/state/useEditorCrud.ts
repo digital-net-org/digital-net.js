@@ -21,7 +21,7 @@ export function useEditorCrud(config: { onLoading: () => void }) {
     const navigate = useNavigate();
     const { toast } = useToaster();
     const { delete: localDelete, get: localGet } = usePageStore();
-    const { clearStore, getPageMetas } = usePageMetaStore(undefined, []);
+    const { clearStore, getPageMetas } = usePageMetaStore([]);
 
     const { entities, ...getAll } = useGet<PageLight>('page');
     const { entity, ...getByIdApi } = useGetById<Page>('page', id);
@@ -36,6 +36,7 @@ export function useEditorCrud(config: { onLoading: () => void }) {
             if (type === 'all') {
                 EditorApiHelper.invalidateGetAll();
             } else if (type === 'current' && id) {
+                EditorApiHelper.invalidateMetas(id);
                 EditorApiHelper.invalidateGetById(id);
             }
         },

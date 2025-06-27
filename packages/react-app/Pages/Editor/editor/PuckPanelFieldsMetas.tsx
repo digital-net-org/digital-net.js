@@ -1,25 +1,45 @@
 import React from 'react';
-import type { PageMeta } from '@digital-net/core';
-import { Box, IconButton, InputSelect, InputText } from '@digital-net/react-digital-ui';
+import type { PageMeta, StoredPatchOperation } from '@digital-net/core';
+import { Box, IconButton } from '@digital-net/react-digital-ui';
 import { useEditorContext, usePageMetaStore } from '../state';
-import { baseFieldsClassName } from './PuckPanelFields';
+import { MetaField } from './MetaField';
+import { IDbStore } from '@digital-net/react-app/Storage';
 
-/*
- * TODO:
- *  - Fix rendering issues when adding/removing metas
- *  - Fix rendering issues on getting metas from Rest API (no meta is shown)
- *  - Fix the delete issue when removing a meta that is not in the current state (index /-1)
- * */
 export function PuckPanelFieldsMetas() {
     const { page, pageMetas } = useEditorContext();
-    const { remove, add, update, state } = usePageMetaStore(page?.id, pageMetas);
+    const { getPageMetas, clearStore, remove, add, update } = usePageMetaStore(pageMetas);
+    const [storedMetas, setStoredMetas] = React.useState<Array<StoredPatchOperation<PageMeta>>>();
+
+    React.useEffect(() => {
+        const refreshMetas = async () => setStoredMetas(page?.id ? await getPageMetas(page.id) : []);
+        refreshMetas();
+        const unsubscribeMetaChangeEvent = IDbStore.subscribeEvent('onCreate', payload =>
+            payload?.store === 'patch:pages-metas' ? refreshMetas() : void 0
+        );
+        const unsubscribeMetaRemoveEvent = IDbStore.subscribeEvent('onRemove', payload =>
+            payload?.store === 'patch:pages-metas' ? refreshMetas() : void 0
+        );
+        return () => {
+            unsubscribeMetaChangeEvent();
+            unsubscribeMetaRemoveEvent();
+        };
+    }, [getPageMetas, page?.id]);
 
     const metas: Array<PageMeta> = React.useMemo(() => {
         return [
-            ...pageMetas.filter(({ id }) => state.find(x => x.id === id)),
-            ...state.filter(x => x.op !== 'remove').map(x => x.value),
-        ].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
-    }, [pageMetas, state]);
+            ...pageMetas.reduce<Array<PageMeta>>((acc, meta) => {
+                const existing = storedMetas?.find(x => x.value.id === meta.id);
+                if (!existing) {
+                    return [...acc, meta];
+                }
+                if (existing.op !== 'remove') {
+                    return [...acc, existing.value];
+                }
+                return acc;
+            }, []),
+            ...(storedMetas?.filter(x => x.op === 'add').map(x => x.value) ?? []),
+        ];
+    }, [pageMetas, storedMetas]);
 
     const handleAddMeta = React.useCallback(async () => {
         if (!page?.id) return;
@@ -34,78 +54,24 @@ export function PuckPanelFieldsMetas() {
         await add(payload);
     }, [add, page?.id]);
 
-    const handleDeleteMeta = React.useCallback(
-        async (id: string) => {
-            if (!page?.id) return;
-            const meta = metas.find(x => x.id === id);
-            if (!meta) return;
-            await remove(meta);
-        },
-        [metas, page?.id, remove]
-    );
-
-    const handleUpdateMeta = React.useCallback(
-        async (id: string, payload: Partial<PageMeta>) => {
-            if (!page?.id) return;
-            const meta = metas.find(x => x.id === id);
-            if (!meta) return;
-            const updatedMeta = { ...meta, ...payload };
-            await update(updatedMeta);
-        },
-        [metas, page?.id, update]
-    );
+    const handleDeleteMeta = React.useCallback(async (meta: PageMeta) => await remove(meta), [remove]);
+    const handleUpdateMeta = React.useCallback(async (meta: PageMeta) => await update(meta), [update]);
+    const handleReloadMetas = React.useCallback(async () => await clearStore(page?.id), [clearStore, page?.id]);
 
     return (
         <Box fullWidth fullHeight overflow="hidden">
             <Box direction="row" px={2} mb={1} gap={1} align="center" fullWidth>
                 <IconButton icon="AddIcon" variant="icon-bordered" onClick={handleAddMeta} disabled={!page?.id} />
+                <IconButton
+                    icon="ReloadIcon"
+                    variant="icon-bordered"
+                    onClick={handleReloadMetas}
+                    disabled={!storedMetas?.length}
+                />
             </Box>
             <Box gap={3} p={2} fullWidth fullHeight overflow="scroll">
-                {metas.map(({ id, key, value, content }) => (
-                    <Box key={id} direction="row" gap={1} align="start" justify="space-between" fullWidth fullHeight>
-                        <Box gap={1} fullWidth>
-                            <Box
-                                className={`${baseFieldsClassName}-Meta`}
-                                direction="row"
-                                gap={1}
-                                align="start"
-                                fullWidth
-                            >
-                                <InputSelect
-                                    label="key"
-                                    value={key}
-                                    options={['name', 'property']}
-                                    onChange={v => handleUpdateMeta(id, { key: v })}
-                                    onRender={t => t}
-                                    required
-                                />
-                                <InputText
-                                    label={key ?? 'name'}
-                                    value={value}
-                                    maxLength={128}
-                                    onChange={v => handleUpdateMeta(id, { value: v })}
-                                    fullWidth
-                                />
-                            </Box>
-                            <InputText
-                                label="content"
-                                type="area"
-                                value={content}
-                                maxLength={256}
-                                onChange={v => handleUpdateMeta(id, { content: v })}
-                                fullWidth
-                            />
-                        </Box>
-                        <Box
-                            className={`${baseFieldsClassName}-Meta-Actions`}
-                            mt={2}
-                            gap={1}
-                            align="center"
-                            justify="center"
-                        >
-                            <IconButton icon="TrashIcon" onClick={() => handleDeleteMeta(id)} disabled={!page?.id} />
-                        </Box>
-                    </Box>
+                {metas.map(meta => (
+                    <MetaField key={meta.id} meta={meta} onDelete={handleDeleteMeta} onUpdate={handleUpdateMeta} />
                 ))}
             </Box>
         </Box>

@@ -52,6 +52,7 @@ export function useIDbStore<T extends { id: Entity['id'] }>(store: DigitalIdbSto
 
     const _delete = React.useCallback(
         async (id: T['id'] | undefined) => {
+            console.log('IDB', id);
             if (!database || !id) {
                 return;
             }

@@ -1,10 +1,10 @@
 import React from 'react';
 import { type StoredPatchOperation, type PageMeta } from '@digital-net/core';
 import { useIDbStore } from '../../../Storage';
+import { EditorApiHelper } from './EditorApiHelper';
 
-export function usePageMetaStore(pageId: string | undefined, metas: Array<PageMeta>) {
+export function usePageMetaStore(metas: Array<PageMeta>) {
     const { getAll, ...store } = useIDbStore<StoredPatchOperation<PageMeta>>('patch:pages-metas');
-    const [state, setState] = React.useState<Array<StoredPatchOperation<PageMeta>>>([]);
 
     const getPageMetas = React.useCallback(
         async (id: string) => (await getAll(x => x.value?.pageId === id)) ?? [],
@@ -12,29 +12,31 @@ export function usePageMetaStore(pageId: string | undefined, metas: Array<PageMe
     );
 
     const clearStore = React.useCallback(
-        async (id: string | undefined) => (id ? (await getPageMetas(id)).forEach(x => store.delete(x.id)) : void 0),
+        async (id: string | undefined) => {
+            if (!id) return;
+
+            (await getPageMetas(id)).forEach(x => store.delete(x.id));
+            EditorApiHelper.invalidateMetas(id);
+        },
         [getPageMetas, store]
     );
 
-    React.useEffect(() => {
-        (async () => setState(pageId ? await getPageMetas(pageId) : []))();
-    }, [getPageMetas, pageId]);
-
     const remove = React.useCallback(
         async ({ id }: PageMeta) => {
-            const current = await store.get(id);
-            if (!current) {
-                setState(prev => prev.filter(x => x.id !== id));
+            const stored = await store.get(id);
+            const index = metas.findIndex(x => x.id === id);
+            if (stored && index === -1) {
                 return await store.delete(id);
             }
-            const patch = {
-                id,
-                op: 'remove',
-                path: `/metas/${metas.findIndex(x => x.id === id)}`,
-                value: current.value,
-            } as const;
-            setState(prev => prev.map(x => (x.id === id ? patch : x)));
-            await store.save(id, patch);
+            if (index > -1) {
+                const patch = {
+                    id,
+                    op: 'remove',
+                    path: `/metas/${index}`,
+                    value: metas[index],
+                } as const;
+                await store.save(id, patch);
+            }
         },
         [metas, store]
     );
@@ -47,7 +49,6 @@ export function usePageMetaStore(pageId: string | undefined, metas: Array<PageMe
                 path: '/metas/-',
                 value: payload,
             } as const;
-            setState(prev => [...prev, patch]);
             await store.save(payload.id, patch);
         },
         [store]
@@ -64,15 +65,10 @@ export function usePageMetaStore(pageId: string | undefined, metas: Array<PageMe
                       path: `/metas/${metas.findIndex(x => x.id === payload.id)}`,
                       value: payload,
                   } as const);
-            setState(prev =>
-                !prev.find(x => x.id === payload.id)
-                    ? [...prev, patch]
-                    : prev.map(x => (x.id === payload.id ? patch : x))
-            );
             await store.save(payload.id, patch);
         },
         [metas, store]
     );
 
-    return { state, add, remove, update, getPageMetas, clearStore };
+    return { add, remove, update, getPageMetas, clearStore };
 }

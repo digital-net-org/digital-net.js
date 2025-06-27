@@ -1,5 +1,5 @@
 import React from 'react';
-import { IDbStore } from '../../../Storage';
+import { type IdbEventPayload, IDbStore } from '../../../Storage';
 import { EditorApiHelper } from './EditorApiHelper';
 import { usePageStore } from './usePageStore';
 import { usePageMetaStore } from './usePageMetaStore';
@@ -7,7 +7,7 @@ import { usePageMetaStore } from './usePageMetaStore';
 export function useIsPageModified(id: string | undefined) {
     const [isModified, setIsModified] = React.useState(false);
     const { get } = usePageStore();
-    const { getPageMetas } = usePageMetaStore(undefined, []);
+    const { getPageMetas } = usePageMetaStore([]);
 
     React.useEffect(() => {
         if (!id) {
@@ -19,23 +19,25 @@ export function useIsPageModified(id: string | undefined) {
             const storedMetas = await getPageMetas(id);
             setIsModified(Boolean(storedPage) || storedMetas.length > 0);
         })();
-        const unsubscribeMetaChangeEvent = IDbStore.subscribeEvent('onChange', payload =>
-            payload?.store === 'patch:pages-metas' ? setIsModified(true) : void 0
-        );
-        const unsubscribeMetaRemoveEvent = IDbStore.subscribeEvent('onRemove', payload =>
-            payload?.store === 'patch:pages-metas' ? setIsModified(false) : void 0
-        );
-        const unsubscribePageChangeEvent = IDbStore.subscribeEvent('onChange', payload =>
-            payload?.store === EditorApiHelper.store && payload.id === id ? setIsModified(true) : void 0
-        );
-        const unsubscribePageRemoveEvent = IDbStore.subscribeEvent('onRemove', payload =>
-            payload?.store === EditorApiHelper.store && payload.id === id ? setIsModified(false) : void 0
-        );
+
+        const onMetaEvent = (e: IdbEventPayload | undefined, setter: boolean) =>
+            e?.store === 'patch:pages-metas' ? setIsModified(setter) : void 0;
+        const onPageEvent = (e: IdbEventPayload | undefined, setter: boolean) =>
+            e?.store === EditorApiHelper.store && e.id === id ? setIsModified(setter) : void 0;
+
+        const unsubscribeMetaCreate = IDbStore.subscribeEvent('onCreate', payload => onMetaEvent(payload, true));
+        const unsubscribeMetaUpdate = IDbStore.subscribeEvent('onUpdate', payload => onMetaEvent(payload, true));
+        const unsubscribeMetaRemove = IDbStore.subscribeEvent('onRemove', payload => onMetaEvent(payload, false));
+        const unsubscribePageCreate = IDbStore.subscribeEvent('onCreate', payload => onPageEvent(payload, true));
+        const unsubscribePageUpdate = IDbStore.subscribeEvent('onUpdate', payload => onPageEvent(payload, true));
+        const unsubscribePageRemove = IDbStore.subscribeEvent('onRemove', payload => onPageEvent(payload, false));
         return () => {
-            unsubscribeMetaChangeEvent();
-            unsubscribeMetaRemoveEvent();
-            unsubscribePageChangeEvent();
-            unsubscribePageRemoveEvent();
+            unsubscribeMetaCreate();
+            unsubscribeMetaUpdate();
+            unsubscribeMetaRemove();
+            unsubscribePageCreate();
+            unsubscribePageUpdate();
+            unsubscribePageRemove();
         };
     }, [id, get, getPageMetas]);
 

@@ -1,10 +1,10 @@
 import { type Entity, DigitalEvent } from '@digital-net/core';
 
-interface IDbEntity {
+export interface IDbEntity {
     id: Entity['id'];
 }
 
-interface IdbEventPayload {
+export interface IdbEventPayload {
     store: string;
     id: string;
 }
@@ -13,6 +13,8 @@ interface IdbEventPayload {
  * Indexed database store accessor utilities
  */
 export class IDbStore {
+    private static createEvent = new DigitalEvent<IdbEventPayload | undefined>();
+    private static updateEvent = new DigitalEvent<IdbEventPayload | undefined>();
     private static changeEvent = new DigitalEvent<IdbEventPayload | undefined>();
     private static removeEvent = new DigitalEvent<IdbEventPayload | undefined>();
 
@@ -22,12 +24,21 @@ export class IDbStore {
      * @param cb - callback function to execute when the event occurs, receives the store name and entity as parameters.
      * @returns unsubscribe function
      */
-    public static subscribeEvent(event: 'onChange' | 'onRemove', cb: (payload?: IdbEventPayload) => void): () => void {
+    public static subscribeEvent(
+        event: 'onChange' | 'onRemove' | 'onUpdate' | 'onCreate',
+        cb: (payload?: IdbEventPayload) => void
+    ): () => void {
         if (event === 'onChange') {
             return this.changeEvent.subscribe(cb);
         }
         if (event === 'onRemove') {
             return this.removeEvent.subscribe(cb);
+        }
+        if (event === 'onUpdate') {
+            return this.updateEvent.subscribe(cb);
+        }
+        if (event === 'onCreate') {
+            return this.createEvent.subscribe(cb);
         }
         throw new Error(`IDbStore: error subscribing to event: unknown event "${event}"`);
     }
@@ -102,8 +113,10 @@ export class IDbStore {
                 result.onsuccess = () => {
                     if (result?.result !== undefined) {
                         storeObject.put({ ...(result?.result ?? {}), ...payload });
+                        IDbStore.updateEvent.emit({ store, id: payload.id! });
                     } else {
                         storeObject.add(payload);
+                        IDbStore.createEvent.emit({ store, id: payload.id! });
                     }
                     IDbStore.changeEvent.emit({ store, id: payload.id! });
                     resolve();
@@ -126,6 +139,7 @@ export class IDbStore {
             try {
                 this.validateStore(db, store);
                 this.getStore(db, store, 'readwrite').delete(String(id));
+                IDbStore.changeEvent.emit({ store, id });
                 IDbStore.removeEvent.emit({ store, id });
                 resolve();
             } catch (error) {

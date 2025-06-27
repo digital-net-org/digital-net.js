@@ -8,7 +8,7 @@ import { EditorHelper } from './EditorHelper';
 export function EditorDialogs() {
     const { id } = useParams();
     const { delete: localDelete } = usePageStore();
-    const { clearStore } = usePageMetaStore(id, []);
+    const { clearStore } = usePageMetaStore([]);
     const { isReloadPopupOpen, toggleLayoutLoading, toggleReloadPopup } = useEditorContext();
 
     const reloadPage = React.useCallback(async () => {
