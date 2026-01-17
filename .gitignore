@@ -1,12 +1,11 @@
 node_modules
-build
-dist
-.next
-
 .vscode
 .idea
 
+*/**/build
+*/**/dist
 */**/*.tsbuildinfo
 */**/*.env
 */**/vite.config.ts.timestamp-*
 *storybook.log
+storybook-static
