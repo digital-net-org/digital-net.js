@@ -39,6 +39,15 @@ export class StringMatcher {
     }
 
     /**
+     * Checks if a string is in kebabCase.
+     * @param {string} str
+     * @returns {boolean}
+     */
+    static isKebabCase(str) {
+        return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(str);
+    }
+
+    /**
      * Checks if a string is in snake_case.
      * @param {string} str
      * @returns {boolean}

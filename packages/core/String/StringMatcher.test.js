@@ -35,6 +35,15 @@ describe('StringMatcher', () => {
         });
     });
 
+    describe('isKebabCase()', () => {
+        it('should validate KebabCase strings', () => {
+            expect(StringMatcher.isKebabCase('MyClass')).toBe(false);
+            expect(StringMatcher.isKebabCase('my-class')).toBe(true);
+            expect(StringMatcher.isKebabCase('my-class_1')).toBe(false);
+            expect(StringMatcher.isKebabCase('My-class')).toBe(false);
+        });
+    });
+
     describe('isSnakeCase()', () => {
         it('should validate snake_case strings', () => {
             expect(StringMatcher.isSnakeCase('my_variable')).toBe(true);

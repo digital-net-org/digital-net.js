@@ -24,6 +24,19 @@ describe('StringResolver', () => {
         });
     });
 
+    describe('toKebabCase()', () => {
+        it.each([
+            { input: 'some-test', expected: 'some-test' },
+            { input: 'SomeTest', expected: 'some-test' },
+            { input: 'some_test', expected: 'some-test' },
+            { input: 'SOME_TEST', expected: 'some-test' },
+            { input: 'Some Test', expected: 'some-test' },
+            { input: 'Some    Test ofAString!!lol', expected: 'some-test-of-a-string-lol' },
+        ])('should transform "$input" to "$expected"', ({ input, expected }) => {
+            expect(StringResolver.toKebabCase(input)).toBe(expected);
+        });
+    });
+
     describe('truncateWithEllipsis()', () => {
         it.each([
             { input: 'Too long sry lol!', maxLength: 6, expected: 'Too...' },

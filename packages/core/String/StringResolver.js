@@ -10,6 +10,7 @@ export class StringResolver {
      * @returns {string}
      */
     static trimSlashes(str) {
+        if (StringMatcher.isEmptyOrWhitespace(str)) return '';
         return str.replace(/^\/|\/$/g, '');
     }
 
@@ -19,6 +20,7 @@ export class StringResolver {
      * @returns {string}
      */
     static toCamelCase(str) {
+        if (StringMatcher.isEmptyOrWhitespace(str)) return '';
         if (StringMatcher.isCamelCase(str)) return str;
         if (StringMatcher.isPascalCase(str)) return str[0].toLowerCase() + str.slice(1);
 
@@ -31,12 +33,32 @@ export class StringResolver {
     }
 
     /**
+     * Converts any string to kebab-case.
+     * Handles PascalCase, camelCase, snake_case, and strings with spaces or symbols.
+     * @param {string} str
+     * @returns {string}
+     */
+    static toKebabCase(str) {
+        if (StringMatcher.isEmptyOrWhitespace(str)) return '';
+        if (StringMatcher.isKebabCase(str)) return str;
+
+        return str
+            .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+            .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .replace(/-{2,}/g, '-');
+    }
+
+    /**
      * Truncate a string that exceeds the provided length and adds ellipsis.
      * @param {string} input
      * @param {number} maxLength
      * @returns {string}
      */
     static truncateWithEllipsis(input, maxLength) {
+        if (StringMatcher.isEmptyOrWhitespace(input)) return '';
         const ellipsis = '...';
         if (input.length <= maxLength) {
             return input;
