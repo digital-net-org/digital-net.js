@@ -1,4 +1,4 @@
-import { DigitalElement } from '../../modules/DigitalElement';
+import { DigitalElement } from '../../modules/Component';
 
 export class InputSwitch extends DigitalElement {
     render() {
