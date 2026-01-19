@@ -69,6 +69,7 @@ describe('DigitalElement', () => {
                 document.body.appendChild(el);
 
                 const styleTag = el.shadowRoot.querySelector('style');
+                expect(styleTag.id).toContain('test-element-no-adopted-styles-style');
                 expect(styleTag).not.toBeNull();
                 expect(styleTag.textContent).toContain('color: red');
                 expect(el.shadowRoot.adoptedStyleSheets).toBeUndefined();

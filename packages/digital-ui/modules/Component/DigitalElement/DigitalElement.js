@@ -21,7 +21,7 @@ export class DigitalElement extends HTMLElement {
         }
 
         const style = this.renderStyle();
-        const styleId = `${this.constructor.name}-style`;
+        this.constructor._styleTemplateId ??= `${StringResolver.toKebabCase(this.constructor.name)}-style`;
         if (style && !(style instanceof CSSResult)) {
             throw new DigitalUiError(
                 `${this.constructor.name}: renderStyle() must return an instance of CSSResult. Use the 'css' tagged template function.`,
@@ -36,7 +36,7 @@ export class DigitalElement extends HTMLElement {
             // HTML template should already be in place as well.
             if (style instanceof CSSResult && Array.isArray(this.shadowRoot.adoptedStyleSheets)) {
                 this.shadowRoot.adoptedStyleSheets = [style.styleSheet];
-                const ssrStyle = this.shadowRoot.querySelector(`#${styleId}`);
+                const ssrStyle = this.shadowRoot.querySelector(`#${this.constructor._styleTemplateId}`);
                 if (ssrStyle) {
                     ssrStyle.remove();
                 }
@@ -62,8 +62,11 @@ export class DigitalElement extends HTMLElement {
 
         if (!DigitalElement.#templates.has(this.constructor)) {
             const template = document.createElement('template');
-            template.innerHTML =
-                (!hasAdoptedStyles ? `<style id="${styleId}">${style.toString()}</style>` : '') + this.render();
+            const htmlContent = this.render();
+            const styleContent = !hasAdoptedStyles
+                ? `<style id="${this.constructor._styleTemplateId}">${style.toString()}</style>`
+                : '';
+            template.innerHTML = `${styleContent}${htmlContent}`;
             DigitalElement.#templates.set(this.constructor, template);
         }
 
