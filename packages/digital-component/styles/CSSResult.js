@@ -1,10 +1,12 @@
-import { DigitalUiError } from '../../Error';
+import { DigitalComponentError } from '../Error';
 
 /**
  * Wraps a CSS string and provides optimized delivery for Client and Server.
  */
 export class CSSResult {
+    /** @type {string} */
     #cssString;
+    /** @type {CSSStyleSheet | null} */
     #styleSheet = null;
 
     constructor(cssString) {
@@ -24,7 +26,7 @@ export class CSSResult {
      */
     get styleSheet() {
         if (typeof window === 'undefined' || !window.CSSStyleSheet) {
-            throw new DigitalUiError(
+            throw new DigitalComponentError(
                 'Cannot create a CSSStyleSheet in the current environment.',
                 'get CSSResult.styleSheet'
             );

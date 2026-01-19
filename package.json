@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "license": "MIT",
     "scripts": {
+        "test": "vitest",
         "storybook": "storybook dev -p 6006"
     },
     "devDependencies": {

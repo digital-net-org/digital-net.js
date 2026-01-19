@@ -1,4 +1,4 @@
-import { DigitalUiError } from '../../Error';
+import { DigitalComponentError } from '../Error';
 import { CSSResult } from './CSSResult.js';
 
 /**
@@ -21,7 +21,7 @@ export const css = (strings, ...values) => {
         if (typeof value === 'number') {
             return acc + str + String(value);
         }
-        throw new DigitalUiError(
+        throw new DigitalComponentError(
             `Interpolation of ${typeof value} is forbidden. Use CSS variables for dynamic values or wrap CSS fragments in css.`,
             'Tagged template css'
         );

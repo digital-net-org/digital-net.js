@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { css } from './css.js';
 import { CSSResult } from './CSSResult.js';
-import { DigitalUiError } from '../../Error';
+import { DigitalComponentError } from '../Error';
 
 describe('css tagged template', () => {
     /**

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DigitalElement } from './DigitalElement.js';
 import { css } from '../styles/css';
+import { html } from '../html/html';
 
 describe('DigitalElement', () => {
     describe('Component abstract class implementation', () => {
@@ -12,7 +13,7 @@ describe('DigitalElement', () => {
     describe('Component Integration', () => {
         class TestElement extends DigitalElement {
             render() {
-                return '<div id="test-content">Hello World</div>';
+                return html`<div id="test-content">Hello World</div>`;
             }
             renderStyle() {
                 return css`

@@ -1,6 +1,7 @@
-import { StringResolver } from '../../../../core/String';
-import { DigitalUiError } from '../../Error';
+import { StringResolver } from '../../core/String';
+import { DigitalComponentError } from '../Error';
 import { CSSResult } from '../styles/CSSResult';
+import { HTMLResult } from '../html/HTMLResult.js';
 import { css } from '../styles/css';
 
 /**
@@ -14,20 +15,22 @@ export class DigitalElement extends HTMLElement {
     constructor() {
         super();
         if (this.constructor === DigitalElement) {
-            throw new DigitalUiError(
+            throw new DigitalComponentError(
                 'Cannot instantiate abstract class Component directly. This class must be extended',
                 'DigitalElement.constructor'
             );
         }
 
         const style = this.renderStyle();
-        this.constructor._styleTemplateId ??= `${StringResolver.toKebabCase(this.constructor.name)}-style`;
         if (style && !(style instanceof CSSResult)) {
-            throw new DigitalUiError(
+            throw new DigitalComponentError(
                 `${this.constructor.name}: renderStyle() must return an instance of CSSResult. Use the 'css' tagged template function.`,
                 'DigitalElement.constructor'
             );
         }
+
+        this.constructor._tagName ??= StringResolver.toKebabCase(this.constructor.name);
+        this.constructor._styleTemplateId ??= `${this.constructor._tagName}-style`;
 
         // SSR Declarative Shadow DOM case (see https://web.dev/articles/declarative-shadow-dom#component_hydration)
         if (this.shadowRoot) {
@@ -41,13 +44,11 @@ export class DigitalElement extends HTMLElement {
                     ssrStyle.remove();
                 }
             }
-
             return;
         }
 
-        // CSR case
         if (typeof window?.document?.createElement !== 'function') {
-            throw new DigitalUiError(
+            throw new DigitalComponentError(
                 'Cannot create a template in the current environment.',
                 'DigitalElement.constructor'
             );
@@ -62,11 +63,20 @@ export class DigitalElement extends HTMLElement {
 
         if (!DigitalElement.#templates.has(this.constructor)) {
             const template = document.createElement('template');
+
             const htmlContent = this.render();
+            if (!(htmlContent instanceof HTMLResult)) {
+                throw new DigitalComponentError(
+                    `${this.constructor.name}: render() must return an instance of HTMLResult. Use the 'html' tagged template function.`,
+                    'DigitalElement.constructor'
+                );
+            }
+
             const styleContent = !hasAdoptedStyles
                 ? `<style id="${this.constructor._styleTemplateId}">${style.toString()}</style>`
                 : '';
-            template.innerHTML = `${styleContent}${htmlContent}`;
+
+            template.innerHTML = `${styleContent}${htmlContent.toString()}`;
             DigitalElement.#templates.set(this.constructor, template);
         }
 
@@ -82,13 +92,13 @@ export class DigitalElement extends HTMLElement {
      */
     static define(tagName = null) {
         if (this === DigitalElement) {
-            throw new DigitalUiError(
+            throw new DigitalComponentError(
                 'Cannot append abstract class digitalElement directly. This class must be extended.',
                 'DigitalElement.define'
             );
         }
         if (typeof window?.customElements?.define !== 'function') {
-            throw new DigitalUiError(
+            throw new DigitalComponentError(
                 'Cannot define customElements in the current environment',
                 'DigitalElement.define'
             );
@@ -103,7 +113,7 @@ export class DigitalElement extends HTMLElement {
     /**
      * Render the HTML content of the custom Element.
      * @abstract
-     * @returns {string} The string containing the HTML content.
+     * @returns {HTMLResult} The string containing the HTML content.
      */
     render() {
         throw new Error(`${this.constructor.name}: You must implement render()`);
