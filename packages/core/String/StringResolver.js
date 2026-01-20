@@ -27,6 +27,9 @@ export class StringResolver {
         if (StringMatcher.isSnakeCase(str) || StringMatcher.isUpperSnakeCase(str)) {
             return str.toLowerCase().replace(/_([a-z0-9])/g, (_, chr) => chr.toUpperCase());
         }
+        if (StringMatcher.isKebabCase(str)) {
+            return str.toLowerCase().replace(/-([a-z0-9])/g, (_, chr) => chr.toUpperCase());
+        }
 
         console.warn(`StringResolver.toCamelCase(), Could not convert string to camel case: ${str}`);
         return str;

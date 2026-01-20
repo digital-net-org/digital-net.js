@@ -19,6 +19,7 @@ describe('StringResolver', () => {
             { input: 'SomeTest', expected: 'someTest' },
             { input: 'some_test', expected: 'someTest' },
             { input: 'SOME_TEST', expected: 'someTest' },
+            { input: 'some-test', expected: 'someTest' },
         ])('should transform "$input" to "$expected"', ({ input, expected }) => {
             expect(StringResolver.toCamelCase(input)).toBe(expected);
         });
