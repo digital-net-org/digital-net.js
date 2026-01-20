@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { HTMLResult } from './HTMLResult.js';
 import { html } from './html.js';
 
-describe('html tagged template', () => {
+describe('html tagged template - HTMLResult instantiation', () => {
     it('should return an instance of HTMLResult', () => {
         const result = html`<div></div>`;
         expect(result).toBeInstanceOf(HTMLResult);
@@ -40,5 +40,68 @@ describe('html tagged template', () => {
     it('should handle null or undefined values by rendering nothing', () => {
         const result = html`<div>${null}${undefined}</div>`;
         expect(result.toString()).toBe('<div></div>');
+    });
+});
+
+describe('html tagged template - Bindings & Hydration', () => {
+    it('should generate deterministic data-binding-index for events', () => {
+        const result = html`<button @click="${() => void 0}">Click</button>`;
+        expect(result.toString()).toContain('data-binding-index="db-0"');
+        expect(result.toString()).not.toContain('@click');
+    });
+
+    it('should generate deterministic data-binding-index for properties', () => {
+        const result = html`<input :value="${'test-value'}" />`;
+        expect(result.toString()).toContain('data-binding-index="db-0"');
+        expect(result.toString()).not.toContain(':value');
+    });
+
+    it('should hydrate event listeners correctly', () => {
+        let clicked = false;
+        const handler = () => {
+            clicked = true;
+        };
+        const result = html`<button @click="${handler}">Click</button>`;
+
+        const container = document.createElement('div');
+        container.innerHTML = result.toString();
+        result.hydrate(container);
+
+        const button = container.querySelector('button');
+        button.click();
+
+        expect(clicked).toBe(true);
+        expect(button.hasAttribute(HTMLResult.bindingAttributePrefix)).toBe(false);
+    });
+
+    it('should hydrate properties correctly', () => {
+        const val = 'Hello World';
+        const result = html`<input :value="${val}" />`;
+
+        const container = document.createElement('div');
+        container.innerHTML = result.toString();
+        result.hydrate(container);
+
+        const input = container.querySelector('input');
+        expect(input.value).toBe(val);
+    });
+
+    it('should remove data-binding-index attributes after hydration', () => {
+        const result = html`<button data-theme="light" :value=${1} @click=${() => {}}>Click</button>`;
+
+        const container = document.createElement('div');
+        container.innerHTML = result.toString();
+        result.hydrate(container);
+
+        const btn = container.querySelector('button');
+        expect(btn.querySelector(`[${HTMLResult.bindingAttributePrefix}-0]`)).toBeNull();
+        expect(btn.querySelector(`[${HTMLResult.bindingAttributePrefix}-1]`)).toBeNull();
+    });
+
+    it('should support multiple mixed bindings in order', () => {
+        const result = html`<div :id=${'id-123'} @mouseover=${() => {}}></div>`;
+        const output = result.toString();
+        expect(output).toContain('data-b-0');
+        expect(output).toContain('data-b-1');
     });
 });

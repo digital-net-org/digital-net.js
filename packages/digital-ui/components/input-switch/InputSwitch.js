@@ -8,7 +8,7 @@ export class InputSwitch extends DigitalElement {
         return html`
             <div class="input-switch-container">
                 <label class="input-switch-label">
-                    <input class="input-switch-input" value="true" type="checkbox" checked />
+                    <input class="input-switch-input" value="true" type="checkbox" :checked="${true}" />
                     <span class="input-switch-slider"></span>
                 </label>
             </div>

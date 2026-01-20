@@ -76,11 +76,13 @@ export class DigitalElement extends HTMLElement {
             this.shadowRoot.adoptedStyleSheets = [style.styleSheet];
         }
 
+        // First instance is responsible for creating and caching the template. Note that
+        // HTML parsing is the most expensive part here, so we want to do it only once.
         if (!DigitalElement.#templates.has(this.constructor)) {
             const template = document.createElement('template');
 
-            const htmlContent = this.render();
-            if (!(htmlContent instanceof HTMLResult)) {
+            const htmlSkeleton = this.render();
+            if (!(htmlSkeleton instanceof HTMLResult)) {
                 throw new DigitalComponentError(
                     `${this.constructor.name}: render() must return an instance of HTMLResult. Use the 'html' tagged template function.`,
                     'DigitalElement.constructor'
@@ -91,12 +93,15 @@ export class DigitalElement extends HTMLElement {
                 ? `<style id="${this.constructor._styleTemplateId}">${style.toString()}</style>`
                 : '';
 
-            template.innerHTML = `${styleContent}${htmlContent.toString()}`;
+            template.innerHTML = `${styleContent}${htmlSkeleton.toString()}`;
             DigitalElement.#templates.set(this.constructor, template);
         }
 
         const cachedTemplate = DigitalElement.#templates.get(this.constructor);
-        this.shadowRoot.appendChild(cachedTemplate.content.cloneNode(true));
+        const clone = cachedTemplate.content.cloneNode(true);
+
+        this.render().hydrate(clone);
+        this.shadowRoot.appendChild(clone);
     }
 
     /**

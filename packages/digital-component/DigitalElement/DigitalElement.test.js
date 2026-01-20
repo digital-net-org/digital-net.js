@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DigitalElement } from './DigitalElement.js';
-import { css } from '../styles/css';
-import { html } from '../html/html';
+import { css } from '../styles/css.js';
+import { html } from '../html/html.js';
 
 describe('DigitalElement', () => {
     describe('Component abstract class implementation', () => {
@@ -24,7 +24,7 @@ describe('DigitalElement', () => {
 
         beforeEach(() => (document.body.innerHTML = ''));
 
-        it('should throw an error if renderStyle does not return CSSResult', () => {
+        it('should throw an error if static styles is not of type CSSResult', () => {
             class TestElementCssError extends TestElement {
                 static styles = 'div { color: blue; }';
             }
