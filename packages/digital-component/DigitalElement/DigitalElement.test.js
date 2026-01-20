@@ -15,22 +15,18 @@ describe('DigitalElement', () => {
             render() {
                 return html`<div id="test-content">Hello World</div>`;
             }
-            renderStyle() {
-                return css`
-                    div {
-                        color: red;
-                    }
-                `;
-            }
+            static styles = css`
+                div {
+                    color: red;
+                }
+            `;
         }
 
         beforeEach(() => (document.body.innerHTML = ''));
 
         it('should throw an error if renderStyle does not return CSSResult', () => {
             class TestElementCssError extends TestElement {
-                renderStyle() {
-                    return 'div { color: blue; }';
-                }
+                static styles = 'div { color: blue; }';
             }
 
             TestElementCssError.define();

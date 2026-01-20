@@ -1,10 +1,17 @@
-import { DigitalElement } from '../../../digital-component';
+import { html, DigitalElement } from '../../../digital-component';
+import { styles } from './InputSwitch.styles.js';
 
 export class InputSwitch extends DigitalElement {
+    static styles = styles;
+
     render() {
-        return `<div class="square">I should render correctly! If not then I'm very sorry.</div>`;
-    }
-    renderStyle() {
-        return '.square { width: 100px; height: 100px; background-color: lightblue; }';
+        return html`
+            <div class="input-switch-container">
+                <label class="input-switch-label">
+                    <input class="input-switch-input" value="true" type="checkbox" checked />
+                    <span class="input-switch-slider"></span>
+                </label>
+            </div>
+        `;
     }
 }

@@ -12,6 +12,12 @@ export class DigitalElement extends HTMLElement {
     /** @type {Map<Function, HTMLTemplateElement>} */
     static #templates = new Map();
 
+    /**
+     * @abstract
+     * @type {CSSResult[] | CSSResult}
+     * */
+    static styles = css``;
+
     constructor() {
         super();
         if (this.constructor === DigitalElement) {
@@ -21,7 +27,16 @@ export class DigitalElement extends HTMLElement {
             );
         }
 
-        const style = this.renderStyle();
+        const style = Array.isArray(this.constructor.styles)
+            ? this.constructor.styles.reduce((acc, curr) => {
+                  return acc !== null
+                      ? css`
+                            ${acc}
+                            ${curr}
+                        `
+                      : curr;
+              }, null)
+            : this.constructor.styles;
         if (style && !(style instanceof CSSResult)) {
             throw new DigitalComponentError(
                 `${this.constructor.name}: renderStyle() must return an instance of CSSResult. Use the 'css' tagged template function.`,
@@ -117,14 +132,5 @@ export class DigitalElement extends HTMLElement {
      */
     render() {
         throw new Error(`${this.constructor.name}: You must implement render()`);
-    }
-
-    /**
-     * Render the Style sheet of the custom Element.
-     * @virtual
-     * @returns {CSSResult} The string containing the CSS content.
-     */
-    renderStyle() {
-        return css``;
     }
 }
