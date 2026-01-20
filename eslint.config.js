@@ -1,14 +1,11 @@
-import jsConfig from './eslint/eslint-rules-js.js';
-import tsConfig from './eslint/eslint-rules-ts.js';
+import rules from './eslint/eslint-rules-js.js';
 
-export default [
+/** @type {import('eslint').Linter.Config[]} */
+const config = [
     {
-        rules: {
-            ...jsConfig,
-            ...tsConfig,
-        },
-    },
-    {
-        ignores: [],
+        rules,
+        ignores: ['**/dist/**', '**/node_modules/**'],
     },
 ];
+
+export default config;

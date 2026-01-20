@@ -1,5 +1,5 @@
 /** @type {Record<string, any>} */
-const config = {
+const rules = {
     'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     'no-empty-function': ['warn', { allow: [] }],
     'no-nested-ternary': 'error',
@@ -7,4 +7,4 @@ const config = {
     'no-case-declarations': 'off',
 };
 
-export default config;
+export default rules;

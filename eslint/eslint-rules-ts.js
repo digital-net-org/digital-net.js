@@ -1,5 +1,5 @@
 /** @type {Record<string, any>} */
-const config = {
+const rules = {
     '@typescript-eslint/prefer-for-of': 'warn',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     '@typescript-eslint/no-empty-function': ['warn', { allow: [] }],
@@ -17,4 +17,4 @@ const config = {
     '@typescript-eslint/ban-ts-comment': 'off',
 };
 
-export default config;
+export default rules;

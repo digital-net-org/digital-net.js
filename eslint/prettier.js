@@ -6,6 +6,7 @@
  * @type {Record<string, boolean | string | number>}
  * */
 const config = {
+    embeddedLanguageFormatting: 'auto',
     arrowParens: 'avoid',
     bracketSpacing: true,
     endOfLine: 'auto',
