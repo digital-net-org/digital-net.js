@@ -1,4 +1,6 @@
-import { DigitalComponentError } from '../Error';
+import { HTMLParser } from './HTMLParser.js';
+
+/** @typedef {{type: string, name: string; value: any;}} Binding */
 
 /**
  * Wraps a template and its values to be processed safely.
@@ -8,20 +10,8 @@ export class HTMLResult {
     #strings;
     /** @type {any[]} */
     #values;
-    /** @type {Map<string, {type: string, name: string; value: any;}>} */
+    /** @type {Map<string, Binding>} */
     #bindings = new Map();
-
-    /**
-     * Regular expression to detect special binding attributes.
-     * @type {RegExp}
-     */
-    static bindingRegex = /[:@]([a-z0-9-]+)=$/i;
-
-    /**
-     * Binding attributes to resolve template hydration.
-     * @type {string}
-     */
-    static bindingAttributePrefix = 'data-b-';
 
     constructor(strings, values) {
         this.#strings = strings;
@@ -34,30 +24,15 @@ export class HTMLResult {
     toString() {
         return this.#strings.reduce((acc, str, i) => {
             const value = this.#values[i];
-            const match = str.match(HTMLResult.bindingRegex);
-            if (match) {
-                const type = str.slice(match.index, match.index + 1) === '@' ? 'event' : 'prop';
-                const bindingAttribute = `${HTMLResult.bindingAttributePrefix}${i}`;
-                const name = match[1];
+            const binding = HTMLParser.getBindingAttribute(str, i);
 
-                if (type === 'event' && typeof value !== 'function') {
-                    throw new DigitalComponentError(
-                        `HTMLResult: Event binding for '${name}' must be a function, received '${typeof value}'.`,
-                        'HTMLResult.toString'
-                    );
-                }
-                if (type === 'prop' && (typeof value === 'function' || value instanceof HTMLResult)) {
-                    throw new DigitalComponentError(
-                        `HTMLResult: Property binding for '${name}' cannot be a function or HTMLResult instance, received '${typeof value}'.`,
-                        'HTMLResult.toString'
-                    );
-                }
-
-                this.#bindings.set(bindingAttribute, { type, name, value });
-                return acc + str.replace(HTMLResult.bindingRegex, bindingAttribute);
+            if (binding) {
+                HTMLParser.validateBinding(binding, value);
+                this.#bindings.set(binding.attribute, { type: binding.type, name: binding.name, value });
+                return acc + str.replace(HTMLParser.bindingRegex, binding.attribute);
             }
 
-            return acc + str + this.#escape(value);
+            return acc + str + HTMLParser.escapeHtmlPart(value);
         }, '');
     }
 
@@ -78,28 +53,5 @@ export class HTMLResult {
             }
             element.removeAttribute(attribute);
         });
-    }
-
-    /**
-     * Escapes special HTML characters and validates HTMLResult instances.
-     * @param value
-     * @returns {any}
-     */
-    #escape(value) {
-        if (value === undefined || value === null) {
-            return '';
-        }
-        if (value instanceof HTMLResult) {
-            return value.toString();
-        }
-        if (Array.isArray(value)) {
-            return value.map(v => this.#escape(v)).join('');
-        }
-        return String(value)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
     }
 }
