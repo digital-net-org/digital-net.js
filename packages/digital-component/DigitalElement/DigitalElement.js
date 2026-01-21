@@ -1,22 +1,40 @@
-import { StringResolver } from '../../core/String';
+import { StringResolver } from '../../core';
 import { DigitalComponentError } from '../Error';
-import { CSSResult } from '../styles/CSSResult';
+
 import { HTMLResult } from '../html/HTMLResult.js';
-import { css } from '../styles/css';
+import { CSSResult } from '../styles/CSSResult.js';
+import { css } from '../styles/css.js';
 
 /**
  * Base class for all Digital UI components.
  * Provides static template caching and automatic registration.
+ *  ---
+ * ##### Templating
+ * Derived classes must implement the mandatory `render()` method to define their HTML structure using the `html`
+ * tagged template function.
+ *
+ * ##### Styles
+ * Derived classes can define styles using the **static** `styles` property, which should return a `CSSResult` or an
+ * array of `CSSResult` instances created with the `css` tagged template function.
  */
 export class DigitalElement extends HTMLElement {
-    /** @type {Map<Function, HTMLTemplateElement>} */
+    /**
+     * Cache of HTML templates for each component class.
+     * @type {Map<Function, HTMLTemplateElement>}
+     */
     static #templates = new Map();
 
     /**
-     * @abstract
+     * CSS styles for the component. Must be overridden in derived classes with a static property.
      * @type {CSSResult[] | CSSResult}
      * */
     static styles = css``;
+
+    /**
+     * First render result. Should never be mutated. Used for patch and hydration.
+     * @type {HTMLResult}
+     */
+    #render;
 
     constructor() {
         super();
@@ -76,31 +94,38 @@ export class DigitalElement extends HTMLElement {
             this.shadowRoot.adoptedStyleSheets = [style.styleSheet];
         }
 
+        this.#render = this.render();
+        if (!(this.#render instanceof HTMLResult)) {
+            throw new DigitalComponentError(
+                `${this.constructor.name}: render() must return an instance of HTMLResult. Use the 'html' tagged template function.`,
+                'DigitalElement.constructor'
+            );
+        }
+
+        let template = /** @type {HTMLTemplateElement | null} */ null;
         // First instance is responsible for creating and caching the template. Note that
         // HTML parsing is the most expensive part here, so we want to do it only once.
         if (!DigitalElement.#templates.has(this.constructor)) {
-            const template = document.createElement('template');
-
-            const htmlSkeleton = this.render();
-            if (!(htmlSkeleton instanceof HTMLResult)) {
-                throw new DigitalComponentError(
-                    `${this.constructor.name}: render() must return an instance of HTMLResult. Use the 'html' tagged template function.`,
-                    'DigitalElement.constructor'
-                );
-            }
+            template = document.createElement('template');
 
             const styleContent = !hasAdoptedStyles
                 ? `<style id="${this.constructor._styleTemplateId}">${style.toString()}</style>`
                 : '';
 
-            template.innerHTML = `${styleContent}${htmlSkeleton.toString()}`;
+            template.innerHTML = `${styleContent}${this.#render.toString()}`;
             DigitalElement.#templates.set(this.constructor, template);
         }
 
-        const cachedTemplate = DigitalElement.#templates.get(this.constructor);
-        const clone = cachedTemplate.content.cloneNode(true);
+        template ??= DigitalElement.#templates.get(this.constructor);
+        if (!template) {
+            throw new DigitalComponentError(
+                'Failed to retrieve or create the HTML template.',
+                'DigitalElement.constructor'
+            );
+        }
 
-        this.render().hydrate(clone);
+        const clone = template.content.cloneNode(true);
+        this.#render.hydrate(clone);
         this.shadowRoot.appendChild(clone);
     }
 
@@ -128,6 +153,20 @@ export class DigitalElement extends HTMLElement {
         if (!window.customElements.get(resolvedName)) {
             window.customElements.define(resolvedName, this);
         }
+    }
+
+    connectedCallback() {
+        this.update();
+    }
+
+    update() {
+        if (!this.#render) {
+            throw new DigitalComponentError(
+                `${this.constructor.name}: Cannot update before initial render.`,
+                'DigitalElement.update'
+            );
+        }
+        this.#render.patch(this.render().values);
     }
 
     /**

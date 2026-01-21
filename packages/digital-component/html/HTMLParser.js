@@ -1,61 +1,39 @@
 import { HTMLResult } from './HTMLResult.js';
-import { DigitalComponentError } from '../Error';
+import { HTMLBindingValue } from './HTMLBindingValue.js';
 
-/** @typedef {'event' | 'prop'} AttributeBindingType */
-/** @typedef {{ type: AttributeBindingType; name: string; attribute: string; }} BindingResult */
+/** @typedef {{ htmlPart: string; index: number; value: any; }} HTMLResultPart */
 
 export class HTMLParser {
     /**
      * Regular expression to detect special binding attributes.
      * @type {RegExp}
      */
-    static bindingRegex = /[:@]([a-z0-9-]+)=$/i;
-
-    /**
-     * Binding attributes to resolve template hydration.
-     * @type {string}
-     */
-    static bindingAttributePrefix = 'data-b-';
+    static bindingAttributeRegex = /[:@]([a-z0-9-]+)=$/i;
 
     /**
      * Analyzes an HTML part to detect binding attributes and returns the binding details.
-     * @param {string} part The HTML part to analyze.
-     * @param {number} index The index of the current value in the template.
-     * @returns {BindingResult | null} The detected bindings.
+     * @param {Object} payload The parameters.
+     * @param {string} payload.part The HTML part to analyze.
+     * @param {number} payload.index The index of the current value in the template.
+     * @param {any} payload.value The value to bind.
+     * @throws {DigitalComponentError} Throws if the binding attribute is malformed.
+     * @returns {HTMLBindingValue} The detected bindings built as HTMLBindingValue.
      */
-    static getBindingAttribute(part, index) {
-        const match = part.match(HTMLParser.bindingRegex);
-        if (!match) {
-            return null;
+    static buildBindingValue({ part, index, value }) {
+        const match = part.match(HTMLParser.bindingAttributeRegex);
+        let type = /** @type BindingType */ null;
+        let name = /** @type {string | null} */ null;
+
+        if (match) {
+            type = part.slice(match.index, match.index + 1) === '@' ? 'event' : 'prop';
+            name = match[1];
+        } else if (value instanceof HTMLResult) {
+            type = 'html';
+        } else {
+            type = 'node';
         }
 
-        const type =
-            /** @type {AttributeBindingType} */ part.slice(match.index, match.index + 1) === '@' ? 'event' : 'prop';
-        const attribute = `${HTMLParser.bindingAttributePrefix}${index}`;
-        const name = match[1];
-
-        return { type, name, attribute };
-    }
-
-    /**
-     * Analyzes a BindingResult and value to validate the binding.
-     * @param {BindingResult} binding The binding details.
-     * @param {any} value The value to bind.
-     * @throws {DigitalComponentError} Throws if the binding is invalid.
-     */
-    static validateBinding(binding, value) {
-        if (binding.type === 'event' && typeof value !== 'function') {
-            throw new DigitalComponentError(
-                `HTMLParser: Event binding for '${binding.name}' must be a function, received '${typeof value}'.`,
-                'HTMLParser.validateBinding'
-            );
-        }
-        if (binding.type === 'prop' && (typeof value === 'function' || value instanceof HTMLResult)) {
-            throw new DigitalComponentError(
-                `HTMLParser: Property binding for '${binding.name}' cannot be a function or HTMLResult instance, received '${typeof value}'.`,
-                'HTMLParser.validateBinding'
-            );
-        }
+        return new HTMLBindingValue({ type, name, value, index });
     }
 
     /**
@@ -65,7 +43,7 @@ export class HTMLParser {
      */
     static escapeHtmlPart(value) {
         if (value === undefined || value === null) {
-            return '';
+            return String(value);
         }
         if (value instanceof HTMLResult) {
             return value.toString();

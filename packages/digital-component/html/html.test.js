@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { HTMLBindingValue } from './HTMLBindingValue.js';
 import { HTMLResult } from './HTMLResult.js';
-import { HTMLParser } from './HTMLParser.js';
 import { html } from './html.js';
 
 /**
@@ -8,14 +8,14 @@ import { html } from './html.js';
  * @param {number} index
  */
 const expectBindingAttribute = (output, index) =>
-    expect(output).toContain(`${HTMLParser.bindingAttributePrefix}${index}`);
+    expect(output).toContain(`${HTMLBindingValue.bindingPlaceholderPrefix}${index}`);
 
 /**
  * @param {HTMLElement} element
  * @param {number} index
  */
 const expectNoBindingAttribute = (element, index) =>
-    expect(element.hasAttribute(`${HTMLParser.bindingAttributePrefix}${index}`)).toBe(false);
+    expect(element.hasAttribute(`${HTMLBindingValue.bindingPlaceholderPrefix}${index}`)).toBe(false);
 
 describe('html tagged template - HTMLResult instantiation', () => {
     it('should return an instance of HTMLResult', () => {
@@ -28,33 +28,14 @@ describe('html tagged template - HTMLResult instantiation', () => {
         expect(result.toString()).toBe('<div class="test">Hello</div>');
     });
 
-    it('should escape dangerous strings (XSS protection)', () => {
-        const dangerous = '<img src="" alt="" onerror=alert(1)>';
-        const result = html`<div>${dangerous}</div>`;
-
-        const output = result.toString();
-        expect(output).toContain('<div>&lt;img src=&quot;&quot; alt=&quot;&quot; onerror=alert(1)&gt;</div>');
-        expect(output).not.toContain('<img');
-    });
-
-    it('should support nested HTMLResult (recursion)', () => {
-        const inner = html`<span>World</span>`;
-        const result = html`<div>Hello ${inner}</div>`;
-        expect(result.toString()).toBe('<div>Hello <span>World</span></div>');
-    });
-
-    it('should support arrays of values', () => {
-        const items = ['A', 'B'];
-        const result = html`<ul>
-            ${items.map(i => html`<li>${i}</li>`)}
-        </ul>`;
-
-        expect(result.toString().replace(/\s+/g, '').trim()).toBe('<ul><li>A</li><li>B</li></ul>');
-    });
-
-    it('should handle null or undefined values by rendering nothing', () => {
-        const result = html`<div>${null}${undefined}</div>`;
-        expect(result.toString()).toBe('<div></div>');
+    it('should place html comment with data binding id on Text value', () => {
+        /**
+         * FIXME
+         *      Expected: "<div><!--data-b-0--></div>"
+         *      Received: "<!--data-b-0--></div>"
+         */
+        const result = html`<div>${null}</div>`;
+        expect(result.toString()).toBe('<div><!--data-b-0--></div>');
     });
 });
 

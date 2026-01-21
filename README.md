@@ -1,7 +1,6 @@
-<h1>
-    <img width="300" src="https://raw.githubusercontent.com/digital-net-org/.github/refs/heads/master/assets/logo_v2025-2.svg">
+<h1 align="center">
+    <img width="256" src="./assets/digital-ui-logo.png">
 </h1>
-
-_@digital-net-org/digital-net.js_
-
-A collection of JavaScript packages.
+<p align="center">
+    Digital.Net components library.
+</p>
