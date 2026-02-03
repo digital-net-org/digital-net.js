@@ -1,0 +1,23 @@
+{
+    "name": "digital-net.js",
+    "version": "0.1.0",
+    "license": "MIT",
+    "scripts": {
+        "test": "vitest",
+        "storybook": "storybook dev -p 6006"
+    },
+    "devDependencies": {
+        "@chromatic-com/storybook": "^5.0.0",
+        "@storybook/addon-a11y": "^10.1.11",
+        "@storybook/addon-docs": "^10.1.11",
+        "@storybook/addon-vitest": "^10.1.11",
+        "@storybook/web-components-vite": "^10.1.11",
+        "eslint": "^9.39.2",
+        "happy-dom": "^20.3.1",
+        "prettier": "^3.8.0",
+        "storybook": "^10.1.11",
+        "typescript-eslint": "^8.53.1",
+        "vite": "^7.3.1",
+        "vitest": "4.0.17"
+    }
+}

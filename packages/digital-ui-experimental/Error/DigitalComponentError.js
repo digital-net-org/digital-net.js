@@ -1,4 +1,4 @@
-import { DigitalError } from '../../core';
+import { DigitalError } from '@digital-net/core';
 
 export class DigitalComponentError extends DigitalError {
     constructor(message, caller) {

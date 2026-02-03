@@ -1,4 +1,4 @@
-import '../packages/digital-ui/digital-ui.css';
+import '../src/digital-ui.css';
 
 /** @type { import('@storybook/react-vite').Preview } */
 const preview = {

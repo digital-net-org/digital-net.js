@@ -1,4 +1,4 @@
-import { html, DigitalElement } from '../../../digital-component';
+import { html, DigitalElement } from '../../../../digital-ui-experimental';
 import { styles } from './InputSwitch.styles.js';
 
 export class InputSwitch extends DigitalElement {

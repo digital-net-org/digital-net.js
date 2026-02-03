@@ -1,4 +1,4 @@
-import { css } from '../../../digital-component';
+import { css } from '../../../../digital-ui-experimental';
 
 export const styles = css`
     :host {

@@ -1,4 +1,4 @@
-import { StringMatcher } from '../../../core/String';
+import { StringMatcher } from '../../../../core/src/String';
 import { actionKeywords, booleanKeywords, excludedKeywords } from './keywords';
 
 export class ClassName {

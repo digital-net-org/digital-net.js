@@ -1,4 +1,4 @@
-import { StringResolver } from '../../core';
+import { StringResolver } from '@digital-net/core';
 import { DigitalComponentError } from '../Error';
 
 import { HTMLResult } from '../html/HTMLResult.js';

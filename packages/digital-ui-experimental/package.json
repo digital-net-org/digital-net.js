@@ -1,0 +1,17 @@
+{
+    "name": "digital-ui-experimental",
+    "version": "0.0.1",
+    "license": "MIT",
+    "scripts": {
+        "test": "vitest"
+    },
+    "devDependencies": {
+        "eslint": "^9.39.2",
+        "happy-dom": "^20.3.1",
+        "prettier": "^3.8.0",
+        "typescript-eslint": "^8.53.1",
+        "vite": "^7.3.1",
+        "vitest": "4.0.17"
+    },
+    "web-types": "./web-types.json"
+}
