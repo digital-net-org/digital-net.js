@@ -1,0 +1,179 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/components"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "defineDigitalUI",
+          "declaration": {
+            "name": "defineDigitalUI",
+            "module": "src/index.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/CustomElement.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CustomElement",
+          "declaration": {
+            "name": "CustomElement",
+            "module": "src/components/CustomElement.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "declaration": {
+            "name": "anonymous_0",
+            "module": "src/components/CustomElement.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/CustomElementError.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CustomElementError",
+          "declaration": {
+            "name": "CustomElementError",
+            "module": "src/components/CustomElementError.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/components/input-switch"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/input-switch/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "InputSwitch",
+          "declaration": {
+            "name": "InputSwitch",
+            "module": "./InputSwitch"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/input-switch/InputSwitch.styles.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "styles",
+          "declaration": {
+            "name": "styles",
+            "module": "src/components/input-switch/InputSwitch.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/input-switch/InputSwitch.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "InputSwitch",
+          "members": [
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The value of the switch. When true, the switch is on; when false, the switch is off.",
+              "attribute": "value"
+            },
+            {
+              "kind": "method",
+              "name": "_handleClick",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "change",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "value",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The value of the switch. When true, the switch is on; when false, the switch is off.",
+              "fieldName": "value"
+            }
+          ],
+          "superclass": {
+            "name": "CustomElement",
+            "module": "/src/components/CustomElement"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "InputSwitch",
+          "declaration": {
+            "name": "InputSwitch",
+            "module": "src/components/input-switch/InputSwitch.ts"
+          }
+        }
+      ]
+    }
+  ]
+}

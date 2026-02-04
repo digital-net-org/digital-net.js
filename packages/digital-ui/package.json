@@ -1,23 +1,29 @@
 {
-    "name": "digital-net.js",
+    "name": "@digital-net/digital-ui",
     "version": "0.1.0",
     "license": "MIT",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
     "scripts": {
         "test": "vitest",
-        "storybook": "storybook dev -p 6006"
+        "dev": "vite",
+        "analyze": "cem analyze"
+    },
+    "dependencies": {
+        "@digital-net/core": "workspace:*",
+        "lit": "^3.3.2"
     },
     "devDependencies": {
-        "@chromatic-com/storybook": "^5.0.0",
-        "@storybook/addon-a11y": "^10.1.11",
-        "@storybook/addon-docs": "^10.1.11",
-        "@storybook/addon-vitest": "^10.1.11",
-        "@storybook/web-components-vite": "^10.1.11",
-        "eslint": "^9.39.2",
-        "happy-dom": "^20.3.1",
-        "prettier": "^3.8.0",
-        "storybook": "^10.1.11",
-        "typescript-eslint": "^8.53.1",
-        "vite": "^7.3.1",
-        "vitest": "4.0.17"
-    }
+        "@custom-elements-manifest/analyzer": "^0.11.0",
+        "@web-types/lit": "2.0.0-3",
+        "ts-lit-plugin": "^2.0.2"
+    },
+    "customElements": "custom-elements.json"
 }

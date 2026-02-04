@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "target": "ES2020",
+        "module": "ESNext",
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "moduleResolution": "bundler",
+        "strict": true,
+        "experimentalDecorators": true,
+        "useDefineForClassFields": false,
+        "declaration": true,
+        "outDir": "dist",
+        "plugins": [
+            {
+                "name": "ts-lit-plugin",
+                "strict": true,
+                "rules": {
+                    "no-unknown-tag-name": "off",
+                    "no-unknown-event": "warn"
+                }
+            }
+        ]
+    },
+    "include": ["src/**/*.ts", "src/**/*.d.ts", ".storybook/**/*"],
+    "exclude": ["node_modules"]
+}

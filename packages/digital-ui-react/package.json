@@ -1,0 +1,20 @@
+{
+    "name": "@digital-net/digital-ui-react",
+    "version": "0.1.0",
+    "license": "MIT",
+    "types": "./index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./index.d.ts"
+        }
+    },
+    "dependencies": {
+        "@digital-net/digital-ui": "workspace:*",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4"
+    },
+    "devDependencies": {
+        "@types/react": "^19.2.11",
+        "@types/react-dom": "^19.2.3"
+    }
+}
