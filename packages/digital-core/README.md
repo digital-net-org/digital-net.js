@@ -2,7 +2,7 @@
     <img width="256" src="logo.png">
 </h1>
 <h2 align="center">
-    React type definition for Digital.Net components library
+    JavaScript basic utilities and helpers
 </h2>
 
 ---
@@ -16,5 +16,5 @@ You can do this by creating a `.npmrc` file in your project root with the follow
 ```
 Then use your favorite package manager to install the package.
 ```bash
-npm install @digital-net-org/digital-ui-react
+npm install @digital-net-org/digital-core
 ```

@@ -1,5 +1,5 @@
 import { LitElement } from 'lit';
-import { StringResolver } from '@digital-net/core';
+import { StringResolver } from '@digital-net-org/digital-core';
 
 /**
  * Base class for custom elements in the Digital UI library, extending LitElement.

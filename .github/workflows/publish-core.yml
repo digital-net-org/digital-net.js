@@ -1,0 +1,50 @@
+name: Publish (Core)
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Ref to publish (Tag ex: "v1.0.0" or commit SHA)'
+        required: true
+        default: 'main'
+        type: string
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@digital-net-org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Tests (Core only)
+        run: pnpm run test:core
+
+      - name: Build Library (Core only)
+        run: pnpm run build:core
+
+      - name: Publish to GitHub Registry
+        run: |
+          cd packages/digital-core 
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

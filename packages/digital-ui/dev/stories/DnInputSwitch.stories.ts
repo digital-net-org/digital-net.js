@@ -8,7 +8,7 @@ export class Default extends Story {
     public render() {
         return html`
             <div>
-                <dn-input-switch .value="${true}"></dn-input-switch>
+                <dn-input-switch .value=${true}></dn-input-switch>
             </div>
         `;
     }

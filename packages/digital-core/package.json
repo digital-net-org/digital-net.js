@@ -1,0 +1,23 @@
+{
+    "name": "@digital-net-org/digital-core",
+    "author": "BenoitSafari",
+    "version": "1.0.0",
+    "description": "JavaScript basic utilities and helpers",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "test": "vitest",
+        "build": "vite build"
+    },
+    "dependencies": {},
+    "devDependencies": {},
+    "license": "MIT",
+    "packageManager": "pnpm@10.28.0"
+}

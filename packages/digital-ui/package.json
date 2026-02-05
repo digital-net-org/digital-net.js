@@ -18,13 +18,14 @@
         "analyze": "cem analyze"
     },
     "dependencies": {
-        "@digital-net/core": "workspace:*",
+        "@digital-net-org/digital-core": "workspace:*",
+        "@web-types/lit": "2.0.0-3",
         "lit": "^3.3.2"
     },
     "devDependencies": {
         "@custom-elements-manifest/analyzer": "^0.11.0",
-        "@web-types/lit": "2.0.0-3",
         "ts-lit-plugin": "^2.0.2"
     },
-    "customElements": "custom-elements.json"
+    "customElements": "custom-elements.json",
+    "packageManager": "pnpm@10.28.0"
 }
