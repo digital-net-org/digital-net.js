@@ -10,17 +10,21 @@
         "useDefineForClassFields": false,
         "declaration": true,
         "outDir": "dist",
+        "types": ["vite/client"],
         "plugins": [
             {
                 "name": "ts-lit-plugin",
                 "strict": true,
                 "rules": {
-                    "no-unknown-tag-name": "off",
-                    "no-unknown-event": "warn"
+                    "no-missing-import": "off",
+                    "no-unknown-tag-name": "warn",
+                    "no-unknown-event": "error",
+                    "no-unknown-attribute": "error",
+                    "no-unknown-property": "error"
                 }
             }
         ]
     },
-    "include": ["src/**/*.ts", "src/**/*.d.ts", ".storybook/**/*"],
+    "include": ["src/**/*", "dev/**/*"],
     "exclude": ["node_modules"]
 }

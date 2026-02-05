@@ -112,6 +112,7 @@
               "type": {
                 "text": "boolean"
               },
+              "privacy": "public",
               "default": "false",
               "description": "The value of the switch. When true, the switch is on; when false, the switch is off.",
               "attribute": "value"
@@ -119,6 +120,7 @@
             {
               "kind": "method",
               "name": "_handleClick",
+              "privacy": "private",
               "parameters": [
                 {
                   "name": "e",

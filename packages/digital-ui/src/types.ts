@@ -1,4 +1,4 @@
-import { DnInputSwitch } from './components';
+import type { DnInputSwitch } from './components';
 
 declare global {
     interface HTMLElementTagNameMap {

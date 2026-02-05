@@ -11,15 +11,15 @@ import { styles } from './DnInputSwitch.styles';
  */
 @customElement('dn-input-switch')
 export class DnInputSwitch extends CustomElement {
-    static styles = styles;
+    public static styles = styles;
 
     /**
      * The value of the switch. When true, the switch is on; when false, the switch is off.
      */
     @property({ type: Boolean })
-    value = false;
+    public value = false;
 
-    _handleClick(e: Event) {
+    private _handleClick(e: Event) {
         e.stopPropagation();
         this.value = !this.value;
         this.dispatchEvent(
@@ -31,7 +31,7 @@ export class DnInputSwitch extends CustomElement {
         );
     }
 
-    render() {
+    public render() {
         return html`
             <div class="input-switch-container">
                 <label class="input-switch-label">

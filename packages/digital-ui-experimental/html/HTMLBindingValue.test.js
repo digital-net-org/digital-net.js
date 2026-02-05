@@ -58,7 +58,7 @@ describe('HTMLBindingValue', () => {
 
         it('should pass validation for valid configurations', () => {
             expect(
-                () => new HTMLBindingValue({ type: 'event', name: 'input', value: () => {}, index: 0 })
+                () => new HTMLBindingValue({ type: 'event', name: 'input', value: () => void 0, index: 0 })
             ).not.toThrow();
             expect(() => new HTMLBindingValue({ type: 'prop', name: 'disabled', value: true, index: 1 })).not.toThrow();
             expect(

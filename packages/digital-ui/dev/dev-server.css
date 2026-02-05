@@ -1,0 +1,91 @@
+:root {
+    --primary-color: #ffc916;
+    --primary-color-faded: rgba(255, 201, 22, 0.3);
+    --text-color: #444;
+    --text-secondary-color: #555;
+    --border-color: #ddd;
+    --background-color: #fff;
+    --paper-color: #fafafa;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    font-family: system-ui, sans-serif;
+    color: var(--text-color);
+    background: var(--background-color);
+}
+
+.main-container {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+#title {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+#preview {
+    flex: 1;
+    margin-top: 1rem;
+    border: 1px dashed var(--border-color);
+    border-radius: .5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper-color);
+}
+
+.nav-container {
+    min-width: 260px;
+    background: var(--paper-color);
+    border-right: 1px solid var(--border-color);
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.nav-container details {
+    margin-bottom: 1rem;
+}
+
+.nav-container summary {
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--text-secondary-color);
+    margin-bottom: 0.5rem;
+    user-select: none;
+}
+
+.nav-container .nav-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 6px 12px;
+    margin-left: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text-secondary-color);
+    border-left: 2px solid transparent;
+    font-size: 0.9rem;
+
+    border-radius: .25rem;
+    transition: background 0.5s ease;
+}
+
+.nav-container .nav-item:hover {
+    color: var(--text-color);
+    background: var(--primary-color-faded);
+}
+.nav-container .nav-item.active {
+    border-left-color: var(--primary-color);
+    background: var(--primary-color-faded);
+    font-weight: 600;
+}

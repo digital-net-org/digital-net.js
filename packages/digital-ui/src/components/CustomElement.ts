@@ -1,12 +1,11 @@
 import { LitElement } from 'lit';
-import { CustomElementError } from './CustomElementError';
 import { StringResolver } from '@digital-net/core';
 
 /**
  * Base class for custom elements in the Digital UI library, extending LitElement.
  */
-export class CustomElement extends LitElement {
-    constructor() {
+export abstract class CustomElement extends LitElement {
+    protected constructor() {
         super();
     }
 

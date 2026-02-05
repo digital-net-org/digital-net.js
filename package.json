@@ -4,6 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "lint": "eslint . --ext .ts",
+        "format": "prettier --write .",
         "test": "pnpm -r test",
         "test:core": "pnpm --filter @digital-net/core test"
     },
