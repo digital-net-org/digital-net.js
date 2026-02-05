@@ -1,8 +1,15 @@
 import { html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, customElement } from 'lit/decorators.js';
 import { CustomElement } from '../CustomElement';
 import { styles } from './DnInputSwitch.styles';
 
+/**
+ * Digital UI - Input Switch Component
+ * @summary A toggle switch component that allows users to switch between two states (on/off).
+ * @slot - This component does not have any slots.
+ * @event change - Fired when the value of the switch changes. The event detail contains the new value of the switch.
+ */
+@customElement('dn-input-switch')
 export class DnInputSwitch extends CustomElement {
     static styles = styles;
 

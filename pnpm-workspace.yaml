@@ -1,3 +1,4 @@
 packages:
   - 'packages/*'
   - '!packages/digital-ui-experimental'
+  - '!packages/digital-ui-react'
