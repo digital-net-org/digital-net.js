@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img width="256" src="logo.png">
+    <img width="256" src="https://raw.githubusercontent.com/digital-net-org/digital-net.js/refs/heads/master/packages/digital-ui-react/logo.png">
 </h1>
 <h2 align="center">
     React type definition for Digital.Net components library
