@@ -11,17 +11,21 @@ export class StoryPage {
         nav: HTMLElement;
         preview: HTMLDivElement;
         title: HTMLTitleElement;
+        themeLightBtn: HTMLButtonElement;
+        themeDarkBtn: HTMLButtonElement;
     };
 
     public constructor() {
         const nav = document.getElementById('nav');
         const preview = document.getElementById('preview') as HTMLDivElement | null;
         const title = document.getElementById('title') as HTMLTitleElement | null;
+        const themeLightBtn = document.getElementById('theme-light') as HTMLButtonElement | null;
+        const themeDarkBtn = document.getElementById('theme-dark') as HTMLButtonElement | null;
 
-        if (!nav || !preview || !title) {
+        if (!nav || !preview || !title || !themeLightBtn || !themeDarkBtn) {
             throw new StoryError('Required page elements not found');
         }
-        this.pageElements = { nav, preview, title };
+        this.pageElements = { nav, preview, title, themeLightBtn, themeDarkBtn };
         this.setTitle();
         this.initialize();
     }
@@ -59,6 +63,7 @@ export class StoryPage {
                 this.buildStoryNavigation({ name, category: story.category || undefined, template });
             }
         }
+        this.initializeTheme();
     }
 
     /**
@@ -102,5 +107,27 @@ export class StoryPage {
         }
 
         this.pageElements.nav.appendChild(element);
+    }
+
+    private initializeTheme() {
+        this.pageElements.themeLightBtn.addEventListener('click', () => {
+            document.body.setAttribute('data-theme', 'dark');
+            window.localStorage.setItem('theme', 'dark');
+        });
+        this.pageElements.themeDarkBtn.addEventListener('click', () => {
+            document.body.setAttribute('data-theme', 'light');
+            window.localStorage.setItem('theme', 'light');
+        });
+
+        const initialTheme = window.localStorage.getItem('theme');
+        if (initialTheme) {
+            document.body.setAttribute('data-theme', initialTheme);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            window.localStorage.setItem('theme', 'dark');
+            document.body.setAttribute('data-theme', 'dark');
+        } else {
+            window.localStorage.setItem('theme', 'light');
+            document.body.setAttribute('data-theme', 'light');
+        }
     }
 }

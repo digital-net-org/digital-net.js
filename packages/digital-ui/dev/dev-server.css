@@ -1,4 +1,7 @@
 :root {
+}
+
+[data-theme='light'] {
     --primary-color: #ffc916;
     --primary-color-faded: rgba(255, 201, 22, 0.3);
     --text-color: #444;
@@ -7,6 +10,25 @@
     --background-color: #fff;
     --paper-color: #fafafa;
 }
+
+[data-theme='light'] #theme-dark {
+    display: none;
+}
+
+[data-theme="dark"] {
+    --primary-color: #ffc916;
+    --primary-color-faded: rgba(255, 201, 22, 0.15);
+    --text-color: #e4e4e4;
+    --text-secondary-color: #a0a0a0;
+    --border-color: #333333;
+    --background-color: #121212;
+    --paper-color: #1e1e1e;
+}
+
+[data-theme='dark'] #theme-light {
+    display: none;
+}
+
 
 body {
     margin: 0;
@@ -24,12 +46,39 @@ body {
     flex-direction: column;
 }
 
-#title {
+.app-header {
     margin-top: 0;
-    font-size: 1.5rem;
-    color: var(--text-color);
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.app-header h1 {
+    font-size: 1.5rem;
+    color: var(--text-color);
+}
+
+.app-header .app-actions {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+}
+
+.app-header .app-actions-button {
+    background-color: var(--text-color);
+    color: var(--paper-color);
+    border: none;
+    border-radius: 0.25rem;
+    padding: .35rem .5rem;
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+
+.app-header .app-actions-button:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color);
 }
 
 #preview {
