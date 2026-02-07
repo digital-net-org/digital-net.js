@@ -1,46 +1,25 @@
-import { type TemplateResult, render } from 'lit';
 import { Story } from './Story';
-import { StoryError } from './StoryError';
+import { StoryLayout } from './StoryLayout';
 
 export class StoryPage {
+    /**
+     * Dynamically imports all story modules from the stories directory.
+     */
     private static storyModules: Record<string, unknown> = import.meta.glob('../stories/**/*.stories.ts', {
         eager: true,
     });
 
-    private pageElements: {
-        nav: HTMLElement;
-        preview: HTMLDivElement;
-        title: HTMLTitleElement;
-        themeLightBtn: HTMLButtonElement;
-        themeDarkBtn: HTMLButtonElement;
-    };
+    private layout: StoryLayout;
+    private stories: Map<string, Story> = new Map();
+    private activeStory: Story | null = null;
 
     public constructor() {
-        const nav = document.getElementById('nav');
-        const preview = document.getElementById('preview') as HTMLDivElement | null;
-        const title = document.getElementById('title') as HTMLTitleElement | null;
-        const themeLightBtn = document.getElementById('theme-light') as HTMLButtonElement | null;
-        const themeDarkBtn = document.getElementById('theme-dark') as HTMLButtonElement | null;
-
-        if (!nav || !preview || !title || !themeLightBtn || !themeDarkBtn) {
-            throw new StoryError('Required page elements not found');
-        }
-        this.pageElements = { nav, preview, title, themeLightBtn, themeDarkBtn };
-        this.setTitle();
+        this.layout = new StoryLayout();
         this.initialize();
+
+        // Listen to URL changes
+        window.addEventListener('popstate', () => this.syncFromUrl());
     }
-
-    /**
-     * Sets the page title. If no title is provided, it defaults to the document's title.
-     * @param title
-     */
-    public setTitle = (title?: string) => (this.pageElements.title.innerText = title ?? document.title);
-
-    /**
-     * Renders the provided template into the preview area. If no template is provided, it clears the preview.
-     * @param template
-     */
-    public setPreview = (template?: TemplateResult) => render(template ?? '', this.pageElements.preview);
 
     /**
      * Initializes the story page by loading all story modules, creating navigation buttons, and setting up
@@ -52,82 +31,46 @@ export class StoryPage {
 
             for (const exportName in mod) {
                 const ExportedItem = mod[exportName];
-
                 if (typeof ExportedItem !== 'function' || !(ExportedItem.prototype instanceof Story)) {
                     continue;
                 }
 
                 const story = new ExportedItem() as Story;
                 const name = story.title || exportName;
-                const template = story.render();
-                this.buildStoryNavigation({ name, category: story.category || undefined, template });
+                this.stories.set(name, story);
+                this.layout.buildNavButton({
+                    name,
+                    category: story.category,
+                    onSync: this.syncFromUrl,
+                });
             }
         }
-        this.initializeTheme();
+        this.syncFromUrl();
     }
 
-    /**
-     * Builds a navigation button for a story and appends it to the navigation area. If a category is provided,
-     * the button is nested under a collapsible details element.
-     * @param payload
-     */
-    public buildStoryNavigation(payload: { name: string; category?: string; template: TemplateResult }) {
-        const btn = document.createElement('button');
-        btn.className = 'nav-item';
-        btn.textContent = payload.name;
-        btn.id = payload.name;
-
-        btn.onclick = e => {
-            const target = e.target as HTMLButtonElement | null;
-            if (!target) {
-                return;
-            }
-            if (target.id !== payload.name || !target.className.includes('active')) {
-                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-                target.classList.add('active');
-                this.setTitle(
-                    [...(payload.category ? [payload.category] : []), payload.name].filter(Boolean).join('/')
-                );
-                this.setPreview(payload.template);
-            } else {
-                target.classList.remove('active');
-                this.setTitle();
-                this.setPreview();
-            }
-        };
-
-        let element: HTMLButtonElement | HTMLDetailsElement = btn;
-        if (payload.category) {
-            const details = document.createElement('details');
-            const summary = document.createElement('summary');
-            summary.textContent = payload.category;
-            details.appendChild(summary);
-            details.appendChild(btn);
-            element = details;
+    private setStory = (story?: Story) => {
+        this.activeStory = story ?? null;
+        this.layout.setPreview(story);
+        if (story) {
+            story.onUpdate = () => (this.activeStory === story ? this.layout.setPreview(story) : void 0);
         }
+    };
 
-        this.pageElements.nav.appendChild(element);
-    }
+    private syncFromUrl = () => {
+        const params = new URLSearchParams(window.location.search);
+        const storyName = params.get('story');
+        this.layout.unselectAllNavButtons();
 
-    private initializeTheme() {
-        this.pageElements.themeLightBtn.addEventListener('click', () => {
-            document.body.setAttribute('data-theme', 'dark');
-            window.localStorage.setItem('theme', 'dark');
-        });
-        this.pageElements.themeDarkBtn.addEventListener('click', () => {
-            document.body.setAttribute('data-theme', 'light');
-            window.localStorage.setItem('theme', 'light');
-        });
-
-        const initialTheme = window.localStorage.getItem('theme');
-        if (initialTheme) {
-            document.body.setAttribute('data-theme', initialTheme);
-        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            window.localStorage.setItem('theme', 'dark');
-            document.body.setAttribute('data-theme', 'dark');
+        if (storyName && this.stories.has(storyName)) {
+            const storyInstance = this.stories.get(storyName)!;
+            this.layout.selectNavButton(storyName);
+            this.layout.setTitle(
+                [...(storyInstance.category ? [storyInstance.category] : []), storyName].filter(Boolean).join('/')
+            );
+            this.setStory(storyInstance);
         } else {
-            window.localStorage.setItem('theme', 'light');
-            document.body.setAttribute('data-theme', 'light');
+            this.layout.setTitle();
+            this.setStory();
         }
-    }
+    };
 }
