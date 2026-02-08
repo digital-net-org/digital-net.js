@@ -7,15 +7,18 @@ function handleHotReload() {
         import.meta.hot.accept('./modules/StoryPage', newModule => {
             if (newModule) {
                 const nav = document.getElementById('nav');
-                if (nav) {
-                    nav.innerHTML = '';
-                }
+                if (nav) nav.innerHTML = '';
                 storyPage = new newModule.StoryPage();
+            }
+        });
+
+        import.meta.hot.dispose(() => {
+            if (storyPage && typeof (storyPage as any).dispose === 'function') {
+                (storyPage as any).dispose();
             }
         });
     }
 }
 
-// eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
 let storyPage = new StoryPage();
 handleHotReload();

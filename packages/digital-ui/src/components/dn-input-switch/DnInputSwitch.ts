@@ -1,10 +1,7 @@
 import { html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { CustomElement } from '../CustomElement';
 import { styles } from './DnInputSwitch.styles';
-
-export type NativeCheckValue = 'on' | 'off';
-export type BooleanCheckValue = 'true' | 'false';
+import { CustomFormElement } from '../CustomFormElement';
 
 /**
  * Digital UI - Input Switch Component
@@ -12,7 +9,7 @@ export type BooleanCheckValue = 'true' | 'false';
  * @event change - Fired when the checked state changes. Standard Event bubbling up.
  */
 @customElement('dn-input-switch')
-export class DnInputSwitch extends CustomElement {
+export class DnInputSwitch extends CustomFormElement {
     public static styles = styles;
 
     /**
@@ -22,10 +19,20 @@ export class DnInputSwitch extends CustomElement {
     public value = false;
 
     /**
-     * The value submitted when using internal form data (defaults to "on" like native).
+     * The name attribute for form submission. If not set, the switch will not be included in form data.
      */
     @property({ type: String })
-    public internalValue: NativeCheckValue = 'on';
+    public name = '';
+
+    public get internalValue(): 'on' | 'off' {
+        return this.value ? 'on' : 'off';
+    }
+
+    protected onFormUpdate(internals: ElementInternals, changedProperties: Map<string, any>): void {
+        if (changedProperties.has('value')) {
+            internals.setFormValue(String(this.value));
+        }
+    }
 
     private _handleChange(e: Event) {
         e.stopPropagation();
@@ -36,7 +43,6 @@ export class DnInputSwitch extends CustomElement {
         }
 
         this.value = target.checked;
-        this.internalValue = target.checked ? 'on' : 'off';
         this.dispatchEvent(event);
     }
 
@@ -47,6 +53,7 @@ export class DnInputSwitch extends CustomElement {
                     <input
                         class="input-switch-input"
                         type="checkbox"
+                        .name="${this.name}"
                         .checked="${this.value}"
                         .value="${this.internalValue}"
                         @change="${this._handleChange}"

@@ -4,7 +4,7 @@ import dts from 'vite-plugin-dts';
 
 export default defineConfig({
     server: {
-        open: '/dev/index.html',
+        open: '/stories/index.html',
     },
     build: {
         lib: {

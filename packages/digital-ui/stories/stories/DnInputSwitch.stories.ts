@@ -5,11 +5,17 @@ export class Default extends Story {
     public title = 'dn-input-switch';
     public category = 'Inputs';
 
+    // ###################################
+    // Default Story
+    // ###################################
     public onRender = (template: HTMLElement) => {
         const defaultSwitch = template.querySelector('#default');
         this.defaultState.switchValue = (defaultSwitch as any)?.value;
         const defaultJson = template.querySelector('#default-json');
         defaultJson!.innerHTML = Story.toJson(this.defaultState);
+
+        const formJson = template.querySelector('#form-json');
+        formJson!.innerHTML = Story.toJson(this.formState);
     };
 
     private defaultState = {
@@ -20,7 +26,8 @@ export class Default extends Story {
 
     private renderDefault() {
         return html`
-            <div class="flex-column">
+            <div class="flex-column" style="width: 250px">
+                <h2 class="dn-story-title">Default</h2>
                 <dn-input-switch
                     id="default"
                     @change=${(e: Event) => {
@@ -32,7 +39,6 @@ export class Default extends Story {
                     }}
                     .value=${this.defaultState.switchValue}
                 ></dn-input-switch>
-                <hr />
                 <button
                     class="dn-story-btn"
                     @click=${(e: Event) => {
@@ -50,12 +56,49 @@ export class Default extends Story {
         `;
     }
 
+    // ###################################
+    // Form Story
+    // ###################################
+
+    private formState = {
+        formData: null as null | FormData,
+        formValue: null as null | string,
+    };
+
+    private renderForm() {
+        return html`
+            <div class="flex-column" style="width: 250px">
+                <h2 class="dn-story-title">Form Integration</h2>
+                <form
+                    class="flex-column"
+                    @submit=${(e: Event) => {
+                        e.preventDefault();
+                        const formData = new FormData(e.target as HTMLFormElement);
+                        const jsonFormData = {} as any;
+                        formData.forEach((value, key) => {
+                            jsonFormData[key] = value;
+                        });
+
+                        console.log('Form submitted with value:', jsonFormData);
+                        this.formState.formData = jsonFormData;
+                        this.requestUpdate();
+                    }}
+                >
+                    <dn-input-switch name="switch"></dn-input-switch>
+                    <button type="submit" class="dn-story-btn">Submit Form</button>
+                </form>
+            </div>
+            <pre id="form-json" class="dn-story-json"></pre>
+        `;
+    }
+
     public render() {
         return html`
             <div class="dn-stories">
                 <div class="dn-story">
-                    <h2 class="dn-story-title">Default</h2>
                     <div class="flex-row">${this.renderDefault()}</div>
+                    <hr />
+                    <div class="flex-row">${this.renderForm()}</div>
                 </div>
             </div>
         `;

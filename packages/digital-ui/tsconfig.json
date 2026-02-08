@@ -25,6 +25,8 @@
             }
         ]
     },
-    "include": ["src/**/*", "dev/**/*"],
+    "include": ["src/**/*",
+        "stories/**/*"
+    ],
     "exclude": ["node_modules"]
 }
