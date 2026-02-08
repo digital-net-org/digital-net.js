@@ -3,32 +3,41 @@ import { property, customElement } from 'lit/decorators.js';
 import { CustomElement } from '../CustomElement';
 import { styles } from './DnInputSwitch.styles';
 
+export type NativeCheckValue = 'on' | 'off';
+export type BooleanCheckValue = 'true' | 'false';
+
 /**
  * Digital UI - Input Switch Component
- * @summary A toggle switch component that allows users to switch between two states (on/off).
- * @slot - This component does not have any slots.
- * @event change - Fired when the value of the switch changes. The event detail contains the new value of the switch.
+ * @summary A toggle switch component behaving like a native checkbox.
+ * @event change - Fired when the checked state changes. Standard Event bubbling up.
  */
 @customElement('dn-input-switch')
 export class DnInputSwitch extends CustomElement {
     public static styles = styles;
 
     /**
-     * The value of the switch. When true, the switch is on; when false, the switch is off.
+     * The state of the switch (true = on, false = off).
      */
-    @property({ type: Boolean })
+    @property({ type: Boolean, reflect: true })
     public value = false;
 
-    private _handleClick(e: Event) {
+    /**
+     * The value submitted when using internal form data (defaults to "on" like native).
+     */
+    @property({ type: String })
+    public internalValue: NativeCheckValue = 'on';
+
+    private _handleChange(e: Event) {
         e.stopPropagation();
-        this.value = !this.value;
-        this.dispatchEvent(
-            new CustomEvent('change', {
-                detail: { value: this.value },
-                bubbles: true,
-                composed: true,
-            })
-        );
+        const target = e.target as HTMLInputElement;
+        const event = new Event('change', { bubbles: true, composed: true });
+        if (event.defaultPrevented) {
+            e.preventDefault();
+        }
+
+        this.value = target.checked;
+        this.internalValue = target.checked ? 'on' : 'off';
+        this.dispatchEvent(event);
     }
 
     public render() {
@@ -39,7 +48,8 @@ export class DnInputSwitch extends CustomElement {
                         class="input-switch-input"
                         type="checkbox"
                         .checked="${this.value}"
-                        @click="${this._handleClick}"
+                        .value="${this.internalValue}"
+                        @change="${this._handleChange}"
                     />
                     <span class="input-switch-slider"></span>
                 </label>

@@ -14,22 +14,8 @@
             "name": "*",
             "module": "src/components"
           }
-        },
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "module": "src/types"
-          }
         }
       ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/types.ts",
-      "declarations": [],
-      "exports": []
     },
     {
       "kind": "javascript-module",
@@ -99,12 +85,6 @@
           "kind": "class",
           "description": "Digital UI - Input Switch Component",
           "name": "DnInputSwitch",
-          "slots": [
-            {
-              "description": "This component does not have any slots.",
-              "name": ""
-            }
-          ],
           "members": [
             {
               "kind": "field",
@@ -114,12 +94,24 @@
               },
               "privacy": "public",
               "default": "false",
-              "description": "The value of the switch. When true, the switch is on; when false, the switch is off.",
-              "attribute": "value"
+              "description": "The state of the switch (true = on, false = off).",
+              "attribute": "value",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "internalValue",
+              "type": {
+                "text": "NativeCheckValue"
+              },
+              "privacy": "public",
+              "default": "'on'",
+              "description": "The value submitted when using internal form data (defaults to \"on\" like native).",
+              "attribute": "internalValue"
             },
             {
               "kind": "method",
-              "name": "_handleClick",
+              "name": "_handleChange",
               "privacy": "private",
               "parameters": [
                 {
@@ -133,11 +125,8 @@
           ],
           "events": [
             {
-              "name": "change",
-              "type": {
-                "text": "CustomEvent"
-              },
-              "description": "Fired when the value of the switch changes. The event detail contains the new value of the switch."
+              "description": "Fired when the checked state changes. Standard Event bubbling up.",
+              "name": "change"
             }
           ],
           "attributes": [
@@ -147,15 +136,24 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "The value of the switch. When true, the switch is on; when false, the switch is off.",
+              "description": "The state of the switch (true = on, false = off).",
               "fieldName": "value"
+            },
+            {
+              "name": "internalValue",
+              "type": {
+                "text": "NativeCheckValue"
+              },
+              "default": "'on'",
+              "description": "The value submitted when using internal form data (defaults to \"on\" like native).",
+              "fieldName": "internalValue"
             }
           ],
           "superclass": {
             "name": "CustomElement",
             "module": "/src/components/CustomElement"
           },
-          "summary": "A toggle switch component that allows users to switch between two states (on/off).",
+          "summary": "A toggle switch component behaving like a native checkbox.",
           "tagName": "dn-input-switch",
           "customElement": true
         }

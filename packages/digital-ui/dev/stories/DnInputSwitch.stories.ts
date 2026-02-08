@@ -8,13 +8,13 @@ export class Default extends Story {
     public onRender = (template: HTMLElement) => {
         const defaultSwitch = template.querySelector('#default');
         this.defaultState.switchValue = (defaultSwitch as any)?.value;
-        this.defaultState.lastEventOrigin = defaultSwitch?.tagName ?? 'undefined';
         const defaultJson = template.querySelector('#default-json');
         defaultJson!.innerHTML = Story.toJson(this.defaultState);
     };
 
     private defaultState = {
-        switchValue: false,
+        defaultValue: true,
+        switchValue: true,
         lastEventOrigin: 'None',
     };
 
@@ -23,7 +23,7 @@ export class Default extends Story {
             <div class="flex-column">
                 <dn-input-switch
                     id="default"
-                    @click=${(e: Event) => {
+                    @change=${(e: Event) => {
                         const value = (e.target as any).value;
                         console.log('Switch value changed:', value);
                         this.defaultState.switchValue = value;
