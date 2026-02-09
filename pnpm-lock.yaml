@@ -48,9 +48,9 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
     devDependencies:
-      '@digital-net-org/digital-ui-react':
+      '@digital-net-org/digital-ui-react-types':
         specifier: workspace:*
-        version: link:../digital-ui-react
+        version: link:../digital-ui-react-types
       '@types/react':
         specifier: ^19.2.13
         version: 19.2.13
@@ -103,18 +103,11 @@ importers:
         specifier: ^4.21.0
         version: 4.21.0
 
-  packages/digital-ui-react:
+  packages/digital-ui-react-types:
     dependencies:
       '@digital-net-org/digital-ui':
         specifier: workspace:*
         version: link:../digital-ui
-      react:
-        specifier: ^19.2.4
-        version: 19.2.4
-      react-dom:
-        specifier: ^19.2.4
-        version: 19.2.4(react@19.2.4)
-    devDependencies:
       '@types/react':
         specifier: ^19.2.11
         version: 19.2.13

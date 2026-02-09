@@ -11,7 +11,7 @@
         "@digital-net-org/digital-ui": "workspace:*"
     },
     "devDependencies": {
-        "@digital-net-org/digital-ui-react": "workspace:*",
+        "@digital-net-org/digital-ui-react-types": "workspace:*",
         "@types/react": "^19.2.13",
         "@types/react-dom": "^19.2.3",
         "@vitejs/plugin-react": "^5.1.3",

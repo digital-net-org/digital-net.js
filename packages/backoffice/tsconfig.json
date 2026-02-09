@@ -11,7 +11,7 @@
         "declaration": true,
         "jsx": "react-jsx",
         "outDir": "dist",
-        "types": ["vite/client"]
+        "types": ["vite/client", "@digital-net-org/digital-ui-react-types"]
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules"]
