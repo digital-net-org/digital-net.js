@@ -1,5 +1,5 @@
 import '../src';
-import '../src/digital-ui.css';
+import '../src/index.css';
 import { StoryPage } from './modules/StoryPage';
 
 function handleHotReload() {

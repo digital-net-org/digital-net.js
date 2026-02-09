@@ -8,8 +8,6 @@
         "strict": true,
         "experimentalDecorators": true,
         "useDefineForClassFields": false,
-        "declaration": true,
-        "outDir": "dist",
         "types": ["vite/client"],
         "plugins": [
             {
@@ -25,8 +23,6 @@
             }
         ]
     },
-    "include": ["src/**/*",
-        "stories/**/*"
-    ],
+    "include": ["src/**/*", "stories/**/*"],
     "exclude": ["node_modules"]
 }

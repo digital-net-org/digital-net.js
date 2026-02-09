@@ -1,5 +1,7 @@
-import '@digital-net-org/digital-ui-react';
 import '@digital-net-org/digital-ui';
+import '@digital-net-org/digital-ui/styles';
+import type from '@digital-net-org/digital-ui-react';
+
 import { ReactApp } from './modules';
 
 ReactApp.create({
