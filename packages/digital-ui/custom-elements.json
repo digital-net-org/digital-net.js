@@ -49,6 +49,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/CustomFormElement.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CustomFormElement",
+          "declaration": {
+            "name": "CustomFormElement",
+            "module": "src/components/CustomFormElement.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/index.ts",
       "declarations": [],
       "exports": [
@@ -100,14 +115,47 @@
             },
             {
               "kind": "field",
-              "name": "internalValue",
+              "name": "name",
               "type": {
-                "text": "NativeCheckValue"
+                "text": "string"
               },
               "privacy": "public",
-              "default": "'on'",
-              "description": "The value submitted when using internal form data (defaults to \"on\" like native).",
-              "attribute": "internalValue"
+              "default": "''",
+              "description": "The name attribute for form submission. If not set, the switch will not be included in form data.",
+              "attribute": "name"
+            },
+            {
+              "kind": "field",
+              "name": "internalValue",
+              "type": {
+                "text": "'on' | 'off'"
+              },
+              "privacy": "public",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "onFormUpdate",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "internals",
+                  "type": {
+                    "text": "ElementInternals"
+                  }
+                },
+                {
+                  "name": "changedProperties",
+                  "type": {
+                    "text": "Map<string, any>"
+                  }
+                }
+              ]
             },
             {
               "kind": "method",
@@ -140,18 +188,18 @@
               "fieldName": "value"
             },
             {
-              "name": "internalValue",
+              "name": "name",
               "type": {
-                "text": "NativeCheckValue"
+                "text": "string"
               },
-              "default": "'on'",
-              "description": "The value submitted when using internal form data (defaults to \"on\" like native).",
-              "fieldName": "internalValue"
+              "default": "''",
+              "description": "The name attribute for form submission. If not set, the switch will not be included in form data.",
+              "fieldName": "name"
             }
           ],
           "superclass": {
-            "name": "CustomElement",
-            "module": "/src/components/CustomElement"
+            "name": "CustomFormElement",
+            "module": "/src/components/CustomFormElement"
           },
           "summary": "A toggle switch component behaving like a native checkbox.",
           "tagName": "dn-input-switch",

@@ -9,7 +9,10 @@ export default {
             name: 'CustomElement-filter',
             analyzePhase({ moduleDoc }) {
                 moduleDoc.declarations = moduleDoc.declarations?.filter(
-                    declaration => declaration?.superclass?.name === 'CustomElement'
+                    declaration =>
+                        (declaration?.superclass?.name === 'CustomElement' ||
+                            declaration?.superclass?.name === 'CustomFormElement') &&
+                        declaration?.name !== 'CustomFormElement'
                 );
             },
         },
