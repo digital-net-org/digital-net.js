@@ -162,7 +162,15 @@ hr {
 }
 
 .dn-story-title {
+    line-height: 0;
     font-size: 1.1rem;
+}
+
+.dn-story-subtitle {
+    line-height: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--text-secondary-color);
 }
 
 .dn-story-json {
@@ -194,6 +202,7 @@ hr {
 .flex-row {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 1rem;
 }
 

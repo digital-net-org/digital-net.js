@@ -7,6 +7,13 @@ import { CustomFormElement } from '../CustomFormElement';
  * Digital UI - Input Switch Component
  * @summary A toggle switch component behaving like a native checkbox.
  * @event change - Fired when the checked state changes. Standard Event bubbling up.
+ * @cssprop {Time}   --digital-ui-input-switch-duration
+ * @cssprop {Length} --digital-ui-input-switch-width
+ * @cssprop {Length} --digital-ui-input-switch-height
+ * @cssprop {Length} --digital-ui-input-switch-slider-size
+ * @cssprop {Length} --digital-ui-input-switch-spacing
+ * @cssprop {Length} --digital-ui-input-switch-translate
+ * @cssprop {Border} --digital-ui-input-switch-border
  */
 @customElement('dn-input-switch')
 export class DnInputSwitch extends CustomFormElement {
@@ -37,12 +44,9 @@ export class DnInputSwitch extends CustomFormElement {
     private _handleChange(e: Event) {
         e.stopPropagation();
         const target = e.target as HTMLInputElement;
-        const event = new Event('change', { bubbles: true, composed: true });
-        if (event.defaultPrevented) {
-            e.preventDefault();
-        }
-
         this.value = target.checked;
+
+        const event = new Event('change', { bubbles: true, composed: true });
         this.dispatchEvent(event);
     }
 
@@ -54,7 +58,7 @@ export class DnInputSwitch extends CustomFormElement {
                         class="input-switch-input"
                         type="checkbox"
                         .name="${this.name}"
-                        .checked="${this.value}"
+                        ?checked="${this.value}"
                         .value="${this.internalValue}"
                         @change="${this._handleChange}"
                     />

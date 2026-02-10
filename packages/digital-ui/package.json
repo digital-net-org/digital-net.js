@@ -5,7 +5,9 @@
     "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -18,7 +20,7 @@
         "test": "vitest",
         "dev": "vite",
         "dev:server": "tsx stories/server.ts",
-        "build": "tsc -p tsconfig.build.json --noEmit && vite build",
+        "build": "cem analyze && tsc -p tsconfig.build.json --noEmit && vite build",
         "analyze": "cem analyze"
     },
     "dependencies": {
