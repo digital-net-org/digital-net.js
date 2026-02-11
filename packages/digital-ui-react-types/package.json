@@ -2,15 +2,21 @@
     "name": "@digital-net-org/digital-ui-react-types",
     "version": "0.1.0",
     "license": "MIT",
-    "types": "./index.d.ts",
+    "types": "./dist/index.d.ts",
     "exports": {
         ".": {
-            "types": "./index.d.ts"
+            "types": "./dist/index.d.ts"
         }
+    },
+    "scripts": {
+        "build": "node ./scripts/build.mjs"
     },
     "dependencies": {
         "@digital-net-org/digital-ui": "workspace:*",
         "@types/react": "^19.2.11",
         "@types/react-dom": "^19.2.3"
+    },
+    "devDependencies": {
+        "ts-morph": "^27.0.2"
     }
 }
