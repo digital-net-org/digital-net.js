@@ -2,9 +2,9 @@ import { css } from 'lit';
 
 export const hostStyles = css`
     :host {
-        --_avatar-color: var(--digital-ui-icon-color, currentColor);
-        --_avatar-size: var(--digital-ui-icon-size, 2rem);
-        --_avatar-cursor: var(--digital-ui-icon-cursor, default);
+        --_avatar-color: var(--dn-icon-color, currentColor);
+        --_avatar-cursor: var(--dn-icon-cursor, default);
+        --_avatar-size: 2rem;
     }
 `;
 
@@ -43,9 +43,6 @@ export const styles = css`
         height: var(--_resolved-size);
         aspect-ratio: 1/1;
         overflow: hidden;
-    }
-
-    .avatar-container:hover {
         cursor: var(--_avatar-cursor);
     }
 

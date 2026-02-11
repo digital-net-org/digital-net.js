@@ -74,10 +74,10 @@ export class Default extends Story {
                     color: var(--primary-color);
                 }
                 .colorized-icon-story dn-icon {
-                    --digital-ui-icon-color: red;
+                    --dn-icon-color: red;
                 }
-                .resized-icon-story dn-icon {
-                    --digital-ui-icon-size: 0.5rem;
+                .cursor-pointer-icon-story dn-icon {
+                    --dn-icon-cursor: pointer;
                 }
             </style>
             <div class="flex-column">
@@ -86,16 +86,15 @@ export class Default extends Story {
                     <div class="icon-story colorized-icon-story flex-column">
                         <div>
                             <h3 class="dn-story-subtitle">Colorized</h3>
-                            <pre>--digital-ui-icon-color: red;</pre>
+                            <pre>--dn-icon-color: red;</pre>
                         </div>
                         <dn-icon name="account-circle" size="x-large"></dn-icon>
                     </div>
-                    <div class="icon-story resized-icon-story flex-column">
+                    <div class="icon-story cursor-pointer-icon-story flex-column">
                         <div>
-                            <h3 class="dn-story-subtitle">Resized</h3>
-                            <pre>--digital-ui-icon-size: 0.5rem; { size: "x-large" }</pre>
+                            <h3 class="dn-story-subtitle">Colorized</h3>
+                            <pre>--dn-icon-cursor: pointer;</pre>
                         </div>
-                        
                         <dn-icon name="account-circle" size="x-large"></dn-icon>
                     </div>
                 </div>

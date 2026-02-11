@@ -2,19 +2,18 @@ import { html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import { CustomFormElement } from '../CustomFormElement';
 import { styles } from './DnInputSwitch.styles';
+import { classMap } from 'lit/directives/class-map.js';
 
 /**
  * Digital UI - Input Switch Component
- * @summary A toggle switch component behaving like a native checkbox.
+ *
+ * A toggle switch component behaving like a native checkbox.
  * @event change - Fired when the checked state changes.
  * @event click - Fired when the element is clicked.
- * @cssprop {Time}   --digital-ui-input-switch-duration
- * @cssprop {Length} --digital-ui-input-switch-width
- * @cssprop {Length} --digital-ui-input-switch-height
- * @cssprop {Length} --digital-ui-input-switch-slider-size
- * @cssprop {Length} --digital-ui-input-switch-spacing
- * @cssprop {Length} --digital-ui-input-switch-translate
- * @cssprop {Border} --digital-ui-input-switch-border
+ * @example CSS Variables overrides
+ *  dn-palette-primary: #000000;
+ *  dn-palette-background-disabled: #000000;
+ *  dn-palette-shadow-light: #000000;
  */
 @customElement('dn-input-switch')
 export class DnInputSwitch extends CustomFormElement {
@@ -32,6 +31,12 @@ export class DnInputSwitch extends CustomFormElement {
     @property({ type: String })
     public name = '';
 
+    /**
+     * If true, the element will render as disabled and events wont be fired.
+     */
+    @property({ type: Boolean, reflect: true })
+    public disabled = false;
+
     public get internalValue(): 'on' | 'off' {
         return this.value ? 'on' : 'off';
     }
@@ -43,6 +48,10 @@ export class DnInputSwitch extends CustomFormElement {
     }
 
     private _handleChange(e: Event) {
+        if (this.disabled) {
+            e.preventDefault();
+            return;
+        }
         e.stopPropagation();
         const target = e.target as HTMLInputElement;
         this.value = target.checked;
@@ -51,6 +60,10 @@ export class DnInputSwitch extends CustomFormElement {
     }
 
     private _handleClick(e: Event) {
+        if (this.disabled) {
+            e.preventDefault();
+            return;
+        }
         e.stopPropagation();
         const event = new Event('click', { bubbles: true, composed: true });
         this.dispatchEvent(event);
@@ -61,7 +74,10 @@ export class DnInputSwitch extends CustomFormElement {
             <div class="input-switch-container">
                 <label class="input-switch-label">
                     <input
-                        class="input-switch-input"
+                        class=${classMap({
+                            'input-switch-input': true,
+                            disabled: this.disabled,
+                        })}
                         type="checkbox"
                         .name="${this.name}"
                         .value="${this.internalValue}"
@@ -69,7 +85,12 @@ export class DnInputSwitch extends CustomFormElement {
                         @change="${this._handleChange}"
                         @click="${this._handleClick}"
                     />
-                    <span class="input-switch-slider"></span>
+                    <span
+                        class=${classMap({
+                            'input-switch-slider': true,
+                            disabled: this.disabled,
+                        })}
+                    ></span>
                 </label>
             </div>
         `;

@@ -8,15 +8,15 @@ import { hostStyles, styles } from './DnAvatar.styles';
 import '../dn-icon';
 
 /**
- * Digital UI - Icon Component
- * @summary
- *  A wrapper that resolve to either customized image or an icon component with specified name and size if
- *  the source isn't defined.
+ * Digital UI - Avatar Component
+ *
+ * A wrapper that resolve to either customized image or an icon component with specified name and size
+ * if the source isn't defined.
  * @event click - Fired when the element is clicked.
- * @cssprop {Color}  --digital-ui-icon-color
- * @cssprop {Length} --digital-ui-icon-size
- * @cssprop {String} --digital-ui-icon-cursor
-
+ * @example CSS Variables overrides
+ * --dn-icon-color: #000000;
+ * --dn-icon-cursor: pointer;
+ * --dn-icon-color-hover: #000000;
  */
 @customElement('dn-avatar')
 export class DnAvatar extends CustomElement {

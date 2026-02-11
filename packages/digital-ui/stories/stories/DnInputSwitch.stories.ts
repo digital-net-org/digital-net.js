@@ -92,6 +92,24 @@ export class Default extends Story {
         `;
     }
 
+    private renderDisabled() {
+        return html`
+            <div class="flex-column" style="width: 250px">
+                <h2 class="dn-story-title">Disabled</h2>
+                <div class="flex-row">
+                    <div class="flex-column">
+                        <h3 class="dn-story-subtitle">Value: true</h3>
+                        <dn-input-switch disabled ?value=${true}></dn-input-switch>
+                    </div>
+                    <div class="flex-column">
+                        <h3 class="dn-story-subtitle">Value: false</h3>
+                        <dn-input-switch disabled ?value=${false}></dn-input-switch>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     public render() {
         return html`
             <div class="dn-stories">
@@ -99,6 +117,8 @@ export class Default extends Story {
                     <div class="flex-row">${this.renderDefault()}</div>
                     <hr />
                     <div class="flex-row">${this.renderForm()}</div>
+                    <hr />
+                    <div class="flex-row">${this.renderDisabled()}</div>
                 </div>
             </div>
         `;

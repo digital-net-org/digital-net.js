@@ -2,13 +2,16 @@ import { css } from 'lit';
 
 export const styles = css`
     :host {
-        --_duration: var(--digital-ui-input-switch-duration, 0.4s);
-        --_width: var(--digital-ui-input-switch-width, 33px);
-        --_height: var(--digital-ui-input-switch-height, 16px);
-        --_slider-size: var(--digital-ui-input-switch-slider-size, 12px);
-        --_spacing: var(--digital-ui-input-switch-spacing, 2px);
-        --_translate: var(--digital-ui-input-switch-translate, 17px);
-        --_border: var(--digital-ui-input-switch-border, 1px solid);
+        --_color: var(--dn-palette-primary);
+        --_color-disabled: var(--dn-palette-background-disabled);
+        --_shadow: var(--dn-palette-shadow-light);
+        --_duration: 0.4s;
+        --_width: 33px;
+        --_height: 16px;
+        --_slider-size: 12px;
+        --_spacing: 2px;
+        --_translate: 17px;
+        --_border: 1px solid;
     }
 
     .input-switch-container {
@@ -30,7 +33,7 @@ export const styles = css`
     }
 
     .input-switch-input:checked + .input-switch-slider {
-        background-color: var(--palette-primary);
+        background-color: var(--_color);
     }
 
     .input-switch-input:checked + .input-switch-slider:before {
@@ -46,12 +49,12 @@ export const styles = css`
         right: 0;
         bottom: 0;
         box-sizing: border-box;
-        background-color: var(--palette-background-disabled);
+        background-color: var(--_color-disabled);
         border-radius: 50px;
         -webkit-transition: var(--_duration);
         transition: var(--_duration);
-        box-shadow: inset 0 0 12px var(--palette-shadow-light);
-        -webkit-box-shadow: inset 0 0 calc(var(--font-size-regular) * 0.55) var(--palette-shadow-light);
+        box-shadow: inset 0 0 12px var(--_shadow);
+        -webkit-box-shadow: inset 0 0 calc(var(--dn-font-size-regular) * 0.55) var(--_shadow);
 
         &:before {
             position: absolute;
@@ -68,11 +71,11 @@ export const styles = css`
         }
     }
 
-    .input-switch-disabled .input-switch-input:checked + .input-switch-slider {
-        background-color: var(--palette-background-disabled);
+    .disabled.input-switch-input:checked + .input-switch-slider {
+        background-color: var(--_color-disabled);
     }
 
-    .input-switch-loading .input-switch-input:checked + .input-switch-slider {
-        background-color: var(--palette-background-disabled);
+    .disabled.input-switch-slider::before {
+        background-color: var(--dn-palette-text-disabled);
     }
 `;

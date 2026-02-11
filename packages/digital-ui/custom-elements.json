@@ -130,22 +130,8 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "Digital UI - Icon Component",
+          "description": "Digital UI - Avatar Component\n\nA wrapper that resolve to either customized image or an icon component with specified name and size\nif the source isn't defined.",
           "name": "DnAvatar",
-          "cssProperties": [
-            {
-              "type": {
-                "text": "Color"
-              },
-              "name": "--digital-ui-icon-color"
-            },
-            {
-              "type": {
-                "text": "Length"
-              },
-              "name": "--digital-ui-icon-size"
-            }
-          ],
           "members": [
             {
               "kind": "field",
@@ -273,7 +259,6 @@
             "name": "CustomElement",
             "module": "/src/components/CustomElement"
           },
-          "summary": " A wrapper that resolve to either customized image or an icon component with specified name and size if\n the source isn't defined.",
           "tagName": "dn-avatar",
           "customElement": true
         }
@@ -314,230 +299,6 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/dn-input-switch/DnInputSwitch.styles.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "styles",
-          "declaration": {
-            "name": "styles",
-            "module": "src/components/dn-input-switch/DnInputSwitch.styles.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-input-switch/DnInputSwitch.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "Digital UI - Input Switch Component",
-          "name": "DnInputSwitch",
-          "cssProperties": [
-            {
-              "type": {
-                "text": "Time"
-              },
-              "name": "--digital-ui-input-switch-duration"
-            },
-            {
-              "type": {
-                "text": "Length"
-              },
-              "name": "--digital-ui-input-switch-width"
-            },
-            {
-              "type": {
-                "text": "Length"
-              },
-              "name": "--digital-ui-input-switch-height"
-            },
-            {
-              "type": {
-                "text": "Length"
-              },
-              "name": "--digital-ui-input-switch-slider-size"
-            },
-            {
-              "type": {
-                "text": "Length"
-              },
-              "name": "--digital-ui-input-switch-spacing"
-            },
-            {
-              "type": {
-                "text": "Length"
-              },
-              "name": "--digital-ui-input-switch-translate"
-            },
-            {
-              "type": {
-                "text": "Border"
-              },
-              "name": "--digital-ui-input-switch-border"
-            }
-          ],
-          "members": [
-            {
-              "kind": "field",
-              "name": "value",
-              "type": {
-                "text": "boolean"
-              },
-              "privacy": "public",
-              "default": "false",
-              "description": "The state of the switch (true = on, false = off).",
-              "attribute": "value",
-              "reflects": true
-            },
-            {
-              "kind": "field",
-              "name": "name",
-              "type": {
-                "text": "string"
-              },
-              "privacy": "public",
-              "default": "''",
-              "description": "The name attribute for form submission. If not set, the switch will not be included in form data.",
-              "attribute": "name"
-            },
-            {
-              "kind": "field",
-              "name": "internalValue",
-              "type": {
-                "text": "'on' | 'off'"
-              },
-              "privacy": "public",
-              "readonly": true
-            },
-            {
-              "kind": "method",
-              "name": "onFormUpdate",
-              "privacy": "protected",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "internals",
-                  "type": {
-                    "text": "ElementInternals"
-                  }
-                },
-                {
-                  "name": "changedProperties",
-                  "type": {
-                    "text": "Map<string, any>"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "_handleChange",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "Event"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "_handleClick",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "Event"
-                  }
-                }
-              ]
-            }
-          ],
-          "events": [
-            {
-              "description": "Fired when the checked state changes.",
-              "name": "change"
-            },
-            {
-              "description": "Fired when the element is clicked.",
-              "name": "click"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "value",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "The state of the switch (true = on, false = off).",
-              "fieldName": "value"
-            },
-            {
-              "name": "name",
-              "type": {
-                "text": "string"
-              },
-              "default": "''",
-              "description": "The name attribute for form submission. If not set, the switch will not be included in form data.",
-              "fieldName": "name"
-            }
-          ],
-          "superclass": {
-            "name": "CustomFormElement",
-            "module": "/src/components/CustomFormElement"
-          },
-          "summary": "A toggle switch component behaving like a native checkbox.",
-          "tagName": "dn-input-switch",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "DnInputSwitch",
-          "declaration": {
-            "name": "DnInputSwitch",
-            "module": "src/components/dn-input-switch/DnInputSwitch.ts"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "dn-input-switch",
-          "declaration": {
-            "name": "DnInputSwitch",
-            "module": "src/components/dn-input-switch/DnInputSwitch.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-input-switch/index.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "DnInputSwitch",
-          "declaration": {
-            "name": "DnInputSwitch",
-            "module": "./DnInputSwitch"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/components/dn-icon/DnIcon.styles.ts",
       "declarations": [],
       "exports": [
@@ -565,28 +326,8 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "Digital UI - Icon Component",
+          "description": "Digital UI - Icon Component\n\nAn icon component that contains various SVG icons accessible via the 'name' attribute.",
           "name": "DnIcon",
-          "cssProperties": [
-            {
-              "type": {
-                "text": "Color"
-              },
-              "name": "--digital-ui-icon-color"
-            },
-            {
-              "type": {
-                "text": "Length"
-              },
-              "name": "--digital-ui-icon-size"
-            },
-            {
-              "type": {
-                "text": "Time"
-              },
-              "name": "--digital-ui-icon-transition"
-            }
-          ],
           "members": [
             {
               "kind": "field",
@@ -695,7 +436,6 @@
             "name": "CustomElement",
             "module": "/src/components/CustomElement"
           },
-          "summary": "An icon component that contains various SVG icons accessible via the 'name' attribute.",
           "tagName": "dn-icon",
           "customElement": true
         }
@@ -753,6 +493,324 @@
           "declaration": {
             "name": "IconKey",
             "module": "./icon16PxPaths"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-input-switch/DnInputSwitch.styles.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "styles",
+          "declaration": {
+            "name": "styles",
+            "module": "src/components/dn-input-switch/DnInputSwitch.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-input-switch/DnInputSwitch.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Digital UI - Input Switch Component\n\nA toggle switch component behaving like a native checkbox.",
+          "name": "DnInputSwitch",
+          "members": [
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "The state of the switch (true = on, false = off).",
+              "attribute": "value",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "public",
+              "default": "''",
+              "description": "The name attribute for form submission. If not set, the switch will not be included in form data.",
+              "attribute": "name"
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "If true, the element will render as disabled and events wont be fired.",
+              "attribute": "disabled",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "internalValue",
+              "type": {
+                "text": "'on' | 'off'"
+              },
+              "privacy": "public",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "onFormUpdate",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "internals",
+                  "type": {
+                    "text": "ElementInternals"
+                  }
+                },
+                {
+                  "name": "changedProperties",
+                  "type": {
+                    "text": "Map<string, any>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_handleChange",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_handleClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "Fired when the checked state changes.",
+              "name": "change"
+            },
+            {
+              "description": "Fired when the element is clicked.",
+              "name": "click"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "value",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The state of the switch (true = on, false = off).",
+              "fieldName": "value"
+            },
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "The name attribute for form submission. If not set, the switch will not be included in form data.",
+              "fieldName": "name"
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "If true, the element will render as disabled and events wont be fired.",
+              "fieldName": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "CustomFormElement",
+            "module": "/src/components/CustomFormElement"
+          },
+          "tagName": "dn-input-switch",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnInputSwitch",
+          "declaration": {
+            "name": "DnInputSwitch",
+            "module": "src/components/dn-input-switch/DnInputSwitch.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "dn-input-switch",
+          "declaration": {
+            "name": "DnInputSwitch",
+            "module": "src/components/dn-input-switch/DnInputSwitch.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-input-switch/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnInputSwitch",
+          "declaration": {
+            "name": "DnInputSwitch",
+            "module": "./DnInputSwitch"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-loader/DnLoader.styles.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "hostStyles",
+          "declaration": {
+            "name": "hostStyles",
+            "module": "src/components/dn-loader/DnLoader.styles.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "styles",
+          "declaration": {
+            "name": "styles",
+            "module": "src/components/dn-loader/DnLoader.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-loader/DnLoader.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Digital UI - Loader Component",
+          "name": "DnLoader",
+          "members": [
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "privacy": "public",
+              "default": "'medium'",
+              "description": "This determines the size of the avatar. Can be 'small', 'medium' or 'large'.",
+              "attribute": "size"
+            },
+            {
+              "kind": "field",
+              "name": "colorVariant",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "public",
+              "default": "'primary'",
+              "description": "This determine color variant of the avatar. Can be 'primary', 'text' or 'disabled'.",
+              "attribute": "color-variant",
+              "reflects": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "default": "'medium'",
+              "description": "This determines the size of the avatar. Can be 'small', 'medium' or 'large'.",
+              "fieldName": "size"
+            },
+            {
+              "name": "color-variant",
+              "type": {
+                "text": "string"
+              },
+              "default": "'primary'",
+              "description": "This determine color variant of the avatar. Can be 'primary', 'text' or 'disabled'.",
+              "fieldName": "colorVariant"
+            }
+          ],
+          "superclass": {
+            "name": "CustomElement",
+            "module": "/src/components/CustomElement"
+          },
+          "tagName": "dn-loader",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnLoader",
+          "declaration": {
+            "name": "DnLoader",
+            "module": "src/components/dn-loader/DnLoader.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "dn-loader",
+          "declaration": {
+            "name": "DnLoader",
+            "module": "src/components/dn-loader/DnLoader.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-loader/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnLoader",
+          "declaration": {
+            "name": "DnLoader",
+            "module": "./DnLoader"
           }
         }
       ]

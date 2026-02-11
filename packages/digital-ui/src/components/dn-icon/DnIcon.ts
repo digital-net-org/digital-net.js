@@ -8,13 +8,13 @@ import { type IconKey, icon16PxPaths } from './icon16PxPaths';
 
 /**
  * Digital UI - Icon Component
- * @summary An icon component that contains various SVG icons accessible via the 'name' attribute.
+ *
+ * An icon component that contains various SVG icons accessible via the 'name' attribute.
  * @event click - Fired when the icon is clicked.
- * @cssprop {Color}     --digital-ui-icon-color
- * @cssprop {Color}     --digital-ui-icon-color-hover
- * @cssprop {Length}    --digital-ui-icon-size
- * @cssprop {Time}      --digital-ui-icon-transition
- * @cssprop {String}    --digital-ui-icon-cursor
+ * @example CSS Variables overrides
+ * --dn-icon-color: #000000;
+ * --dn-icon-cursor: pointer;
+ * --dn-icon-color-hover: #000000;
  */
 @customElement('dn-icon')
 export class DnIcon extends CustomElement {

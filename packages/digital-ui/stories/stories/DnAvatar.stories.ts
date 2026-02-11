@@ -32,6 +32,67 @@ export class Default extends Story {
         `;
     }
 
+    private renderVariants() {
+        return html`
+            <style>
+                .icon-stories {
+                    align-items: start;
+                    gap: 2rem;
+                }
+                .icon-story {
+                    border: var(--border-color) 1px dashed;
+                    border-radius: 5px;
+                    padding: 0.5rem 1rem;
+                    height: 100%;
+                    justify-content: start;
+                    align-items: center;
+                }
+                .icon-story pre {
+                    color: var(--primary-color);
+                }
+                .colorized-avatar-story dn-avatar {
+                    --dn-icon-color: red;
+                }
+                .cursor-pointer-avatar-story dn-avatar {
+                    --dn-icon-cursor: pointer;
+                }
+            </style>
+            <div class="flex-column">
+                <h2 class="dn-story-title">Variants</h2>
+                <div class="icon-stories flex-row">
+                    <div class="icon-story colorized-icon-story flex-column">
+                        <div>
+                            <h3 class="dn-story-subtitle">Colorized (no source)</h3>
+                            <pre>--dn-icon-color: red;</pre>
+                        </div>
+                        <dn-avatar size="x-large"></dn-avatar>
+                    </div>
+                    <div class="icon-story colorized-avatar-story flex-column">
+                        <div>
+                            <h3 class="dn-story-subtitle">Colorized</h3>
+                            <pre>--dn-icon-color: red;</pre>
+                        </div>
+                        <dn-avatar size="x-large" src=${Default.imgSample}></dn-avatar>
+                    </div>
+                    <div class="icon-story cursor-pointer-avatar-story flex-column">
+                        <div>
+                            <h3 class="dn-story-subtitle">Cursor pointer (no source)</h3>
+                            <pre>--dn-icon-cursor: pointer;</pre>
+                        </div>
+                        <dn-avatar size="x-large"></dn-avatar>
+                    </div>
+                    <div class="icon-story cursor-pointer-avatar-story flex-column">
+                        <div>
+                            <h3 class="dn-story-subtitle">Cursor pointer</h3>
+                            <pre>--dn-icon-cursor: pointer;</pre>
+                        </div>
+                        <dn-avatar src=${Default.imgSample} size="x-large"></dn-avatar>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     private renderFullWidth() {
         return html`
             <style>
@@ -78,6 +139,8 @@ export class Default extends Story {
             <div class="dn-stories">
                 <div class="dn-story">
                     <div class="flex-row">${this.renderDefault()}</div>
+                    <hr />
+                    <div class="flex-row">${this.renderVariants()}</div>
                     <hr />
                     <div class="flex-row">${this.renderFullWidth()}</div>
                 </div>

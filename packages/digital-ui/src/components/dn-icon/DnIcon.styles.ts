@@ -2,11 +2,11 @@ import { css } from 'lit';
 
 export const hostStyles = css`
     :host {
-        --_icon-color: var(--digital-ui-icon-color, currentColor);
-        --_icon-color-hover: var(--digital-ui-icon-color-hover, var(--_icon-color));
-        --_icon-size: var(--digital-ui-icon-size, 2rem);
-        --_icon-transition: var(--digital-ui-icon-transition, 0.3s);
-        --_icon-cursor: var(--digital-ui-icon-cursor, default);
+        --_icon-color: var(--dn-icon-color, currentColor);
+        --_icon-color-hover: var(--dn-icon-color-hover, var(--dn-icon-color, currentColor));
+        --_icon-cursor: var(--dn-icon-cursor, default);
+        --_icon-size: 2rem;
+        --_icon-transition: 0.3s;
     }
 `;
 
@@ -68,7 +68,7 @@ export const styles = css`
     }
 
     .icon:hover {
-        color: var(--_icon-hover-color);
-        fill: var(--_icon-hover-color);
+        color: var(--_icon-color-hover);
+        fill: var(--_icon-color-hover);
     }
 `;
