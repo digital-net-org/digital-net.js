@@ -7,6 +7,7 @@ export class Default extends Story {
     public category = 'Icons';
 
     private static icons: IconKey[] = [
+        'circle',
         'account-circle',
         'account-filled',
         'account-outlined',
@@ -94,6 +95,7 @@ export class Default extends Story {
                             <h3 class="dn-story-subtitle">Resized</h3>
                             <pre>--digital-ui-icon-size: 0.5rem; { size: "x-large" }</pre>
                         </div>
+                        
                         <dn-icon name="account-circle" size="x-large"></dn-icon>
                     </div>
                 </div>
@@ -113,6 +115,7 @@ export class Default extends Story {
                             <div class="flex-column">
                                 <h3 class="dn-story-subtitle">${direction}</h3>
                                 <dn-icon name="arrow-round-filled" direction="${direction}"></dn-icon>
+                                <dn-icon name="account-circle"></dn-icon>
                             </div>
                         `
                     )}
@@ -148,7 +151,7 @@ export class Default extends Story {
                 <h2 class="dn-story-title">Full Width</h2>
                 <div class="full-width-icon-stories">
                     <div class="full-width-icon-story">
-                        <dn-icon name="account-circle" fullWidth></dn-icon>
+                        <dn-icon name="account-circle" full-width></dn-icon>
                     </div>
                 </div>
             </div>

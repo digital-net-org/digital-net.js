@@ -1,12 +1,13 @@
 import { html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { styles } from './DnInputSwitch.styles';
 import { CustomFormElement } from '../CustomFormElement';
+import { styles } from './DnInputSwitch.styles';
 
 /**
  * Digital UI - Input Switch Component
  * @summary A toggle switch component behaving like a native checkbox.
- * @event change - Fired when the checked state changes. Standard Event bubbling up.
+ * @event change - Fired when the checked state changes.
+ * @event click - Fired when the element is clicked.
  * @cssprop {Time}   --digital-ui-input-switch-duration
  * @cssprop {Length} --digital-ui-input-switch-width
  * @cssprop {Length} --digital-ui-input-switch-height
@@ -45,8 +46,13 @@ export class DnInputSwitch extends CustomFormElement {
         e.stopPropagation();
         const target = e.target as HTMLInputElement;
         this.value = target.checked;
-
         const event = new Event('change', { bubbles: true, composed: true });
+        this.dispatchEvent(event);
+    }
+
+    private _handleClick(e: Event) {
+        e.stopPropagation();
+        const event = new Event('click', { bubbles: true, composed: true });
         this.dispatchEvent(event);
     }
 
@@ -58,9 +64,10 @@ export class DnInputSwitch extends CustomFormElement {
                         class="input-switch-input"
                         type="checkbox"
                         .name="${this.name}"
-                        ?checked="${this.value}"
                         .value="${this.internalValue}"
+                        ?checked="${this.value}"
                         @change="${this._handleChange}"
+                        @click="${this._handleClick}"
                     />
                     <span class="input-switch-slider"></span>
                 </label>

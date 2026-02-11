@@ -72,7 +72,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "module": "src/components/dn-input-switch"
+            "module": "src/components/dn-avatar"
           }
         },
         {
@@ -88,6 +88,14 @@
           "name": "*",
           "declaration": {
             "name": "*",
+            "module": "src/components/dn-input-switch"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
             "module": "src/components/types"
           }
         }
@@ -95,7 +103,7 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/dn-icon/DnIcon.styles.ts",
+      "path": "src/components/dn-avatar/DnAvatar.styles.ts",
       "declarations": [],
       "exports": [
         {
@@ -103,7 +111,7 @@
           "name": "hostStyles",
           "declaration": {
             "name": "hostStyles",
-            "module": "src/components/dn-icon/DnIcon.styles.ts"
+            "module": "src/components/dn-avatar/DnAvatar.styles.ts"
           }
         },
         {
@@ -111,19 +119,19 @@
           "name": "styles",
           "declaration": {
             "name": "styles",
-            "module": "src/components/dn-icon/DnIcon.styles.ts"
+            "module": "src/components/dn-avatar/DnAvatar.styles.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/dn-icon/DnIcon.ts",
+      "path": "src/components/dn-avatar/DnAvatar.ts",
       "declarations": [
         {
           "kind": "class",
           "description": "Digital UI - Icon Component",
-          "name": "DnIcon",
+          "name": "DnAvatar",
           "cssProperties": [
             {
               "type": {
@@ -136,36 +144,30 @@
                 "text": "Length"
               },
               "name": "--digital-ui-icon-size"
-            },
-            {
-              "type": {
-                "text": "Time"
-              },
-              "name": "--digital-ui-icon-transition"
             }
           ],
           "members": [
             {
               "kind": "field",
-              "name": "name",
+              "name": "src",
               "type": {
-                "text": "IconKey | null"
+                "text": "string | null | undefined"
               },
               "privacy": "public",
               "default": "null",
-              "description": "The key of the icon to display.",
-              "attribute": "name"
+              "description": "The source URL of the avatar image. If not provided or `undefined`, it will fall back to a default icon.",
+              "attribute": "src"
             },
             {
               "kind": "field",
-              "name": "direction",
+              "name": "alt",
               "type": {
-                "text": "Direction"
+                "text": "string"
               },
               "privacy": "public",
-              "default": "'up'",
-              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
-              "attribute": "direction"
+              "default": "''",
+              "description": "The alt text for the avatar image. If not provided or `undefined`, it will fall back to an empty string.",
+              "attribute": "alt"
             },
             {
               "kind": "field",
@@ -175,7 +177,7 @@
               },
               "privacy": "public",
               "default": "'medium'",
-              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
+              "description": "This determines the size of the avatar. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
               "attribute": "size"
             },
             {
@@ -186,35 +188,67 @@
               },
               "privacy": "public",
               "default": "false",
-              "description": "When true, the icon will take up the full width of its container.",
-              "attribute": "fullWidth",
+              "description": "When true, the avatar will take up the full width of its container.",
+              "attribute": "full-width",
               "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "_hasImageError",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "method",
+              "name": "_handleImageError",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_handleImageLoad",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_handleClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
             }
           ],
           "events": [
             {
-              "description": "Fired when the icon is clicked.",
+              "description": "Fired when the element is clicked.",
               "name": "click"
             }
           ],
           "attributes": [
             {
-              "name": "name",
+              "name": "src",
               "type": {
-                "text": "IconKey | null"
+                "text": "string | null | undefined"
               },
               "default": "null",
-              "description": "The key of the icon to display.",
-              "fieldName": "name"
+              "description": "The source URL of the avatar image. If not provided or `undefined`, it will fall back to a default icon.",
+              "fieldName": "src"
             },
             {
-              "name": "direction",
+              "name": "alt",
               "type": {
-                "text": "Direction"
+                "text": "string"
               },
-              "default": "'up'",
-              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
-              "fieldName": "direction"
+              "default": "''",
+              "description": "The alt text for the avatar image. If not provided or `undefined`, it will fall back to an empty string.",
+              "fieldName": "alt"
             },
             {
               "name": "size",
@@ -222,16 +256,16 @@
                 "text": "Size"
               },
               "default": "'medium'",
-              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
+              "description": "This determines the size of the avatar. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
               "fieldName": "size"
             },
             {
-              "name": "fullWidth",
+              "name": "full-width",
               "type": {
                 "text": "boolean"
               },
               "default": "false",
-              "description": "When true, the icon will take up the full width of its container.",
+              "description": "When true, the avatar will take up the full width of its container.",
               "fieldName": "fullWidth"
             }
           ],
@@ -239,64 +273,41 @@
             "name": "CustomElement",
             "module": "/src/components/CustomElement"
           },
-          "summary": "An icon component that contains various SVG icons accessible via the 'name' attribute.",
-          "tagName": "dn-icon",
+          "summary": " A wrapper that resolve to either customized image or an icon component with specified name and size if\n the source isn't defined.",
+          "tagName": "dn-avatar",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "DnIcon",
+          "name": "DnAvatar",
           "declaration": {
-            "name": "DnIcon",
-            "module": "src/components/dn-icon/DnIcon.ts"
+            "name": "DnAvatar",
+            "module": "src/components/dn-avatar/DnAvatar.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "dn-icon",
+          "name": "dn-avatar",
           "declaration": {
-            "name": "DnIcon",
-            "module": "src/components/dn-icon/DnIcon.ts"
+            "name": "DnAvatar",
+            "module": "src/components/dn-avatar/DnAvatar.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/dn-icon/icon16PxPaths.ts",
+      "path": "src/components/dn-avatar/index.ts",
       "declarations": [],
       "exports": [
         {
           "kind": "js",
-          "name": "icon16PxPaths",
+          "name": "DnAvatar",
           "declaration": {
-            "name": "icon16PxPaths",
-            "module": "src/components/dn-icon/icon16PxPaths.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/index.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "DnIcon",
-          "declaration": {
-            "name": "DnIcon",
-            "module": "./DnIcon"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "IconKey",
-          "declaration": {
-            "name": "IconKey",
-            "module": "./icon16PxPaths"
+            "name": "DnAvatar",
+            "module": "./DnAvatar"
           }
         }
       ]
@@ -437,12 +448,29 @@
                   }
                 }
               ]
+            },
+            {
+              "kind": "method",
+              "name": "_handleClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
             }
           ],
           "events": [
             {
-              "description": "Fired when the checked state changes. Standard Event bubbling up.",
+              "description": "Fired when the checked state changes.",
               "name": "change"
+            },
+            {
+              "description": "Fired when the element is clicked.",
+              "name": "click"
             }
           ],
           "attributes": [
@@ -510,6 +538,227 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/dn-icon/DnIcon.styles.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "hostStyles",
+          "declaration": {
+            "name": "hostStyles",
+            "module": "src/components/dn-icon/DnIcon.styles.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "styles",
+          "declaration": {
+            "name": "styles",
+            "module": "src/components/dn-icon/DnIcon.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/DnIcon.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Digital UI - Icon Component",
+          "name": "DnIcon",
+          "cssProperties": [
+            {
+              "type": {
+                "text": "Color"
+              },
+              "name": "--digital-ui-icon-color"
+            },
+            {
+              "type": {
+                "text": "Length"
+              },
+              "name": "--digital-ui-icon-size"
+            },
+            {
+              "type": {
+                "text": "Time"
+              },
+              "name": "--digital-ui-icon-transition"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "IconKey | null"
+              },
+              "privacy": "public",
+              "default": "null",
+              "description": "The key of the icon to display.",
+              "attribute": "name"
+            },
+            {
+              "kind": "field",
+              "name": "direction",
+              "type": {
+                "text": "Direction"
+              },
+              "privacy": "public",
+              "default": "'up'",
+              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
+              "attribute": "direction"
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "privacy": "public",
+              "default": "'medium'",
+              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
+              "attribute": "size"
+            },
+            {
+              "kind": "field",
+              "name": "fullWidth",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "When true, the icon will take up the full width of its container.",
+              "attribute": "full-width",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "_handleClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "Fired when the icon is clicked.",
+              "name": "click"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "IconKey | null"
+              },
+              "default": "null",
+              "description": "The key of the icon to display.",
+              "fieldName": "name"
+            },
+            {
+              "name": "direction",
+              "type": {
+                "text": "Direction"
+              },
+              "default": "'up'",
+              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
+              "fieldName": "direction"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "default": "'medium'",
+              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
+              "fieldName": "size"
+            },
+            {
+              "name": "full-width",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When true, the icon will take up the full width of its container.",
+              "fieldName": "fullWidth"
+            }
+          ],
+          "superclass": {
+            "name": "CustomElement",
+            "module": "/src/components/CustomElement"
+          },
+          "summary": "An icon component that contains various SVG icons accessible via the 'name' attribute.",
+          "tagName": "dn-icon",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnIcon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "src/components/dn-icon/DnIcon.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "dn-icon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "src/components/dn-icon/DnIcon.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/icon16PxPaths.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "icon16PxPaths",
+          "declaration": {
+            "name": "icon16PxPaths",
+            "module": "src/components/dn-icon/icon16PxPaths.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnIcon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "./DnIcon"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "IconKey",
+          "declaration": {
+            "name": "IconKey",
+            "module": "./icon16PxPaths"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/types/Direction.ts",
       "declarations": [],
       "exports": []
@@ -539,145 +788,6 @@
           "declaration": {
             "name": "*",
             "module": "src/components/types/Size"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-avatar/DnAvatar.styles.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "hostStyles",
-          "declaration": {
-            "name": "hostStyles",
-            "module": "src/components/dn-avatar/DnAvatar.styles.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "styles",
-          "declaration": {
-            "name": "styles",
-            "module": "src/components/dn-avatar/DnAvatar.styles.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-avatar/DnAvatar.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "Digital UI - Icon Component",
-          "name": "DnAvatar",
-          "cssProperties": [
-            {
-              "type": {
-                "text": "Color"
-              },
-              "name": "--digital-ui-icon-color"
-            },
-            {
-              "type": {
-                "text": "Length"
-              },
-              "name": "--digital-ui-icon-size"
-            }
-          ],
-          "members": [
-            {
-              "kind": "field",
-              "name": "size",
-              "type": {
-                "text": "Size"
-              },
-              "privacy": "public",
-              "default": "'medium'",
-              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
-              "attribute": "size"
-            },
-            {
-              "kind": "field",
-              "name": "fullWidth",
-              "type": {
-                "text": "boolean"
-              },
-              "privacy": "public",
-              "default": "false",
-              "description": "When true, the icon will take up the full width of its container.",
-              "attribute": "fullWidth",
-              "reflects": true
-            }
-          ],
-          "events": [
-            {
-              "description": "Fired when the icon is clicked.",
-              "name": "click"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "size",
-              "type": {
-                "text": "Size"
-              },
-              "default": "'medium'",
-              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
-              "fieldName": "size"
-            },
-            {
-              "name": "fullWidth",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "When true, the icon will take up the full width of its container.",
-              "fieldName": "fullWidth"
-            }
-          ],
-          "superclass": {
-            "name": "CustomElement",
-            "module": "/src/components/CustomElement"
-          },
-          "summary": " A wrapper that resolve to either customized image or an icon component with specified name and size if\n the source isn't defined.",
-          "tagName": "dn-avatar",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "DnAvatar",
-          "declaration": {
-            "name": "DnAvatar",
-            "module": "src/components/dn-avatar/DnAvatar.ts"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "dn-avatar",
-          "declaration": {
-            "name": "DnAvatar",
-            "module": "src/components/dn-avatar/DnAvatar.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-avatar/index.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "DnAvatar",
-          "declaration": {
-            "name": "DnAvatar",
-            "module": "./DnAvatar"
           }
         }
       ]

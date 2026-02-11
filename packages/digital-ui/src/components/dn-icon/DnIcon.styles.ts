@@ -3,8 +3,10 @@ import { css } from 'lit';
 export const hostStyles = css`
     :host {
         --_icon-color: var(--digital-ui-icon-color, currentColor);
+        --_icon-color-hover: var(--digital-ui-icon-color-hover, var(--_icon-color));
         --_icon-size: var(--digital-ui-icon-size, 2rem);
         --_icon-transition: var(--digital-ui-icon-transition, 0.3s);
+        --_icon-cursor: var(--digital-ui-icon-cursor, default);
     }
 `;
 
@@ -54,6 +56,7 @@ export const styles = css`
     }
 
     .icon {
+        cursor: var(--_icon-cursor);
         line-height: 0;
         color: var(--_icon-color);
         fill: var(--_icon-color);
@@ -62,5 +65,10 @@ export const styles = css`
         transform: var(--_icon-transform);
         -webkit-transition: var(--_icon-transition);
         transition: var(--_icon-transition);
+    }
+
+    .icon:hover {
+        color: var(--_icon-hover-color);
+        fill: var(--_icon-hover-color);
     }
 `;

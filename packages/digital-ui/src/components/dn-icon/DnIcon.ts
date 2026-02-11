@@ -10,9 +10,11 @@ import { type IconKey, icon16PxPaths } from './icon16PxPaths';
  * Digital UI - Icon Component
  * @summary An icon component that contains various SVG icons accessible via the 'name' attribute.
  * @event click - Fired when the icon is clicked.
- * @cssprop {Color}  --digital-ui-icon-color
- * @cssprop {Length} --digital-ui-icon-size
- * @cssprop {Time} --digital-ui-icon-transition
+ * @cssprop {Color}     --digital-ui-icon-color
+ * @cssprop {Color}     --digital-ui-icon-color-hover
+ * @cssprop {Length}    --digital-ui-icon-size
+ * @cssprop {Time}      --digital-ui-icon-transition
+ * @cssprop {String}    --digital-ui-icon-cursor
  */
 @customElement('dn-icon')
 export class DnIcon extends CustomElement {
@@ -43,12 +45,18 @@ export class DnIcon extends CustomElement {
      * When true, the icon will take up the full width of its container.
      * @default false
      */
-    @property({ type: Boolean, reflect: true })
+    @property({ type: Boolean, attribute: 'full-width', reflect: true })
     public fullWidth = false;
+
+    private _handleClick(e: Event) {
+        e.stopPropagation();
+        const event = new Event('click', { bubbles: true, composed: true });
+        this.dispatchEvent(event);
+    }
 
     public render() {
         if (!this.name) {
-            console.warn("DnAvatar: 'name' attribute is missing. Icon will not render.", this);
+            console.warn("DnIcon: 'name' attribute is missing. Icon will not render.", this);
             return '';
         }
 
@@ -69,6 +77,7 @@ export class DnIcon extends CustomElement {
                 width="16"
                 height="16"
                 viewBox="0 0 16 16"
+                @click=${this._handleClick}
             >
                 ${paths ? paths.map(path => svg`<path d="${path}"></path>`) : ''}
             </svg>

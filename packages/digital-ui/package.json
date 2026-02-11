@@ -18,8 +18,7 @@
     },
     "scripts": {
         "test": "vitest",
-        "dev": "vite",
-        "dev:server": "tsx stories/server.ts",
+        "dev": "tsx stories/server.ts",
         "build": "cem analyze && tsc -p tsconfig.build.json --noEmit && vite build",
         "analyze": "cem analyze"
     },
