@@ -2,9 +2,9 @@ import { html, svg } from 'lit';
 import { classMap } from 'lit/directives/class-map.js';
 import { property, customElement } from 'lit/decorators.js';
 import { CustomElement } from '../CustomElement';
-import type { Direction, Size } from '../types';
-import { hostStyles, styles } from './DnIcon.styles';
+import { type Direction, type Size } from '../types';
 import { type IconKey, icon16PxPaths } from './icon16PxPaths';
+import { hostStyles, styles } from './DnIcon.styles';
 
 /**
  * Digital UI - Icon Component

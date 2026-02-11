@@ -1,8 +1,8 @@
 import { html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import { CustomFormElement } from '../CustomFormElement';
 import { styles } from './DnInputSwitch.styles';
-import { classMap } from 'lit/directives/class-map.js';
 
 /**
  * Digital UI - Input Switch Component
@@ -11,9 +11,9 @@ import { classMap } from 'lit/directives/class-map.js';
  * @event change - Fired when the checked state changes.
  * @event click - Fired when the element is clicked.
  * @example CSS Variables overrides
- *  dn-palette-primary: #000000;
- *  dn-palette-background-disabled: #000000;
- *  dn-palette-shadow-light: #000000;
+ *  --dn-palette-primary: #000000;
+ *  --dn-palette-background-disabled: #000000;
+ *  --dn-palette-shadow-light: #000000;
  */
 @customElement('dn-input-switch')
 export class DnInputSwitch extends CustomFormElement {

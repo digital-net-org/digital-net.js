@@ -96,6 +96,14 @@
           "name": "*",
           "declaration": {
             "name": "*",
+            "module": "src/components/dn-loader"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
             "module": "src/components/types"
           }
         }
@@ -293,206 +301,6 @@
           "declaration": {
             "name": "DnAvatar",
             "module": "./DnAvatar"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/DnIcon.styles.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "hostStyles",
-          "declaration": {
-            "name": "hostStyles",
-            "module": "src/components/dn-icon/DnIcon.styles.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "styles",
-          "declaration": {
-            "name": "styles",
-            "module": "src/components/dn-icon/DnIcon.styles.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/DnIcon.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "Digital UI - Icon Component\n\nAn icon component that contains various SVG icons accessible via the 'name' attribute.",
-          "name": "DnIcon",
-          "members": [
-            {
-              "kind": "field",
-              "name": "name",
-              "type": {
-                "text": "IconKey | null"
-              },
-              "privacy": "public",
-              "default": "null",
-              "description": "The key of the icon to display.",
-              "attribute": "name"
-            },
-            {
-              "kind": "field",
-              "name": "direction",
-              "type": {
-                "text": "Direction"
-              },
-              "privacy": "public",
-              "default": "'up'",
-              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
-              "attribute": "direction"
-            },
-            {
-              "kind": "field",
-              "name": "size",
-              "type": {
-                "text": "Size"
-              },
-              "privacy": "public",
-              "default": "'medium'",
-              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
-              "attribute": "size"
-            },
-            {
-              "kind": "field",
-              "name": "fullWidth",
-              "type": {
-                "text": "boolean"
-              },
-              "privacy": "public",
-              "default": "false",
-              "description": "When true, the icon will take up the full width of its container.",
-              "attribute": "full-width",
-              "reflects": true
-            },
-            {
-              "kind": "method",
-              "name": "_handleClick",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "Event"
-                  }
-                }
-              ]
-            }
-          ],
-          "events": [
-            {
-              "description": "Fired when the icon is clicked.",
-              "name": "click"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "name",
-              "type": {
-                "text": "IconKey | null"
-              },
-              "default": "null",
-              "description": "The key of the icon to display.",
-              "fieldName": "name"
-            },
-            {
-              "name": "direction",
-              "type": {
-                "text": "Direction"
-              },
-              "default": "'up'",
-              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
-              "fieldName": "direction"
-            },
-            {
-              "name": "size",
-              "type": {
-                "text": "Size"
-              },
-              "default": "'medium'",
-              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
-              "fieldName": "size"
-            },
-            {
-              "name": "full-width",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "When true, the icon will take up the full width of its container.",
-              "fieldName": "fullWidth"
-            }
-          ],
-          "superclass": {
-            "name": "CustomElement",
-            "module": "/src/components/CustomElement"
-          },
-          "tagName": "dn-icon",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "DnIcon",
-          "declaration": {
-            "name": "DnIcon",
-            "module": "src/components/dn-icon/DnIcon.ts"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "dn-icon",
-          "declaration": {
-            "name": "DnIcon",
-            "module": "src/components/dn-icon/DnIcon.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/icon16PxPaths.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "icon16PxPaths",
-          "declaration": {
-            "name": "icon16PxPaths",
-            "module": "src/components/dn-icon/icon16PxPaths.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/index.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "DnIcon",
-          "declaration": {
-            "name": "DnIcon",
-            "module": "./DnIcon"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "IconKey",
-          "declaration": {
-            "name": "IconKey",
-            "module": "./icon16PxPaths"
           }
         }
       ]
@@ -726,7 +534,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "Digital UI - Loader Component",
+          "description": "Digital UI - Loader Component\n\nA loading indicator in a shape of an animated ellipsis.",
           "name": "DnLoader",
           "members": [
             {
@@ -737,20 +545,8 @@
               },
               "privacy": "public",
               "default": "'medium'",
-              "description": "This determines the size of the avatar. Can be 'small', 'medium' or 'large'.",
+              "description": "This determines the size of the loader. Can be 'x-small', 'small', 'medium', 'large' or 'x-large'.",
               "attribute": "size"
-            },
-            {
-              "kind": "field",
-              "name": "colorVariant",
-              "type": {
-                "text": "string"
-              },
-              "privacy": "public",
-              "default": "'primary'",
-              "description": "This determine color variant of the avatar. Can be 'primary', 'text' or 'disabled'.",
-              "attribute": "color-variant",
-              "reflects": true
             }
           ],
           "attributes": [
@@ -760,17 +556,8 @@
                 "text": "Size"
               },
               "default": "'medium'",
-              "description": "This determines the size of the avatar. Can be 'small', 'medium' or 'large'.",
+              "description": "This determines the size of the loader. Can be 'x-small', 'small', 'medium', 'large' or 'x-large'.",
               "fieldName": "size"
-            },
-            {
-              "name": "color-variant",
-              "type": {
-                "text": "string"
-              },
-              "default": "'primary'",
-              "description": "This determine color variant of the avatar. Can be 'primary', 'text' or 'disabled'.",
-              "fieldName": "colorVariant"
             }
           ],
           "superclass": {
@@ -811,6 +598,206 @@
           "declaration": {
             "name": "DnLoader",
             "module": "./DnLoader"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/DnIcon.styles.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "hostStyles",
+          "declaration": {
+            "name": "hostStyles",
+            "module": "src/components/dn-icon/DnIcon.styles.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "styles",
+          "declaration": {
+            "name": "styles",
+            "module": "src/components/dn-icon/DnIcon.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/DnIcon.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Digital UI - Icon Component\n\nAn icon component that contains various SVG icons accessible via the 'name' attribute.",
+          "name": "DnIcon",
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "IconKey | null"
+              },
+              "privacy": "public",
+              "default": "null",
+              "description": "The key of the icon to display.",
+              "attribute": "name"
+            },
+            {
+              "kind": "field",
+              "name": "direction",
+              "type": {
+                "text": "Direction"
+              },
+              "privacy": "public",
+              "default": "'up'",
+              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
+              "attribute": "direction"
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "privacy": "public",
+              "default": "'medium'",
+              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
+              "attribute": "size"
+            },
+            {
+              "kind": "field",
+              "name": "fullWidth",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "When true, the icon will take up the full width of its container.",
+              "attribute": "full-width",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "_handleClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "Fired when the icon is clicked.",
+              "name": "click"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "IconKey | null"
+              },
+              "default": "null",
+              "description": "The key of the icon to display.",
+              "fieldName": "name"
+            },
+            {
+              "name": "direction",
+              "type": {
+                "text": "Direction"
+              },
+              "default": "'up'",
+              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
+              "fieldName": "direction"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "default": "'medium'",
+              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
+              "fieldName": "size"
+            },
+            {
+              "name": "full-width",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When true, the icon will take up the full width of its container.",
+              "fieldName": "fullWidth"
+            }
+          ],
+          "superclass": {
+            "name": "CustomElement",
+            "module": "/src/components/CustomElement"
+          },
+          "tagName": "dn-icon",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnIcon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "src/components/dn-icon/DnIcon.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "dn-icon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "src/components/dn-icon/DnIcon.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/icon16PxPaths.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "icon16PxPaths",
+          "declaration": {
+            "name": "icon16PxPaths",
+            "module": "src/components/dn-icon/icon16PxPaths.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnIcon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "./DnIcon"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "IconKey",
+          "declaration": {
+            "name": "IconKey",
+            "module": "./icon16PxPaths"
           }
         }
       ]
