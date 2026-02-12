@@ -1,7 +1,7 @@
 import { html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { CustomFormElement } from '../CustomFormElement';
+import { CustomFormElement } from '../../CustomFormElement';
 import { styles } from './DnInputSwitch.styles';
 
 /**
@@ -27,12 +27,14 @@ export class DnInputSwitch extends CustomFormElement {
 
     /**
      * The name attribute for form submission. If not set, the switch will not be included in form data.
+     * @default ''
      */
     @property({ type: String })
     public name = '';
 
     /**
      * If true, the element will render as disabled and events wont be fired.
+     * @default false
      */
     @property({ type: Boolean, reflect: true })
     public disabled = false;

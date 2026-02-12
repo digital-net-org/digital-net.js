@@ -1,4 +1,4 @@
-import type { DnButton, DnAvatar, DnIcon, DnInputSwitch, DnLoader } from '@digital-net-org/digital-ui';
+import type { DnButton, DnAvatar, DnIcon, DnInputSwitch, DnLoader, DnInputText } from '@digital-net-org/digital-ui';
 import type { DnReactElement } from './DnReactElement';
 
 declare module 'react' {
@@ -8,6 +8,7 @@ declare module 'react' {
             'dn-icon': DnReactElement<DnIcon, 'onClick'>;
             'dn-avatar': DnReactElement<DnAvatar, 'onClick'>;
             'dn-input-switch': DnReactElement<DnInputSwitch, 'onChange' | 'onClick'>;
+            'dn-input-text': DnReactElement<DnInputText, 'onChange' | 'onClick'>;
             'dn-loader': DnReactElement<DnLoader>;
         }
     }

@@ -16,4 +16,9 @@ export abstract class CustomElement extends LitElement {
     public static get defaultTagName(): string {
         return StringResolver.toKebabCase(this.name);
     }
+
+    protected dispatch(name: string) {
+        const event = new Event(name, { bubbles: true, composed: true });
+        this.dispatchEvent(event);
+    }
 }

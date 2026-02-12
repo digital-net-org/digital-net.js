@@ -66,6 +66,10 @@ export class DnButton extends CustomElement {
     public icon: DnIcon['name'] | null | undefined = undefined;
 
     private _handleClick(e: Event) {
+        if (this.disabled || this.loading) {
+            e.preventDefault();
+            return;
+        }
         e.stopPropagation();
         const event = new Event('click', { bubbles: true, composed: true });
         this.dispatchEvent(event);

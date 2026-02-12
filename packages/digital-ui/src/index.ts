@@ -1,4 +1,4 @@
-import type { DnAvatar, DnButton, DnIcon, DnInputSwitch, DnLoader } from './components';
+import type { DnAvatar, DnButton, DnIcon, DnInputSwitch, DnInputText, DnLoader } from './components';
 
 export * from './components';
 
@@ -8,6 +8,7 @@ declare global {
         'dn-button': DnButton;
         'dn-icon': DnIcon;
         'dn-input-switch': DnInputSwitch;
+        'dn-input-text': DnInputText;
         'dn-loader': DnLoader;
     }
 }

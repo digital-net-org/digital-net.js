@@ -96,7 +96,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "module": "src/components/dn-input-switch"
+            "module": "src/components/dn-input"
           }
         },
         {
@@ -309,206 +309,6 @@
           "declaration": {
             "name": "DnAvatar",
             "module": "./DnAvatar"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/DnIcon.styles.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "hostStyles",
-          "declaration": {
-            "name": "hostStyles",
-            "module": "src/components/dn-icon/DnIcon.styles.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "styles",
-          "declaration": {
-            "name": "styles",
-            "module": "src/components/dn-icon/DnIcon.styles.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/DnIcon.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "Digital UI - Icon Component\n\nAn icon component that contains various SVG icons accessible via the 'name' attribute.",
-          "name": "DnIcon",
-          "members": [
-            {
-              "kind": "field",
-              "name": "name",
-              "type": {
-                "text": "IconKey | null"
-              },
-              "privacy": "public",
-              "default": "null",
-              "description": "The key of the icon to display.",
-              "attribute": "name"
-            },
-            {
-              "kind": "field",
-              "name": "direction",
-              "type": {
-                "text": "Direction"
-              },
-              "privacy": "public",
-              "default": "'up'",
-              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
-              "attribute": "direction"
-            },
-            {
-              "kind": "field",
-              "name": "size",
-              "type": {
-                "text": "Size"
-              },
-              "privacy": "public",
-              "default": "'medium'",
-              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
-              "attribute": "size"
-            },
-            {
-              "kind": "field",
-              "name": "fullWidth",
-              "type": {
-                "text": "boolean"
-              },
-              "privacy": "public",
-              "default": "false",
-              "description": "When true, the icon will take up the full width of its container.",
-              "attribute": "full-width",
-              "reflects": true
-            },
-            {
-              "kind": "method",
-              "name": "_handleClick",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "Event"
-                  }
-                }
-              ]
-            }
-          ],
-          "events": [
-            {
-              "description": "Fired when the icon is clicked.",
-              "name": "click"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "name",
-              "type": {
-                "text": "IconKey | null"
-              },
-              "default": "null",
-              "description": "The key of the icon to display.",
-              "fieldName": "name"
-            },
-            {
-              "name": "direction",
-              "type": {
-                "text": "Direction"
-              },
-              "default": "'up'",
-              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
-              "fieldName": "direction"
-            },
-            {
-              "name": "size",
-              "type": {
-                "text": "Size"
-              },
-              "default": "'medium'",
-              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
-              "fieldName": "size"
-            },
-            {
-              "name": "full-width",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "When true, the icon will take up the full width of its container.",
-              "fieldName": "fullWidth"
-            }
-          ],
-          "superclass": {
-            "name": "CustomElement",
-            "module": "/src/components/CustomElement"
-          },
-          "tagName": "dn-icon",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "DnIcon",
-          "declaration": {
-            "name": "DnIcon",
-            "module": "src/components/dn-icon/DnIcon.ts"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "dn-icon",
-          "declaration": {
-            "name": "DnIcon",
-            "module": "src/components/dn-icon/DnIcon.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/icon16PxPaths.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "icon16PxPaths",
-          "declaration": {
-            "name": "icon16PxPaths",
-            "module": "src/components/dn-icon/icon16PxPaths.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/index.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "DnIcon",
-          "declaration": {
-            "name": "DnIcon",
-            "module": "./DnIcon"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "IconKey",
-          "declaration": {
-            "name": "IconKey",
-            "module": "./icon16PxPaths"
           }
         }
       ]
@@ -731,7 +531,369 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/dn-input-switch/DnInputSwitch.styles.ts",
+      "path": "src/components/dn-loader/DnLoader.styles.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "hostStyles",
+          "declaration": {
+            "name": "hostStyles",
+            "module": "src/components/dn-loader/DnLoader.styles.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "styles",
+          "declaration": {
+            "name": "styles",
+            "module": "src/components/dn-loader/DnLoader.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-loader/DnLoader.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Digital UI - Loader Component\n\nA loading indicator in a shape of an animated ellipsis.",
+          "name": "DnLoader",
+          "members": [
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "privacy": "public",
+              "default": "'medium'",
+              "description": "This determines the size of the loader. Can be 'x-small', 'small', 'medium', 'large' or 'x-large'.",
+              "attribute": "size"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "default": "'medium'",
+              "description": "This determines the size of the loader. Can be 'x-small', 'small', 'medium', 'large' or 'x-large'.",
+              "fieldName": "size"
+            }
+          ],
+          "superclass": {
+            "name": "CustomElement",
+            "module": "/src/components/CustomElement"
+          },
+          "tagName": "dn-loader",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnLoader",
+          "declaration": {
+            "name": "DnLoader",
+            "module": "src/components/dn-loader/DnLoader.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "dn-loader",
+          "declaration": {
+            "name": "DnLoader",
+            "module": "src/components/dn-loader/DnLoader.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-loader/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnLoader",
+          "declaration": {
+            "name": "DnLoader",
+            "module": "./DnLoader"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/palettes/font.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "fontPalette",
+          "declaration": {
+            "name": "fontPalette",
+            "module": "src/components/palettes/font.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/palettes/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/components/palettes/font"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/types/Direction.ts",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/types/Size.ts",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/types/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/components/types/Direction"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/components/types/Size"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/DnIcon.styles.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "hostStyles",
+          "declaration": {
+            "name": "hostStyles",
+            "module": "src/components/dn-icon/DnIcon.styles.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "styles",
+          "declaration": {
+            "name": "styles",
+            "module": "src/components/dn-icon/DnIcon.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/DnIcon.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Digital UI - Icon Component\n\nAn icon component that contains various SVG icons accessible via the 'name' attribute.",
+          "name": "DnIcon",
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "IconKey | null"
+              },
+              "privacy": "public",
+              "default": "null",
+              "description": "The key of the icon to display.",
+              "attribute": "name"
+            },
+            {
+              "kind": "field",
+              "name": "direction",
+              "type": {
+                "text": "Direction"
+              },
+              "privacy": "public",
+              "default": "'up'",
+              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
+              "attribute": "direction"
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "privacy": "public",
+              "default": "'medium'",
+              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
+              "attribute": "size"
+            },
+            {
+              "kind": "field",
+              "name": "fullWidth",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "When true, the icon will take up the full width of its container.",
+              "attribute": "full-width",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "_handleClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "Fired when the icon is clicked.",
+              "name": "click"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "IconKey | null"
+              },
+              "default": "null",
+              "description": "The key of the icon to display.",
+              "fieldName": "name"
+            },
+            {
+              "name": "direction",
+              "type": {
+                "text": "Direction"
+              },
+              "default": "'up'",
+              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
+              "fieldName": "direction"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "default": "'medium'",
+              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
+              "fieldName": "size"
+            },
+            {
+              "name": "full-width",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When true, the icon will take up the full width of its container.",
+              "fieldName": "fullWidth"
+            }
+          ],
+          "superclass": {
+            "name": "CustomElement",
+            "module": "/src/components/CustomElement"
+          },
+          "tagName": "dn-icon",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnIcon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "src/components/dn-icon/DnIcon.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "dn-icon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "src/components/dn-icon/DnIcon.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/icon16PxPaths.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "icon16PxPaths",
+          "declaration": {
+            "name": "icon16PxPaths",
+            "module": "src/components/dn-icon/icon16PxPaths.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnIcon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "./DnIcon"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "IconKey",
+          "declaration": {
+            "name": "IconKey",
+            "module": "./icon16PxPaths"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-input/CustomInputElement.styles.ts",
       "declarations": [],
       "exports": [
         {
@@ -739,14 +901,275 @@
           "name": "styles",
           "declaration": {
             "name": "styles",
-            "module": "src/components/dn-input-switch/DnInputSwitch.styles.ts"
+            "module": "src/components/dn-input/CustomInputElement.styles.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/dn-input-switch/DnInputSwitch.ts",
+      "path": "src/components/dn-input/CustomInputElement.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Base class for input custom elements.",
+          "name": "CustomInputElement",
+          "members": [
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "T"
+              },
+              "privacy": "public",
+              "description": "The value of the input."
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "privacy": "public",
+              "description": "The name attribute for form submission. If not set, the input will not be included in form data.",
+              "default": "''",
+              "attribute": "name"
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string | null | undefined"
+              },
+              "privacy": "public",
+              "default": "undefined",
+              "description": "The label that will render above the input.",
+              "attribute": "label"
+            },
+            {
+              "kind": "field",
+              "name": "hint",
+              "type": {
+                "text": "string | null | undefined"
+              },
+              "privacy": "public",
+              "default": "undefined",
+              "description": "A text message to display on the top of the input.",
+              "attribute": "hint"
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "If true, the element will render as disabled and events wont be fired.",
+              "attribute": "disabled",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "loading",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "When true, the input will render a loader after its slot. The events will not be triggered.",
+              "attribute": "loading",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "When true, the input will be required for form submission.",
+              "attribute": "required",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "_isHintVisible",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "method",
+              "name": "renderInput",
+              "privacy": "public",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "isBusy",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "protected",
+              "description": "Returns true if the input is disabled or loading.",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "onFormUpdate",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "internals",
+                  "type": {
+                    "text": "ElementInternals"
+                  }
+                },
+                {
+                  "name": "changedProperties",
+                  "type": {
+                    "text": "Map<string, any>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderLabel",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "renderHint",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "renderHintButton",
+              "privacy": "private"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "description": "The name attribute for form submission. If not set, the input will not be included in form data.",
+              "default": "''",
+              "fieldName": "name"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string | null | undefined"
+              },
+              "default": "undefined",
+              "description": "The label that will render above the input.",
+              "fieldName": "label"
+            },
+            {
+              "name": "hint",
+              "type": {
+                "text": "string | null | undefined"
+              },
+              "default": "undefined",
+              "description": "A text message to display on the top of the input.",
+              "fieldName": "hint"
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "If true, the element will render as disabled and events wont be fired.",
+              "fieldName": "disabled"
+            },
+            {
+              "name": "loading",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When true, the input will render a loader after its slot. The events will not be triggered.",
+              "fieldName": "loading"
+            },
+            {
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When true, the input will be required for form submission.",
+              "fieldName": "required"
+            }
+          ],
+          "superclass": {
+            "name": "CustomFormElement",
+            "module": "/src/components/CustomFormElement"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CustomInputElement",
+          "declaration": {
+            "name": "CustomInputElement",
+            "module": "src/components/dn-input/CustomInputElement.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-input/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/components/dn-input/dn-input-switch"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/components/dn-input/dn-input-text"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-input/dn-input-switch/DnInputSwitch.styles.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "styles",
+          "declaration": {
+            "name": "styles",
+            "module": "src/components/dn-input/dn-input-switch/DnInputSwitch.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-input/dn-input-switch/DnInputSwitch.ts",
       "declarations": [
         {
           "kind": "class",
@@ -901,7 +1324,7 @@
           "name": "DnInputSwitch",
           "declaration": {
             "name": "DnInputSwitch",
-            "module": "src/components/dn-input-switch/DnInputSwitch.ts"
+            "module": "src/components/dn-input/dn-input-switch/DnInputSwitch.ts"
           }
         },
         {
@@ -909,14 +1332,14 @@
           "name": "dn-input-switch",
           "declaration": {
             "name": "DnInputSwitch",
-            "module": "src/components/dn-input-switch/DnInputSwitch.ts"
+            "module": "src/components/dn-input/dn-input-switch/DnInputSwitch.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/dn-input-switch/index.ts",
+      "path": "src/components/dn-input/dn-input-switch/index.ts",
       "declarations": [],
       "exports": [
         {
@@ -931,162 +1354,53 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/palettes/font.ts",
+      "path": "src/components/dn-input/dn-input-text/DnInputText.styles.ts",
       "declarations": [],
       "exports": [
-        {
-          "kind": "js",
-          "name": "fontPalette",
-          "declaration": {
-            "name": "fontPalette",
-            "module": "src/components/palettes/font.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/palettes/index.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "module": "src/components/palettes/font"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-loader/DnLoader.styles.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "hostStyles",
-          "declaration": {
-            "name": "hostStyles",
-            "module": "src/components/dn-loader/DnLoader.styles.ts"
-          }
-        },
         {
           "kind": "js",
           "name": "styles",
           "declaration": {
             "name": "styles",
-            "module": "src/components/dn-loader/DnLoader.styles.ts"
+            "module": "src/components/dn-input/dn-input-text/DnInputText.styles.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/dn-loader/DnLoader.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "Digital UI - Loader Component\n\nA loading indicator in a shape of an animated ellipsis.",
-          "name": "DnLoader",
-          "members": [
-            {
-              "kind": "field",
-              "name": "size",
-              "type": {
-                "text": "Size"
-              },
-              "privacy": "public",
-              "default": "'medium'",
-              "description": "This determines the size of the loader. Can be 'x-small', 'small', 'medium', 'large' or 'x-large'.",
-              "attribute": "size"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "size",
-              "type": {
-                "text": "Size"
-              },
-              "default": "'medium'",
-              "description": "This determines the size of the loader. Can be 'x-small', 'small', 'medium', 'large' or 'x-large'.",
-              "fieldName": "size"
-            }
-          ],
-          "superclass": {
-            "name": "CustomElement",
-            "module": "/src/components/CustomElement"
-          },
-          "tagName": "dn-loader",
-          "customElement": true
-        }
-      ],
+      "path": "src/components/dn-input/dn-input-text/DnInputText.ts",
+      "declarations": [],
       "exports": [
         {
           "kind": "js",
-          "name": "DnLoader",
+          "name": "DnInputText",
           "declaration": {
-            "name": "DnLoader",
-            "module": "src/components/dn-loader/DnLoader.ts"
+            "name": "DnInputText",
+            "module": "src/components/dn-input/dn-input-text/DnInputText.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "dn-loader",
+          "name": "dn-input-text",
           "declaration": {
-            "name": "DnLoader",
-            "module": "src/components/dn-loader/DnLoader.ts"
+            "name": "DnInputText",
+            "module": "src/components/dn-input/dn-input-text/DnInputText.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/dn-loader/index.ts",
+      "path": "src/components/dn-input/dn-input-text/index.ts",
       "declarations": [],
       "exports": [
         {
           "kind": "js",
-          "name": "DnLoader",
+          "name": "DnInputText",
           "declaration": {
-            "name": "DnLoader",
-            "module": "./DnLoader"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/types/Direction.ts",
-      "declarations": [],
-      "exports": []
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/types/Size.ts",
-      "declarations": [],
-      "exports": []
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/types/index.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "module": "src/components/types/Direction"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "module": "src/components/types/Size"
+            "name": "DnInputText",
+            "module": "./DnInputText"
           }
         }
       ]
