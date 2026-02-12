@@ -72,6 +72,14 @@
           "name": "*",
           "declaration": {
             "name": "*",
+            "module": "src/components/dn-button"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
             "module": "src/components/dn-avatar"
           }
         },
@@ -307,6 +315,422 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/dn-icon/DnIcon.styles.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "hostStyles",
+          "declaration": {
+            "name": "hostStyles",
+            "module": "src/components/dn-icon/DnIcon.styles.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "styles",
+          "declaration": {
+            "name": "styles",
+            "module": "src/components/dn-icon/DnIcon.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/DnIcon.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Digital UI - Icon Component\n\nAn icon component that contains various SVG icons accessible via the 'name' attribute.",
+          "name": "DnIcon",
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "IconKey | null"
+              },
+              "privacy": "public",
+              "default": "null",
+              "description": "The key of the icon to display.",
+              "attribute": "name"
+            },
+            {
+              "kind": "field",
+              "name": "direction",
+              "type": {
+                "text": "Direction"
+              },
+              "privacy": "public",
+              "default": "'up'",
+              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
+              "attribute": "direction"
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "privacy": "public",
+              "default": "'medium'",
+              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
+              "attribute": "size"
+            },
+            {
+              "kind": "field",
+              "name": "fullWidth",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "When true, the icon will take up the full width of its container.",
+              "attribute": "full-width",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "_handleClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "Fired when the icon is clicked.",
+              "name": "click"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "IconKey | null"
+              },
+              "default": "null",
+              "description": "The key of the icon to display.",
+              "fieldName": "name"
+            },
+            {
+              "name": "direction",
+              "type": {
+                "text": "Direction"
+              },
+              "default": "'up'",
+              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
+              "fieldName": "direction"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "Size"
+              },
+              "default": "'medium'",
+              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
+              "fieldName": "size"
+            },
+            {
+              "name": "full-width",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When true, the icon will take up the full width of its container.",
+              "fieldName": "fullWidth"
+            }
+          ],
+          "superclass": {
+            "name": "CustomElement",
+            "module": "/src/components/CustomElement"
+          },
+          "tagName": "dn-icon",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnIcon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "src/components/dn-icon/DnIcon.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "dn-icon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "src/components/dn-icon/DnIcon.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/icon16PxPaths.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "icon16PxPaths",
+          "declaration": {
+            "name": "icon16PxPaths",
+            "module": "src/components/dn-icon/icon16PxPaths.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-icon/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnIcon",
+          "declaration": {
+            "name": "DnIcon",
+            "module": "./DnIcon"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "IconKey",
+          "declaration": {
+            "name": "IconKey",
+            "module": "./icon16PxPaths"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-button/DnButton.styles.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "hostStyles",
+          "declaration": {
+            "name": "hostStyles",
+            "module": "src/components/dn-button/DnButton.styles.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "styles",
+          "declaration": {
+            "name": "styles",
+            "module": "src/components/dn-button/DnButton.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-button/DnButton.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Digital UI - Button Component\n\nA button component that can be used to trigger an action or event.",
+          "name": "DnButton",
+          "members": [
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "When true, the button will render as disabled button. The events will not be triggered.",
+              "attribute": "disabled"
+            },
+            {
+              "kind": "field",
+              "name": "loading",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "When true, the button will render a loader instead of its slot. The events will not be triggered.",
+              "attribute": "loading"
+            },
+            {
+              "kind": "field",
+              "name": "active",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "When true, the button will render as hovered.",
+              "attribute": "active"
+            },
+            {
+              "kind": "field",
+              "name": "critical",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "public",
+              "default": "false",
+              "description": "When true, the button colors will match the error palette color.",
+              "attribute": "critical"
+            },
+            {
+              "kind": "field",
+              "name": "variant",
+              "type": {
+                "text": "'default' | 'outlined' | 'text'"
+              },
+              "privacy": "public",
+              "default": "'default'",
+              "description": "This determines appearance of the button. Can be one of the following: 'default', 'outlined', 'text'.",
+              "attribute": "variant"
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "DnIcon['name'] | null | undefined"
+              },
+              "privacy": "public",
+              "default": "undefined",
+              "description": "When defined, will replace the slot with the corresponding icon.",
+              "attribute": "icon"
+            },
+            {
+              "kind": "method",
+              "name": "_handleClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "Fired when the button is clicked.",
+              "name": "click"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When true, the button will render as disabled button. The events will not be triggered.",
+              "fieldName": "disabled"
+            },
+            {
+              "name": "loading",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When true, the button will render a loader instead of its slot. The events will not be triggered.",
+              "fieldName": "loading"
+            },
+            {
+              "name": "active",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When true, the button will render as hovered.",
+              "fieldName": "active"
+            },
+            {
+              "name": "critical",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "When true, the button colors will match the error palette color.",
+              "fieldName": "critical"
+            },
+            {
+              "name": "variant",
+              "type": {
+                "text": "'default' | 'outlined' | 'text'"
+              },
+              "default": "'default'",
+              "description": "This determines appearance of the button. Can be one of the following: 'default', 'outlined', 'text'.",
+              "fieldName": "variant"
+            },
+            {
+              "name": "icon",
+              "type": {
+                "text": "DnIcon['name'] | null | undefined"
+              },
+              "default": "undefined",
+              "description": "When defined, will replace the slot with the corresponding icon.",
+              "fieldName": "icon"
+            }
+          ],
+          "superclass": {
+            "name": "CustomElement",
+            "module": "/src/components/CustomElement"
+          },
+          "tagName": "dn-button",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnButton",
+          "declaration": {
+            "name": "DnButton",
+            "module": "src/components/dn-button/DnButton.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "dn-button",
+          "declaration": {
+            "name": "DnButton",
+            "module": "src/components/dn-button/DnButton.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/dn-button/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "DnButton",
+          "declaration": {
+            "name": "DnButton",
+            "module": "./DnButton"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/dn-input-switch/DnInputSwitch.styles.ts",
       "declarations": [],
       "exports": [
@@ -507,6 +931,36 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/palettes/font.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "fontPalette",
+          "declaration": {
+            "name": "fontPalette",
+            "module": "src/components/palettes/font.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/palettes/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "module": "src/components/palettes/font"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/dn-loader/DnLoader.styles.ts",
       "declarations": [],
       "exports": [
@@ -598,206 +1052,6 @@
           "declaration": {
             "name": "DnLoader",
             "module": "./DnLoader"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/DnIcon.styles.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "hostStyles",
-          "declaration": {
-            "name": "hostStyles",
-            "module": "src/components/dn-icon/DnIcon.styles.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "styles",
-          "declaration": {
-            "name": "styles",
-            "module": "src/components/dn-icon/DnIcon.styles.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/DnIcon.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "Digital UI - Icon Component\n\nAn icon component that contains various SVG icons accessible via the 'name' attribute.",
-          "name": "DnIcon",
-          "members": [
-            {
-              "kind": "field",
-              "name": "name",
-              "type": {
-                "text": "IconKey | null"
-              },
-              "privacy": "public",
-              "default": "null",
-              "description": "The key of the icon to display.",
-              "attribute": "name"
-            },
-            {
-              "kind": "field",
-              "name": "direction",
-              "type": {
-                "text": "Direction"
-              },
-              "privacy": "public",
-              "default": "'up'",
-              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
-              "attribute": "direction"
-            },
-            {
-              "kind": "field",
-              "name": "size",
-              "type": {
-                "text": "Size"
-              },
-              "privacy": "public",
-              "default": "'medium'",
-              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
-              "attribute": "size"
-            },
-            {
-              "kind": "field",
-              "name": "fullWidth",
-              "type": {
-                "text": "boolean"
-              },
-              "privacy": "public",
-              "default": "false",
-              "description": "When true, the icon will take up the full width of its container.",
-              "attribute": "full-width",
-              "reflects": true
-            },
-            {
-              "kind": "method",
-              "name": "_handleClick",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "Event"
-                  }
-                }
-              ]
-            }
-          ],
-          "events": [
-            {
-              "description": "Fired when the icon is clicked.",
-              "name": "click"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "name",
-              "type": {
-                "text": "IconKey | null"
-              },
-              "default": "null",
-              "description": "The key of the icon to display.",
-              "fieldName": "name"
-            },
-            {
-              "name": "direction",
-              "type": {
-                "text": "Direction"
-              },
-              "default": "'up'",
-              "description": "This determines the orientation of the icon slider. Can be 'up', 'down', 'left', or 'right'.",
-              "fieldName": "direction"
-            },
-            {
-              "name": "size",
-              "type": {
-                "text": "Size"
-              },
-              "default": "'medium'",
-              "description": "This determines the size of the icon. Can be 'x-small', 'small', 'medium', 'large', or 'x-large'.",
-              "fieldName": "size"
-            },
-            {
-              "name": "full-width",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "When true, the icon will take up the full width of its container.",
-              "fieldName": "fullWidth"
-            }
-          ],
-          "superclass": {
-            "name": "CustomElement",
-            "module": "/src/components/CustomElement"
-          },
-          "tagName": "dn-icon",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "DnIcon",
-          "declaration": {
-            "name": "DnIcon",
-            "module": "src/components/dn-icon/DnIcon.ts"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "dn-icon",
-          "declaration": {
-            "name": "DnIcon",
-            "module": "src/components/dn-icon/DnIcon.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/icon16PxPaths.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "icon16PxPaths",
-          "declaration": {
-            "name": "icon16PxPaths",
-            "module": "src/components/dn-icon/icon16PxPaths.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/dn-icon/index.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "DnIcon",
-          "declaration": {
-            "name": "DnIcon",
-            "module": "./DnIcon"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "IconKey",
-          "declaration": {
-            "name": "IconKey",
-            "module": "./icon16PxPaths"
           }
         }
       ]

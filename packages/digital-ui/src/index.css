@@ -20,9 +20,10 @@
     --dn-font-size-xlarge: calc(var(--font-size-medium) * 1.5);
     --dn-font-letter-spacing: 0.0375rem;
 
-    --dn-palette-primary: rgba(0, 126, 109, 0.5);
-    --dn-palette-primary-light: #56a9a0;
+    --dn-palette-primary: #004aad;
+    --dn-palette-primary-light: #2c6fc7;
     --dn-palette-text: #222222;
+    --dn-palette-text-white: #f0f0f0;
     --dn-palette-text-light: #2d2d2d;
     --dn-palette-text-disabled: #707070;
     --dn-palette-background: #f0f0f0;
@@ -33,12 +34,14 @@
     --dn-palette-shadow: #00000050;
     --dn-palette-shadow-light: #00000020;
     --dn-palette-error: #b62929;
+    --dn-palette-error-light: #c74545;
 }
 
 [data-theme='light'] {
-    --dn-palette-primary: rgba(0, 126, 109, 0.5);
-    --dn-palette-primary-light: #56a9a0;
+    --dn-palette-primary: #004aad;
+    --dn-palette-primary-light: #2c6fc7;
     --dn-palette-text: #222222;
+    --dn-palette-text-white: #f0f0f0;
     --dn-palette-text-light: #2d2d2d;
     --dn-palette-text-disabled: #707070;
     --dn-palette-background: #f0f0f0;
@@ -49,12 +52,14 @@
     --dn-palette-shadow: #00000050;
     --dn-palette-shadow-light: #00000020;
     --dn-palette-error: #b62929;
+    --dn-palette-error-light: #c74545;
 }
 
 [data-theme='dark'] {
-    --dn-palette-primary: rgba(9, 205, 178, 0.5);
-    --dn-palette-primary-light: #56a9a0;
+    --dn-palette-primary: #004aad;
+    --dn-palette-primary-light: #2c6fc7;
     --dn-palette-text: #f0f0f0;
+    --dn-palette-text-white: #f0f0f0;
     --dn-palette-text-light: #d0d0d0;
     --dn-palette-text-disabled: #707070;
     --dn-palette-background: #181818;
@@ -65,4 +70,5 @@
     --dn-palette-shadow: #00000015;
     --dn-palette-shadow-light: #00000040;
     --dn-palette-error: #b62929;
+    --dn-palette-error-light: #c74545;
 }

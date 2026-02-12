@@ -4,7 +4,7 @@ export const hostStyles = css`
     :host {
         --_icon-color: var(--dn-icon-color, currentColor);
         --_icon-color-hover: var(--dn-icon-color-hover, var(--dn-icon-color, currentColor));
-        --_icon-cursor: var(--dn-icon-cursor, default);
+        --_icon-cursor: var(--dn-icon-cursor, inherit);
         --_icon-size: 2rem;
         --_icon-transition: 0.3s;
     }

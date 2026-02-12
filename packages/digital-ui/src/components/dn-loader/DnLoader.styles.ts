@@ -12,9 +12,9 @@ export const styles = css`
     }
 
     .loader {
-        display: inline-block;
         position: relative;
         width: var(--size-block);
+        height: var(--size-dot);
     }
 
     .loader div {
