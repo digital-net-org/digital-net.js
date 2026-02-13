@@ -68,12 +68,6 @@ export class DnAvatar extends CustomElement {
         this._hasImageError = false;
     }
 
-    private _handleClick(e: Event) {
-        e.stopPropagation();
-        const event = new Event('click', { bubbles: true, composed: true });
-        this.dispatchEvent(event);
-    }
-
     public render() {
         const showImage = this.src && !this._hasImageError;
 
@@ -86,10 +80,9 @@ export class DnAvatar extends CustomElement {
                         [`avatar-size-${this.size}`]: this.size && !this.fullWidth,
                         'avatar-fullWidth': this.fullWidth,
                     })}
-                    @click=${this._handleClick}
                 >
                     <img
-                        src=${ifDefined(this.src)}
+                        src=${ifDefined(this.src ?? undefined)}
                         alt=${this.alt}
                         @error=${this._handleImageError}
                         @load=${this._handleImageLoad}
@@ -99,13 +92,6 @@ export class DnAvatar extends CustomElement {
             `;
         }
 
-        return html`
-            <dn-icon
-                @click=${this._handleClick}
-                name="account-circle"
-                size="${this.size}"
-                ?full-width=${this.fullWidth}
-            ></dn-icon>
-        `;
+        return html` <dn-icon name="account-circle" size="${this.size}" ?full-width=${this.fullWidth}></dn-icon> `;
     }
 }

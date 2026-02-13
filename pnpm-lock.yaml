@@ -40,7 +40,7 @@ importers:
         version: link:../digital-core
       '@digital-net-org/digital-ui':
         specifier: workspace:*
-        version: link:../digital-ui
+        version: link:../experimental-digital-ui
       react:
         specifier: ^19.2.4
         version: 19.2.4
@@ -50,7 +50,7 @@ importers:
     devDependencies:
       '@digital-net-org/digital-ui-react-types':
         specifier: workspace:*
-        version: link:../digital-ui-react-types
+        version: link:../experimental-experimental-digital-ui-react-types
       '@types/react':
         specifier: ^19.2.13
         version: 19.2.13
@@ -107,7 +107,7 @@ importers:
     dependencies:
       '@digital-net-org/digital-ui':
         specifier: workspace:*
-        version: link:../digital-ui
+        version: link:../experimental-digital-ui
       '@types/react':
         specifier: ^19.2.11
         version: 19.2.13

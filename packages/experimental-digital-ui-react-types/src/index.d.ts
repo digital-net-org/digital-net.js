@@ -1,4 +1,11 @@
-import type { DnButton, DnAvatar, DnIcon, DnInputSwitch, DnLoader, DnInputText } from '@digital-net-org/digital-ui';
+import type {
+    DnButton,
+    DnAvatar,
+    DnIcon,
+    DnInputSwitch,
+    DnLoader,
+    DnInputText,
+} from '@digital-net-org/experimental-digital-ui';
 import type { DnReactElement } from './DnReactElement';
 
 declare module 'react' {

@@ -3,7 +3,7 @@ import { Project, SyntaxKind } from 'ts-morph';
 
 export class Builder {
     static #targetDtsPath = './dist/index.d.ts';
-    static #sourcesPath = '../digital-ui/src/**/Dn*.ts';
+    static #sourcesPath = '../experimental-digital-ui/src/**/Dn*.ts';
 
     #targetDtsFile = null;
     #componentDocs = new Map();

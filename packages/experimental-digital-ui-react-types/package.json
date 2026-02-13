@@ -12,7 +12,7 @@
         "build": "node ./scripts/build.mjs"
     },
     "dependencies": {
-        "@digital-net-org/digital-ui": "workspace:*",
+        "@digital-net-org/experimental-digital-ui": "workspace:*",
         "@types/react": "^19.2.11",
         "@types/react-dom": "^19.2.3"
     },

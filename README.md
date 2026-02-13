@@ -9,4 +9,4 @@
 
 ## Packages
 - [Digital.Net Core](./packages/digital-core/README.md) - JavaScript basic utilities and helpers
-- [Digital UI](./packages/digital-ui/README.md) - Web Components library
+- [Digital UI](packages/experimental-digital-ui/README.md) - Web Components library

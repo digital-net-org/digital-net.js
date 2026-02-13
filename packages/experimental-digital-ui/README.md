@@ -16,5 +16,5 @@ You can do this by creating a `.npmrc` file in your project root with the follow
 ```
 Then use your favorite package manager to install the package.
 ```bash
-npm install @digital-net-org/digital-ui
+npm install @digital-net-org/experimental-digital-ui
 ```

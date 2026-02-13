@@ -16,7 +16,7 @@ You can do this by creating a `.npmrc` file in your project root with the follow
 ```
 Then use your favorite package manager to install the package.
 ```bash
-npm install @digital-net-org/digital-ui-react-types
+npm install @digital-net-org/experimental-experimental-digital-ui-react-types
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ Update your `tsconfig.json` to include the package types.
 ```json
 {
   "compilerOptions": {
-    "types": ["@digital-net-org/digital-ui-react-types"]
+    "types": ["@digital-net-org/experimental-experimental-digital-ui-react-types"]
   }
 }
 ```

@@ -65,16 +65,6 @@ export class DnButton extends CustomElement {
     @property({ type: String })
     public icon: DnIcon['name'] | null | undefined = undefined;
 
-    private _handleClick(e: Event) {
-        if (this.disabled || this.loading) {
-            e.preventDefault();
-            return;
-        }
-        e.stopPropagation();
-        const event = new Event('click', { bubbles: true, composed: true });
-        this.dispatchEvent(event);
-    }
-
     public render() {
         return html`
             <button
@@ -87,7 +77,7 @@ export class DnButton extends CustomElement {
                     disabled: this.disabled,
                     loading: this.loading,
                 })}
-                @click=${this._handleClick}
+                ?disabled=${this.disabled || this.loading}
             >
                 ${this.loading ? html` <dn-loader class="button-loader" size="small"></dn-loader>` : ''}
                 <span class="button-content">
