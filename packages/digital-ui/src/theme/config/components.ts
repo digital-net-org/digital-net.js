@@ -4,7 +4,6 @@ export const components: ThemeOptions['components'] = {
     MuiButton: {
         defaultProps: {
             variant: 'contained',
-            size: 'small',
         },
-    },
+    }
 };

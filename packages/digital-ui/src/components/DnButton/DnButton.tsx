@@ -5,7 +5,7 @@ import type { Severity } from '../../theme';
 
 export interface DnButtonProps extends Pick<
     ButtonProps,
-    'children' | 'id' | 'className' | 'disabled' | 'loading' | 'size' | 'variant' | 'sx' | 'onClick'
+    'children' | 'id' | 'className' | 'disabled' | 'loading' | 'variant' | 'sx' | 'onClick'
 > {
     icon?: React.ReactNode;
     severity?: Severity;
@@ -33,13 +33,19 @@ const CustomButton = styled(Button)(
     ({ theme }) => css`
         text-transform: initial;
         transition: 0.2s ease-in-out;
+        font-size: ${theme.typography.button.fontSize};
+        padding: 0.25rem 0.75rem;
 
         &.DnButton.MuiButton-contained {
+            border: 1px solid ${theme.palette.primary.main};
             &.MuiButton-root.MuiButton-loading.Mui-disabled {
                 background-color: ${theme.palette.primary.main};
                 & .MuiButton-loadingIndicator .MuiCircularProgress-root .MuiCircularProgress-svg {
                     color: ${theme.palette.common.white};
                 }
+            }
+            &.MuiButton-root.Mui-disabled {
+                border-color: transparent;
             }
         }
 
@@ -57,7 +63,7 @@ const CustomButton = styled(Button)(
                 color: transparent;
 
                 & .MuiButton-loadingIndicator .MuiCircularProgress-root .MuiCircularProgress-svg {
-                    color: ${theme.palette.common.white};
+                    color: ${theme.palette.text.primary};
                 }
             }
 
@@ -80,7 +86,7 @@ const CustomButton = styled(Button)(
                 color: transparent;
 
                 & .MuiButton-loadingIndicator .MuiCircularProgress-root .MuiCircularProgress-svg {
-                    color: ${theme.palette.common.white};
+                    color: ${theme.palette.text.primary};
                 }
             }
         }
