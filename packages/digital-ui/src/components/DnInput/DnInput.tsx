@@ -98,5 +98,10 @@ const CustomTextField = styled(TextField)(
                 color: ${theme.palette.text.disabled};
             }
         }
+
+        & .MuiFormHelperText-root {
+            margin: 0;
+            padding-left: 0.5rem;
+        }
     `
 );

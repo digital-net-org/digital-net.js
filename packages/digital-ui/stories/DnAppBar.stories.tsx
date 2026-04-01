@@ -1,6 +1,7 @@
+import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Stack } from '@mui/material';
-import { DnAppBar } from '../src';
+import { DnAppBar, DnMenuAccount, DnMenuSettings, DnMenuTheme } from '../src';
 
 const meta: Meta<typeof DnAppBar> = {
     title: 'Navigation/DnAppBar',
@@ -13,7 +14,7 @@ type Story = StoryObj<typeof DnAppBar>;
 
 export const Default: Story = {
     args: {
-        url: '/',
+        url: '/home/test',
         flat: false,
     },
     render: args => (
@@ -23,7 +24,16 @@ export const Default: Story = {
                 height: '100%',
             }}
         >
-            <DnAppBar {...args} />
+            <DnAppBar
+                {...args}
+                renderActions={() => (
+                    <React.Fragment>
+                        <DnMenuAccount />
+                        <DnMenuTheme />
+                        <DnMenuSettings />
+                    </React.Fragment>
+                )}
+            />
         </Stack>
     ),
 };

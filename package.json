@@ -9,6 +9,7 @@
         "build": "pnpm -r build",
         "build:core": "pnpm --filter @digital-net-org/digital-core build",
         "build:ui": "pnpm --filter @digital-net-org/digital-ui build",
+        "build:office": "pnpm --filter @digital-net-org/digital-office build",
         "test": "pnpm -r test",
         "test:core": "pnpm --filter @digital-net-org/digital-core test"
     },

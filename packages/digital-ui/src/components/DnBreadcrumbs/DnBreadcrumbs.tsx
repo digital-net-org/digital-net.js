@@ -1,7 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
+import { css, styled } from '@mui/material/styles';
+import { AppBar } from '@mui/material';
 
 export interface BreadcrumbEntry {
     key: string;
@@ -32,24 +34,32 @@ export function DnBreadcrumbs({ url, labels, onClick }: DnBreadcrumbsProps) {
     const entries = React.useMemo(() => parseBreadcrumbs(url ?? ''), [url]);
 
     return (
-        <Breadcrumbs className="DnBreadcrumbs">
+        <CustomBreadCrumbs className="DnBreadcrumbs">
             {entries.map((entry, i) =>
                 i < entries.length - 1 ? (
-                    <Link
-                        key={entry.path}
-                        underline="hover"
-                        color="inherit"
-                        sx={{ cursor: 'pointer' }}
-                        onClick={() => onClick?.(entry.path)}
-                    >
+                    <Link key={entry.path} onClick={() => onClick?.(entry.path)}>
                         {labels?.[entry.key] ?? entry.key}
                     </Link>
                 ) : (
-                    <Typography key={entry.path} color="text.primary" sx={{ userSelect: 'none' }}>
+                    <Typography key={entry.path} fontWeight="bold">
                         {labels?.[entry.key] ?? entry.key}
                     </Typography>
                 )
             )}
-        </Breadcrumbs>
+        </CustomBreadCrumbs>
     );
 }
+
+const CustomBreadCrumbs = styled(Breadcrumbs)(
+    ({ theme }) => css`
+        font-weight: normal;
+        letter-spacing: 0.035rem;
+        user-select: none;
+
+        & .MuiLink-root {
+            text-decoration: underline;
+            cursor: pointer;
+            color: inherit;
+        }
+    `
+);
