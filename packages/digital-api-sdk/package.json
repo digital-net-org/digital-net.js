@@ -1,0 +1,22 @@
+{
+    "name": "@digital-net-org/digital-api-sdk",
+    "version": "0.1.0",
+    "license": "MIT",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": ["dist"],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "vite build",
+        "test": "vitest"
+    },
+    "dependencies": {
+        "@digital-net-org/digital-core": "workspace:*"
+    }
+}
