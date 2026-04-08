@@ -2,6 +2,7 @@ export * from './Array';
 export * from './Async';
 export * from './Color';
 export * from './Error';
+export * from './Event';
 export * from './Hash';
 export * from './JSON';
 export * from './Object';
