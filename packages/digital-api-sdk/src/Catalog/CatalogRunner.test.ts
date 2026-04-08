@@ -85,6 +85,37 @@ describe('CatalogRunner.run', () => {
         expect(onSuccess).toHaveBeenCalledWith(null);
     });
 
+    it('preserves a non-Result raw string value on 200', async () => {
+        fetchMock.mockResolvedValueOnce(jsonResponse('plain-string-not-a-result'));
+        const onSuccess = vi.fn();
+
+        const result = await CatalogRunner.run<string>(
+            client,
+            { method: 'GET', path: 'foo' },
+            { onSuccess }
+        );
+
+        expect(result.hasError).toBe(false);
+        expect(result.value).toBe('plain-string-not-a-result');
+        expect(onSuccess).toHaveBeenCalledWith('plain-string-not-a-result');
+    });
+
+    it('preserves a non-Result raw object value on 200', async () => {
+        const payload = { id: 1, name: 'Alice' };
+        fetchMock.mockResolvedValueOnce(jsonResponse(payload));
+        const onSuccess = vi.fn();
+
+        const result = await CatalogRunner.run<{ id: number; name: string }>(
+            client,
+            { method: 'GET', path: 'user/self' },
+            { onSuccess }
+        );
+
+        expect(result.hasError).toBe(false);
+        expect(result.value).toEqual(payload);
+        expect(onSuccess).toHaveBeenCalledWith(payload);
+    });
+
     it('does not throw on 4xx: returns the server Result and dispatches onError', async () => {
         const serverResult = err<string>([
             { reference: 'INVALID_CREDENTIALS_EXCEPTION', message: 'Invalid credentials' },
@@ -261,5 +292,196 @@ describe('CatalogRunner.run', () => {
 
         expect(onReference).not.toHaveBeenCalled();
         expect(onError).toHaveBeenCalledTimes(1);
+    });
+
+    describe('callback isolation', () => {
+        let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+
+        beforeEach(() => {
+            consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        });
+
+        afterEach(() => {
+            consoleErrorSpy.mockRestore();
+        });
+
+        it('continues dispatching when an onReference handler throws', async () => {
+            const serverResult = err<string>([
+                { reference: 'REF_A', message: 'A' },
+                { reference: 'REF_B', message: 'B' },
+            ]);
+            fetchMock.mockResolvedValueOnce(jsonResponse(serverResult, 400));
+
+            const onRefA = vi.fn(() => {
+                throw new Error('boom');
+            });
+            const onRefB = vi.fn();
+
+            await CatalogRunner.run<string>(
+                client,
+                { method: 'POST', path: 'admin/user' },
+                { onReference: { REF_A: onRefA, REF_B: onRefB } }
+            );
+
+            expect(onRefA).toHaveBeenCalledTimes(1);
+            expect(onRefB).toHaveBeenCalledTimes(1);
+            expect(consoleErrorSpy).toHaveBeenCalled();
+        });
+
+        it('calls onError even when onStatus throws', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse(err<string>([{ message: 'x' }]), 401));
+
+            const onStatus = vi.fn(() => {
+                throw new Error('boom');
+            });
+            const onError = vi.fn();
+
+            await CatalogRunner.run<string>(
+                client,
+                { method: 'POST', path: 'admin/user' },
+                { onStatus: { 401: onStatus }, onError }
+            );
+
+            expect(onStatus).toHaveBeenCalledTimes(1);
+            expect(onError).toHaveBeenCalledTimes(1);
+            expect(consoleErrorSpy).toHaveBeenCalled();
+        });
+
+        it('does not crash run() when onError throws', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse(err<string>([{ message: 'x' }]), 500));
+
+            const onError = vi.fn(() => {
+                throw new Error('boom');
+            });
+
+            const result = await CatalogRunner.run<string>(
+                client,
+                { method: 'GET', path: 'admin/user' },
+                { onError }
+            );
+
+            expect(result.hasError).toBe(true);
+            expect(onError).toHaveBeenCalledTimes(1);
+            expect(consoleErrorSpy).toHaveBeenCalled();
+        });
+
+        it('does not crash run() when onSuccess throws', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse(ok('bearer-tok')));
+
+            const onSuccess = vi.fn(() => {
+                throw new Error('boom');
+            });
+
+            const result = await CatalogRunner.run<string>(
+                client,
+                { method: 'POST', path: 'authentication/user/login' },
+                { onSuccess }
+            );
+
+            expect(result.hasError).toBe(false);
+            expect(result.value).toBe('bearer-tok');
+            expect(onSuccess).toHaveBeenCalledTimes(1);
+            expect(consoleErrorSpy).toHaveBeenCalled();
+        });
+    });
+
+    describe('hook forwarding (onRequest / onResponse)', () => {
+        it('forwards a catalog-only onRequest to the underlying http request', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse(ok('tok')));
+            const onRequest = vi.fn(cfg => ({
+                ...cfg,
+                headers: { ...cfg.headers, 'X-Catalog': '1' },
+            }));
+
+            await CatalogRunner.run<string>(
+                client,
+                { method: 'POST', path: 'authentication/user/login' },
+                { onRequest }
+            );
+
+            expect(onRequest).toHaveBeenCalledTimes(1);
+            const init = fetchMock.mock.calls[0][1] as RequestInit;
+            const headers = init.headers as Record<string, string>;
+            expect(headers['X-Catalog']).toBe('1');
+        });
+
+        it('forwards a catalog-only onResponse to the underlying http request', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse(ok('tok')));
+            const onResponse = vi.fn();
+
+            await CatalogRunner.run<string>(
+                client,
+                { method: 'POST', path: 'authentication/user/login' },
+                { onResponse }
+            );
+
+            expect(onResponse).toHaveBeenCalledTimes(1);
+            const response = onResponse.mock.calls[0][0];
+            expect(response).toMatchObject({ status: 200, ok: true });
+        });
+
+        it('composes onRequest: catalog runs first, request runs second (last-write-wins)', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse(ok('tok')));
+            const callOrder: string[] = [];
+
+            const catalogOnRequest = vi.fn(cfg => {
+                callOrder.push('catalog');
+                return { ...cfg, headers: { ...cfg.headers, 'X-Catalog': 'yes', 'X-Shared': 'catalog' } };
+            });
+            const requestOnRequest = vi.fn(cfg => {
+                callOrder.push('request');
+                return { ...cfg, headers: { ...cfg.headers, 'X-Request': 'yes', 'X-Shared': 'request' } };
+            });
+
+            await CatalogRunner.run<string>(
+                client,
+                { method: 'POST', path: 'authentication/user/login', onRequest: requestOnRequest },
+                { onRequest: catalogOnRequest }
+            );
+
+            expect(callOrder).toEqual(['catalog', 'request']);
+
+            const init = fetchMock.mock.calls[0][1] as RequestInit;
+            const headers = init.headers as Record<string, string>;
+            expect(headers['X-Catalog']).toBe('yes');
+            expect(headers['X-Request']).toBe('yes');
+            expect(headers['X-Shared']).toBe('request'); // last-write-wins
+        });
+
+        it('composes onResponse in the same catalog → request order', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse(ok('tok')));
+            const callOrder: string[] = [];
+
+            const catalogOnResponse = vi.fn(() => {
+                callOrder.push('catalog');
+            });
+            const requestOnResponse = vi.fn(() => {
+                callOrder.push('request');
+            });
+
+            await CatalogRunner.run<string>(
+                client,
+                { method: 'POST', path: 'authentication/user/login', onResponse: requestOnResponse },
+                { onResponse: catalogOnResponse }
+            );
+
+            expect(callOrder).toEqual(['catalog', 'request']);
+        });
+
+        it('passes the request-level hook through untouched when no catalog hook is set', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse(ok('tok')));
+            const requestOnRequest = vi.fn(cfg => ({ ...cfg, headers: { ...cfg.headers, 'X-Only': '1' } }));
+
+            await CatalogRunner.run<string>(client, {
+                method: 'POST',
+                path: 'authentication/user/login',
+                onRequest: requestOnRequest,
+            });
+
+            expect(requestOnRequest).toHaveBeenCalledTimes(1);
+            const init = fetchMock.mock.calls[0][1] as RequestInit;
+            const headers = init.headers as Record<string, string>;
+            expect(headers['X-Only']).toBe('1');
+        });
     });
 });

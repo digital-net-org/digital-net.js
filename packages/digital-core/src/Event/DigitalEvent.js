@@ -16,7 +16,8 @@ export class DigitalEvent {
 
     /**
      * Dispatches the payload to every subscribed listener.
-     * @param {T} payload
+     * The payload is optional so `DigitalEvent<void>` instances can call `emit()` without arguments.
+     * @param {T} [payload]
      * @returns {void}
      */
     emit(payload) {

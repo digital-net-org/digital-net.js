@@ -6,7 +6,7 @@ export class Logger {
         const clone = Array.isArray(body) ? [...body] : { ...body };
         for (const key of Object.keys(clone)) {
             if (Logger.#SENSITIVE_KEYS.has(key)) clone[key] = '***';
-            else if (typeof clone[key] === 'object') clone[key] = maskBody(clone[key]);
+            else if (typeof clone[key] === 'object') clone[key] = Logger.maskBody(clone[key]);
         }
         return clone;
     }

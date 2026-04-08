@@ -1,4 +1,5 @@
 import type { ResultMessage } from '../../types';
+import type { HttpRequestConfig, HttpResponse } from '../../HttpClient/types';
 import type { CatalogError } from './CatalogError';
 
 export interface CatalogCallbacks<T = unknown> {
@@ -14,4 +15,17 @@ export interface CatalogCallbacks<T = unknown> {
      * Called in addition to onStatus and onError.
      */
     onReference?: Partial<Record<string, (_message: ResultMessage, _error: CatalogError<T>) => void | Promise<void>>>;
+    /**
+     * Transport hook forwarded to the underlying `HttpRequestConfig.onRequest`.
+     * When composed with a request-level hook, the catalog hook runs FIRST, then the
+     * request hook runs SECOND (last-write-wins semantics on overlapping mutations).
+     * Exceptions propagate to the caller.
+     */
+    onRequest?: (_config: HttpRequestConfig) => HttpRequestConfig | Promise<HttpRequestConfig>;
+    /**
+     * Transport hook forwarded to the underlying `HttpRequestConfig.onResponse`.
+     * When composed with a request-level hook, the catalog hook runs FIRST, then the
+     * request hook runs SECOND. Exceptions propagate to the caller.
+     */
+    onResponse?: (_response: HttpResponse<unknown>) => void | Promise<void>;
 }

@@ -15,17 +15,20 @@ if (!existsSync(distEntry)) {
     process.exit(1);
 }
 
-const _nativeFetch = globalThis.fetch;
-globalThis.fetch = async (url, opts = {}) => {
-    const headers = new Headers(opts.headers ?? {});
-    const cookie = CookieJar.serializeJar();
-    if (cookie && !headers.has('cookie')) {
-        headers.set('Cookie', cookie);
-    }
+if (!globalThis.fetch.__dnCookieJarPatched) {
+    const _nativeFetch = globalThis.fetch;
+    globalThis.fetch = async (url, opts = {}) => {
+        const headers = new Headers(opts.headers ?? {});
+        const cookie = CookieJar.serializeJar();
+        if (cookie && !headers.has('cookie')) {
+            headers.set('Cookie', cookie);
+        }
 
-    const res = await _nativeFetch(url, { ...opts, headers });
-    CookieJar.ingestSetCookie(res.headers);
-    return res;
-};
+        const res = await _nativeFetch(url, { ...opts, headers });
+        CookieJar.ingestSetCookie(res.headers);
+        return res;
+    };
+    globalThis.fetch.__dnCookieJarPatched = true;
+}
 
 export const { DigitalApi } = await import(distEntry);

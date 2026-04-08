@@ -59,6 +59,18 @@ describe('DigitalEvent', () => {
             const event = new DigitalEvent();
             expect(() => event.emit('noop')).not.toThrow();
         });
+
+        it('should call listeners with undefined when emit() is invoked without an argument', () => {
+            /** @type {DigitalEvent<void>} */
+            const voidEvent = new DigitalEvent();
+            const listener = vi.fn();
+            voidEvent.subscribe(listener);
+
+            voidEvent.emit();
+
+            expect(listener).toHaveBeenCalledTimes(1);
+            expect(listener).toHaveBeenCalledWith(undefined);
+        });
     });
 
     describe('clear()', () => {

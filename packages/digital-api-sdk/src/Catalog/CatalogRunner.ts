@@ -1,5 +1,5 @@
 import { HttpClientError } from '../HttpClient';
-import type { HttpClient, HttpRequestConfig } from '../HttpClient';
+import type { HttpClient, HttpRequestConfig, HttpResponse } from '../HttpClient';
 import type { Result } from '../types';
 import type { CatalogError, CatalogCallbacks } from './types';
 
@@ -22,14 +22,15 @@ export class CatalogRunner {
         request: HttpRequestConfig,
         options: CatalogCallbacks<T> = {}
     ): Promise<Result<T>> {
+        const forwardedRequest = CatalogRunner.composeHooks(request, options);
         try {
-            const response = await http.request<Result<T>>(request);
+            const response = await http.request<Result<T>>(forwardedRequest);
             const result: Result<T> = CatalogRunner.isResult<T>(response.data)
                 ? response.data
-                : { value: null as T, hasError: false, errors: [], infos: [] };
+                : { value: response.data as T, hasError: false, errors: [], infos: [] };
 
             if (result.hasError) {
-                await CatalogRunner.handleErrorCallbacks<T>(
+                await CatalogRunner.doErrorCallbacks<T>(
                     {
                         status: response.status,
                         result,
@@ -37,8 +38,8 @@ export class CatalogRunner {
                     },
                     options
                 );
-            } else {
-                await options.onSuccess?.(result.value);
+            } else if (options.onSuccess) {
+                await CatalogRunner.safeInvoke(() => options.onSuccess!(result.value), 'onSuccess');
             }
             return result;
         } catch (e) {
@@ -50,7 +51,7 @@ export class CatalogRunner {
                 result,
                 messages: result?.errors ?? [{ message: `HTTP ${e.status}` }],
             };
-            await CatalogRunner.handleErrorCallbacks<T>(callError, options);
+            await CatalogRunner.doErrorCallbacks<T>(callError, options);
             return (
                 result ?? {
                     value: null as T,
@@ -62,18 +63,73 @@ export class CatalogRunner {
         }
     }
 
-    private static async handleErrorCallbacks<T>(error: CatalogError<T>, options: CatalogCallbacks<T>): Promise<void> {
-        if (error.result?.errors && options.onReference)
-            for (const msg of error.result.errors)
-                if (msg.reference && options.onReference[msg.reference])
-                    await options.onReference[msg.reference]?.(msg, error);
+    private static async doErrorCallbacks<T>(error: CatalogError<T>, options: CatalogCallbacks<T>): Promise<void> {
+        if (error.result?.errors && options.onReference) {
+            for (const msg of error.result.errors) {
+                const handler = msg.reference ? options.onReference[msg.reference] : undefined;
+                if (handler) {
+                    await CatalogRunner.safeInvoke(() => handler(msg, error), `onReference[${msg.reference}]`);
+                }
+            }
+        }
 
-        if (options.onStatus?.[error.status]) {
-            await options.onStatus[error.status]?.(error);
+        const statusHandler = options.onStatus?.[error.status];
+        if (statusHandler) {
+            await CatalogRunner.safeInvoke(() => statusHandler(error), `onStatus[${error.status}]`);
         }
+
         if (options.onError) {
-            await options.onError(error);
+            await CatalogRunner.safeInvoke(() => options.onError!(error), 'onError');
         }
+    }
+
+    /**
+     * Callbacks supplied by the caller are best-effort: a throwing callback must NOT
+     * break the dispatch chain nor propagate up to the caller of `run()`. We log the
+     * error on `console.error` and swallow it so the next callback still runs.
+     */
+    private static async safeInvoke(fn: () => void | Promise<void>, label: string): Promise<void> {
+        try {
+            await fn();
+        } catch (e) {
+            console.error(`[CatalogRunner] ${label} callback threw`, e);
+        }
+    }
+
+    /**
+     * Merges `onRequest`/`onResponse` from CatalogCallbacks into the HttpRequestConfig.
+     * Catalog-level hooks run FIRST, request-level hooks run SECOND (last-write-wins).
+     * Transport-level hook exceptions propagate to the caller (they are NOT isolated,
+     * unlike the dispatch callbacks `onSuccess`/`onError`/etc.).
+     */
+    private static composeHooks<T>(
+        request: HttpRequestConfig,
+        options: CatalogCallbacks<T>
+    ): HttpRequestConfig {
+        const catalogOnRequest = options.onRequest;
+        const requestOnRequest = request.onRequest;
+        const catalogOnResponse = options.onResponse;
+        const requestOnResponse = request.onResponse;
+
+        const needsRequestCompose = !!(catalogOnRequest && requestOnRequest);
+        const needsResponseCompose = !!(catalogOnResponse && requestOnResponse);
+
+        if (!catalogOnRequest && !catalogOnResponse) {
+            return request;
+        }
+
+        const onRequest: HttpRequestConfig['onRequest'] = needsRequestCompose
+            ? async cfg => requestOnRequest!(await catalogOnRequest!(cfg))
+            : (catalogOnRequest ?? requestOnRequest);
+
+        const onResponse: HttpRequestConfig['onResponse'] = needsResponseCompose
+            ? async resp => {
+                  await catalogOnResponse!(resp);
+                  await requestOnResponse!(resp);
+              }
+            : (catalogOnResponse ?? requestOnResponse);
+
+        return { ...request, onRequest, onResponse };
     }
 
     private static isResult<T>(value: unknown): value is Result<T> {
