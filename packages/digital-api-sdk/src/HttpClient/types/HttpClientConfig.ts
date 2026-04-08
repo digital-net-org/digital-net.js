@@ -1,5 +1,5 @@
 export interface HttpClientConfig {
-    /** Root URL of the API, without trailing slash. Example: 'https://api.safaridigital.fr' */
+    /** Root URL of the API, without trailing slash. Example: 'https://api.domaine.com' */
     baseUrl: string;
     /**
      * Optional long-lived API key. When set, the client uses the API key flow:

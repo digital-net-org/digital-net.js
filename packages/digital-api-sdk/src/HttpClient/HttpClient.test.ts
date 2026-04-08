@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpClient } from './HttpClient';
 import { HttpClientError } from './HttpClientError';
-import { DN_API_AUTH_USER_REFRESH } from './routes';
+import { DN_API_AUTH_USER_REFRESH } from '../routes';
 import { DN_STORAGE_KEY } from './constants';
 
 const BASE_URL = 'https://api.example.test';
@@ -21,15 +21,9 @@ function createLocalStorageStub(): Storage {
     const store = new Map<string, string>();
     return {
         getItem: (key: string): string | null => store.get(key) ?? null,
-        setItem: (key: string, value: string): void => {
-            store.set(key, String(value));
-        },
-        removeItem: (key: string): void => {
-            store.delete(key);
-        },
-        clear: (): void => {
-            store.clear();
-        },
+        setItem: (key: string, value: string): Map<string, string> => store.set(key, String(value)),
+        removeItem: (key: string): boolean => store.delete(key),
+        clear: (): void => store.clear(),
         key: (index: number): string | null => Array.from(store.keys())[index] ?? null,
         get length(): number {
             return store.size;
@@ -61,7 +55,6 @@ describe('HttpClient', () => {
     describe('request()', () => {
         it('performs a basic GET and returns data/status/ok', async () => {
             fetchMock.mockResolvedValueOnce(jsonResponse({ id: 1, name: 'Alice' }));
-
             const response = await client.request<{ id: number; name: string }>({
                 path: 'user/self',
                 method: 'GET',
@@ -180,16 +173,14 @@ describe('HttpClient', () => {
                 .mockResolvedValueOnce(jsonResponse({ errors: ['nope'] }, 400))
                 .mockResolvedValueOnce(jsonResponse({ errors: ['nope'] }, 400));
 
-            await expect(
-                client.request({ path: 'admin/user', method: 'POST' }),
-            ).rejects.toMatchObject({
+            await expect(client.request({ path: 'admin/user', method: 'POST' })).rejects.toMatchObject({
                 status: 400,
                 data: { errors: ['nope'] },
             });
 
-            await expect(
-                client.request({ path: 'admin/user', method: 'POST' }),
-            ).rejects.toBeInstanceOf(HttpClientError);
+            await expect(client.request({ path: 'admin/user', method: 'POST' })).rejects.toBeInstanceOf(
+                HttpClientError
+            );
         });
     });
 
@@ -223,18 +214,14 @@ describe('HttpClient', () => {
         it('clears the token, emits authError and throws when refresh itself fails', async () => {
             localStorage.setItem(DN_STORAGE_KEY, 'old-token');
 
-            fetchMock
-                .mockResolvedValueOnce(emptyResponse(401))
-                .mockResolvedValueOnce(emptyResponse(401));
+            fetchMock.mockResolvedValueOnce(emptyResponse(401)).mockResolvedValueOnce(emptyResponse(401));
 
             const authErrorListener = vi.fn();
             const tokenChangeListener = vi.fn();
-            client.onAuthError(authErrorListener);
-            client.onTokenChange(tokenChangeListener);
+            client.setAuthErrorEvent(authErrorListener);
+            client.setTokenChangeEvent(tokenChangeListener);
 
-            await expect(
-                client.request({ path: 'user/self', method: 'GET' }),
-            ).rejects.toBeInstanceOf(HttpClientError);
+            await expect(client.request({ path: 'user/self', method: 'GET' })).rejects.toBeInstanceOf(HttpClientError);
 
             expect(localStorage.getItem(DN_STORAGE_KEY)).toBeNull();
             expect(authErrorListener).toHaveBeenCalledTimes(1);
@@ -282,7 +269,7 @@ describe('HttpClient', () => {
     describe('token management', () => {
         it('setToken stores in localStorage and emits tokenChange', () => {
             const listener = vi.fn();
-            const unsubscribe = client.onTokenChange(listener);
+            const unsubscribe = client.setTokenChangeEvent(listener);
 
             client.setToken('xyz');
             expect(localStorage.getItem(DN_STORAGE_KEY)).toBe('xyz');
@@ -296,7 +283,7 @@ describe('HttpClient', () => {
         it('clearToken removes the entry from localStorage and emits undefined', () => {
             localStorage.setItem(DN_STORAGE_KEY, 'xyz');
             const listener = vi.fn();
-            client.onTokenChange(listener);
+            client.setTokenChangeEvent(listener);
 
             client.clearToken();
 
@@ -354,13 +341,13 @@ describe('HttpClient', () => {
             const apiKeyClient = new HttpClient({ baseUrl: BASE_URL, apiKey: API_KEY });
             fetchMock.mockResolvedValueOnce(emptyResponse(401));
 
-            await expect(
-                apiKeyClient.request({ path: 'user/self', method: 'GET' }),
-            ).rejects.toBeInstanceOf(HttpClientError);
+            await expect(apiKeyClient.request({ path: 'user/self', method: 'GET' })).rejects.toBeInstanceOf(
+                HttpClientError
+            );
 
             expect(fetchMock).toHaveBeenCalledTimes(1);
             const refreshCalls = fetchMock.mock.calls.filter(([input]) =>
-                String(input).endsWith(DN_API_AUTH_USER_REFRESH),
+                String(input).endsWith(DN_API_AUTH_USER_REFRESH)
             );
             expect(refreshCalls).toHaveLength(0);
         });
@@ -372,16 +359,103 @@ describe('HttpClient', () => {
 
             const authErrorListener = vi.fn();
             const tokenChangeListener = vi.fn();
-            apiKeyClient.onAuthError(authErrorListener);
-            apiKeyClient.onTokenChange(tokenChangeListener);
+            apiKeyClient.setAuthErrorEvent(authErrorListener);
+            apiKeyClient.setTokenChangeEvent(tokenChangeListener);
 
-            await expect(
-                apiKeyClient.request({ path: 'user/self', method: 'GET' }),
-            ).rejects.toBeInstanceOf(HttpClientError);
+            await expect(apiKeyClient.request({ path: 'user/self', method: 'GET' })).rejects.toBeInstanceOf(
+                HttpClientError
+            );
 
             expect(localStorage.getItem(DN_STORAGE_KEY)).toBe('jwt-tok');
             expect(authErrorListener).not.toHaveBeenCalled();
             expect(tokenChangeListener).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('in-memory token fallback (Node)', () => {
+        let nodeClient: HttpClient;
+
+        beforeEach(() => {
+            // Force `typeof localStorage === 'undefined'` to simulate a Node-only runtime.
+            vi.stubGlobal('localStorage', undefined);
+            fetchMock = vi.fn();
+            vi.stubGlobal('fetch', fetchMock);
+            nodeClient = new HttpClient({ baseUrl: BASE_URL });
+        });
+
+        it('stores the token in memory when localStorage is not defined', () => {
+            const listener = vi.fn();
+            nodeClient.setTokenChangeEvent(listener);
+
+            nodeClient.setToken('node-tok');
+
+            expect(nodeClient.getToken()).toBe('node-tok');
+            expect(listener).toHaveBeenCalledWith('node-tok');
+        });
+
+        it('clearToken wipes the in-memory token and emits undefined', () => {
+            nodeClient.setToken('node-tok');
+            const listener = vi.fn();
+            nodeClient.setTokenChangeEvent(listener);
+
+            nodeClient.clearToken();
+
+            expect(nodeClient.getToken()).toBeUndefined();
+            expect(listener).toHaveBeenCalledWith(undefined);
+        });
+
+        it('uses the in-memory token in the Authorization header on requests', async () => {
+            nodeClient.setToken('node-tok');
+            fetchMock.mockResolvedValueOnce(jsonResponse({ ok: true }));
+
+            await nodeClient.request({ path: 'user/self', method: 'GET' });
+
+            const { init } = callOf(fetchMock, 0);
+            const headers = init.headers as Record<string, string>;
+            expect(headers['Authorization']).toBe('Bearer node-tok');
+        });
+
+        it('refreshes and persists the new token in memory on 401', async () => {
+            nodeClient.setToken('old-node-tok');
+
+            fetchMock
+                .mockResolvedValueOnce(emptyResponse(401))
+                .mockResolvedValueOnce(jsonResponse({ value: 'new-node-tok' }))
+                .mockResolvedValueOnce(jsonResponse({ id: 1 }));
+
+            const response = await nodeClient.request<{ id: number }>({
+                path: 'user/self',
+                method: 'GET',
+            });
+
+            expect(response.data).toEqual({ id: 1 });
+            expect(nodeClient.getToken()).toBe('new-node-tok');
+        });
+    });
+
+    describe('refreshToken() (public)', () => {
+        it('exposes refreshToken as a public method that returns the new token', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse({ value: 'fresh-tok' }));
+
+            const newToken = await client.refreshToken();
+
+            expect(newToken).toBe('fresh-tok');
+            expect(localStorage.getItem(DN_STORAGE_KEY)).toBe('fresh-tok');
+
+            const { url, init } = callOf(fetchMock, 0);
+            expect(url).toBe(`${BASE_URL}/${DN_API_AUTH_USER_REFRESH}`);
+            expect(init.method).toBe('POST');
+            expect(init.credentials).toBe('include');
+        });
+
+        it('returns undefined and clears state when the refresh endpoint fails', async () => {
+            localStorage.setItem(DN_STORAGE_KEY, 'old-tok');
+            fetchMock.mockResolvedValueOnce(emptyResponse(401));
+
+            const newToken = await client.refreshToken();
+
+            expect(newToken).toBeUndefined();
+            expect(localStorage.getItem(DN_STORAGE_KEY)).toBeNull();
         });
     });
 });

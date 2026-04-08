@@ -1,14 +1,9 @@
-import { DigitalEvent, URLResolver } from '@digital-net-org/digital-core';
+import { DigitalEvent, Env, URLResolver } from '@digital-net-org/digital-core';
 import { DN_API_KEY_HEADER, DN_DEFAULT_HEADERS, DN_STORAGE_KEY } from './constants';
-import { DN_API_AUTH_USER_REFRESH } from './routes';
+import { DN_API_AUTH_USER_REFRESH } from '../routes';
 import { HttpClientError } from './HttpClientError';
-import type {
-    AuthErrorListener,
-    HttpClientConfig,
-    HttpRequestConfig,
-    HttpResponse,
-    TokenChangeListener,
-} from './types';
+import { HttpSerializer } from './HttpSerializer';
+import type { HttpClientConfig, HttpRequestConfig, HttpResponse } from './types';
 
 export class HttpClient {
     private readonly baseUrl: string;
@@ -18,6 +13,7 @@ export class HttpClient {
     private readonly authErrorEvent: DigitalEvent<void> = new DigitalEvent();
 
     private refreshPromise: Promise<string | undefined> | null = null;
+    private inMemoryToken: string | undefined;
 
     public constructor(config: HttpClientConfig) {
         this.baseUrl = config.baseUrl;
@@ -25,18 +21,20 @@ export class HttpClient {
     }
 
     public async request<T = any, B = any>(config: HttpRequestConfig<B>): Promise<HttpResponse<T>> {
-        return this.performRequest<T, B>(config, false);
+        return this.handleRequest<T, B>(config, false);
     }
 
     public getToken(): string | undefined {
-        if (typeof localStorage === 'undefined') return undefined;
-        return localStorage.getItem(DN_STORAGE_KEY) ?? undefined;
+        return Env.hasUsableLocalStorage() ? (localStorage.getItem(DN_STORAGE_KEY) ?? undefined) : this.inMemoryToken;
     }
 
     public setToken(token: string | undefined): void {
-        if (typeof localStorage !== 'undefined') {
-            if (token) localStorage.setItem(DN_STORAGE_KEY, token);
-            else localStorage.removeItem(DN_STORAGE_KEY);
+        if (!Env.hasUsableLocalStorage()) {
+            this.inMemoryToken = token;
+        } else if (token) {
+            localStorage.setItem(DN_STORAGE_KEY, token);
+        } else {
+            localStorage.removeItem(DN_STORAGE_KEY);
         }
         this.tokenChangeEvent.emit(token);
     }
@@ -45,25 +43,27 @@ export class HttpClient {
         this.setToken(undefined);
     }
 
-    public onTokenChange(listener: TokenChangeListener): () => void {
+    public setTokenChangeEvent(listener: (_token: string | undefined) => void): () => void {
         return this.tokenChangeEvent.subscribe(listener);
     }
 
-    public onAuthError(listener: AuthErrorListener): () => void {
+    public setAuthErrorEvent(listener: () => void): () => void {
         return this.authErrorEvent.subscribe(listener);
     }
 
-    private async performRequest<T, B>(
-        config: HttpRequestConfig<B>,
-        isRetry: boolean,
-    ): Promise<HttpResponse<T>> {
+    public async refreshToken(): Promise<string | undefined> {
+        this.refreshPromise ??= this.handleRefreshToken();
+        return this.refreshPromise;
+    }
+
+    private async handleRequest<T, B>(config: HttpRequestConfig<B>, isRetry: boolean): Promise<HttpResponse<T>> {
         if (this.refreshPromise && !config.skipRefresh && this.apiKey === undefined) {
             await this.refreshPromise;
         }
 
-        const url = this.buildUrl(config.path, config.slugs, config.params);
-        const headers = this.buildHeaders(config);
-        const body = this.serializeBody(config.body);
+        const url = this.resolveUrl(config.path, config.slugs, config.params);
+        const headers = this.resolveHeaders(config);
+        const body = HttpSerializer.serializeBody(config.body);
 
         const response = await fetch(url, {
             method: config.method ?? 'GET',
@@ -82,59 +82,55 @@ export class HttpClient {
         ) {
             const newToken = await this.refreshToken();
             if (!newToken) {
-                const data = (await this.readBody(response)) as T;
+                const data = (await HttpSerializer.deserializeBody(response)) as T;
                 throw new HttpClientError(response.status, data);
             }
-            return this.performRequest<T, B>(config, true);
+            return this.handleRequest<T, B>(config, true);
         }
 
-        const data = (await this.readBody(response)) as T;
+        const data = (await HttpSerializer.deserializeBody(response)) as T;
         if (!response.ok) {
             throw new HttpClientError(response.status, data);
         }
         return { data, status: response.status, headers: response.headers, ok: response.ok };
     }
 
-    private async refreshToken(): Promise<string | undefined> {
-        if (!this.refreshPromise) {
-            this.refreshPromise = (async (): Promise<string | undefined> => {
-                try {
-                    const refreshResponse = await fetch(
-                        URLResolver.resolve(this.baseUrl, DN_API_AUTH_USER_REFRESH),
-                        {
-                            method: 'POST',
-                            headers: { ...DN_DEFAULT_HEADERS },
-                            credentials: 'include',
-                        },
-                    );
-                    if (!refreshResponse.ok) throw new Error('refresh failed');
-                    const json = (await refreshResponse.json()) as { value?: string };
-                    if (!json?.value) throw new Error('missing token in refresh response');
-                    this.setToken(json.value);
-                    return json.value;
-                } catch {
-                    this.setToken(undefined);
-                    this.authErrorEvent.emit(undefined);
-                    return undefined;
-                } finally {
-                    this.refreshPromise = null;
-                }
-            })();
+    private async handleRefreshToken(): Promise<string | undefined> {
+        try {
+            const refreshResponse = await fetch(URLResolver.resolve(this.baseUrl, DN_API_AUTH_USER_REFRESH), {
+                method: 'POST',
+                headers: { ...DN_DEFAULT_HEADERS },
+                credentials: 'include',
+            });
+            if (!refreshResponse.ok) {
+                throw new Error('refresh failed');
+            }
+            const json = (await refreshResponse.json()) as { value?: string };
+            if (!json?.value) {
+                throw new Error('missing token in refresh response');
+            }
+            this.setToken(json.value);
+            return json.value;
+        } catch {
+            this.setToken(undefined);
+            this.authErrorEvent.emit(undefined);
+            return undefined;
+        } finally {
+            this.refreshPromise = null;
         }
-        return this.refreshPromise;
     }
 
-    private buildUrl(
+    private resolveUrl(
         path: string,
         slugs?: Record<string, string | number>,
-        params?: Record<string, unknown>,
+        params?: Record<string, unknown>
     ): string {
         const resolved = URLResolver.resolveSlugs(path, slugs ?? {});
         const full = URLResolver.resolve(this.baseUrl, resolved);
         return params ? URLResolver.buildQuery(full, params) : full;
     }
 
-    private buildHeaders<B>(config: HttpRequestConfig<B>): Record<string, string> {
+    private resolveHeaders<B>(config: HttpRequestConfig<B>): Record<string, string> {
         const headers: Record<string, string> = { ...DN_DEFAULT_HEADERS, ...(config.headers ?? {}) };
         if (!config.skipAuth) {
             if (this.apiKey !== undefined) {
@@ -148,32 +144,5 @@ export class HttpClient {
             delete headers['Content-Type'];
         }
         return headers;
-    }
-
-    private serializeBody(body: unknown): BodyInit | undefined {
-        if (body === undefined || body === null) return undefined;
-        if (
-            body instanceof FormData ||
-            body instanceof Blob ||
-            body instanceof ArrayBuffer ||
-            body instanceof URLSearchParams ||
-            typeof body === 'string'
-        ) {
-            return body as BodyInit;
-        }
-        return JSON.stringify(body);
-    }
-
-    private async readBody(response: Response): Promise<unknown> {
-        const contentType = response.headers.get('content-type') ?? '';
-        if (response.status === 204) return null;
-        if (contentType.includes('application/json')) {
-            try {
-                return await response.json();
-            } catch {
-                return null;
-            }
-        }
-        return response.text();
     }
 }
