@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Stack } from '@mui/material';
-import { DnAppBar, DnMenuAccount, DnMenuSettings, DnMenuTheme } from '../src';
+import { DnAppBar } from '../src';
 
 const meta: Meta<typeof DnAppBar> = {
     title: 'Navigation/DnAppBar',
@@ -24,16 +24,7 @@ export const Default: Story = {
                 height: '100%',
             }}
         >
-            <DnAppBar
-                {...args}
-                renderActions={() => (
-                    <React.Fragment>
-                        <DnMenuAccount />
-                        <DnMenuTheme />
-                        <DnMenuSettings />
-                    </React.Fragment>
-                )}
-            />
+            <DnAppBar {...args} />
         </Stack>
     ),
 };
