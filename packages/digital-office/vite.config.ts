@@ -15,6 +15,8 @@ export default defineConfig({
                 'react',
                 'react-dom',
                 'react/jsx-runtime',
+                'react-router',
+                /^@tanstack\/.*/,
                 /^@mui\/.*/,
                 /^@emotion\/.*/,
                 /^@digital-net-org\/.*/,

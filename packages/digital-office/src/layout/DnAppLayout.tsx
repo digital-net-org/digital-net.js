@@ -6,6 +6,10 @@ export interface DnAppLayoutProps {
     children?: React.ReactNode;
 }
 
+/**
+ * Main application shell providing the top app bar and a collapsible side drawer.
+ * Intended to wrap authenticated page content — public pages should render outside of this layout.
+ */
 export function DnAppLayout({ children }: DnAppLayoutProps) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     return (
@@ -42,7 +46,6 @@ const MainWrapper = styled('div')(
         flex-direction: column;
         width: 100%;
         height: 100%;
-
         overflow-y: hidden;
     `
 );
