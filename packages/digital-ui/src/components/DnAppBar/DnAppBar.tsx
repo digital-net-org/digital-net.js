@@ -15,7 +15,7 @@ export interface DnAppBarProps {
         settings?: DnMenuSettingsProps;
         menu?: { open?: boolean; onClick?: () => void };
     };
-    disableSlots?: Partial<Record<'account' | 'settings' | 'theme' | 'menu', boolean>>;
+    disableSlots?: Partial<Record<'account' | 'settings' | 'theme' | 'menu' | 'breadcrumb', boolean>>;
 }
 
 export function DnAppBar({ url, slots, disableSlots }: DnAppBarProps) {
@@ -29,7 +29,7 @@ export function DnAppBar({ url, slots, disableSlots }: DnAppBarProps) {
                         {slots?.menu?.open ? <MenuOpenIcon /> : <MenuIcon />}
                     </IconButton>
                 )}
-                <DnBreadcrumbs url={url} />
+                {disableSlots?.breadcrumb ? null : <DnBreadcrumbs url={url} />}
             </Stack>
             <Stack direction="row">
                 {disableSlots?.account ? null : <DnMenuAccount {...(slots?.account ?? {})} />}

@@ -1,6 +1,14 @@
 import * as React from 'react';
 import { css, styled } from '@mui/material/styles';
-import { type TextFieldProps, TextField, CircularProgress, Stack } from '@mui/material';
+import {
+    type TextFieldProps,
+    type SlotProps,
+    type TextFieldOwnerState,
+    TextField,
+    CircularProgress,
+    Stack,
+} from '@mui/material';
+import type { InputBaseProps } from '@mui/material/InputBase';
 
 export interface DnInputProps extends Pick<
     TextFieldProps,
@@ -20,12 +28,14 @@ export interface DnInputProps extends Pick<
     | 'error'
     | 'required'
     | 'autoFocus'
+    | 'helperText'
 > {
     variant?: 'default' | 'text';
     loading?: boolean;
+    inputProps?: SlotProps<React.ElementType<InputBaseProps['inputProps']>, {}, TextFieldOwnerState>;
 }
 
-export function DnInput({ className, variant, loading, disabled, ...muiProps }: DnInputProps) {
+export function DnInput({ className, variant, loading, disabled, inputProps, ...muiProps }: DnInputProps) {
     return (
         <CustomTextField
             {...muiProps}
@@ -34,6 +44,7 @@ export function DnInput({ className, variant, loading, disabled, ...muiProps }: 
             variant={({ default: 'outlined', text: 'filled' } as const)[variant ?? 'default']}
             disabled={disabled || loading}
             slotProps={{
+                htmlInput: inputProps,
                 input: {
                     endAdornment: (
                         <React.Fragment>

@@ -5,7 +5,7 @@ import type { Severity } from '../../theme';
 
 export interface DnButtonProps extends Pick<
     ButtonProps,
-    'children' | 'id' | 'className' | 'disabled' | 'loading' | 'variant' | 'sx' | 'onClick'
+    'children' | 'id' | 'className' | 'disabled' | 'loading' | 'variant' | 'sx' | 'onClick' | 'type'
 > {
     icon?: React.ReactNode;
     severity?: Severity;
@@ -38,6 +38,7 @@ const CustomButton = styled(Button)(
 
         &.DnButton.MuiButton-contained {
             border: 1px solid ${theme.palette.primary.main};
+            box-shadow: none;
             &.MuiButton-root.MuiButton-loading.Mui-disabled {
                 background-color: ${theme.palette.primary.main};
                 & .MuiButton-loadingIndicator .MuiCircularProgress-root .MuiCircularProgress-svg {

@@ -1,4 +1,5 @@
 export * from './DnAppBar';
+export * from './DnAppBarMenu';
 export * from './DnAppDrawer';
 export * from './DnBreadcrumbs';
 export * from './DnButton';

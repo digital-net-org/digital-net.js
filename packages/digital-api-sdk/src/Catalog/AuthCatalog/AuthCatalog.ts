@@ -1,4 +1,5 @@
 import {
+    DN_API_AUTH_USER_IS_LOCKED,
     DN_API_AUTH_USER_LOGIN,
     DN_API_AUTH_USER_LOGOUT,
     DN_API_AUTH_USER_LOGOUT_ALL,
@@ -39,6 +40,25 @@ export class AuthCatalog {
                     await options.onSuccess?.(token);
                 },
             }
+        );
+    }
+
+    /**
+     * GET `authentication/user/is-locked` (public)
+     *
+     * Returns whether the caller's IP has reached the max login attempts threshold.
+     * Intended as a pre-check from the UI to short-circuit login when already locked.
+     */
+    public async isLocked(options: CatalogCallbacks<boolean> = {}): Promise<Result<boolean>> {
+        return CatalogRunner.run<boolean>(
+            this.http,
+            {
+                method: 'GET',
+                path: DN_API_AUTH_USER_IS_LOCKED,
+                skipAuth: true,
+                skipRefresh: true,
+            },
+            options
         );
     }
 

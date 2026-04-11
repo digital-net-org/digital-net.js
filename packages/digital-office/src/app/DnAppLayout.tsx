@@ -1,28 +1,45 @@
 import * as React from 'react';
 import { css, styled } from '@mui/material/styles';
 import { DnAppBar, DnAppDrawer } from '@digital-net-org/digital-ui';
+import { useDnApp } from './DnAppProvider';
+import { useDnUser } from '../user';
 
 export interface DnAppLayoutProps {
+    navigation: Record<
+        string,
+        {
+            label: string;
+            path: string;
+        }
+    >;
     children?: React.ReactNode;
 }
 
-/**
- * Main application shell providing the top app bar and a collapsible side drawer.
- * Intended to wrap authenticated page content — public pages should render outside of this layout.
- */
 export function DnAppLayout({ children }: DnAppLayoutProps) {
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const { isDrawerOpen, toggleDrawer } = useDnApp();
+    const { user, isLogged, isLoading, logout } = useDnUser();
+
     return (
         <Layout>
-            <DnAppDrawer open={isMenuOpen}>Coucou</DnAppDrawer>
+            {isLogged ? <DnAppDrawer open={isDrawerOpen}>Coucou</DnAppDrawer> : null}
             <MainWrapper>
                 <DnAppBar
                     url="home/test"
                     slots={{
                         menu: {
-                            open: isMenuOpen,
-                            onClick: () => setIsMenuOpen(!isMenuOpen),
+                            open: isDrawerOpen,
+                            onClick: toggleDrawer,
                         },
+                        account: {
+                            username: user?.username,
+                            loading: isLoading,
+                            onLogoutClick: logout,
+                        },
+                    }}
+                    disableSlots={{
+                        account: !isLogged,
+                        menu: !isLogged,
+                        breadcrumb: !isLogged,
                     }}
                 />
                 <Main>{children}</Main>

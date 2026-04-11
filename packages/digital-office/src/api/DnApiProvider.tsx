@@ -10,11 +10,6 @@ export interface DnApiProviderProps {
     children: React.ReactNode;
 }
 
-/**
- * Provides a {@link DigitalApi} instance and a `QueryClientProvider` to the component tree.
- *
- * The provided instance is then accessible via {@link useDnApi}.
- */
 export function DnApiProvider({ api, children }: DnApiProviderProps) {
     return (
         <DnApiContext.Provider value={api}>
@@ -23,10 +18,6 @@ export function DnApiProvider({ api, children }: DnApiProviderProps) {
     );
 }
 
-/**
- * Returns the {@link DigitalApi} instance provided by {@link DnApiProvider}.
- * Must be called within a `DnApiProvider` subtree.
- */
 export function useDnApi(): DigitalApi {
     const context = React.useContext(DnApiContext);
     if (!context) {

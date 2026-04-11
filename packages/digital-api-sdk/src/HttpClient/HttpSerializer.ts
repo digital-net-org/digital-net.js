@@ -25,6 +25,9 @@ export class HttpSerializer {
                 return null;
             }
         }
+        if (contentType.startsWith('image/') || contentType === 'application/octet-stream') {
+            return response.blob();
+        }
         return response.text();
     }
 }
