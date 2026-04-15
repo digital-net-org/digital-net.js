@@ -1,0 +1,83 @@
+import * as React from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { alpha, MenuItem as MuiMenuItem, MenuList as MuiMenuList, Stack, Typography } from '@mui/material';
+import { css, styled } from '@mui/material/styles';
+import { DnCollapsibleBlock } from '@digital-net-org/digital-ui';
+
+export type NavGroupContent = { label: string; path: string }[];
+
+export interface DnAppLayoutNavProps {
+    navigation: Record<string, NavGroupContent>;
+    children?: React.ReactNode;
+}
+
+export function DnAppLayoutNav({ navigation }: DnAppLayoutNavProps) {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const checkIsCurrent = React.useCallback((path: string) => location.pathname.includes(path), [location]);
+
+    return (
+        <Container>
+            {Object.entries(navigation).map(([key, items]) => (
+                <React.Fragment key={key}>
+                    <DnCollapsibleBlock label={<MenuLabel>{key}</MenuLabel>}>
+                        <MenuList>
+                            {items.map(({ label, path }) => {
+                                const current = checkIsCurrent(path);
+                                return (
+                                    <MenuItem
+                                        key={path}
+                                        selected={current}
+                                        disableRipple={current}
+                                        disableTouchRipple={current}
+                                        onClick={() => (!current ? navigate(path) : void 0)}
+                                    >
+                                        {label}
+                                    </MenuItem>
+                                );
+                            })}
+                        </MenuList>
+                    </DnCollapsibleBlock>
+                </React.Fragment>
+            ))}
+        </Container>
+    );
+}
+
+const Container = styled(Stack)(
+    () => css`
+        width: 100%;
+        padding: 0.25rem 0.5rem 0;
+    `
+);
+
+const MenuLabel = styled(Typography)(
+    () => css`
+        padding: 0.5rem 0.1rem 0;
+        letter-spacing: 0.035rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        user-select: none;
+    `
+);
+
+const MenuList = styled(MuiMenuList)(
+    () => css`
+        padding: 0;
+    `
+);
+
+const MenuItem = styled(MuiMenuItem)(
+    ({ theme }) => css`
+        padding: 0.25rem 0.5rem;
+        border-radius: ${theme.shape.borderRadius};
+        &.Mui-selected,
+        &.Mui-selected:hover {
+            cursor: default;
+            font-weight: 500;
+            font-style: italic;
+            background-color: ${alpha(theme.palette.primary.main, 0.15)};
+        }
+    `
+);

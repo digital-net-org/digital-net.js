@@ -7,15 +7,18 @@ export interface DnAppContextValue {
     toggleDrawer: () => void;
     /** Set the state of the navigation panel drawer **/
     setIsDrawerOpen: (isOpen: boolean) => void;
+    /** Render the application logo **/
+    AppLogo: React.ReactNode;
 }
 
 const DnAppContext = React.createContext<DnAppContextValue | null>(null);
 
 export interface DnAppProviderProps {
+    appLogo: React.ReactNode;
     children: React.ReactNode;
 }
 
-export function DnAppProvider({ children }: DnAppProviderProps) {
+export function DnAppProvider({ children, appLogo }: DnAppProviderProps) {
     const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
     const toggleDrawer = React.useCallback(() => setIsDrawerOpen(!isDrawerOpen), [isDrawerOpen]);
 
@@ -25,6 +28,7 @@ export function DnAppProvider({ children }: DnAppProviderProps) {
                 isDrawerOpen,
                 toggleDrawer,
                 setIsDrawerOpen,
+                AppLogo: appLogo,
             }}
         >
             {children}

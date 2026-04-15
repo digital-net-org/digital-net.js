@@ -4,11 +4,13 @@ import { Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import { DnInput, DnButton } from '@digital-net-org/digital-ui';
 import { useDnApi } from '../../api';
+import { useDnApp } from '../../app';
 
 const IS_LOCKED_KEY = 'dn_is_locked';
 
 export function LoginView() {
     const api = useDnApi();
+    const { AppLogo } = useDnApp();
     const queryClient = useQueryClient();
 
     const [loginInput, setLoginInput] = React.useState('');
@@ -51,9 +53,10 @@ export function LoginView() {
     );
 
     return (
-        <Stack width="100vw" height="100vh" alignItems="center" justifyContent="center">
+        <Stack alignItems="center">
             <Layout>
-                <Stack gap={2} component="form" onSubmit={handleSubmit}>
+                <Stack>{AppLogo}</Stack>
+                <Stack component="form" onSubmit={handleSubmit} gap={2} mt={2}>
                     <DnInput
                         label="Identifiant"
                         name="login"
@@ -93,6 +96,7 @@ const Layout = styled(Stack)(
         border-radius: ${theme.shape.borderRadius};
         padding: 2rem;
         background-color: ${theme.palette.background.paper};
-        max-width: 400px;
+        max-width: 320px;
+        margin-top: 9rem;
     `
 );

@@ -4,7 +4,6 @@ import { Stack, AppBar, IconButton } from '@mui/material';
 import { Menu as MenuIcon, MenuOpen as MenuOpenIcon } from '@mui/icons-material';
 import type { DnBreadcrumbsProps } from '../DnBreadcrumbs';
 import { DnBreadcrumbs } from '../DnBreadcrumbs';
-import { useClassNames } from '../useClassNames';
 import { DnMenuAccount, type DnMenuAccountProps } from '../DnMenuAccount';
 import { DnMenuSettings, type DnMenuSettingsProps } from '../DnMenuSettings';
 import { DnMenuTheme } from '../DnMenuTheme';
@@ -20,10 +19,8 @@ export interface DnAppBarProps {
 }
 
 export function DnAppBar({ slots, disableSlots }: DnAppBarProps) {
-    const classNames = useClassNames({ 'DnAppBar-disabled-menu': disableSlots?.menu }, [disableSlots]);
-
     return (
-        <CustomAppBar className={`DnAppBar ${classNames}`} elevation={0}>
+        <CustomAppBar disableMenu={disableSlots?.menu} elevation={0}>
             <Stack direction="row" spacing={2} alignItems="center">
                 {disableSlots?.menu ? null : (
                     <IconButton size="small" color="inherit" onClick={slots?.menu?.onClick}>
@@ -41,20 +38,19 @@ export function DnAppBar({ slots, disableSlots }: DnAppBarProps) {
     );
 }
 
-const CustomAppBar = styled(AppBar)(
-    ({ theme }) => css`
+const CustomAppBar = styled(AppBar, {
+    shouldForwardProp: prop => prop !== 'disableMenu',
+})<{ disableMenu?: boolean }>(
+    ({ theme, disableMenu }) => css`
         position: relative;
         height: 2.5rem;
+        display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        padding: 0 0.5rem;
+        padding: ${disableMenu ? '0 0.5rem 0 1.25rem' : '0 0.5rem'};
         color: ${theme.palette.text.primary};
         background-color: ${theme.palette.background.default};
         box-shadow: none;
-
-        &.DnAppBar-disabled-menu {
-            padding: 0 0.5rem 0 1.25rem;
-        }
     `
 );

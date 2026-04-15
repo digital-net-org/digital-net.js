@@ -3,10 +3,9 @@ export * from './DnAppBarMenu';
 export * from './DnAppDrawer';
 export * from './DnBreadcrumbs';
 export * from './DnButton';
+export * from './DnCollapseBlock';
 export * from './DnInput';
 export * from './DnSwitch';
 export * from './DnMenuAccount';
 export * from './DnMenuSettings';
 export * from './DnMenuTheme';
-
-export * from './useClassNames';

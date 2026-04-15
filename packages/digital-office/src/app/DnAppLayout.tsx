@@ -2,21 +2,16 @@ import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { css, styled } from '@mui/material/styles';
 import { DnAppBar, DnAppDrawer } from '@digital-net-org/digital-ui';
+import { DnAppLayoutNav, type DnAppLayoutNavProps } from './DnAppLayoutNav';
 import { useDnApp } from './DnAppProvider';
 import { useDnUser } from '../user';
 
 export interface DnAppLayoutProps {
-    navigation: Record<
-        string,
-        {
-            label: string;
-            path: string;
-        }
-    >;
+    navigation: DnAppLayoutNavProps['navigation'];
     children?: React.ReactNode;
 }
 
-export function DnAppLayout({ children }: DnAppLayoutProps) {
+export function DnAppLayout({ navigation, children }: DnAppLayoutProps) {
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -25,7 +20,11 @@ export function DnAppLayout({ children }: DnAppLayoutProps) {
 
     return (
         <Layout>
-            {isLogged ? <DnAppDrawer open={isDrawerOpen}>Coucou</DnAppDrawer> : null}
+            {isLogged ? (
+                <DnAppDrawer open={isDrawerOpen}>
+                    <DnAppLayoutNav navigation={navigation} />
+                </DnAppDrawer>
+            ) : null}
             <MainWrapper>
                 <DnAppBar
                     slots={{
