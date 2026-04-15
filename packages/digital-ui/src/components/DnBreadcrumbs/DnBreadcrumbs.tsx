@@ -1,9 +1,7 @@
 import * as React from 'react';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
 import { css, styled } from '@mui/material/styles';
-import { AppBar } from '@mui/material';
+import { Box, Typography, Link, Breadcrumbs, IconButton } from '@mui/material';
+import { Home as HomeIcon } from '@mui/icons-material';
 
 export interface BreadcrumbEntry {
     key: string;
@@ -11,9 +9,10 @@ export interface BreadcrumbEntry {
 }
 
 export interface DnBreadcrumbsProps {
-    url: string;
+    url?: string;
     labels?: Record<string, string>;
     onClick?: (path: string) => void;
+    onHomeClick?: () => void;
 }
 
 function parseBreadcrumbs(url: string): BreadcrumbEntry[] {
@@ -24,17 +23,14 @@ function parseBreadcrumbs(url: string): BreadcrumbEntry[] {
     }));
 }
 
-/**
- * Renders a breadcrumb navigation from a URL path.
- * Each slug becomes a clickable link, except the last one which is displayed as text.
- * @param url - The current URL pathname (e.g. from `useLocation().pathname`).
- * @param onClick - Called with the cumulative path when a breadcrumb link is clicked.
- */
-export function DnBreadcrumbs({ url, labels, onClick }: DnBreadcrumbsProps) {
+export function DnBreadcrumbs({ url, labels, onClick, onHomeClick }: DnBreadcrumbsProps) {
     const entries = React.useMemo(() => parseBreadcrumbs(url ?? ''), [url]);
 
     return (
         <CustomBreadCrumbs className="DnBreadcrumbs">
+            <IconButton size="small" color="inherit" onClick={onHomeClick}>
+                <HomeIcon fontSize="small" />
+            </IconButton>
             {entries.map((entry, i) =>
                 i < entries.length - 1 ? (
                     <Link key={entry.path} onClick={() => onClick?.(entry.path)}>
@@ -51,7 +47,7 @@ export function DnBreadcrumbs({ url, labels, onClick }: DnBreadcrumbsProps) {
 }
 
 const CustomBreadCrumbs = styled(Breadcrumbs)(
-    ({ theme }) => css`
+    () => css`
         font-weight: normal;
         letter-spacing: 0.035rem;
         user-select: none;

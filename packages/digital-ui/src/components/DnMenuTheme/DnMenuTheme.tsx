@@ -15,7 +15,7 @@ export function DnMenuTheme() {
     }
 
     return (
-        <IconButton color="inherit" onClick={DnTheme.toggleTheme}>
+        <IconButton size="small" color="inherit" onClick={DnTheme.toggleTheme}>
             {resolvedThemeIcon}
         </IconButton>
     );

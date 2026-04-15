@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import { css, styled } from '@mui/material/styles';
 import { DnAppBar, DnAppDrawer } from '@digital-net-org/digital-ui';
 import { useDnApp } from './DnAppProvider';
@@ -16,6 +17,9 @@ export interface DnAppLayoutProps {
 }
 
 export function DnAppLayout({ children }: DnAppLayoutProps) {
+    const location = useLocation();
+    const navigate = useNavigate();
+
     const { isDrawerOpen, toggleDrawer } = useDnApp();
     const { user, isLogged, isLoading, logout } = useDnUser();
 
@@ -24,7 +28,6 @@ export function DnAppLayout({ children }: DnAppLayoutProps) {
             {isLogged ? <DnAppDrawer open={isDrawerOpen}>Coucou</DnAppDrawer> : null}
             <MainWrapper>
                 <DnAppBar
-                    url="home/test"
                     slots={{
                         menu: {
                             open: isDrawerOpen,
@@ -34,6 +37,11 @@ export function DnAppLayout({ children }: DnAppLayoutProps) {
                             username: user?.username,
                             loading: isLoading,
                             onLogoutClick: logout,
+                        },
+                        breadcrumbs: {
+                            url: location.pathname,
+                            onHomeClick: () => navigate('/'),
+                            onClick: navigate,
                         },
                     }}
                     disableSlots={{

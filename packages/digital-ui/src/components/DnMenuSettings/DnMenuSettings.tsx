@@ -8,7 +8,7 @@ export interface DnMenuSettingsProps {
 
 export function DnMenuSettings({ disabled }: DnMenuSettingsProps) {
     return (
-        <IconButton color="inherit" disabled>
+        <IconButton size="small" color="inherit" disabled>
             <SettingsIcon />
         </IconButton>
     );

@@ -37,7 +37,7 @@ export function DnMenuAccount({
 
     return (
         <React.Fragment>
-            <IconButton color="inherit" {...IconButtonProps} onClick={handleClick}>
+            <IconButton size="small" color="inherit" {...IconButtonProps} onClick={handleClick}>
                 <AccountIcon />
             </IconButton>
             <DnAppBarMenu anchorEl={anchorEl} onClose={handleClose}>
