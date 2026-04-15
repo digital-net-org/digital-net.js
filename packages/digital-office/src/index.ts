@@ -1,4 +1,4 @@
-import { useDnApp } from './app';
+import { useDnApp, useDnToast } from './app';
 import { useDnUser } from './user';
 import { useDnApi } from './api';
 import { DnOfficeRouter } from './routes';
@@ -26,3 +26,5 @@ export const useApplication = () => useDnApp();
 export const useUser = () => useDnUser();
 /** Returns the Digital API instance. **/
 export const useDigitalApi = () => useDnApi();
+/** Returns functions to display global toast notifications. **/
+export const useToast = () => useDnToast();
