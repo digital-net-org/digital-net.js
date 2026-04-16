@@ -16,6 +16,7 @@ import { DnAppBarMenu } from '../DnAppBarMenu';
 
 export interface DnMenuAccountProps {
     username?: string;
+    isAdmin?: boolean;
     imgSrc?: string;
     disabled?: boolean;
     loading?: boolean;
@@ -26,6 +27,7 @@ export interface DnMenuAccountProps {
 export function DnMenuAccount({
     imgSrc,
     username,
+    isAdmin,
     loading,
     onMyAccountClick,
     onLogoutClick,
@@ -41,9 +43,12 @@ export function DnMenuAccount({
                 <AccountIcon />
             </IconButton>
             <DnAppBarMenu anchorEl={anchorEl} onClose={handleClose}>
-                <UsernameBox>
+                <UsernameBox isAdmin={isAdmin}>
                     {loading ? <CircularProgress size={18} /> : <Box sx={{ width: 18 }} />}
-                    <Typography fontWeight="medium">{username ?? ''}</Typography>
+                    <Typography fontWeight="medium">
+                        <AdminBox>{isAdmin ? '(Administrateur)' : ''}</AdminBox>
+                        {username ?? ''}
+                    </Typography>
                 </UsernameBox>
                 <MenuList>
                     <MenuItem disabled={loading} onClick={onMyAccountClick}>
@@ -64,14 +69,29 @@ export function DnMenuAccount({
     );
 }
 
-const UsernameBox = styled(Stack)(
-    ({ theme }) => css`
+const UsernameBox = styled(Stack, {
+    shouldForwardProp: prop => prop !== 'isAdmin',
+})<{ isAdmin: boolean | undefined }>(
+    ({ theme, isAdmin }) => css`
+        position: relative;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
-        padding: 0 1rem 0.5rem;
+        padding: 0 1rem ${isAdmin ? '1.25rem' : '0.5rem'};
         border-bottom: 1px solid ${theme.palette.divider};
         user-select: none;
+    `
+);
+
+const AdminBox = styled('span')(
+    ({ theme }) => css`
+        position: absolute;
+        top: 1.25rem;
+        right: 0.6rem;
+        display: inline-block;
+        font-size: 0.8rem;
+        color: ${theme.palette.primary.main};
+        margin-right: 0.35rem;
     `
 );

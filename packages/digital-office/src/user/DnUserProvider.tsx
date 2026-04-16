@@ -10,6 +10,8 @@ export interface DnUserContextValue {
     user: UserDto | null | undefined;
     /** `true` when a valid session exists and the user profile has been fetched. */
     isLogged: boolean;
+    /** `true` when the authenticated user has admin privileges. */
+    isAdmin: boolean;
     /** `true` during initial session restoration or while the user profile is loading. */
     isLoading: boolean;
     /** Force a refetch of the current user profile. */
@@ -35,6 +37,7 @@ export function DnUserProvider({ children }: DnUserProviderProps) {
             setHasToken(token != null);
             if (token == null) {
                 queryClient.setQueryData(USER_QUERY_KEY, null);
+                queryClient.setQueryData([...USER_QUERY_KEY, 'is-admin'], false);
             } else {
                 (async () => await queryClient.invalidateQueries({ queryKey: [...USER_QUERY_KEY] }))();
             }
@@ -51,6 +54,15 @@ export function DnUserProvider({ children }: DnUserProviderProps) {
         enabled: hasToken,
     });
 
+    const { data: isAdminData } = useQuery<boolean>({
+        queryKey: [...USER_QUERY_KEY, 'is-admin'],
+        queryFn: async () => {
+            const result = await api.catalog.user.isSelfAdmin();
+            return !result.hasError && result.value;
+        },
+        enabled: hasToken && userData != null,
+    });
+
     const { mutateAsync: logout, isPending: isLogoutLoading } = useMutation({
         mutationFn: async () => {
             await api.catalog.auth.logout({
@@ -61,6 +73,7 @@ export function DnUserProvider({ children }: DnUserProviderProps) {
     });
 
     const isLogged = React.useMemo<boolean>(() => hasToken && userData != null, [userData, hasToken]);
+    const isAdmin = React.useMemo<boolean>(() => isLogged && isAdminData === true, [isLogged, isAdminData]);
     const isLoading = React.useMemo<boolean>(
         () => (hasToken && isQueryLoading) || isLogoutLoading,
         [hasToken, isLogoutLoading, isQueryLoading]
@@ -78,6 +91,7 @@ export function DnUserProvider({ children }: DnUserProviderProps) {
                 user,
                 isLoading,
                 isLogged,
+                isAdmin,
                 refresh,
                 logout,
             }}

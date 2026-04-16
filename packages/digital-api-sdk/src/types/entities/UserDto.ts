@@ -7,6 +7,7 @@ export interface UserDto {
     email?: string;
     avatar?: AvatarDto;
     isActive?: boolean;
+    isAdmin?: boolean;
     createdAt: string;
     updatedAt?: string;
 }

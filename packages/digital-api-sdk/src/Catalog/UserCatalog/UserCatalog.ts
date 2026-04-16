@@ -1,16 +1,16 @@
 import {
     DN_API_USER_AVATAR_BY_ID,
     DN_API_USER_BY_ID,
-    DN_API_USER_SCHEMA,
     DN_API_USER_SELF,
     DN_API_USER_SELF_AVATAR,
+    DN_API_USER_SELF_IS_ADMIN,
     DN_API_USER_SELF_PASSWORD,
 } from '../../routes';
 import { CatalogRunner } from '../CatalogRunner';
 import type { HttpClient } from '../../HttpClient';
 import type { Result, UserDto } from '../../types';
 import type { CatalogCallbacks } from '../types';
-import type { UpdatePasswordPayload, UserSchemaProperty } from './types';
+import type { UpdatePasswordPayload } from './types';
 
 export class UserCatalog {
     private readonly http: HttpClient;
@@ -19,11 +19,9 @@ export class UserCatalog {
         this.http = http;
     }
 
-    /** GET `user/schema` — JWT/ApiKey */
-    public async getSchema(
-        options: CatalogCallbacks<UserSchemaProperty[]> = {}
-    ): Promise<Result<UserSchemaProperty[]>> {
-        return CatalogRunner.run<UserSchemaProperty[]>(this.http, { path: DN_API_USER_SCHEMA }, options);
+    /** GET `user/self/is-admin` — JWT/ApiKey */
+    public async isSelfAdmin(options: CatalogCallbacks<boolean> = {}): Promise<Result<boolean>> {
+        return CatalogRunner.run<boolean>(this.http, { path: DN_API_USER_SELF_IS_ADMIN }, options);
     }
 
     /** GET `user/:id` — JWT/ApiKey */

@@ -16,7 +16,7 @@ export function DnAppLayout({ navigation, children }: DnAppLayoutProps) {
     const navigate = useNavigate();
 
     const { isDrawerOpen, toggleDrawer } = useDnApp();
-    const { user, isLogged, isLoading, logout } = useDnUser();
+    const { user, isLogged, isLoading, isAdmin, logout } = useDnUser();
 
     return (
         <Layout>
@@ -36,6 +36,7 @@ export function DnAppLayout({ navigation, children }: DnAppLayoutProps) {
                             username: user?.username,
                             loading: isLoading,
                             onLogoutClick: logout,
+                            isAdmin,
                         },
                         breadcrumbs: {
                             url: location.pathname,
@@ -79,5 +80,6 @@ const Main = styled('main')(
         width: 100%;
         height: 100%;
         overflow-y: auto;
+        padding: 1rem;
     `
 );

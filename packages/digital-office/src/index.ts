@@ -4,7 +4,7 @@ import { useDnApi } from './api';
 import { DnOfficeRouter } from './routes';
 
 export { DigitalOfficeProvider, type DigitalOfficeProviderProps } from './DigitalOfficeProvider';
-export { AuthGuard, GuestGuard } from './routes';
+export { AdminGuard, AuthGuard, GuestGuard } from './routes';
 
 /**
  * Root router for the Office application.

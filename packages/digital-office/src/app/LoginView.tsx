@@ -3,14 +3,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import { DnInput, DnButton } from '@digital-net-org/digital-ui';
-import { useDnApi } from '../../api';
-import { useDnApp } from '../../app';
+import { useDnApp } from './DnAppProvider';
+import { useDnApi } from '../api';
 
 const IS_LOCKED_KEY = 'dn_is_locked';
 
 export function LoginView() {
-    const api = useDnApi();
     const { AppLogo } = useDnApp();
+    const api = useDnApi();
     const queryClient = useQueryClient();
 
     const [loginInput, setLoginInput] = React.useState('');

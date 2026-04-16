@@ -89,6 +89,9 @@ importers:
 
   packages/digital-ui:
     dependencies:
+      '@digital-net-org/digital-api-sdk':
+        specifier: workspace:*
+        version: link:../digital-api-sdk
       '@digital-net-org/digital-core':
         specifier: workspace:*
         version: link:../digital-core

@@ -31,6 +31,7 @@
         "react-dom": "^19.2.4"
     },
     "dependencies": {
+        "@digital-net-org/digital-api-sdk": "workspace:*",
         "@digital-net-org/digital-core": "workspace:*"
     },
     "devDependencies": {

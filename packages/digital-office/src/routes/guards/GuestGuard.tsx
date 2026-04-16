@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Navigate } from 'react-router';
+import { ROUTER_HOME_PAGE } from '../routes';
 import { useDnUser } from '../../user';
-import { ROUTER_HOME_PAGE } from '../../globals';
 
 export interface GuestGuardProps {
     children: React.ReactNode;
