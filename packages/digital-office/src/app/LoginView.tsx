@@ -7,6 +7,8 @@ import { useDnApp } from './DnAppProvider';
 import { useDnApi } from '../api';
 
 const IS_LOCKED_KEY = 'dn_is_locked';
+const PING_KEY = 'dn_ping';
+const PING_INTERVAL_MS = 30000;
 
 export function LoginView() {
     const { AppLogo } = useDnApp();
@@ -16,9 +18,17 @@ export function LoginView() {
     const [loginInput, setLoginInput] = React.useState('');
     const [passwordInput, setPasswordInput] = React.useState('');
 
+    const { data: online, isLoading: isPingLoading } = useQuery<boolean>({
+        queryKey: [PING_KEY],
+        queryFn: () => api.catalog.application.ping(),
+        refetchInterval: PING_INTERVAL_MS,
+        refetchIntervalInBackground: true,
+    });
+
     const { data: locked, isLoading: isLockedLoading } = useQuery<boolean>({
         queryKey: [IS_LOCKED_KEY],
         queryFn: async () => Boolean((await api.catalog.auth.isLocked()).value),
+        enabled: online === true,
     });
 
     const invalidateLocked = React.useCallback(
@@ -39,7 +49,22 @@ export function LoginView() {
         },
     });
 
-    const isLoading = React.useMemo(() => isLockedLoading || isLoginLoading, [isLockedLoading, isLoginLoading]);
+    const isLoading = React.useMemo(
+        () => isPingLoading || isLockedLoading || isLoginLoading,
+        [isPingLoading, isLockedLoading, isLoginLoading]
+    );
+
+    const isDisabled = online === false || locked || isLoading;
+
+    const errorMessage = React.useMemo(() => {
+        if (online === false) {
+            return "L'application est actuellement indisponible. Contactez un administrateur.";
+        }
+        if (locked) {
+            return 'Vous avez effectué un trop grand nombre de tentatives de connexion. Par mesure de sécurité, votre accès est temporairement bloqué pendant 15 minutes.';
+        }
+        return null;
+    }, [online, locked]);
 
     const handleSubmit = React.useCallback(
         (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -63,7 +88,7 @@ export function LoginView() {
                         inputProps={{ maxLength: 48 }}
                         value={loginInput}
                         onChange={e => setLoginInput(e.target.value)}
-                        disabled={locked || isLoading}
+                        disabled={isDisabled}
                         required
                     />
                     <DnInput
@@ -72,18 +97,17 @@ export function LoginView() {
                         inputProps={{ maxLength: 256, autocomplete: 'off' }}
                         value={passwordInput}
                         onChange={e => setPasswordInput(e.target.value)}
-                        disabled={locked || isLoading}
+                        disabled={isDisabled}
                         type="password"
                         required
                     />
-                    <DnButton type="submit" disabled={locked} loading={isLoading}>
+                    <DnButton type="submit" disabled={isDisabled} loading={isLoading}>
                         Connexion
                     </DnButton>
                 </Stack>
-                {locked ? (
+                {errorMessage ? (
                     <Typography color="error" fontSize="small" fontStyle="italic" mt={2}>
-                        Vous avez effectué un trop grand nombre de tentatives de connexion. Par mesure de sécurité,
-                        votre accès est temporairement bloqué pendant 15 minutes.
+                        {errorMessage}
                     </Typography>
                 ) : null}
             </Layout>

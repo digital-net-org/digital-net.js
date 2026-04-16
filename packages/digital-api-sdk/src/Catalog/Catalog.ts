@@ -1,3 +1,4 @@
+import { ApplicationCatalog } from './ApplicationCatalog';
 import { AuthCatalog } from './AuthCatalog';
 import { CatalogRunner } from './CatalogRunner';
 import { UserCatalog } from './UserCatalog';
@@ -10,11 +11,13 @@ import type { CatalogCallbacks } from './types';
  */
 export class Catalog {
     private readonly http: HttpClient;
+    public readonly application: ApplicationCatalog;
     public readonly auth: AuthCatalog;
     public readonly user: UserCatalog;
 
     public constructor(http: HttpClient) {
         this.http = http;
+        this.application = new ApplicationCatalog(http);
         this.auth = new AuthCatalog(http);
         this.user = new UserCatalog(http);
     }
