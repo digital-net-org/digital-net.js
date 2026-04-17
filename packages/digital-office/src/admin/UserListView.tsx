@@ -19,6 +19,19 @@ export function UserListView() {
         <DnEntityListView<UserDto>
             {...staticProps}
             onRowClick={row => navigate(`/admin/user/${row.id}`)}
+            filters={[
+                { type: 'boolean', key: 'isactive', label: 'Actif uniquement' },
+                { type: 'like', key: 'username', label: "Nom d'utilisateur", placeholder: 'Benoit...' },
+                {
+                    type: 'select',
+                    key: 'isAdmin',
+                    label: 'Rôle',
+                    options: [
+                        { value: 'true', label: 'Administrateur' },
+                        { value: 'false', label: 'Utilisateur' },
+                    ],
+                },
+            ]}
             protectedDelete
         />
     );

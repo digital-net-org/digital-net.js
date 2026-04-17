@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Divider, Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import { type Entity } from '@digital-net-org/digital-api-sdk';
-import { DnDialogConfirmPassword, DnEntityTable } from '@digital-net-org/digital-ui';
+import { type DnFilterDefinition, DnDialogConfirmPassword, DnEntityTable } from '@digital-net-org/digital-ui';
 import { DnEntityDialogFailure } from './DnEntityDialogFailure';
 import { type EntityIdentifier } from './identifier';
 import { useEntityList } from './useEntityList';
@@ -18,6 +18,7 @@ export interface DnEntityListViewProps<T extends Entity> {
     listPath: string;
     deletePath: string;
     columns?: (keyof T)[];
+    filters?: DnFilterDefinition[];
     protectedDelete?: boolean;
     onRowClick?: (_row: T) => void;
 }
@@ -31,12 +32,24 @@ export function DnEntityListView<T extends Entity>({
     listPath,
     deletePath,
     columns,
+    filters,
     protectedDelete = false,
     onRowClick,
 }: DnEntityListViewProps<T>) {
     const schema = useEntitySchema(schemaPath);
-    const { entitiesResult, isLoading, pagination, setPagination, listQueryKey, sort, toggleSort } =
-        useEntityList<T>(listPath);
+    const {
+        entitiesResult,
+        isLoading,
+        pagination,
+        setPagination,
+        listQueryKey,
+        sort,
+        toggleSort,
+        filterValues,
+        setFilterValues,
+        resetFilters,
+        activeFilterCount,
+    } = useEntityList<T>(listPath, filters);
     const { handleDelete, passwordDialog, failureDialog } = useEntityDelete<T>({
         deletePath,
         listQueryKey,
@@ -70,6 +83,11 @@ export function DnEntityListView<T extends Entity>({
                 loading={isLoading}
                 sort={sort}
                 onSortChange={toggleSort}
+                filters={filters}
+                filterValues={filterValues}
+                onFilterChange={setFilterValues}
+                onFilterReset={resetFilters}
+                activeFilterCount={activeFilterCount}
             />
             {protectedDelete ? <DnDialogConfirmPassword {...passwordDialog} /> : null}
             <DnEntityDialogFailure

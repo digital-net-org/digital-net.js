@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { type QueryKey, useQuery } from '@tanstack/react-query';
 import { type Entity, type QueryResult } from '@digital-net-org/digital-api-sdk';
-import { type DnPaginationState } from '@digital-net-org/digital-ui';
-import { urlInt, urlString, useUrlQueryState } from '../useUrlQueryState';
+import { type DnFilterDefinition, type DnPaginationState } from '@digital-net-org/digital-ui';
+import { type UrlParam, urlInt, urlString, useUrlQueryState } from '../useUrlQueryState';
 import { useDnApi } from '../../api';
 
 export type SortDirection = 'asc' | 'desc' | '';
@@ -20,9 +20,16 @@ export interface UseEntityListResult<T extends Entity> {
     listQueryKey: QueryKey;
     sort: SortState;
     toggleSort: (_accessor: string) => void;
+    filterValues: Record<string, string>;
+    setFilterValues: (_patch: Record<string, string>) => void;
+    resetFilters: () => void;
+    activeFilterCount: number;
 }
 
-export function useEntityList<T extends Entity>(listPath: string): UseEntityListResult<T> {
+export function useEntityList<T extends Entity>(
+    listPath: string,
+    filters?: DnFilterDefinition[]
+): UseEntityListResult<T> {
     const api = useDnApi();
     const [query, setQuery] = useUrlQueryState({
         page: urlInt(1),
@@ -30,11 +37,25 @@ export function useEntityList<T extends Entity>(listPath: string): UseEntityList
         orderBy: urlString('', 'order-by'),
         order: urlString(),
     });
+
+    const filterSchema = React.useMemo(() => {
+        const s: Record<string, UrlParam<string>> = {};
+        for (const f of filters ?? []) s[f.key] = urlString();
+        return s;
+    }, [filters]);
+    const [filterValues, setFilterValues] = useUrlQueryState(filterSchema);
+
     const urlPage = React.useMemo(() => Math.max(0, query.page - 1), [query.page]);
     const listQueryKey = React.useMemo<QueryKey>(() => ['dn-entity-list', listPath], [listPath]);
 
+    const activeFilters = React.useMemo(() => {
+        const out: Record<string, string> = {};
+        for (const [k, v] of Object.entries(filterValues)) if (v !== '') out[k] = v;
+        return out;
+    }, [filterValues]);
+
     const { data: entitiesResult, isLoading } = useQuery<QueryResult<T>>({
-        queryKey: [...listQueryKey, urlPage, query.row, query.orderBy, query.order],
+        queryKey: [...listQueryKey, urlPage, query.row, query.orderBy, query.order, activeFilters],
         queryFn: async () => {
             const result = await api.http.request<QueryResult<T>>({
                 path: listPath,
@@ -42,6 +63,7 @@ export function useEntityList<T extends Entity>(listPath: string): UseEntityList
                     index: urlPage + 1,
                     size: query.row,
                     ...(query.orderBy ? { 'order-by': query.orderBy, order: query.order || 'asc' } : {}),
+                    ...activeFilters,
                 },
             });
             return result.data;
@@ -80,5 +102,25 @@ export function useEntityList<T extends Entity>(listPath: string): UseEntityList
         [query.orderBy, query.order, setQuery]
     );
 
-    return { entitiesResult, isLoading, pagination, setPagination, listQueryKey, sort, toggleSort };
+    const resetFilters = React.useCallback(() => {
+        const cleared: Record<string, string> = {};
+        for (const key in filterSchema) cleared[key] = '';
+        setFilterValues(cleared);
+    }, [filterSchema, setFilterValues]);
+
+    const activeFilterCount = React.useMemo(() => Object.keys(activeFilters).length, [activeFilters]);
+
+    return {
+        entitiesResult,
+        isLoading,
+        pagination,
+        setPagination,
+        listQueryKey,
+        sort,
+        toggleSort,
+        filterValues,
+        setFilterValues,
+        resetFilters,
+        activeFilterCount,
+    };
 }

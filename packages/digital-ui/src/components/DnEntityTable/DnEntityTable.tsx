@@ -32,6 +32,11 @@ export interface DnSortState {
     order: 'asc' | 'desc' | '';
 }
 
+export type DnFilterDefinition =
+    | { type: 'boolean'; key: string; label: string }
+    | { type: 'like'; key: string; label: string; placeholder?: string }
+    | { type: 'select'; key: string; label: string; options: { value: string; label: string }[] };
+
 export interface DnEntityTableProps<T extends Entity> {
     schema: SchemaProperty[];
     rows: T[];
@@ -43,6 +48,11 @@ export interface DnEntityTableProps<T extends Entity> {
     loading?: boolean;
     sort?: DnSortState;
     onSortChange?: (accessor: string) => void;
+    filters?: DnFilterDefinition[];
+    filterValues?: Record<string, string>;
+    onFilterChange?: (patch: Record<string, string>) => void;
+    onFilterReset?: () => void;
+    activeFilterCount?: number;
 }
 
 export function DnEntityTable<T extends Entity>({
@@ -56,6 +66,11 @@ export function DnEntityTable<T extends Entity>({
     loading,
     sort,
     onSortChange,
+    filters,
+    filterValues,
+    onFilterChange,
+    onFilterReset,
+    activeFilterCount,
 }: DnEntityTableProps<T>) {
     const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
     const [deleting, setDeleting] = React.useState(false);
@@ -136,6 +151,11 @@ export function DnEntityTable<T extends Entity>({
                     selectedCount={selectedIds.size}
                     onDelete={() => setConfirmOpen(true)}
                     loading={isLoading}
+                    filters={filters}
+                    filterValues={filterValues}
+                    onFilterChange={onFilterChange}
+                    onFilterReset={onFilterReset}
+                    activeFilterCount={activeFilterCount}
                 />
             </ActionBar>
             <TableContainer>

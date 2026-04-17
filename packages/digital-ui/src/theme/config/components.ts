@@ -29,4 +29,23 @@ export const components: ThemeOptions['components'] = {
             color: 'default',
         },
     },
+    MuiSelect: {
+        defaultProps: {
+            size: 'small',
+        },
+        styleOverrides: {
+            select: ({ theme }) => ({
+                padding: '0.25rem 2rem 0.25rem 0.5rem',
+                fontSize: theme.typography.button.fontSize,
+                minHeight: 'unset',
+            }),
+        },
+    },
+    MuiMenuItem: {
+        styleOverrides: {
+            root: ({ theme }) => ({
+                fontSize: theme.typography.button.fontSize,
+            }),
+        },
+    },
 };
