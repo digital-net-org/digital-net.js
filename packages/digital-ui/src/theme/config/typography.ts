@@ -9,5 +9,6 @@ export const typography: TypographyVariantsOptions = {
     fontSize: 14,
     h2: {
         fontSize: 28,
+        fontWeight: 'normal',
     },
 };

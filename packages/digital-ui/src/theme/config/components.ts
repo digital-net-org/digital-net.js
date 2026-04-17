@@ -26,6 +26,7 @@ export const components: ThemeOptions['components'] = {
         defaultProps: {
             disableRipple: true,
             size: 'small',
+            color: 'default',
         },
     },
 };

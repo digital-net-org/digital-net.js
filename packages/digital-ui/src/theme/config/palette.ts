@@ -1,6 +1,7 @@
 import { type PaletteOptions } from '@mui/material/styles';
 
-const basePalette: PaletteOptions = {
+export const lightPalette: PaletteOptions = {
+    mode: 'light',
     primary: {
         main: '#004aad',
         light: '#2c6fc7',
@@ -9,11 +10,6 @@ const basePalette: PaletteOptions = {
         main: '#b62929',
         light: '#c74545',
     },
-};
-
-export const lightPalette: PaletteOptions = {
-    ...basePalette,
-    mode: 'light',
     background: {
         default: '#f0f0f0',
         paper: '#fcfcfc',
@@ -27,8 +23,15 @@ export const lightPalette: PaletteOptions = {
 };
 
 export const darkPalette: PaletteOptions = {
-    ...basePalette,
     mode: 'dark',
+    primary: {
+        main: '#2f69b2',
+        light: '#6191cf',
+    },
+    error: {
+        main: '#c14141',
+        light: '#c85959',
+    },
     background: {
         default: '#181818',
         paper: '#222222',
