@@ -6,16 +6,53 @@ import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 export interface DnCollapsibleBlockProps extends StackProps {
     label?: React.ReactNode;
     children?: React.ReactNode;
+    /** Persist open/closed state in localStorage under this key. */
+    storageKey?: string;
+    /** Initial state used when no persisted value is found. Defaults to false (closed). */
+    defaultOpen?: boolean;
 }
 
-export function DnCollapsibleBlock({ children, label, ...stackProps }: DnCollapsibleBlockProps) {
-    const [collapsed, setCollapsed] = React.useState<boolean>(false);
+function readStored(key: string | undefined, fallback: boolean): boolean {
+    if (!key || typeof window === 'undefined') return fallback;
+    try {
+        const raw = window.localStorage.getItem(key);
+        return raw === null ? fallback : raw === 'true';
+    } catch {
+        return fallback;
+    }
+}
+
+function writeStored(key: string | undefined, value: boolean) {
+    if (!key || typeof window === 'undefined') return;
+    try {
+        window.localStorage.setItem(key, String(value));
+    } catch {
+        /* noop */
+    }
+}
+
+export function DnCollapsibleBlock({
+    children,
+    label,
+    storageKey,
+    defaultOpen = false,
+    ...stackProps
+}: DnCollapsibleBlockProps) {
+    const [open, setOpen] = React.useState<boolean>(() => readStored(storageKey, defaultOpen));
+
+    const toggle = React.useCallback(() => {
+        setOpen(prev => {
+            const next = !prev;
+            writeStored(storageKey, next);
+            return next;
+        });
+    }, [storageKey]);
 
     return (
         <Stack {...stackProps}>
             <Stack
                 component="button"
-                onClick={() => setCollapsed(!collapsed)}
+                onClick={toggle}
                 sx={{
                     width: '100%',
                     display: 'flex',
@@ -29,9 +66,9 @@ export function DnCollapsibleBlock({ children, label, ...stackProps }: DnCollaps
                 }}
             >
                 {label}
-                <ExpandMore expand={collapsed} />
+                <ExpandMore expand={open} />
             </Stack>
-            <Collapse in={collapsed} timeout="auto" unmountOnExit>
+            <Collapse in={open} timeout="auto" unmountOnExit>
                 {children}
             </Collapse>
         </Stack>

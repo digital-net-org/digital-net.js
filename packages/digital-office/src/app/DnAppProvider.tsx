@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+const DRAWER_STORAGE_KEY = 'DN_DRAWER_OPEN';
+
 export interface DnAppContextValue {
     /** The navigation panel drawer state **/
     isDrawerOpen: boolean;
@@ -18,9 +20,35 @@ export interface DnAppProviderProps {
     children: React.ReactNode;
 }
 
+function readDrawerOpen(): boolean {
+    try {
+        return window.localStorage.getItem(DRAWER_STORAGE_KEY) === 'true';
+    } catch {
+        return false;
+    }
+}
+
+function writeDrawerOpen(value: boolean) {
+    try {
+        window.localStorage.setItem(DRAWER_STORAGE_KEY, String(value));
+    } catch {}
+}
+
 export function DnAppProvider({ children, appLogo }: DnAppProviderProps) {
-    const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-    const toggleDrawer = React.useCallback(() => setIsDrawerOpen(!isDrawerOpen), [isDrawerOpen]);
+    const [isDrawerOpen, setIsDrawerOpenState] = React.useState<boolean>(readDrawerOpen);
+
+    const setIsDrawerOpen = React.useCallback((next: boolean) => {
+        setIsDrawerOpenState(next);
+        writeDrawerOpen(next);
+    }, []);
+
+    const toggleDrawer = React.useCallback(() => {
+        setIsDrawerOpenState(prev => {
+            const next = !prev;
+            writeDrawerOpen(next);
+            return next;
+        });
+    }, []);
 
     return (
         <DnAppContext.Provider

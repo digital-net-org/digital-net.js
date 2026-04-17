@@ -21,7 +21,7 @@ export function DnAppLayoutNav({ navigation }: DnAppLayoutNavProps) {
         <Container>
             {Object.entries(navigation).map(([key, items]) => (
                 <React.Fragment key={key}>
-                    <DnCollapsibleBlock label={<MenuLabel>{key}</MenuLabel>}>
+                    <DnCollapsibleBlock label={<MenuLabel>{key}</MenuLabel>} storageKey={`DN_NAV_GROUP_${key}`}>
                         <MenuList>
                             {items.map(({ label, path }) => {
                                 const current = checkIsCurrent(path);
