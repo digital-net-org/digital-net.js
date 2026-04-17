@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import type { UserDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityListView, type DnEntityListViewProps } from '../components';
+import { DnEntityListView, type DnEntityListViewProps } from '../views';
 
 const staticProps: DnEntityListViewProps<UserDto> = {
     title: 'Gestion des utilisateurs du back-office.',

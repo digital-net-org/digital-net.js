@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { css, styled } from '@mui/material/styles';
-import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { CircularProgress, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 
 interface DnEntityTableToolbarProps {
@@ -16,14 +16,17 @@ export function DnEntityTableToolbar({ selectedCount, onDelete, loading }: DnEnt
             <Typography variant="body2" color={selectedCount > 0 ? 'textPrimary' : 'textDisabled'} fontSize="small">
                 {selectedCount} selected
             </Typography>
-            <Tooltip
-                title={disabled ? '' : `Supprimer ${selectedCount} élément${selectedCount > 1 ? 's' : ''}`}
-                placement="bottom-start"
-            >
-                <IconButton onClick={onDelete} disabled={disabled} color="inherit" size="small">
-                    <DeleteIcon />
-                </IconButton>
-            </Tooltip>
+            <Stack direction="row" alignItems="center" gap={1}>
+                {loading ? <CircularProgress size={18} /> : null}
+                <Tooltip
+                    title={disabled ? '' : `Supprimer ${selectedCount} élément${selectedCount > 1 ? 's' : ''}`}
+                    placement="bottom-start"
+                >
+                    <IconButton onClick={onDelete} disabled={disabled} color="inherit" size="small">
+                        <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
+            </Stack>
         </ToolbarRoot>
     );
 }

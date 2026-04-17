@@ -7,6 +7,7 @@ import { DnDialog, DnDialogConfirmPassword, DnEntityTable, type DnPaginationStat
 import { ArrayBuilder } from '@digital-net-org/digital-core';
 import { useDnApi } from '../../api';
 import { useDnToast } from '../../app';
+import { urlInt, useUrlQueryState } from '../useUrlQueryState';
 import { DnEntityFailureDialogContent } from './DnEntityFailureDialogContent';
 import { type EntityIdentifier, resolveDeleteLabel } from './identifier';
 
@@ -48,11 +49,9 @@ export function DnEntityListView<T extends Entity>({
     const queryClient = useQueryClient();
     const { showToast } = useDnToast();
 
-    const [pagination, setPagination] = React.useState<DnPaginationState>({
-        page: 0,
-        rowsPerPage: 25,
-        totalRows: 0,
-    });
+    const [query, setQuery] = useUrlQueryState({ page: urlInt(1), row: urlInt(25) });
+    const urlPage = Math.max(0, query.page - 1);
+    const urlRowsPerPage = query.row;
 
     const [passwordDialogOpen, setPasswordDialogOpen] = React.useState(false);
     const [passwordError, setPasswordError] = React.useState(false);
@@ -79,19 +78,28 @@ export function DnEntityListView<T extends Entity>({
     });
 
     const { data: entitiesResult, isLoading } = useQuery<QueryResult<T>>({
-        queryKey: [...listQueryKey, pagination.page, pagination.rowsPerPage],
+        queryKey: [...listQueryKey, urlPage, urlRowsPerPage],
         queryFn: async () => {
             const result = await api.http.request<QueryResult<T>>({
                 path: listPath,
-                params: { index: pagination.page + 1, size: pagination.rowsPerPage },
+                params: { index: urlPage + 1, size: urlRowsPerPage },
             });
             return result.data;
         },
     });
 
-    React.useEffect(
-        () => (entitiesResult ? setPagination(prev => ({ ...prev, totalRows: entitiesResult.total })) : void 0),
-        [entitiesResult]
+    const pagination = React.useMemo<DnPaginationState>(
+        () => ({
+            page: urlPage,
+            rowsPerPage: urlRowsPerPage,
+            totalRows: entitiesResult?.total ?? 0,
+        }),
+        [urlPage, urlRowsPerPage, entitiesResult]
+    );
+
+    const setPagination = React.useCallback(
+        (next: DnPaginationState) => setQuery({ page: next.page + 1, row: next.rowsPerPage }),
+        [setQuery]
     );
 
     const buildTargets = React.useCallback(
