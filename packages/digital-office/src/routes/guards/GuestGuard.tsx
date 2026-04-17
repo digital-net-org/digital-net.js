@@ -8,7 +8,8 @@ export interface GuestGuardProps {
 }
 
 export function GuestGuard({ children }: GuestGuardProps) {
-    const { isLogged } = useDnUser();
+    const { isLogged, isLoading } = useDnUser();
+    if (isLoading) return null;
     if (isLogged) {
         return <Navigate to={ROUTER_HOME_PAGE} replace />;
     }

@@ -8,7 +8,8 @@ export interface AdminGuardProps {
 }
 
 export function AdminGuard({ children }: AdminGuardProps) {
-    const { isLogged, isAdmin } = useDnUser();
+    const { isLogged, isAdmin, isLoading } = useDnUser();
+    if (isLoading) return null;
 
     if (!isLogged) {
         return <Navigate to={ROUTER_LOGIN_PAGE} replace />;

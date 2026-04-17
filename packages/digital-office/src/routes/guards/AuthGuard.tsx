@@ -8,7 +8,8 @@ export interface AuthGuardProps {
 }
 
 export function AuthGuard({ children }: AuthGuardProps) {
-    const { isLogged } = useDnUser();
+    const { isLogged, isLoading } = useDnUser();
+    if (isLoading) return null;
     if (!isLogged) {
         return <Navigate to={ROUTER_LOGIN_PAGE} replace />;
     }
