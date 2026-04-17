@@ -14,6 +14,7 @@ import { type EntityIdentifier } from './identifier';
 import { useEntityList } from './useEntityList';
 import { useEntitySchema } from './useEntitySchema';
 import { useEntityDelete } from './useEntityDelete';
+import { DnView } from '../DnView';
 
 const defaultRenderCell: DnRenderCell<Entity> = (col, value) => {
     if (col.schema.type === 'Boolean') return value ? 'Oui' : 'Non';
@@ -22,7 +23,7 @@ const defaultRenderCell: DnRenderCell<Entity> = (col, value) => {
 
 export interface DnEntityListViewProps<T extends Entity> {
     title: string;
-    description?: string;
+    description: string;
     identifier: EntityIdentifier;
     identifierAccessor: keyof T;
     schemaPath: string;
@@ -73,16 +74,7 @@ export function DnEntityListView<T extends Entity>({
     const handleRowClick = React.useCallback((row: T) => (onRowClick ? onRowClick(row) : void 0), [onRowClick]);
 
     return (
-        <View>
-            <Stack pb={2}>
-                <Typography variant="h2">{title}</Typography>
-                {description ? (
-                    <Typography variant="body2" ml={0.35} mt={1}>
-                        {description}
-                    </Typography>
-                ) : null}
-            </Stack>
-            <Divider />
+        <DnView title={title} description={description}>
             <DnEntityTable
                 schema={schema}
                 rows={entitiesResult?.value ?? []}
@@ -109,14 +101,6 @@ export function DnEntityListView<T extends Entity>({
                 onClose={failureDialog.close}
                 onConfirm={failureDialog.close}
             />
-        </View>
+        </DnView>
     );
 }
-
-const View = styled(Stack)(
-    () => css`
-        width: 100%;
-        height: 100%;
-        overflow-y: hidden;
-    `
-);

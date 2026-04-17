@@ -54,7 +54,7 @@ export function DnUserProvider({ children }: DnUserProviderProps) {
         enabled: hasToken,
     });
 
-    const { data: isAdminData } = useQuery<boolean>({
+    const { data: isAdminData, isLoading: isAdminQueryLoading } = useQuery<boolean>({
         queryKey: [...USER_QUERY_KEY, 'is-admin'],
         queryFn: async () => {
             const result = await api.catalog.user.isSelfAdmin();
@@ -75,8 +75,9 @@ export function DnUserProvider({ children }: DnUserProviderProps) {
     const isLogged = React.useMemo<boolean>(() => hasToken && userData != null, [userData, hasToken]);
     const isAdmin = React.useMemo<boolean>(() => isLogged && isAdminData === true, [isLogged, isAdminData]);
     const isLoading = React.useMemo<boolean>(
-        () => (hasToken && isQueryLoading) || isLogoutLoading,
-        [hasToken, isLogoutLoading, isQueryLoading]
+        () =>
+            (hasToken && (isQueryLoading || (userData != null && isAdminQueryLoading))) || isLogoutLoading,
+        [hasToken, isLogoutLoading, isQueryLoading, userData, isAdminQueryLoading]
     );
     const user = React.useMemo(() => (isLogged ? userData : null), [isLogged, userData]);
 

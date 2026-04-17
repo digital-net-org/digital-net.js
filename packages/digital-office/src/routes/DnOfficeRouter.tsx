@@ -11,14 +11,17 @@ export interface DnOfficeRouterProps {
 }
 
 export function DnOfficeRouter({ routes }: DnOfficeRouterProps) {
-    const { isAdmin } = useDnUser();
+    const { isAdmin, isLoading } = useDnUser();
 
     const resolvedRoutes = React.useMemo<DigitalOfficeRoute[]>(
         () => [...APP_ROUTES, ...ADMIN_ROUTES, ...(routes ?? [])],
         [routes]
     );
 
-    const routePatterns = React.useMemo(() => resolvedRoutes.map(r => r.path), [resolvedRoutes]);
+    const routePatterns = React.useMemo(
+        () => resolvedRoutes.map(r => r.path).filter(p => !p.includes('*')),
+        [resolvedRoutes]
+    );
 
     const resolvedNavigation = React.useMemo(
         () => ({
@@ -36,6 +39,8 @@ export function DnOfficeRouter({ routes }: DnOfficeRouterProps) {
         }),
         [resolvedRoutes, isAdmin]
     );
+
+    if (isLoading) return null;
 
     return (
         <DnAppLayout navigation={resolvedNavigation} routePatterns={routePatterns}>
