@@ -12,6 +12,7 @@ import {
     TableHead as MuiTableHead,
     TablePagination as MuiTablePagination,
     TableRow as MuiTableRow,
+    TableSortLabel,
     Typography,
 } from '@mui/material';
 import type { Entity, SchemaProperty } from '@digital-net-org/digital-api-sdk';
@@ -26,6 +27,11 @@ export interface DnPaginationState {
     totalRows: number;
 }
 
+export interface DnSortState {
+    orderBy: string;
+    order: 'asc' | 'desc' | '';
+}
+
 export interface DnEntityTableProps<T extends Entity> {
     schema: SchemaProperty[];
     rows: T[];
@@ -35,6 +41,8 @@ export interface DnEntityTableProps<T extends Entity> {
     onRowClick: (row: T) => void | Promise<void>;
     onDelete: (id: Set<string>) => boolean | void | Promise<boolean | void>;
     loading?: boolean;
+    sort?: DnSortState;
+    onSortChange?: (accessor: string) => void;
 }
 
 export function DnEntityTable<T extends Entity>({
@@ -46,6 +54,8 @@ export function DnEntityTable<T extends Entity>({
     onRowClick,
     onDelete,
     loading,
+    sort,
+    onSortChange,
 }: DnEntityTableProps<T>) {
     const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
     const [deleting, setDeleting] = React.useState(false);
@@ -125,7 +135,7 @@ export function DnEntityTable<T extends Entity>({
                 <DnEntityTableToolbar
                     selectedCount={selectedIds.size}
                     onDelete={() => setConfirmOpen(true)}
-                    loading={deleting}
+                    loading={isLoading}
                 />
             </ActionBar>
             <TableContainer>
@@ -140,9 +150,24 @@ export function DnEntityTable<T extends Entity>({
                                     disabled={isLoading}
                                 />
                             </TableHeadCell>
-                            {resolvedColumns.map(col => (
-                                <TableHeadCell key={col.accessor}>{col.header}</TableHeadCell>
-                            ))}
+                            {resolvedColumns.map(col => {
+                                const isActive = sort?.orderBy === col.accessor && sort.order !== '';
+                                return (
+                                    <TableHeadCell key={col.accessor}>
+                                        {onSortChange ? (
+                                            <TableSortLabel
+                                                active={isActive}
+                                                direction={isActive ? (sort!.order as 'asc' | 'desc') : 'desc'}
+                                                onClick={() => onSortChange(col.accessor)}
+                                            >
+                                                {col.header}
+                                            </TableSortLabel>
+                                        ) : (
+                                            col.header
+                                        )}
+                                    </TableHeadCell>
+                                );
+                            })}
                         </TableRow>
                     </TableHead>
                     <TableBody>

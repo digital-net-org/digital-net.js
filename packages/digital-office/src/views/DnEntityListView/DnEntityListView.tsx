@@ -35,7 +35,8 @@ export function DnEntityListView<T extends Entity>({
     onRowClick,
 }: DnEntityListViewProps<T>) {
     const schema = useEntitySchema(schemaPath);
-    const { entitiesResult, isLoading, pagination, setPagination, listQueryKey } = useEntityList<T>(listPath);
+    const { entitiesResult, isLoading, pagination, setPagination, listQueryKey, sort, toggleSort } =
+        useEntityList<T>(listPath);
     const { handleDelete, passwordDialog, failureDialog } = useEntityDelete<T>({
         deletePath,
         listQueryKey,
@@ -67,6 +68,8 @@ export function DnEntityListView<T extends Entity>({
                 onRowClick={handleRowClick}
                 onDelete={handleDelete}
                 loading={isLoading}
+                sort={sort}
+                onSortChange={toggleSort}
             />
             {protectedDelete ? <DnDialogConfirmPassword {...passwordDialog} /> : null}
             <DnEntityDialogFailure
