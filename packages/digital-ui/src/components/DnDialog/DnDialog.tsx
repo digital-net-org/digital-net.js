@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Dialog as MuiDialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { styled, css } from '@mui/material/styles';
 import { DnButton } from '../DnButton';
 
 export interface DnDialogProps {
@@ -36,7 +37,7 @@ export function DnDialog({
     );
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="xs">
+        <Dialog open={open} onClose={onClose} role="alertdialog" maxWidth="xs">
             <form onSubmit={handleConfirm}>
                 {title ? <DialogTitle>{title}</DialogTitle> : null}
                 <DialogContent>
@@ -56,3 +57,12 @@ export function DnDialog({
         </Dialog>
     );
 }
+
+const Dialog = styled(MuiDialog)(
+    () => css`
+        & .MuiDialog-container {
+            margin-top: 15vh;
+            align-items: start;
+        }
+    `
+);
