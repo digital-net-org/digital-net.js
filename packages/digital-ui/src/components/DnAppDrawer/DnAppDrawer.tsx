@@ -15,7 +15,7 @@ export function DnAppDrawer({ open, children }: DnAppDrawerProps) {
 }
 
 const drawerTransition = '225ms ease-in-out';
-const drawerWidth = '240px';
+const drawerWidth = '300px';
 
 const Drawer = styled(MuiDrawer)(
     ({ open, theme }) => css`

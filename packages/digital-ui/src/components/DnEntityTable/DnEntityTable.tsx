@@ -199,9 +199,9 @@ export function DnEntityTable<T extends Entity>({
                     <TableBody>
                         {rows.length === 0 && !isLoading ? (
                             <TableRow>
-                                <TableBodyCell colSpan={colSpan} align="center">
-                                    <Typography variant="body2" color="text.secondary">
-                                        No data
+                                <TableBodyCell colSpan={colSpan} align="center" height={100}>
+                                    <Typography color="text.secondary" fontStyle="italic">
+                                        Aucune donnée
                                     </Typography>
                                 </TableBodyCell>
                             </TableRow>
@@ -294,6 +294,10 @@ const TableBodyCell = styled(MuiTableCell)(
         padding: 0 0.25rem;
         letter-spacing: 0.02rem;
         border: none;
+        max-width: 1px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     `
 );
 

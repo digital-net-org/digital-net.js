@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router';
 import { AdminGuard, AuthGuard, GuestGuard } from './guards';
 import { DnAppLayout } from '../app';
 import { useDnUser } from '../user';
-import { APP_ROUTES, ADMIN_ROUTES } from './routes';
+import { APP_ROUTES, ADMIN_ROUTES, CMS_ROUTES } from './routes';
 import type { DigitalOfficeRoute } from './types';
 
 export interface DnOfficeRouterProps {
@@ -14,7 +14,7 @@ export function DnOfficeRouter({ routes }: DnOfficeRouterProps) {
     const { isAdmin, isLoading } = useDnUser();
 
     const resolvedRoutes = React.useMemo<DigitalOfficeRoute[]>(
-        () => [...APP_ROUTES, ...ADMIN_ROUTES, ...(routes ?? [])],
+        () => [...APP_ROUTES, ...ADMIN_ROUTES, ...CMS_ROUTES, ...(routes ?? [])],
         [routes]
     );
 

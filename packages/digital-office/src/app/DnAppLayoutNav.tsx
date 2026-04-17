@@ -55,9 +55,11 @@ const Container = styled(Stack)(
 const MenuLabel = styled(Typography)(
     () => css`
         padding: 0.5rem 0.1rem 0;
-        letter-spacing: 0.035rem;
+        letter-spacing: 0.025rem;
         font-weight: 500;
+        font-size: 0.9rem;
         text-transform: uppercase;
+        text-wrap: nowrap;
         user-select: none;
     `
 );
@@ -72,6 +74,7 @@ const MenuItem = styled(MuiMenuItem)(
     ({ theme }) => css`
         padding: 0.25rem 0.5rem;
         border-radius: ${theme.shape.borderRadius};
+        font-size: 0.9rem;
         &.Mui-selected,
         &.Mui-selected:hover {
             cursor: default;
