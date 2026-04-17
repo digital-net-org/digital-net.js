@@ -17,8 +17,12 @@ import {
 } from '@mui/material';
 import type { Entity, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { DnEntityTableToolbar } from './DnEntityTableToolbar';
-import { resolveColumns } from './resolveColumns';
+import { type DnColumnDefinition, type ResolvedColumn, resolveColumns } from './resolveColumns';
 import { DnDialog } from '../DnDialog';
+
+export type { DnColumnDefinition, ResolvedColumn };
+
+export type DnRenderCell<T> = (col: ResolvedColumn, value: unknown, row: T) => React.ReactNode;
 
 export interface DnPaginationState {
     /** 0-based page index (MUI TablePagination convention). API `QueryResult.index` is 1-based. */
@@ -40,7 +44,8 @@ export type DnFilterDefinition =
 export interface DnEntityTableProps<T extends Entity> {
     schema: SchemaProperty[];
     rows: T[];
-    columns?: (keyof T)[];
+    columns?: DnColumnDefinition<T>[];
+    renderCell?: DnRenderCell<T>;
     pagination: DnPaginationState;
     onPaginationChange: (pagination: DnPaginationState) => void;
     onRowClick: (row: T) => void | Promise<void>;
@@ -59,6 +64,7 @@ export function DnEntityTable<T extends Entity>({
     schema,
     rows,
     columns,
+    renderCell,
     pagination,
     onPaginationChange,
     onRowClick,
@@ -212,11 +218,14 @@ export function DnEntityTable<T extends Entity>({
                                                 size="small"
                                             />
                                         </TableBodyCell>
-                                        {resolvedColumns.map(col => (
-                                            <TableBodyCell key={col.accessor}>
-                                                {String((row as Record<string, unknown>)[col.accessor] ?? '')}
-                                            </TableBodyCell>
-                                        ))}
+                                        {resolvedColumns.map(col => {
+                                            const value = (row as Record<string, unknown>)[col.accessor];
+                                            return (
+                                                <TableBodyCell key={col.accessor}>
+                                                    {renderCell ? renderCell(col, value, row) : String(value ?? '')}
+                                                </TableBodyCell>
+                                            );
+                                        })}
                                     </TableRow>
                                 );
                             })

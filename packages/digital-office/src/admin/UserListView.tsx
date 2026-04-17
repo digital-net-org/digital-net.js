@@ -7,10 +7,28 @@ const staticProps: DnEntityListViewProps<UserDto> = {
     description: 'Créez, modifiez ou supprimez des utilisateurs et gérez leurs accès.',
     identifier: { singular: 'utilisateur', plural: 'utilisateurs', gender: 'm' },
     identifierAccessor: 'username',
-    columns: ['username', 'email', 'isActive', 'isAdmin'],
+    columns: [
+        { key: 'username', label: "Nom d'utilisateur" },
+        { key: 'email', label: 'E-mail' },
+        { key: 'isActive', label: 'Actif' },
+        { key: 'isAdmin', label: 'Administrateur' },
+    ],
     schemaPath: 'user',
     listPath: 'admin/user',
     deletePath: 'admin/user/:id',
+    filters: [
+        { type: 'boolean', key: 'isactive', label: 'Actif uniquement' },
+        { type: 'like', key: 'username', label: "Nom d'utilisateur", placeholder: 'Benoit...' },
+        {
+            type: 'select',
+            key: 'isAdmin',
+            label: 'Rôle',
+            options: [
+                { value: 'true', label: 'Administrateur' },
+                { value: 'false', label: 'Utilisateur' },
+            ],
+        },
+    ],
 };
 
 export function UserListView() {
@@ -19,19 +37,6 @@ export function UserListView() {
         <DnEntityListView<UserDto>
             {...staticProps}
             onRowClick={row => navigate(`/admin/user/${row.id}`)}
-            filters={[
-                { type: 'boolean', key: 'isactive', label: 'Actif uniquement' },
-                { type: 'like', key: 'username', label: "Nom d'utilisateur", placeholder: 'Benoit...' },
-                {
-                    type: 'select',
-                    key: 'isAdmin',
-                    label: 'Rôle',
-                    options: [
-                        { value: 'true', label: 'Administrateur' },
-                        { value: 'false', label: 'Utilisateur' },
-                    ],
-                },
-            ]}
             protectedDelete
         />
     );

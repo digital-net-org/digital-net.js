@@ -2,12 +2,23 @@ import * as React from 'react';
 import { Divider, Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import { type Entity } from '@digital-net-org/digital-api-sdk';
-import { type DnFilterDefinition, DnDialogConfirmPassword, DnEntityTable } from '@digital-net-org/digital-ui';
+import {
+    type DnColumnDefinition,
+    type DnFilterDefinition,
+    type DnRenderCell,
+    DnDialogConfirmPassword,
+    DnEntityTable,
+} from '@digital-net-org/digital-ui';
 import { DnEntityDialogFailure } from './DnEntityDialogFailure';
 import { type EntityIdentifier } from './identifier';
 import { useEntityList } from './useEntityList';
 import { useEntitySchema } from './useEntitySchema';
 import { useEntityDelete } from './useEntityDelete';
+
+const defaultRenderCell: DnRenderCell<Entity> = (col, value) => {
+    if (col.schema.type === 'Boolean') return value ? 'Oui' : 'Non';
+    return String(value ?? '');
+};
 
 export interface DnEntityListViewProps<T extends Entity> {
     title: string;
@@ -17,7 +28,7 @@ export interface DnEntityListViewProps<T extends Entity> {
     schemaPath: string;
     listPath: string;
     deletePath: string;
-    columns?: (keyof T)[];
+    columns?: DnColumnDefinition<T>[];
     filters?: DnFilterDefinition[];
     protectedDelete?: boolean;
     onRowClick?: (_row: T) => void;
@@ -76,6 +87,7 @@ export function DnEntityListView<T extends Entity>({
                 schema={schema}
                 rows={entitiesResult?.value ?? []}
                 columns={columns}
+                renderCell={defaultRenderCell as DnRenderCell<T>}
                 pagination={pagination}
                 onPaginationChange={setPagination}
                 onRowClick={handleRowClick}

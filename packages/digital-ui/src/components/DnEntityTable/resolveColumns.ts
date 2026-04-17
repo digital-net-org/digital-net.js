@@ -1,5 +1,10 @@
 import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
 
+export interface DnColumnDefinition<T> {
+    key: keyof T;
+    label?: string;
+}
+
 export interface ResolvedColumn {
     header: string;
     accessor: string;
@@ -8,18 +13,24 @@ export interface ResolvedColumn {
 
 export function resolveColumns<T>(
     schema: SchemaProperty[],
-    columns?: (keyof T)[],
+    columns?: DnColumnDefinition<T>[],
 ): ResolvedColumn[] {
-    const resolved = schema
-        .filter((prop) => !prop.isSecret && !prop.isIdentity)
-        .map((prop) => ({
+    const base = schema
+        .filter(prop => !prop.isSecret && !prop.isIdentity)
+        .map(prop => ({
             header: prop.name,
             accessor: prop.path.charAt(0).toLowerCase() + prop.path.slice(1),
             schema: prop,
         }));
 
-    if (!columns || columns.length === 0) return resolved;
+    if (!columns || columns.length === 0) return base;
 
-    const allowed = new Set(columns.map(String));
-    return resolved.filter((col) => allowed.has(col.accessor));
+    const byAccessor = new Map(base.map(c => [c.accessor, c]));
+    return columns
+        .map(def => {
+            const col = byAccessor.get(String(def.key));
+            if (!col) return null;
+            return { ...col, header: def.label ?? col.header };
+        })
+        .filter((c): c is ResolvedColumn => c !== null);
 }
