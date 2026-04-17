@@ -18,6 +18,8 @@ export function DnOfficeRouter({ routes }: DnOfficeRouterProps) {
         [routes]
     );
 
+    const routePatterns = React.useMemo(() => resolvedRoutes.map(r => r.path), [resolvedRoutes]);
+
     const resolvedNavigation = React.useMemo(
         () => ({
             ...resolvedRoutes
@@ -36,7 +38,7 @@ export function DnOfficeRouter({ routes }: DnOfficeRouterProps) {
     );
 
     return (
-        <DnAppLayout navigation={resolvedNavigation}>
+        <DnAppLayout navigation={resolvedNavigation} routePatterns={routePatterns}>
             <Routes>
                 {resolvedRoutes.map(({ element, isPublic, isAdmin: admin, path }) => {
                     let guarded: React.ReactNode;

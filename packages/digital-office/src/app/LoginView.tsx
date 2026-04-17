@@ -94,7 +94,7 @@ export function LoginView() {
                     <DnInput
                         label="Mot de passe"
                         name="password"
-                        inputProps={{ maxLength: 256, autocomplete: 'off' }}
+                        inputProps={{ maxLength: 256, autoComplete: 'off' }}
                         value={passwordInput}
                         onChange={e => setPasswordInput(e.target.value)}
                         disabled={isDisabled}

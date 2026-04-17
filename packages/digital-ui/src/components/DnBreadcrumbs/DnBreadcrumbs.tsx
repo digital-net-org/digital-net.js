@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { css, styled } from '@mui/material/styles';
-import { Box, Typography, Link, Breadcrumbs, IconButton } from '@mui/material';
+import { Typography, Link, Breadcrumbs, IconButton } from '@mui/material';
 import { Home as HomeIcon } from '@mui/icons-material';
 
 export interface BreadcrumbEntry {
@@ -13,6 +13,7 @@ export interface DnBreadcrumbsProps {
     labels?: Record<string, string>;
     onClick?: (path: string) => void;
     onHomeClick?: () => void;
+    isPathClickable?: (path: string) => boolean;
 }
 
 function parseBreadcrumbs(url: string): BreadcrumbEntry[] {
@@ -23,7 +24,7 @@ function parseBreadcrumbs(url: string): BreadcrumbEntry[] {
     }));
 }
 
-export function DnBreadcrumbs({ url, labels, onClick, onHomeClick }: DnBreadcrumbsProps) {
+export function DnBreadcrumbs({ url, labels, onClick, onHomeClick, isPathClickable }: DnBreadcrumbsProps) {
     const entries = React.useMemo(() => parseBreadcrumbs(url ?? ''), [url]);
 
     return (
@@ -31,17 +32,23 @@ export function DnBreadcrumbs({ url, labels, onClick, onHomeClick }: DnBreadcrum
             <IconButton size="small" color="inherit" onClick={onHomeClick}>
                 <HomeIcon fontSize="small" />
             </IconButton>
-            {entries.map((entry, i) =>
-                i < entries.length - 1 ? (
+            {entries.map((entry, i) => {
+                const label = labels?.[entry.key] ?? entry.key;
+                if (i === entries.length - 1) {
+                    return (
+                        <Typography key={entry.path} fontWeight="bold">
+                            {label}
+                        </Typography>
+                    );
+                }
+                return (isPathClickable?.(entry.path) ?? true) ? (
                     <Link key={entry.path} onClick={() => onClick?.(entry.path)}>
-                        {labels?.[entry.key] ?? entry.key}
+                        {label}
                     </Link>
                 ) : (
-                    <Typography key={entry.path} fontWeight="bold">
-                        {labels?.[entry.key] ?? entry.key}
-                    </Typography>
-                )
-            )}
+                    <Typography key={entry.path}>{label}</Typography>
+                );
+            })}
         </CustomBreadCrumbs>
     );
 }

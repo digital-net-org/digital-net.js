@@ -44,7 +44,7 @@ export function DnDialogConfirmPassword({
                     disabled={loading}
                     error={showError}
                     helperText={showError ? 'Mot de passe incorrect' : undefined}
-                    inputProps={{ maxLength: 256, autocomplete: 'off' }}
+                    inputProps={{ maxLength: 256, autoComplete: 'off' }}
                     autoFocus
                     required
                     fullWidth

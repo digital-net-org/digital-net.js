@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { matchPath, useLocation, useNavigate } from 'react-router';
 import { css, styled } from '@mui/material/styles';
 import { DnAppBar, DnAppDrawer } from '@digital-net-org/digital-ui';
 import { DnAppLayoutNav, type DnAppLayoutNavProps } from './DnAppLayoutNav';
@@ -8,15 +8,21 @@ import { useDnUser } from '../user';
 
 export interface DnAppLayoutProps {
     navigation: DnAppLayoutNavProps['navigation'];
+    routePatterns?: string[];
     children?: React.ReactNode;
 }
 
-export function DnAppLayout({ navigation, children }: DnAppLayoutProps) {
+export function DnAppLayout({ navigation, routePatterns, children }: DnAppLayoutProps) {
     const location = useLocation();
     const navigate = useNavigate();
 
     const { isDrawerOpen, toggleDrawer } = useDnApp();
     const { user, isLogged, isLoading, isAdmin, logout } = useDnUser();
+
+    const isPathClickable = React.useCallback(
+        (path: string) => (routePatterns ?? []).some(p => matchPath(p, path) !== null),
+        [routePatterns]
+    );
 
     return (
         <Layout>
@@ -42,6 +48,7 @@ export function DnAppLayout({ navigation, children }: DnAppLayoutProps) {
                             url: location.pathname,
                             onHomeClick: () => navigate('/'),
                             onClick: navigate,
+                            isPathClickable,
                         },
                     }}
                     disableSlots={{
