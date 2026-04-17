@@ -12,4 +12,18 @@ export class ArrayBuilder {
     static build(length, resolver) {
         return Array.from({ length }, (_, i) => resolver(i));
     }
+
+    /**
+     * Splits an array into sub-arrays of a given size. The last chunk may be smaller.
+     * @template T
+     * @param {T[]} arr - The array to split.
+     * @param {number} size - The maximum size of each chunk. Must be greater than 0.
+     * @returns {T[][]} An array of chunks.
+     */
+    static chunk(arr, size) {
+        if (size <= 0) throw new Error('ArrayBuilder.chunk: size must be greater than 0');
+        const chunks = [];
+        for (let i = 0; i < arr.length; i += size) chunks.push(arr.slice(i, i + size));
+        return chunks;
+    }
 }

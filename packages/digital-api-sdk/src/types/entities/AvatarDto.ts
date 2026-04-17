@@ -1,6 +1,7 @@
-export interface AvatarDto {
-    id: string;
-    documentId?: string;
+import type { Entity } from './Entity';
+
+export interface AvatarDto extends Entity {
+    documentId: string;
     x: number;
     y: number;
 }

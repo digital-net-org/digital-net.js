@@ -45,7 +45,7 @@ export function DnToastProvider({ children }: DnToastProviderProps) {
                 open={toast !== null}
                 autoHideDuration={DEFAULT_DURATION}
                 onClose={hide}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
                 {toast ? (
                     <CustomAlert
@@ -66,7 +66,7 @@ export function DnToastProvider({ children }: DnToastProviderProps) {
 const CustomAlert = styled(Alert)(
     ({ theme }) => css`
         &.MuiAlert-root {
-            margin-top: ${theme.spacing(4)};
+            min-width: 300px;
         }
         &.MuiAlert-colorInfo.MuiAlert-filledInfo {
             background-color: ${theme.palette.text.primary};

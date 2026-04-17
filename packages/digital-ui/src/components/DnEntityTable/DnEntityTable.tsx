@@ -14,9 +14,28 @@ import {
     TableRow as MuiTableRow,
     Typography,
 } from '@mui/material';
+import type { Entity, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { DnEntityTableToolbar } from './DnEntityTableToolbar';
 import { resolveColumns } from './resolveColumns';
-import type { DnEntityTableProps, Entity } from './types';
+import { DnDialog } from '../DnDialog';
+
+export interface DnPaginationState {
+    /** 0-based page index (MUI TablePagination convention). API `QueryResult.index` is 1-based. */
+    page: number;
+    rowsPerPage: number;
+    totalRows: number;
+}
+
+export interface DnEntityTableProps<T extends Entity> {
+    schema: SchemaProperty[];
+    rows: T[];
+    columns?: (keyof T)[];
+    pagination: DnPaginationState;
+    onPaginationChange: (pagination: DnPaginationState) => void;
+    onRowClick: (row: T) => void | Promise<void>;
+    onDelete: (id: Set<string>) => boolean | void | Promise<boolean | void>;
+    loading?: boolean;
+}
 
 export function DnEntityTable<T extends Entity>({
     schema,
@@ -27,18 +46,23 @@ export function DnEntityTable<T extends Entity>({
     onRowClick,
     onDelete,
     loading,
-    className,
 }: DnEntityTableProps<T>) {
     const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
     const [deleting, setDeleting] = React.useState(false);
-
-    const resolvedColumns = React.useMemo(() => resolveColumns<T>(schema, columns), [schema, columns]);
+    const [confirmOpen, setConfirmOpen] = React.useState(false);
 
     React.useEffect(() => setSelectedIds(new Set()), [rows]);
 
-    const allSelected = rows.length > 0 && selectedIds.size === rows.length;
-    const someSelected = selectedIds.size > 0 && selectedIds.size < rows.length;
-    const isLoading = loading || deleting;
+    const allSelected = React.useMemo(
+        () => rows.length > 0 && selectedIds.size === rows.length,
+        [rows.length, selectedIds.size]
+    );
+    const someSelected = React.useMemo(
+        () => selectedIds.size > 0 && selectedIds.size < rows.length,
+        [rows.length, selectedIds.size]
+    );
+    const resolvedColumns = React.useMemo(() => resolveColumns<T>(schema, columns), [schema, columns]);
+    const isLoading = React.useMemo(() => loading || deleting, [deleting, loading]);
 
     const handleSelectAll = () =>
         allSelected ? setSelectedIds(new Set()) : setSelectedIds(new Set(rows.map(r => r.id)));
@@ -53,12 +77,14 @@ export function DnEntityTable<T extends Entity>({
     };
 
     const handleDelete = async () => {
+        setConfirmOpen(false);
         setDeleting(true);
-        for (const id of selectedIds) {
-            await onDelete(id);
+        const result = await onDelete(selectedIds);
+        setDeleting(false);
+        if (typeof result === 'boolean' && !result) {
+            return; // Delete is considered failed, keep selection intact
         }
         setSelectedIds(new Set());
-        setDeleting(false);
     };
 
     const handlePageChange = (_: unknown, newPage: number) => onPaginationChange({ ...pagination, page: newPage });
@@ -73,7 +99,17 @@ export function DnEntityTable<T extends Entity>({
     const colSpan = resolvedColumns.length + 1;
 
     return (
-        <Root elevation={0} className={className}>
+        <Root elevation={0}>
+            <DnDialog
+                open={confirmOpen}
+                onClose={() => setConfirmOpen(false)}
+                onConfirm={handleDelete}
+                confirmLabel="Supprimer"
+            >
+                <Typography>
+                    Vous êtes sur le point de supprimer {selectedIds.size} element{selectedIds.size > 1 ? 's' : ''}.
+                </Typography>
+            </DnDialog>
             <ActionBar>
                 <TablePagination
                     component="div"
@@ -86,7 +122,11 @@ export function DnEntityTable<T extends Entity>({
                     onPageChange={handlePageChange}
                     onRowsPerPageChange={handleRowsPerPageChange}
                 />
-                <DnEntityTableToolbar selectedCount={selectedIds.size} onDelete={handleDelete} loading={deleting} />
+                <DnEntityTableToolbar
+                    selectedCount={selectedIds.size}
+                    onDelete={() => setConfirmOpen(true)}
+                    loading={deleting}
+                />
             </ActionBar>
             <TableContainer>
                 <Table $loading={isLoading}>
@@ -147,6 +187,7 @@ const Root = styled(Paper)(
     () => css`
         background-color: transparent;
         height: 100%;
+        overflow-y: hidden;
         display: flex;
         flex-direction: column;
     `

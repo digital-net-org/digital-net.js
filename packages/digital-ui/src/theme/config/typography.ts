@@ -7,4 +7,7 @@ export const typography: TypographyVariantsOptions = {
     fontWeightMedium: 500,
     fontWeightBold: 700,
     fontSize: 14,
+    h2: {
+        fontSize: 28,
+    },
 };

@@ -1,0 +1,55 @@
+import * as React from 'react';
+import { Stack, Typography } from '@mui/material';
+import { DnInput } from '../DnInput';
+import { DnDialog, type DnDialogProps } from '../DnDialog';
+
+export interface DnPasswordConfirmDialogProps extends Pick<DnDialogProps, 'onClose' | 'open' | 'loading' | 'disabled'> {
+    onConfirm: (_password: string) => void | Promise<void>;
+    showError?: boolean;
+}
+
+export function DnDialogConfirmPassword({
+    open,
+    loading = false,
+    showError = false,
+    onClose,
+    onConfirm,
+}: DnPasswordConfirmDialogProps) {
+    const [password, setPassword] = React.useState('');
+
+    React.useEffect(() => (open ? setPassword('') : void 0), [open]);
+    React.useEffect(() => (showError ? setPassword('') : void 0), [showError]);
+
+    const handleSubmit = React.useCallback(
+        async () => (loading || !password ? void 0 : await onConfirm(password)),
+        [loading, password, onConfirm]
+    );
+
+    return (
+        <DnDialog
+            open={open}
+            onClose={onClose}
+            loading={loading}
+            disabled={!password || loading}
+            onConfirm={handleSubmit}
+        >
+            <Typography>Cette action nécessite votre mot de passe</Typography>
+            <Stack mt={3}>
+                <DnInput
+                    label="Mot de passe"
+                    name="password"
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    disabled={loading}
+                    error={showError}
+                    helperText={showError ? 'Mot de passe incorrect' : undefined}
+                    inputProps={{ maxLength: 256, autocomplete: 'off' }}
+                    autoFocus
+                    required
+                    fullWidth
+                />
+            </Stack>
+        </DnDialog>
+    );
+}
