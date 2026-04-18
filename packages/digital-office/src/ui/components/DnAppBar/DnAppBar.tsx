@@ -21,7 +21,7 @@ export interface DnAppBarProps {
 export function DnAppBar({ slots, disableSlots }: DnAppBarProps) {
     return (
         <CustomAppBar disableMenu={disableSlots?.menu} elevation={0}>
-            <Stack direction="row" spacing={2} alignItems="center">
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                 {disableSlots?.menu ? null : (
                     <IconButton size="small" color="inherit" onClick={slots?.menu?.onClick}>
                         {slots?.menu?.open ? <MenuOpenIcon /> : <MenuIcon />}
@@ -29,7 +29,7 @@ export function DnAppBar({ slots, disableSlots }: DnAppBarProps) {
                 )}
                 {disableSlots?.breadcrumb ? null : <DnBreadcrumbs {...(slots?.breadcrumbs ?? {})} />}
             </Stack>
-            <Stack direction="row" gap={0.5}>
+            <Stack direction="row" sx={{ gap: 0.5 }}>
                 {disableSlots?.account ? null : <DnMenuAccount {...(slots?.account ?? {})} />}
                 {disableSlots?.theme ? null : <DnMenuTheme />}
                 {disableSlots?.settings ? null : <DnMenuSettings {...(slots?.settings ?? {})} />}

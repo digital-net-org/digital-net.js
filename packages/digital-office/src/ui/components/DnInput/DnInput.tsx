@@ -49,7 +49,7 @@ export function DnInput({ className, variant, loading, disabled, inputProps, ...
                     endAdornment: (
                         <React.Fragment>
                             {loading ? (
-                                <Stack position="absolute" right={8}>
+                                <Stack sx={{ position: 'absolute', right: 8 }}>
                                     <CircularProgress size="1rem" />
                                 </Stack>
                             ) : null}

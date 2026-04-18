@@ -26,7 +26,7 @@ export function LikeFilter({ filter, value, onChange }: LikeFilterProps) {
     React.useEffect(() => () => (timeoutRef.current ? clearTimeout(timeoutRef.current) : void 0), []);
 
     return (
-        <Stack gap={0.5}>
+        <Stack sx={{ gap: 0.5 }}>
             <Typography variant="caption">{filter.label}</Typography>
             <DnInput value={localValue} placeholder={filter.placeholder} onChange={handleChange} />
         </Stack>

@@ -78,10 +78,10 @@ export function LoginView() {
     );
 
     return (
-        <Stack alignItems="center">
+        <Stack sx={{ alignItems: 'center' }}>
             <Layout>
                 <Stack>{AppLogo}</Stack>
-                <Stack component="form" onSubmit={handleSubmit} gap={2} mt={2}>
+                <Stack component="form" onSubmit={handleSubmit} sx={{ gap: 2, mt: 2 }}>
                     <DnInput
                         label="Identifiant"
                         name="login"
@@ -106,7 +106,7 @@ export function LoginView() {
                     </DnButton>
                 </Stack>
                 {errorMessage ? (
-                    <Typography color="error" fontSize="small" fontStyle="italic" mt={2}>
+                    <Typography sx={{ color: 'error.main', fontSize: 'small', fontStyle: 'italic', mt: 2 }}>
                         {errorMessage}
                     </Typography>
                 ) : null}

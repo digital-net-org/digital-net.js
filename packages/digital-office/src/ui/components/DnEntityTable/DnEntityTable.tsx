@@ -200,7 +200,7 @@ export function DnEntityTable<T extends Entity>({
                         {rows.length === 0 && !isLoading ? (
                             <TableRow>
                                 <TableBodyCell colSpan={colSpan} align="center" height={100}>
-                                    <Typography color="text.secondary" fontStyle="italic">
+                                    <Typography sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
                                         Aucune donnée
                                     </Typography>
                                 </TableBodyCell>

@@ -35,11 +35,11 @@ export function DnEntityTableToolbar({
     const handleCloseFilters = () => setAnchorEl(null);
 
     return (
-        <ToolbarRoot direction="row" alignItems="center" justifyContent="space-between">
-            <Typography variant="body2" color={selectedCount > 0 ? 'textPrimary' : 'textDisabled'} fontSize="small">
+        <ToolbarRoot direction="row">
+            <Typography variant="body2" sx={{ color: selectedCount > 0 ? 'text.primary' : 'text.disabled', fontSize: 'small' }}>
                 {selectedCount} selected
             </Typography>
-            <Stack direction="row" alignItems="center" gap={1}>
+            <Stack direction="row" sx={{ alignItems: 'center', gap: 1 }}>
                 {loading ? <CircularProgress size={18} /> : null}
                 <Tooltip title={filterDisabled ? '' : 'Filtres'} placement="bottom-start">
                     <span>
@@ -109,5 +109,7 @@ const ToolbarRoot = styled(Stack)(
         min-width: 300px;
         padding: 0 1rem;
         border-radius: ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0;
+        align-items: center;
+        justify-content: space-between;
     `
 );

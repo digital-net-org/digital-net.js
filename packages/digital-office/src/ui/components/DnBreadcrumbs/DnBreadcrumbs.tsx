@@ -36,7 +36,7 @@ export function DnBreadcrumbs({ url, labels, onClick, onHomeClick, isPathClickab
                 const label = labels?.[entry.key] ?? entry.key;
                 if (i === entries.length - 1) {
                     return (
-                        <Typography key={entry.path} fontWeight="bold">
+                        <Typography key={entry.path} sx={{ fontWeight: 'bold' }}>
                             {label}
                         </Typography>
                     );

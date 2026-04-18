@@ -34,7 +34,7 @@ export function DnDialogConfirmPassword({
             onConfirm={handleSubmit}
         >
             <Typography>Cette action nécessite votre mot de passe</Typography>
-            <Stack mt={3}>
+            <Stack sx={{ mt: 3 }}>
                 <DnInput
                     label="Mot de passe"
                     name="password"

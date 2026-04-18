@@ -9,7 +9,7 @@ interface SelectFilterProps {
 
 export function SelectFilter({ filter, value, onChange }: SelectFilterProps) {
     return (
-        <Stack gap={0.5}>
+        <Stack sx={{ gap: 0.5 }}>
             <Typography variant="caption">{filter.label}</Typography>
             <Select value={value} displayEmpty onChange={e => onChange({ [filter.key]: e.target.value })}>
                 <MenuItem value="">— Tous —</MenuItem>

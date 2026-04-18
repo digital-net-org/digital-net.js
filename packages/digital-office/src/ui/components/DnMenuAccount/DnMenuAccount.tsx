@@ -45,7 +45,7 @@ export function DnMenuAccount({
             <DnAppBarMenu anchorEl={anchorEl} onClose={handleClose}>
                 <UsernameBox isAdmin={isAdmin}>
                     {loading ? <CircularProgress size={18} /> : <Box sx={{ width: 18 }} />}
-                    <Typography fontWeight="medium">
+                    <Typography sx={{ fontWeight: 'medium' }}>
                         <AdminBox>{isAdmin ? '(Administrateur)' : ''}</AdminBox>
                         {username ?? ''}
                     </Typography>

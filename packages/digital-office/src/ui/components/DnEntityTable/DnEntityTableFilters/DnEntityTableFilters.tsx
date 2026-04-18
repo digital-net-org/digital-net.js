@@ -15,7 +15,7 @@ interface DnEntityTableFiltersProps {
 
 export function DnEntityTableFilters({ filters, values, onChange, onReset }: DnEntityTableFiltersProps) {
     return (
-        <Root gap={1.5}>
+        <Root>
             {filters.map(filter => {
                 const value = values[filter.key] ?? '';
                 if (filter.type === 'boolean')
@@ -39,5 +39,6 @@ const Root = styled(Stack)(
     ({ theme }) => css`
         padding: ${theme.spacing(2)};
         min-width: 260px;
+        gap: ${theme.spacing(1.5)};
     `
 );

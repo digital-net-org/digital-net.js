@@ -11,9 +11,9 @@ export interface DnViewProps {
 export function DnView({ title, description, children }: DnViewProps) {
     return (
         <View>
-            <Stack pb={2}>
+            <Stack sx={{ pb: 2 }}>
                 <Typography variant="h2">{title}</Typography>
-                <Typography variant="body2" ml={0.35} mt={1}>
+                <Typography variant="body2" sx={{ ml: 0.35, mt: 1 }}>
                     {description}
                 </Typography>
             </Stack>
