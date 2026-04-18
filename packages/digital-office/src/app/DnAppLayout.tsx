@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { matchPath, useLocation, useNavigate } from 'react-router';
 import { css, styled } from '@mui/material/styles';
-import { DnAppBar, DnAppDrawer } from '@digital-net-org/digital-ui';
+import { DnAppBar, DnAppDrawer } from '../ui';
 import { DnAppLayoutNav, type DnAppLayoutNavProps } from './DnAppLayoutNav';
 import { useDnApp } from './DnAppProvider';
 import { useDnUser } from '../user';

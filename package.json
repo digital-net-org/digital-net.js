@@ -8,7 +8,6 @@
         "format": "prettier --write .",
         "build": "pnpm -r build",
         "build:core": "pnpm --filter @digital-net-org/digital-core build",
-        "build:ui": "pnpm --filter @digital-net-org/digital-ui build",
         "build:office": "pnpm --filter @digital-net-org/digital-office build",
         "build:api-sdk": "pnpm --filter @digital-net-org/digital-api-sdk build",
         "test": "pnpm -r test",
@@ -20,15 +19,15 @@
     "license": "ISC",
     "packageManager": "pnpm@10.28.0",
     "devDependencies": {
-        "eslint": "^9.39.2",
-        "eslint-plugin-react": "^7.37.5",
-        "eslint-plugin-react-hooks": "^7.0.1",
-        "happy-dom": "20.8.9",
-        "prettier": "^3.8.1",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.54.0",
-        "vite": "^7.3.1",
-        "vite-plugin-dts": "^4.5.4",
-        "vitest": "4.0.17"
+        "eslint": "9.39.4",
+        "eslint-plugin-react": "7.37.5",
+        "eslint-plugin-react-hooks": "7.1.1",
+        "happy-dom": "20.9.0",
+        "prettier": "3.8.3",
+        "typescript": "6.0.3",
+        "typescript-eslint": "8.58.2",
+        "vite": "8.0.8",
+        "vite-plugin-dts": "4.5.4",
+        "vitest": "4.1.4"
     }
 }

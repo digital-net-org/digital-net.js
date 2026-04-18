@@ -3,6 +3,7 @@ import { useDnUser } from './user';
 import { useDnApi } from './api';
 import { DnOfficeRouter } from './routes';
 
+export * from './ui';
 export { DigitalOfficeProvider, type DigitalOfficeProviderProps } from './DigitalOfficeProvider';
 export { AdminGuard, AuthGuard, GuestGuard } from './routes';
 export { DnEntityListView, type DnEntityListViewProps } from './views';

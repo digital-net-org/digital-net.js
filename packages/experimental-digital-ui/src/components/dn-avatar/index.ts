@@ -1,1 +1,0 @@
-export { DnAvatar } from './DnAvatar';

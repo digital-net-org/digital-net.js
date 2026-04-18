@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { alpha, MenuItem as MuiMenuItem, MenuList as MuiMenuList, Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { DnCollapsibleBlock } from '@digital-net-org/digital-ui';
+import { DnCollapsibleBlock } from '../ui';
 
 export type NavGroupContent = { label: string; path: string }[];
 

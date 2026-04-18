@@ -7,8 +7,6 @@ node_modules
 */**/*.tsbuildinfo
 */**/*.env
 */**/vite.config.ts.timestamp-*
-*storybook.log
-storybook-static
 
 .env
 */**/.env

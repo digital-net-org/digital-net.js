@@ -1,5 +1,2 @@
 packages:
   - 'packages/*'
-  - '!packages/experimental-digital-ui'
-  - '!packages/experimental-digital-ui-native'
-  - '!packages/experimental-digital-ui-react-types'

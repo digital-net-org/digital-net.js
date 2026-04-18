@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { BrowserRouter } from 'react-router';
 import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
-import { DnThemeProvider } from '@digital-net-org/digital-ui';
+import { DnThemeProvider } from './ui';
 import { DnApiProvider } from './api';
 import { DnUserProvider } from './user';
 import { DigitalNetLogo, DnAppProvider, DnToastProvider } from './app';

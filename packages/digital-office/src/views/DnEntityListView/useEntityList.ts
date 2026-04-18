@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { type QueryKey, useQuery } from '@tanstack/react-query';
 import { type Entity, type QueryResult } from '@digital-net-org/digital-api-sdk';
-import { type DnFilterDefinition, type DnPaginationState } from '@digital-net-org/digital-ui';
+import { type DnFilterDefinition, type DnPaginationState } from '../../ui';
 import { type UrlParam, urlInt, urlString, useUrlQueryState } from '../useUrlQueryState';
 import { useDnApi } from '../../api';
 

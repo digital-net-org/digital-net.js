@@ -8,7 +8,7 @@ import {
     type DnRenderCell,
     DnDialogConfirmPassword,
     DnEntityTable,
-} from '@digital-net-org/digital-ui';
+} from '../../ui';
 import { DnEntityDialogFailure } from './DnEntityDialogFailure';
 import { type EntityIdentifier } from './identifier';
 import { useEntityList } from './useEntityList';
