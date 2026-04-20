@@ -1,7 +1,18 @@
+export type SchemaValueType =
+    | 'String'
+    | 'Int32'
+    | 'Int64'
+    | 'Double'
+    | 'Decimal'
+    | 'Boolean'
+    | 'DateTime'
+    | 'DateTimeOffset'
+    | 'Guid';
+
 export interface SchemaProperty {
     name: string;
     path: string;
-    type: string;
+    type: SchemaValueType;
     dataFlag: string | null;
     isReadOnly: boolean;
     isSecret: boolean;

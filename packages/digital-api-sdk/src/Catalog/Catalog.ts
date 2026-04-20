@@ -25,12 +25,8 @@ export class Catalog {
     /** GET `{path}/schema` — Returns the schema for any entity endpoint. */
     public async getSchema(
         path: string,
-        options: CatalogCallbacks<SchemaProperty[]> = {},
+        options: CatalogCallbacks<SchemaProperty[]> = {}
     ): Promise<Result<SchemaProperty[]>> {
-        return CatalogRunner.run<SchemaProperty[]>(
-            this.http,
-            { path: `${path}/schema` },
-            options,
-        );
+        return CatalogRunner.run<SchemaProperty[]>(this.http, { path: `${path}/schema` }, options);
     }
 }
