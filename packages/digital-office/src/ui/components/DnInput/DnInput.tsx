@@ -7,6 +7,7 @@ import {
     TextField,
     CircularProgress,
     Stack,
+    Typography,
 } from '@mui/material';
 import type { InputBaseProps } from '@mui/material/InputBase';
 
@@ -35,40 +36,84 @@ export interface DnInputProps extends Pick<
 > {
     variant?: 'default' | 'text';
     loading?: boolean;
+    max?: number;
     inputProps?: SlotProps<React.ElementType<InputBaseProps['inputProps']>, {}, TextFieldOwnerState>;
 }
 
-export function DnInput({ className, variant, loading, disabled, inputProps, ...muiProps }: DnInputProps) {
+export function DnInput({ className, variant, loading, disabled, max, inputProps, ...muiProps }: DnInputProps) {
+    const [uncontrolledLength, setUncontrolledLength] = React.useState(
+        typeof muiProps.defaultValue === 'string' ? muiProps.defaultValue.length : 0
+    );
+
+    const valueLength = typeof muiProps.value === 'string' ? muiProps.value.length : uncontrolledLength;
+    const resolvedMaxLength = max ?? (inputProps as { maxLength?: number } | undefined)?.maxLength;
+
+    const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (max !== undefined) {
+            setUncontrolledLength(event.target.value.length);
+        }
+        muiProps.onChange?.(event);
+    };
+
     return (
-        <CustomTextField
-            {...muiProps}
-            className={`DnInput ${className ?? ''}`}
-            size="medium"
-            variant={({ default: 'outlined', text: 'filled' } as const)[variant ?? 'default']}
-            disabled={disabled || loading}
-            slotProps={{
-                htmlInput: inputProps,
-                input: {
-                    endAdornment: (
-                        <React.Fragment>
-                            {loading ? (
-                                <Stack sx={{ position: 'absolute', right: 8 }}>
-                                    <CircularProgress size="1rem" />
-                                </Stack>
-                            ) : null}
-                        </React.Fragment>
-                    ),
-                },
-            }}
-        />
+        <Wrapper>
+            {max !== undefined ? (
+                <Counter>
+                    {valueLength}/{max}
+                </Counter>
+            ) : null}
+            <CustomTextField
+                {...muiProps}
+                onChange={onChange}
+                className={`DnInput ${className ?? ''}`}
+                size="medium"
+                variant={({ default: 'outlined', text: 'filled' } as const)[variant ?? 'default']}
+                disabled={disabled || loading}
+                slotProps={{
+                    htmlInput: {
+                        ...(inputProps ?? {}),
+                        ...(resolvedMaxLength !== undefined ? { maxLength: resolvedMaxLength } : {}),
+                    },
+                    input: {
+                        endAdornment: loading ? (
+                            <Stack sx={{ position: 'absolute', right: 8 }}>
+                                <CircularProgress size="1rem" />
+                            </Stack>
+                        ) : undefined,
+                    },
+                }}
+            />
+        </Wrapper>
     );
 }
 
 const basePaddingX = 0.25;
 const basePaddingY = 0.5;
 
+const Wrapper = styled('div')(
+    () => css`
+        position: relative;
+        width: 100%;
+    `
+);
+
+const Counter = styled(Typography)(
+    ({ theme }) => css`
+        position: absolute;
+        top: -0.75rem;
+        right: ${basePaddingY}rem;
+        z-index: 1;
+        font-size: 0.7rem;
+        line-height: 1;
+        color: ${theme.palette.text.secondary};
+        pointer-events: none;
+        user-select: none;
+    `
+);
+
 const CustomTextField = styled(TextField)(
     ({ theme }) => css`
+        width: 100%;
         & .MuiInputBase-root {
             transition: 0.2s ease-in-out;
             font-size: ${theme.typography.button.fontSize};

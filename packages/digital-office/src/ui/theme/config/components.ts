@@ -60,13 +60,16 @@ export const components: ThemeOptions['components'] = {
             labelPlacement: 'start',
         },
         styleOverrides: {
-            root: () => ({
+            root: ({ theme }) => ({
                 padding: 0,
                 margin: 0,
                 alignSelf: 'start',
                 gap: '1rem',
-                minWidth: '140px',
+                minWidth: '180px',
                 justifyContent: 'space-between',
+                '& .MuiTypography-root': {
+                    fontSize: theme.typography.fontSize,
+                },
             }),
         },
     },
@@ -76,6 +79,7 @@ export const components: ThemeOptions['components'] = {
                 padding: 0,
                 margin: 0,
                 paddingLeft: '0.5rem',
+                paddingTop: '0.125rem',
             }),
         },
     },
