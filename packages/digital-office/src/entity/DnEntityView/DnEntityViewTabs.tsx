@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Alert, Box, CircularProgress, Link, Stack, Tab, Tabs, Typography } from '@mui/material';
-import { Delete as DeleteIcon, Save as SaveIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Refresh as RefreshIcon, Save as SaveIcon } from '@mui/icons-material';
 import { DnDialog, DnIconButton } from '../../ui';
 import { formatDate } from './formatDate';
 
@@ -46,8 +46,9 @@ export function DnEntityViewTabs({
         if (onReload) await onReload();
     }, [onReload]);
 
-    const hasActions = Boolean(onSave || onDelete);
+    const hasActions = Boolean(onSave || onDelete || onReload);
     const saveDisabled = !isDirty || hasConflict || isSaving;
+    const discardDisabled = !isDirty || isSaving;
 
     return (
         <React.Fragment>
@@ -63,6 +64,15 @@ export function DnEntityViewTabs({
                         {onSave ? (
                             <DnIconButton tooltip="Enregistrer" disabled={saveDisabled} onClick={() => void onSave()}>
                                 <SaveIcon />
+                            </DnIconButton>
+                        ) : null}
+                        {onReload ? (
+                            <DnIconButton
+                                tooltip="Annuler les modifications locales"
+                                disabled={discardDisabled}
+                                onClick={() => setReloadDialogOpen(true)}
+                            >
+                                <RefreshIcon />
                             </DnIconButton>
                         ) : null}
                         {onDelete && !isNew ? (
