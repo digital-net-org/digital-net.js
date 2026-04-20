@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { IconButton, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { LightMode as LightIcon, DarkMode as DarkIcon } from '@mui/icons-material';
+import { DnIconButton } from '../DnIconButton';
 import { DnTheme } from '../../theme';
 
 export function DnMenuTheme() {
@@ -14,9 +15,5 @@ export function DnMenuTheme() {
         return null;
     }
 
-    return (
-        <IconButton size="small" color="inherit" onClick={DnTheme.toggleTheme}>
-            {resolvedThemeIcon}
-        </IconButton>
-    );
+    return <DnIconButton onClick={DnTheme.toggleTheme}>{resolvedThemeIcon}</DnIconButton>;
 }

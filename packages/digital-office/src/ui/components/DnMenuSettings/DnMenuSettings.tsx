@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { IconButton } from '@mui/material';
 import { Settings as SettingsIcon } from '@mui/icons-material';
+import { DnIconButton } from '../DnIconButton';
 
 export interface DnMenuSettingsProps {
     disabled?: boolean;
 }
 
-export function DnMenuSettings({ disabled }: DnMenuSettingsProps) {
+export function DnMenuSettings({ disabled: _disabled }: DnMenuSettingsProps) {
     return (
-        <IconButton size="small" color="inherit" disabled>
+        <DnIconButton disabled>
             <SettingsIcon />
-        </IconButton>
+        </DnIconButton>
     );
 }

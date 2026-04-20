@@ -8,6 +8,7 @@ export * from './DnInput';
 export * from './DnLoadingView';
 export * from './DnDialog';
 export * from './DnDialogConfirmPassword';
+export * from './DnIconButton';
 export * from './DnSwitch';
 export * from './DnMenuAccount';
 export * from './DnMenuSettings';

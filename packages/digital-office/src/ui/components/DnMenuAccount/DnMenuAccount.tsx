@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
     Box,
     CircularProgress,
-    IconButton,
     ListItemIcon,
     ListItemText,
     MenuItem,
@@ -13,6 +12,7 @@ import {
 import { AccountCircle as AccountIcon, Logout as LogoutIcon, Person as PersonIcon } from '@mui/icons-material';
 import { css, styled } from '@mui/material/styles';
 import { DnAppBarMenu } from '../DnAppBarMenu';
+import { DnIconButton } from '../DnIconButton';
 
 export interface DnMenuAccountProps {
     username?: string;
@@ -39,9 +39,9 @@ export function DnMenuAccount({
 
     return (
         <React.Fragment>
-            <IconButton size="small" color="inherit" {...IconButtonProps} onClick={handleClick}>
+            <DnIconButton {...IconButtonProps} onClick={handleClick}>
                 <AccountIcon />
-            </IconButton>
+            </DnIconButton>
             <DnAppBarMenu anchorEl={anchorEl} onClose={handleClose}>
                 <UsernameBox isAdmin={isAdmin}>
                     {loading ? <CircularProgress size={18} /> : <Box sx={{ width: 18 }} />}

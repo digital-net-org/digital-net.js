@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { css, styled } from '@mui/material/styles';
-import { Badge, CircularProgress, IconButton, Popover, Stack, Tooltip, Typography } from '@mui/material';
+import { CircularProgress, Popover, Stack, Typography } from '@mui/material';
 import { Delete as DeleteIcon, AddCircle as AddIcon, FilterAlt as FilterAltIcon } from '@mui/icons-material';
 import type { DnFilterDefinition } from './DnEntityTable';
 import { DnEntityTableFilters } from './DnEntityTableFilters';
+import { DnIconButton } from '../DnIconButton';
 
 interface DnEntityTableToolbarProps {
     selectedCount: number;
@@ -46,34 +47,26 @@ export function DnEntityTableToolbar({
             </Typography>
             <Stack direction="row" sx={{ alignItems: 'center', gap: 1 }}>
                 {loading ? <CircularProgress size={18} /> : null}
-                <Tooltip title={filterDisabled ? '' : 'Filtres'} placement="bottom-start">
-                    <span>
-                        <IconButton onClick={handleOpenFilters} disabled={filterDisabled} color="inherit" size="small">
-                            <Badge badgeContent={activeFilterCount} color="primary">
-                                <FilterAltIcon />
-                            </Badge>
-                        </IconButton>
-                    </span>
-                </Tooltip>
-                {onCreate ? (
-                    <Tooltip title={loading ? '' : 'Créer un nouvel élément'} placement="bottom-start">
-                        <span>
-                            <IconButton onClick={onCreate} disabled={loading} color="inherit" size="small">
-                                <AddIcon />
-                            </IconButton>
-                        </span>
-                    </Tooltip>
-                ) : null}
-                <Tooltip
-                    title={deleteDisabled ? '' : `Supprimer ${selectedCount} élément${selectedCount > 1 ? 's' : ''}`}
-                    placement="bottom-start"
+                <DnIconButton
+                    tooltip="Filtres"
+                    disabled={filterDisabled}
+                    counter={activeFilterCount}
+                    onClick={handleOpenFilters}
                 >
-                    <span>
-                        <IconButton onClick={onDelete} disabled={deleteDisabled} color="inherit" size="small">
-                            <DeleteIcon />
-                        </IconButton>
-                    </span>
-                </Tooltip>
+                    <FilterAltIcon />
+                </DnIconButton>
+                {onCreate ? (
+                    <DnIconButton tooltip="Créer un nouvel élément" disabled={loading} onClick={onCreate}>
+                        <AddIcon />
+                    </DnIconButton>
+                ) : null}
+                <DnIconButton
+                    tooltip={`Supprimer ${selectedCount} élément${selectedCount > 1 ? 's' : ''}`}
+                    disabled={deleteDisabled}
+                    onClick={onDelete}
+                >
+                    <DeleteIcon />
+                </DnIconButton>
             </Stack>
             <Popover
                 open={openFilters}

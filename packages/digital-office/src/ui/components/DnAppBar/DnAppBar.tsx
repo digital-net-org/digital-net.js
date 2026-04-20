@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { css, styled } from '@mui/material/styles';
-import { Stack, AppBar, IconButton } from '@mui/material';
+import { Stack, AppBar } from '@mui/material';
 import { Menu as MenuIcon, MenuOpen as MenuOpenIcon } from '@mui/icons-material';
 import type { DnBreadcrumbsProps } from '../DnBreadcrumbs';
 import { DnBreadcrumbs } from '../DnBreadcrumbs';
+import { DnIconButton } from '../DnIconButton';
 import { DnMenuAccount, type DnMenuAccountProps } from '../DnMenuAccount';
 import { DnMenuSettings, type DnMenuSettingsProps } from '../DnMenuSettings';
 import { DnMenuTheme } from '../DnMenuTheme';
@@ -23,9 +24,9 @@ export function DnAppBar({ slots, disableSlots }: DnAppBarProps) {
         <CustomAppBar disableMenu={disableSlots?.menu} elevation={0}>
             <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                 {disableSlots?.menu ? null : (
-                    <IconButton size="small" color="inherit" onClick={slots?.menu?.onClick}>
+                    <DnIconButton onClick={slots?.menu?.onClick}>
                         {slots?.menu?.open ? <MenuOpenIcon /> : <MenuIcon />}
-                    </IconButton>
+                    </DnIconButton>
                 )}
                 {disableSlots?.breadcrumb ? null : <DnBreadcrumbs {...(slots?.breadcrumbs ?? {})} />}
             </Stack>

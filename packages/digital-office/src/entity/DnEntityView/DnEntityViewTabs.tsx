@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Alert, Box, CircularProgress, IconButton, Link, Stack, Tab, Tabs, Tooltip, Typography } from '@mui/material';
+import { Alert, Box, CircularProgress, Link, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { Delete as DeleteIcon, Save as SaveIcon } from '@mui/icons-material';
-import { DnDialog } from '../../ui';
+import { DnDialog, DnIconButton } from '../../ui';
 import { formatDate } from './formatDate';
 
 export interface DnEntityViewTab {
@@ -61,32 +61,14 @@ export function DnEntityViewTabs({
                     <Stack direction="row" sx={{ alignItems: 'center', gap: 1, pr: 1 }}>
                         {isSaving ? <CircularProgress size={20} /> : null}
                         {onSave ? (
-                            <Tooltip title={saveDisabled ? '' : 'Enregistrer'} placement="bottom-start">
-                                <span>
-                                    <IconButton
-                                        disabled={saveDisabled}
-                                        onClick={() => void onSave()}
-                                        color="inherit"
-                                        size="small"
-                                    >
-                                        <SaveIcon />
-                                    </IconButton>
-                                </span>
-                            </Tooltip>
+                            <DnIconButton tooltip="Enregistrer" disabled={saveDisabled} onClick={() => void onSave()}>
+                                <SaveIcon />
+                            </DnIconButton>
                         ) : null}
                         {onDelete && !isNew ? (
-                            <Tooltip title={isSaving ? '' : 'Supprimer'} placement="bottom-start">
-                                <span>
-                                    <IconButton
-                                        disabled={isSaving}
-                                        onClick={() => void onDelete()}
-                                        color="inherit"
-                                        size="small"
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </span>
-                            </Tooltip>
+                            <DnIconButton tooltip="Supprimer" disabled={isSaving} onClick={() => void onDelete()}>
+                                <DeleteIcon />
+                            </DnIconButton>
                         ) : null}
                     </Stack>
                 ) : null}
