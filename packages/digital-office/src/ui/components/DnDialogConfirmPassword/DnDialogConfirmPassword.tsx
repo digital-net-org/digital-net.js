@@ -16,9 +16,17 @@ export function DnDialogConfirmPassword({
     onConfirm,
 }: DnPasswordConfirmDialogProps) {
     const [password, setPassword] = React.useState('');
+    const [prevOpen, setPrevOpen] = React.useState(open);
+    const [prevShowError, setPrevShowError] = React.useState(showError);
 
-    React.useEffect(() => (open ? setPassword('') : void 0), [open]);
-    React.useEffect(() => (showError ? setPassword('') : void 0), [showError]);
+    if (prevOpen !== open) {
+        setPrevOpen(open);
+        if (open) setPassword('');
+    }
+    if (prevShowError !== showError) {
+        setPrevShowError(showError);
+        if (showError) setPassword('');
+    }
 
     const handleSubmit = React.useCallback(
         async () => (loading || !password ? void 0 : await onConfirm(password)),

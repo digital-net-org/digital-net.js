@@ -1,21 +1,20 @@
 import * as React from 'react';
 import { Badge, IconButton, Tooltip, type IconButtonProps, type TooltipProps } from '@mui/material';
 
-export interface DnIconButtonProps
-    extends Pick<
-        IconButtonProps,
-        | 'onClick'
-        | 'type'
-        | 'sx'
-        | 'className'
-        | 'id'
-        | 'color'
-        | 'size'
-        | 'aria-label'
-        | 'aria-haspopup'
-        | 'aria-controls'
-        | 'aria-expanded'
-    > {
+export interface DnIconButtonProps extends Pick<
+    IconButtonProps,
+    | 'onClick'
+    | 'type'
+    | 'sx'
+    | 'className'
+    | 'id'
+    | 'color'
+    | 'size'
+    | 'aria-label'
+    | 'aria-haspopup'
+    | 'aria-controls'
+    | 'aria-expanded'
+> {
     children: React.ReactNode;
     tooltip?: string;
     tooltipPlacement?: TooltipProps['placement'];
@@ -48,14 +47,7 @@ export const DnIconButton = React.forwardRef<HTMLButtonElement, DnIconButtonProp
         );
 
     const button = (
-        <IconButton
-            ref={ref}
-            disabled={disabled}
-            disableRipple={disableRipple}
-            color={color}
-            size={size}
-            {...rest}
-        >
+        <IconButton ref={ref} disabled={disabled} disableRipple={disableRipple} color={color} size={size} {...rest}>
             {content}
         </IconButton>
     );

@@ -29,9 +29,7 @@ export function DigitalOfficeProvider({ api, appLogo, children }: DigitalOfficeP
                     <DnUserProvider>
                         <DnIdbProvider config={DRAFTS_DB_CONFIG}>
                             <DnEntitySchemaProvider>
-                                <DnAppProvider appLogo={appLogo ?? <DigitalNetLogo />}>
-                                    {children}
-                                </DnAppProvider>
+                                <DnAppProvider appLogo={appLogo ?? <DigitalNetLogo />}>{children}</DnAppProvider>
                             </DnEntitySchemaProvider>
                         </DnIdbProvider>
                     </DnUserProvider>

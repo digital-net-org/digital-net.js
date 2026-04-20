@@ -593,9 +593,9 @@ describe('HttpClient', () => {
             fetchMock.mockResolvedValueOnce(jsonResponse({ error: 'nope' }, 400));
             const onResponse = vi.fn();
 
-            await expect(
-                client.request({ path: 'admin/user', method: 'POST', onResponse })
-            ).rejects.toBeInstanceOf(HttpClientError);
+            await expect(client.request({ path: 'admin/user', method: 'POST', onResponse })).rejects.toBeInstanceOf(
+                HttpClientError
+            );
 
             expect(onResponse).toHaveBeenCalledTimes(1);
             const response = onResponse.mock.calls[0][0];
@@ -647,9 +647,9 @@ describe('HttpClient', () => {
                 throw new Error('instrumentation broke');
             });
 
-            await expect(
-                client.request({ path: 'user/self', method: 'GET', onResponse })
-            ).rejects.toThrow('instrumentation broke');
+            await expect(client.request({ path: 'user/self', method: 'GET', onResponse })).rejects.toThrow(
+                'instrumentation broke'
+            );
         });
 
         it('propagates exceptions thrown by onRequest', async () => {
@@ -657,9 +657,9 @@ describe('HttpClient', () => {
                 throw new Error('config broke');
             });
 
-            await expect(
-                client.request({ path: 'user/self', method: 'GET', onRequest })
-            ).rejects.toThrow('config broke');
+            await expect(client.request({ path: 'user/self', method: 'GET', onRequest })).rejects.toThrow(
+                'config broke'
+            );
 
             expect(fetchMock).not.toHaveBeenCalled();
         });

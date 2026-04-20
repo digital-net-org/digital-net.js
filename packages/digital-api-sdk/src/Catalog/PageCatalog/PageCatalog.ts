@@ -23,11 +23,7 @@ export class PageCatalog {
     }
 
     /** PATCH `cms/pages/:id` — body = JSON Patch (RFC 6902) — JWT/ApiKey */
-    public async update(
-        id: string,
-        ops: JsonPatchOp[],
-        options: CatalogCallbacks<null> = {}
-    ): Promise<Result> {
+    public async update(id: string, ops: JsonPatchOp[], options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
             {

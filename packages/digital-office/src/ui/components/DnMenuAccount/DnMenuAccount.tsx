@@ -25,7 +25,7 @@ export interface DnMenuAccountProps {
 }
 
 export function DnMenuAccount({
-    imgSrc,
+    imgSrc: _imgSrc,
     username,
     isAdmin,
     loading,

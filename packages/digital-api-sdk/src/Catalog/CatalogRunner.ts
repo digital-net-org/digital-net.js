@@ -1,5 +1,5 @@
 import { HttpClientError } from '../HttpClient';
-import type { HttpClient, HttpRequestConfig, HttpResponse } from '../HttpClient';
+import type { HttpClient, HttpRequestConfig } from '../HttpClient';
 import type { Result } from '../types';
 import type { CatalogError, CatalogCallbacks } from './types';
 
@@ -102,10 +102,7 @@ export class CatalogRunner {
      * Transport-level hook exceptions propagate to the caller (they are NOT isolated,
      * unlike the dispatch callbacks `onSuccess`/`onError`/etc.).
      */
-    private static composeHooks<T>(
-        request: HttpRequestConfig,
-        options: CatalogCallbacks<T>
-    ): HttpRequestConfig {
+    private static composeHooks<T>(request: HttpRequestConfig, options: CatalogCallbacks<T>): HttpRequestConfig {
         const catalogOnRequest = options.onRequest;
         const requestOnRequest = request.onRequest;
         const catalogOnResponse = options.onResponse;

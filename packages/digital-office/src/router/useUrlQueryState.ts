@@ -4,8 +4,8 @@ import { useSearchParams } from 'react-router';
 export interface UrlParam<T> {
     defaultValue: T;
     key: string;
-    parse(raw: string | null): T;
-    serialize(value: T): string | null;
+    parse(_raw: string | null): T;
+    serialize(_value: T): string | null;
 }
 
 export type UrlQuerySchema = Record<string, UrlParam<unknown>>;
@@ -37,7 +37,7 @@ export type UrlQueryState<S extends UrlQuerySchema> = {
 export function useUrlQueryState<S extends UrlQuerySchema>(
     schema: S,
     options: { replace?: boolean } = {}
-): [UrlQueryState<S>, (patch: Partial<UrlQueryState<S>>) => void] {
+): [UrlQueryState<S>, (_patch: Partial<UrlQueryState<S>>) => void] {
     const { replace = true } = options;
     const [searchParams, setSearchParams] = useSearchParams();
 

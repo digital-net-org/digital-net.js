@@ -26,7 +26,7 @@ export interface DnRowDraftInfo {
 
 export type { DnColumnDefinition, ResolvedColumn };
 
-export type DnRenderCell<T> = (col: ResolvedColumn, value: unknown, row: T) => React.ReactNode;
+export type DnRenderCell<T> = (_col: ResolvedColumn, _value: unknown, _row: T) => React.ReactNode;
 
 export interface DnPaginationState {
     /** 0-based page index (MUI TablePagination convention). API `QueryResult.index` is 1-based. */
@@ -51,19 +51,19 @@ export interface DnEntityTableProps<T extends Entity> {
     columns?: DnColumnDefinition<T>[];
     renderCell?: DnRenderCell<T>;
     pagination: DnPaginationState;
-    onPaginationChange: (pagination: DnPaginationState) => void;
-    onRowClick: (row: T) => void | Promise<void>;
-    onDelete: (id: Set<string>) => boolean | void | Promise<boolean | void>;
+    onPaginationChange: (_pagination: DnPaginationState) => void;
+    onRowClick: (_row: T) => void | Promise<void>;
+    onDelete: (_id: Set<string>) => boolean | void | Promise<boolean | void>;
     onCreate?: () => void;
     loading?: boolean;
     sort?: DnSortState;
-    onSortChange?: (accessor: string) => void;
+    onSortChange?: (_accessor: string) => void;
     filters?: DnFilterDefinition[];
     filterValues?: Record<string, string>;
-    onFilterChange?: (patch: Record<string, string>) => void;
+    onFilterChange?: (_patch: Record<string, string>) => void;
     onFilterReset?: () => void;
     activeFilterCount?: number;
-    getRowDraftInfo?: (row: T) => DnRowDraftInfo | undefined;
+    getRowDraftInfo?: (_row: T) => DnRowDraftInfo | undefined;
 }
 
 export function DnEntityTable<T extends Entity>({
@@ -222,9 +222,6 @@ export function DnEntityTable<T extends Entity>({
                             rows.map(row => {
                                 const isSelected = selectedIds.has(row.id);
                                 const draftInfo = getRowDraftInfo?.(row);
-                                const dirtyAccessors = draftInfo
-                                    ? new Set(draftInfo.ops.map(op => op.path.replace(/^\//, '').split('/')[0]))
-                                    : null;
                                 return (
                                     <TableRow
                                         key={row.id}
@@ -243,7 +240,6 @@ export function DnEntityTable<T extends Entity>({
                                         </TableBodyCell>
                                         {resolvedColumns.map((col, colIndex) => {
                                             const value = (row as Record<string, unknown>)[col.accessor];
-                                            const isDirtyCell = dirtyAccessors?.has(col.accessor) ?? false;
                                             const isFirstColumn = colIndex === 0;
                                             return (
                                                 <TableBodyCell

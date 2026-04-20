@@ -89,11 +89,7 @@ describe('CatalogRunner.run', () => {
         fetchMock.mockResolvedValueOnce(jsonResponse('plain-string-not-a-result'));
         const onSuccess = vi.fn();
 
-        const result = await CatalogRunner.run<string>(
-            client,
-            { method: 'GET', path: 'foo' },
-            { onSuccess }
-        );
+        const result = await CatalogRunner.run<string>(client, { method: 'GET', path: 'foo' }, { onSuccess });
 
         expect(result.hasError).toBe(false);
         expect(result.value).toBe('plain-string-not-a-result');
@@ -298,7 +294,7 @@ describe('CatalogRunner.run', () => {
         let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
 
         beforeEach(() => {
-            consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
         });
 
         afterEach(() => {
@@ -354,11 +350,7 @@ describe('CatalogRunner.run', () => {
                 throw new Error('boom');
             });
 
-            const result = await CatalogRunner.run<string>(
-                client,
-                { method: 'GET', path: 'admin/user' },
-                { onError }
-            );
+            const result = await CatalogRunner.run<string>(client, { method: 'GET', path: 'admin/user' }, { onError });
 
             expect(result.hasError).toBe(true);
             expect(onError).toHaveBeenCalledTimes(1);

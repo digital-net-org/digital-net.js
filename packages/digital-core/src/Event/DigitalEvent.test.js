@@ -94,8 +94,8 @@ describe('DigitalEvent', () => {
             const event = new DigitalEvent();
             expect(event.size).toBe(0);
 
-            const unsubscribeA = event.subscribe(() => {});
-            event.subscribe(() => {});
+            const unsubscribeA = event.subscribe(() => undefined);
+            event.subscribe(() => undefined);
             expect(event.size).toBe(2);
 
             unsubscribeA();

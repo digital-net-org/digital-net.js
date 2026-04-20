@@ -75,8 +75,7 @@ export function DnUserProvider({ children }: DnUserProviderProps) {
     const isLogged = React.useMemo<boolean>(() => hasToken && userData != null, [userData, hasToken]);
     const isAdmin = React.useMemo<boolean>(() => isLogged && isAdminData === true, [isLogged, isAdminData]);
     const isLoading = React.useMemo<boolean>(
-        () =>
-            (hasToken && (isQueryLoading || (userData != null && isAdminQueryLoading))) || isLogoutLoading,
+        () => (hasToken && (isQueryLoading || (userData != null && isAdminQueryLoading))) || isLogoutLoading,
         [hasToken, isLogoutLoading, isQueryLoading, userData, isAdminQueryLoading]
     );
     const user = React.useMemo(() => (isLogged ? userData : null), [isLogged, userData]);

@@ -4,7 +4,7 @@ import { css, styled } from '@mui/material/styles';
 
 export interface DnToastContextValue {
     /** Display a toast. Replaces the current toast if one is visible. */
-    showToast: (message: string, variant?: ToastVariant) => void;
+    showToast: (_message: string, _variant?: ToastVariant) => void;
     /** Dismiss the current toast immediately. */
     hide: () => void;
 }

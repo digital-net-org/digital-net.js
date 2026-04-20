@@ -3,7 +3,10 @@ import type { JsonPatchOp } from '@digital-net-org/digital-api-sdk';
 export class JsonPatch {
     private static pathSegments(path: string): string[] {
         if (!path.startsWith('/')) throw new Error(`JsonPatch: path must start with '/', got "${path}"`);
-        return path.slice(1).split('/').map(seg => seg.replace(/~1/g, '/').replace(/~0/g, '~'));
+        return path
+            .slice(1)
+            .split('/')
+            .map(seg => seg.replace(/~1/g, '/').replace(/~0/g, '~'));
     }
 
     private static cloneShallow<T>(source: T): T {

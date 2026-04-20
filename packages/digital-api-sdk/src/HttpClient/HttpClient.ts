@@ -69,8 +69,7 @@ export class HttpClient {
             await this.refreshPromise;
         }
 
-        const effectiveConfig =
-            !config.skipHooks && config.onRequest ? await config.onRequest(config) : config;
+        const effectiveConfig = !config.skipHooks && config.onRequest ? await config.onRequest(config) : config;
 
         const url = this.resolveUrl(effectiveConfig.path, effectiveConfig.slugs, effectiveConfig.params);
         const headers = this.resolveHeaders(effectiveConfig);

@@ -32,10 +32,7 @@ function RouterLayout({ allRoutes }: { allRoutes: DigitalOfficeRoute[] }) {
         [allRoutes, isAdmin]
     );
 
-    const routePatterns = React.useMemo(
-        () => allRoutes.map(r => r.path).filter(p => !p.includes('*')),
-        [allRoutes]
-    );
+    const routePatterns = React.useMemo(() => allRoutes.map(r => r.path).filter(p => !p.includes('*')), [allRoutes]);
 
     return (
         <DnAppLayout navigation={navigation} routePatterns={routePatterns}>
@@ -48,12 +45,7 @@ export function DnOfficeRouter({ routes }: DnOfficeRouterProps) {
     const { isLoading } = useDnUser();
 
     const router = React.useMemo(() => {
-        const allRoutes: DigitalOfficeRoute[] = [
-            ...APP_ROUTES,
-            ...ADMIN_ROUTES,
-            ...CMS_ROUTES,
-            ...(routes ?? []),
-        ];
+        const allRoutes: DigitalOfficeRoute[] = [...APP_ROUTES, ...ADMIN_ROUTES, ...CMS_ROUTES, ...(routes ?? [])];
         return createBrowserRouter([
             {
                 element: <RouterLayout allRoutes={allRoutes} />,

@@ -11,9 +11,9 @@ export interface BreadcrumbEntry {
 export interface DnBreadcrumbsProps {
     url?: string;
     labels?: Record<string, string>;
-    onClick?: (path: string) => void;
+    onClick?: (_path: string) => void;
     onHomeClick?: () => void;
-    isPathClickable?: (path: string) => boolean;
+    isPathClickable?: (_path: string) => boolean;
 }
 
 function parseBreadcrumbs(url: string): BreadcrumbEntry[] {

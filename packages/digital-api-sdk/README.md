@@ -65,10 +65,11 @@ hierarchy.
 
 ## Scripts
 
-| Command          | What it does                    |
-|------------------|---------------------------------|
-| `pnpm build`     | Build the SDK with Vite.        |
-| `pnpm test`      | Run the vitest suite.           |
+| Command      | What it does             |
+| ------------ | ------------------------ |
+| `pnpm build` | Build the SDK with Vite. |
+| `pnpm test`  | Run the vitest suite.    |
 
 ## Related documentation
+
 - [Digital.Net backend](https://github.com/digital-net-org/Digital.Net.Api)

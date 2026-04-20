@@ -61,9 +61,9 @@ npm install @digital-net-org/digital-office @digital-net-org/digital-api-sdk
 import { DigitalApi } from '@digital-net-org/digital-api-sdk';
 import { DigitalOfficeProvider, DigitalOfficeRouter } from '@digital-net-org/digital-office';
 
-const api = new DigitalApi({ 
-  baseUrl: import.meta.env.VITE_API_BASE_URL,
-  keyPrefix: 'MYDOMAINOFFICE_',
+const api = new DigitalApi({
+    baseUrl: import.meta.env.VITE_API_BASE_URL,
+    keyPrefix: 'MYDOMAINOFFICE_',
 });
 
 export function App() {
@@ -77,11 +77,12 @@ export function App() {
 
 ## Scripts
 
-| Command          | What it does                    |
-|------------------|---------------------------------|
-| `pnpm build`     | Build the package with Vite.    |
-| `pnpm test`      | Run the vitest suite.           |
+| Command      | What it does                 |
+| ------------ | ---------------------------- |
+| `pnpm build` | Build the package with Vite. |
+| `pnpm test`  | Run the vitest suite.        |
 
 ## Related documentation
+
 - [Digital API SDK](../digital-api-sdk/README.md)
 - [Digital Core](../digital-core/README.md)

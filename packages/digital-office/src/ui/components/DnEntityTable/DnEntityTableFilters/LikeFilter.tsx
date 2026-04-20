@@ -8,12 +8,18 @@ const DEBOUNCE_MS = 300;
 interface LikeFilterProps {
     filter: Extract<DnFilterDefinition, { type: 'like' }>;
     value: string;
-    onChange: (patch: Record<string, string>) => void;
+    onChange: (_patch: Record<string, string>) => void;
 }
 
 export function LikeFilter({ filter, value, onChange }: LikeFilterProps) {
     const [localValue, setLocalValue] = React.useState(value);
+    const [prevValue, setPrevValue] = React.useState(value);
     const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    if (prevValue !== value) {
+        setPrevValue(value);
+        setLocalValue(value);
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const next = e.target.value;
@@ -22,7 +28,6 @@ export function LikeFilter({ filter, value, onChange }: LikeFilterProps) {
         timeoutRef.current = setTimeout(() => onChange({ [filter.key]: next }), DEBOUNCE_MS);
     };
 
-    React.useEffect(() => setLocalValue(value), [value]);
     React.useEffect(() => () => (timeoutRef.current ? clearTimeout(timeoutRef.current) : void 0), []);
 
     return (

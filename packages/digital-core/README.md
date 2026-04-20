@@ -20,6 +20,7 @@ Digital.Net JavaScript stack. It provides:
 No dependencies on React or any UI framework.
 
 ## Getting Started
+
 ### Prerequisites
 
 - **Node.js** 20+
@@ -60,8 +61,7 @@ bus.emit('userLoggedIn', { id: 42 });
 
 ## Scripts
 
-| Command          | What it does                    |
-|------------------|---------------------------------|
-| `pnpm build`     | Build the library with Vite.    |
-| `pnpm test`      | Run the vitest suite.           |
-
+| Command      | What it does                 |
+| ------------ | ---------------------------- |
+| `pnpm build` | Build the library with Vite. |
+| `pnpm test`  | Run the vitest suite.        |

@@ -13,7 +13,7 @@ interface DnEntityTableToolbarProps {
     loading?: boolean;
     filters?: DnFilterDefinition[];
     filterValues?: Record<string, string>;
-    onFilterChange?: (patch: Record<string, string>) => void;
+    onFilterChange?: (_patch: Record<string, string>) => void;
     onFilterReset?: () => void;
     activeFilterCount?: number;
 }

@@ -29,6 +29,9 @@ const config = [
                 },
             },
         },
+        settings: {
+            react: { version: '19' },
+        },
         rules: {
             ...reactPlugin.configs.recommended.rules,
             ...reactPlugin.configs['jsx-runtime'].rules,

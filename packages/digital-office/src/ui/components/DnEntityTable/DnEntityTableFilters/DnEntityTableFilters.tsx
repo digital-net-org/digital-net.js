@@ -9,7 +9,7 @@ import { LikeFilter } from './LikeFilter';
 interface DnEntityTableFiltersProps {
     filters: DnFilterDefinition[];
     values: Record<string, string>;
-    onChange: (patch: Record<string, string>) => void;
+    onChange: (_patch: Record<string, string>) => void;
     onReset: () => void;
 }
 

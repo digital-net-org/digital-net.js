@@ -11,10 +11,7 @@ export interface ResolvedColumn {
     schema: SchemaProperty;
 }
 
-export function resolveColumns<T>(
-    schema: SchemaProperty[],
-    columns?: DnColumnDefinition<T>[],
-): ResolvedColumn[] {
+export function resolveColumns<T>(schema: SchemaProperty[], columns?: DnColumnDefinition<T>[]): ResolvedColumn[] {
     const base = schema
         .filter(prop => !prop.isSecret && !prop.isIdentity)
         .map(prop => ({

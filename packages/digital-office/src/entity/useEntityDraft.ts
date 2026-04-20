@@ -68,8 +68,7 @@ export function useEntityDraft<T extends Entity>(
 
     const isDirty = ops.length > 0;
     const apiUpdatedAt = apiData?.updatedAt ?? null;
-    const hasConflict =
-        isDirty && !!apiUpdatedAt && !!baselineUpdatedAt && apiUpdatedAt > baselineUpdatedAt;
+    const hasConflict = isDirty && !!apiUpdatedAt && !!baselineUpdatedAt && apiUpdatedAt > baselineUpdatedAt;
 
     const persist = React.useCallback(
         async (nextOps: JsonPatchOp[], nextBaseline: string | null) => {
@@ -95,11 +94,8 @@ export function useEntityDraft<T extends Entity>(
             const accessor = pathToAccessor(path);
             const apiValue = (apiData as Record<string, unknown> | undefined)?.[accessor];
             const matchesApi = Object.is(value, apiValue);
-            const nextOps = matchesApi
-                ? ops.filter(o => o.path !== path)
-                : JsonPatch.setOp(ops, path, value);
-            const nextBaseline =
-                baselineUpdatedAt ?? (nextOps.length > 0 ? apiData?.updatedAt ?? null : null);
+            const nextOps = matchesApi ? ops.filter(o => o.path !== path) : JsonPatch.setOp(ops, path, value);
+            const nextBaseline = baselineUpdatedAt ?? (nextOps.length > 0 ? (apiData?.updatedAt ?? null) : null);
             setOps(nextOps);
             setBaseline(nextOps.length > 0 ? nextBaseline : null);
             void persist(nextOps, nextOps.length > 0 ? nextBaseline : null);

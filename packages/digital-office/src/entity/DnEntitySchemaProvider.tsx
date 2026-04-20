@@ -13,7 +13,7 @@ export interface DnEntitySchemaContextValue {
     schemas: Partial<Record<DnEntityName, SchemaProperty[]>>;
     errors: Partial<Record<DnEntityName, Error>>;
     loadingEntities: ReadonlySet<DnEntityName>;
-    loadSchema: (entityName: DnEntityName) => void;
+    loadSchema: (_entityName: DnEntityName) => void;
 }
 
 const DnEntitySchemaContext = React.createContext<DnEntitySchemaContextValue | null>(null);

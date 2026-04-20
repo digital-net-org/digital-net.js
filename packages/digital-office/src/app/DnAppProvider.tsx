@@ -8,7 +8,7 @@ export interface DnAppContextValue {
     /** Toggle the state of the navigation panel drawer **/
     toggleDrawer: () => void;
     /** Set the state of the navigation panel drawer **/
-    setIsDrawerOpen: (isOpen: boolean) => void;
+    setIsDrawerOpen: (_isOpen: boolean) => void;
     /** Render the application logo **/
     AppLogo: React.ReactNode;
 }

@@ -4,7 +4,7 @@ import type { DnFilterDefinition } from '../DnEntityTable';
 interface SelectFilterProps {
     filter: Extract<DnFilterDefinition, { type: 'select' }>;
     value: string;
-    onChange: (patch: Record<string, string>) => void;
+    onChange: (_patch: Record<string, string>) => void;
 }
 
 export function SelectFilter({ filter, value, onChange }: SelectFilterProps) {

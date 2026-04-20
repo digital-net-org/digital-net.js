@@ -14,7 +14,11 @@ import { DnTheme } from './DnTheme';
  * @param children - React children to render within the theme provider.
  */
 export const DnThemeProvider = ({ children }: React.PropsWithChildren) => {
-    const [mode, setMode] = React.useState<'light' | 'dark'>('light');
+    const [mode, setMode] = React.useState<'light' | 'dark'>(() => {
+        DnTheme.resolveTheme();
+        const bodyTheme = DnTheme.getThemeFromBody();
+        return bodyTheme === 'dark' ? 'dark' : 'light';
+    });
     const activeTheme = React.useMemo(() => (mode === 'dark' ? darkTheme : lightTheme), [mode]);
 
     const syncMuiTheme = React.useCallback(() => {
@@ -25,9 +29,6 @@ export const DnThemeProvider = ({ children }: React.PropsWithChildren) => {
     }, []);
 
     React.useEffect(() => {
-        DnTheme.resolveTheme();
-        syncMuiTheme();
-
         const observer = new MutationObserver(mutations => {
             if (mutations.some(mutation => mutation.attributeName === THEME_BODY_ATTR)) {
                 syncMuiTheme();
