@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { css, styled } from '@mui/material/styles';
 import { Badge, CircularProgress, IconButton, Popover, Stack, Tooltip, Typography } from '@mui/material';
-import { Delete as DeleteIcon, FilterAlt as FilterAltIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, AddCircle as AddIcon, FilterAlt as FilterAltIcon } from '@mui/icons-material';
 import type { DnFilterDefinition } from './DnEntityTable';
 import { DnEntityTableFilters } from './DnEntityTableFilters';
 
 interface DnEntityTableToolbarProps {
     selectedCount: number;
     onDelete: () => void;
+    onCreate?: () => void;
     loading?: boolean;
     filters?: DnFilterDefinition[];
     filterValues?: Record<string, string>;
@@ -19,6 +20,7 @@ interface DnEntityTableToolbarProps {
 export function DnEntityTableToolbar({
     selectedCount,
     onDelete,
+    onCreate,
     loading,
     filters,
     filterValues,
@@ -36,7 +38,10 @@ export function DnEntityTableToolbar({
 
     return (
         <ToolbarRoot direction="row">
-            <Typography variant="body2" sx={{ color: selectedCount > 0 ? 'text.primary' : 'text.disabled', fontSize: 'small' }}>
+            <Typography
+                variant="body2"
+                sx={{ color: selectedCount > 0 ? 'text.primary' : 'text.disabled', fontSize: 'small' }}
+            >
                 {selectedCount} selected
             </Typography>
             <Stack direction="row" sx={{ alignItems: 'center', gap: 1 }}>
@@ -50,6 +55,15 @@ export function DnEntityTableToolbar({
                         </IconButton>
                     </span>
                 </Tooltip>
+                {onCreate ? (
+                    <Tooltip title={loading ? '' : 'Créer un nouvel élément'} placement="bottom-start">
+                        <span>
+                            <IconButton onClick={onCreate} disabled={loading} color="inherit" size="small">
+                                <AddIcon />
+                            </IconButton>
+                        </span>
+                    </Tooltip>
+                ) : null}
                 <Tooltip
                     title={deleteDisabled ? '' : `Supprimer ${selectedCount} élément${selectedCount > 1 ? 's' : ''}`}
                     placement="bottom-start"

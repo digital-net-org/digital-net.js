@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityListView, type DnEntityListViewProps } from '../views';
+import { DnEntityListView, type DnEntityListViewProps } from '../../entity';
 
 const staticProps: DnEntityListViewProps<PageDto> = {
     title: 'Pages',
@@ -29,6 +29,7 @@ export function PageListView() {
         <DnEntityListView<PageDto>
             {...staticProps}
             onRowClick={row => navigate(`/content-manager/pages/${row.id}`)}
+            onCreate={() => navigate('new')}
             protectedDelete
         />
     );

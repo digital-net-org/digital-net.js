@@ -1,7 +1,11 @@
 import * as React from 'react';
 import { type SwitchProps, styled, Switch } from '@mui/material';
 
-export interface DnSwitchProps extends Pick<SwitchProps, 'id' | 'className' | 'disabled' | 'onClick' | 'onChange'> {
+export interface DnSwitchProps
+    extends Pick<
+        SwitchProps,
+        'id' | 'className' | 'disabled' | 'onClick' | 'onChange' | 'checked' | 'defaultChecked' | 'name' | 'value'
+    > {
     loading?: boolean;
 }
 

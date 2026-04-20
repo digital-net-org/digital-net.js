@@ -8,13 +8,13 @@ import {
     type DnRenderCell,
     DnDialogConfirmPassword,
     DnEntityTable,
+    DnView,
 } from '../../ui';
 import { DnEntityDialogFailure } from './DnEntityDialogFailure';
 import { type EntityIdentifier } from './identifier';
-import { useEntityList } from './useEntityList';
-import { useEntitySchema } from './useEntitySchema';
-import { useEntityDelete } from './useEntityDelete';
-import { DnView } from '../DnView';
+import { useEntityList } from '../useEntityList';
+import { useEntitySchema } from '../useEntitySchema';
+import { useEntityDelete } from '../useEntityDelete';
 
 const defaultRenderCell: DnRenderCell<Entity> = (col, value) => {
     if (col.schema.type === 'Boolean') return value ? 'Oui' : 'Non';
@@ -33,6 +33,7 @@ export interface DnEntityListViewProps<T extends Entity> {
     filters?: DnFilterDefinition[];
     protectedDelete?: boolean;
     onRowClick?: (_row: T) => void;
+    onCreate?: () => void;
 }
 
 export function DnEntityListView<T extends Entity>({
@@ -47,6 +48,7 @@ export function DnEntityListView<T extends Entity>({
     filters,
     protectedDelete = false,
     onRowClick,
+    onCreate,
 }: DnEntityListViewProps<T>) {
     const schema = useEntitySchema(schemaPath);
     const {
@@ -83,6 +85,7 @@ export function DnEntityListView<T extends Entity>({
                 pagination={pagination}
                 onPaginationChange={setPagination}
                 onRowClick={handleRowClick}
+                onCreate={onCreate}
                 onDelete={handleDelete}
                 loading={isLoading}
                 sort={sort}

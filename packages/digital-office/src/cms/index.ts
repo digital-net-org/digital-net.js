@@ -1,2 +1,1 @@
-export * from './PageListView';
-export * from './PageEditView';
+export * from './Page';

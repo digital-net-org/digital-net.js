@@ -50,6 +50,7 @@ export interface DnEntityTableProps<T extends Entity> {
     onPaginationChange: (pagination: DnPaginationState) => void;
     onRowClick: (row: T) => void | Promise<void>;
     onDelete: (id: Set<string>) => boolean | void | Promise<boolean | void>;
+    onCreate?: () => void;
     loading?: boolean;
     sort?: DnSortState;
     onSortChange?: (accessor: string) => void;
@@ -69,6 +70,7 @@ export function DnEntityTable<T extends Entity>({
     onPaginationChange,
     onRowClick,
     onDelete,
+    onCreate,
     loading,
     sort,
     onSortChange,
@@ -82,7 +84,11 @@ export function DnEntityTable<T extends Entity>({
     const [deleting, setDeleting] = React.useState(false);
     const [confirmOpen, setConfirmOpen] = React.useState(false);
 
-    React.useEffect(() => setSelectedIds(new Set()), [rows]);
+    const [prevRows, setPrevRows] = React.useState(rows);
+    if (rows !== prevRows) {
+        setPrevRows(rows);
+        setSelectedIds(new Set());
+    }
 
     const allSelected = React.useMemo(
         () => rows.length > 0 && selectedIds.size === rows.length,
@@ -156,6 +162,7 @@ export function DnEntityTable<T extends Entity>({
                 <DnEntityTableToolbar
                     selectedCount={selectedIds.size}
                     onDelete={() => setConfirmOpen(true)}
+                    onCreate={onCreate}
                     loading={isLoading}
                     filters={filters}
                     filterValues={filterValues}

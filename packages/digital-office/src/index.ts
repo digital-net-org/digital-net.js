@@ -6,7 +6,7 @@ import { DnOfficeRouter } from './routes';
 export * from './ui';
 export { DigitalOfficeProvider, type DigitalOfficeProviderProps } from './DigitalOfficeProvider';
 export { AdminGuard, AuthGuard, GuestGuard } from './routes';
-export { DnEntityListView, type DnEntityListViewProps } from './views';
+export { DnEntityListView, type DnEntityListViewProps } from './entity';
 
 /**
  * Root router for the Office application.

@@ -48,4 +48,35 @@ export const components: ThemeOptions['components'] = {
             }),
         },
     },
+    MuiTabs: {
+        defaultProps: {
+            variant: 'scrollable',
+            scrollButtons: 'auto',
+        },
+    },
+    MuiFormControlLabel: {
+        defaultProps: {
+            label: 'Bottom',
+            labelPlacement: 'start',
+        },
+        styleOverrides: {
+            root: () => ({
+                padding: 0,
+                margin: 0,
+                alignSelf: 'start',
+                gap: '1rem',
+                minWidth: '140px',
+                justifyContent: 'space-between',
+            }),
+        },
+    },
+    MuiFormHelperText: {
+        styleOverrides: {
+            root: () => ({
+                padding: 0,
+                margin: 0,
+                paddingLeft: '0.5rem',
+            }),
+        },
+    },
 };

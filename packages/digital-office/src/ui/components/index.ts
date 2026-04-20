@@ -13,3 +13,4 @@ export * from './DnMenuAccount';
 export * from './DnMenuSettings';
 export * from './DnMenuTheme';
 export * from './DnEntityTable';
+export * from './DnView';

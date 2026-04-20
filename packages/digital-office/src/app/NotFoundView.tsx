@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router';
-import { css, styled } from '@mui/material/styles';
-import { LinearProgress, Stack, Typography } from '@mui/material';
-import { DnView } from '../views';
+import { LinearProgress } from '@mui/material';
+import { ErrorView } from './ErrorView';
 
 const REDIRECT_DELAY_MS = 5000;
 const TICK_MS = 100;
@@ -28,28 +27,12 @@ export function NotFoundView() {
     }, [navigate]);
 
     return (
-        <DnView title="Erreur 404" description="Cette page n'existe pas, vous allez etre redirigé à l'accueil.">
-            <Center>
-                <BigCode>404</BigCode>
-                <LinearProgress variant="determinate" value={progress} sx={{ width: '60%', maxWidth: 480 }} />
-            </Center>
-        </DnView>
+        <ErrorView
+            statusCode={404}
+            title="Erreur 404"
+            description="Cette page n'existe pas, vous allez etre redirigé à l'accueil."
+        >
+            <LinearProgress variant="determinate" value={progress} sx={{ width: '60%', maxWidth: 480 }} />
+        </ErrorView>
     );
 }
-
-const Center = styled(Stack)(
-    () => css`
-        flex: 1;
-        align-items: center;
-        justify-content: center;
-        gap: 2rem;
-    `
-);
-
-const BigCode = styled(Typography)(
-    () => css`
-        font-size: 8rem;
-        font-weight: 700;
-        line-height: 1;
-    `
-);

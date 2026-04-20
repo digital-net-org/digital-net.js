@@ -10,6 +10,10 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
         element: <PageListView />,
     },
     {
+        path: '/content-manager/pages/new',
+        element: <PageEditView />,
+    },
+    {
         path: '/content-manager/pages/:id',
         element: <PageEditView />,
     },

@@ -3,6 +3,7 @@ import { matchPath, useLocation, useNavigate } from 'react-router';
 import { css, styled } from '@mui/material/styles';
 import { DnAppBar, DnAppDrawer } from '../ui';
 import { DnAppLayoutNav, type DnAppLayoutNavProps } from './DnAppLayoutNav';
+import { DnErrorBoundary } from './DnErrorBoundary';
 import { useDnApp } from './DnAppProvider';
 import { useDnUser } from '../user';
 
@@ -57,7 +58,9 @@ export function DnAppLayout({ navigation, routePatterns, children }: DnAppLayout
                         breadcrumb: !isLogged,
                     }}
                 />
-                <Main>{children}</Main>
+                <Main>
+                    <DnErrorBoundary key={location.pathname}>{children}</DnErrorBoundary>
+                </Main>
             </MainWrapper>
         </Layout>
     );

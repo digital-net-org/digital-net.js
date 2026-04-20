@@ -1,6 +1,6 @@
 import { type SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { useQuery } from '@tanstack/react-query';
-import { useDnApi } from '../../api';
+import { useDnApi } from '../api';
 
 export function useEntitySchema(schemaPath: string): SchemaProperty[] {
     const api = useDnApi();

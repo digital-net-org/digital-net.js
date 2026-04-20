@@ -4,8 +4,8 @@ import { css, styled } from '@mui/material/styles';
 
 export interface DnViewProps {
     title: string;
-    description: string;
-    children: React.ReactNode;
+    description?: string;
+    children?: React.ReactNode;
 }
 
 export function DnView({ title, description, children }: DnViewProps) {
@@ -13,9 +13,11 @@ export function DnView({ title, description, children }: DnViewProps) {
         <View>
             <Stack sx={{ pb: 2 }}>
                 <Typography variant="h2">{title}</Typography>
-                <Typography variant="body2" sx={{ ml: 0.35, mt: 1 }}>
-                    {description}
-                </Typography>
+                {description ? (
+                    <Typography variant="body2" sx={{ ml: 0.35, mt: 1 }}>
+                        {description}
+                    </Typography>
+                ) : null}
             </Stack>
             <Divider />
             {children}
