@@ -34,7 +34,7 @@ export function EntityFormProvider<T>({ binding, children }: EntityFormProviderP
 
 /**
  * In-memory form state for create mode. No IDB persistence — values are lost
- * if the page unmounts. Pair with `useUnsavedChangesBlocker` to prompt the
+ * if the page unmounts. Pair with `useRouterBlocker` to prompt the
  * user before navigating away.
  */
 export function useEntityFormState<T extends object>(): EntityFormBinding<T> {

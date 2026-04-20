@@ -2,7 +2,7 @@ import * as React from 'react';
 import { type QueryKey, useQuery } from '@tanstack/react-query';
 import { type Entity, type QueryResult } from '@digital-net-org/digital-api-sdk';
 import { type DnFilterDefinition, type DnPaginationState } from '../ui';
-import { type UrlParam, urlInt, urlString, useUrlQueryState } from './useUrlQueryState';
+import { type UrlParam, UrlParamBuilder, useUrlQueryState } from '../router';
 import { useDnApi } from '../api';
 
 export type SortDirection = 'asc' | 'desc' | '';
@@ -32,15 +32,15 @@ export function useEntityList<T extends Entity>(
 ): UseEntityListResult<T> {
     const api = useDnApi();
     const [query, setQuery] = useUrlQueryState({
-        page: urlInt(1),
-        row: urlInt(25),
-        orderBy: urlString('', 'order-by'),
-        order: urlString(),
+        page: UrlParamBuilder.buildInt(1, 'page'),
+        row: UrlParamBuilder.buildInt(25, 'row'),
+        orderBy: UrlParamBuilder.buildString('', 'order-by'),
+        order: UrlParamBuilder.buildString('', 'order'),
     });
 
     const filterSchema = React.useMemo(() => {
         const s: Record<string, UrlParam<string>> = {};
-        for (const f of filters ?? []) s[f.key] = urlString();
+        for (const f of filters ?? []) s[f.key] = UrlParamBuilder.buildString('', f.key);
         return s;
     }, [filters]);
     const [filterValues, setFilterValues] = useUrlQueryState(filterSchema);

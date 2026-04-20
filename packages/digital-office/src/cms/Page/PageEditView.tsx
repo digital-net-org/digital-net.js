@@ -7,12 +7,12 @@ import {
     EntityFormProvider,
     type DnEntityViewTab,
     type EntityFormBinding,
+    useEntityDraft,
     useEntityFormState,
     useEntityGet,
     useEntitySchema,
-    useUnsavedChangesBlocker,
 } from '../../entity';
-import { useEntityDraft } from '../../storage';
+import { useRouterBlocker } from '../../router';
 import { DnDialog, DnLoadingView } from '../../ui';
 import { useDnApi } from '../../api';
 import { useDnToast } from '../../app';
@@ -34,7 +34,7 @@ export function PageEditView() {
     const create = useEntityFormState<PageDto>();
     const { schemas } = useEntitySchema('page');
 
-    const blocker = useUnsavedChangesBlocker({ when: isNew && create.isDirty });
+    const blocker = useRouterBlocker({ when: isNew && create.isDirty });
     const [isSaving, setIsSaving] = React.useState(false);
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);

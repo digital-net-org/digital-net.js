@@ -5,7 +5,13 @@ import { DnApiProvider } from './api';
 import { DnUserProvider } from './user';
 import { DnEntitySchemaProvider } from './entity';
 import { DigitalNetLogo, DnAppProvider, DnToastProvider } from './app';
-import { DnIdbProvider } from './storage';
+import { DnIdbProvider, type IDbConfig } from './storage';
+
+const DRAFTS_DB_CONFIG: IDbConfig = {
+    name: 'office-drafts',
+    version: 1,
+    stores: ['patch:pages'] as const,
+};
 
 export interface DigitalOfficeProviderProps {
     api: DigitalApi;
@@ -26,7 +32,7 @@ export function DigitalOfficeProvider({ api, appLogo, children }: DigitalOfficeP
             <DnThemeProvider>
                 <DnToastProvider>
                     <DnUserProvider>
-                        <DnIdbProvider>
+                        <DnIdbProvider config={DRAFTS_DB_CONFIG}>
                             <DnEntitySchemaProvider>
                                 <DnAppProvider appLogo={appLogo ?? <DigitalNetLogo />}>
                                     {children}

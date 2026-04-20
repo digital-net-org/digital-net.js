@@ -1,12 +1,12 @@
 import { useDnApp, useDnToast } from './app';
 import { useDnUser } from './user';
 import { useDnApi } from './api';
-import { DnOfficeRouter } from './routes';
+import { DnOfficeRouter } from './router';
 
 export * from './ui';
 export * from './storage';
 export { DigitalOfficeProvider, type DigitalOfficeProviderProps } from './DigitalOfficeProvider';
-export { AdminGuard, AuthGuard, GuestGuard } from './routes';
+export { AdminGuard, AuthGuard, GuestGuard } from './router';
 export { DnEntityListView, type DnEntityListViewProps } from './entity';
 
 /**

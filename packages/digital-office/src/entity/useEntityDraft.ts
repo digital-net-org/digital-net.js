@@ -1,9 +1,7 @@
 import React from 'react';
 import type { Entity, JsonPatchOp } from '@digital-net-org/digital-api-sdk';
-import { DnIdbContext } from './DnIdbContext';
-import { IDbStore } from './IDbStore';
-import { applyOps, setOp } from './jsonPatch';
-import type { IDbDraftRecord } from './types';
+import { DnIdbContext, IDbStore, JsonPatch } from '../storage';
+import type { EntityDraftRecord } from './types';
 
 export interface UseEntityDraftOptions {
     enabled?: boolean;
@@ -52,7 +50,7 @@ export function useEntityDraft<T extends Entity>(
                 setBaseline(null);
                 return;
             }
-            const record = await IDbStore.get<IDbDraftRecord>(database, store, id);
+            const record = await IDbStore.get<EntityDraftRecord>(database, store, id);
             if (cancelled) return;
             setOps(record?.ops ?? []);
             setBaseline(record?.baselineUpdatedAt ?? null);
@@ -64,7 +62,7 @@ export function useEntityDraft<T extends Entity>(
     }, [database, enabled, id, store]);
 
     const values = React.useMemo<Partial<T>>(
-        () => applyOps<T>(apiData as Partial<T> | undefined, ops),
+        () => JsonPatch.applyOps<T>(apiData as Partial<T> | undefined, ops),
         [apiData, ops]
     );
 
@@ -79,7 +77,7 @@ export function useEntityDraft<T extends Entity>(
             if (nextOps.length === 0) {
                 await IDbStore.delete(database, store, id);
             } else {
-                const record: IDbDraftRecord = {
+                const record: EntityDraftRecord = {
                     id,
                     ops: nextOps,
                     baselineUpdatedAt: nextBaseline,
@@ -99,7 +97,7 @@ export function useEntityDraft<T extends Entity>(
             const matchesApi = Object.is(value, apiValue);
             const nextOps = matchesApi
                 ? ops.filter(o => o.path !== path)
-                : setOp(ops, path, value);
+                : JsonPatch.setOp(ops, path, value);
             const nextBaseline =
                 baselineUpdatedAt ?? (nextOps.length > 0 ? apiData?.updatedAt ?? null : null);
             setOps(nextOps);

@@ -1,8 +1,7 @@
 import React from 'react';
 import type { JsonPatchOp } from '@digital-net-org/digital-api-sdk';
-import { DnIdbContext } from './DnIdbContext';
-import { IDbStore } from './IDbStore';
-import type { IDbDraftRecord } from './types';
+import { DnIdbContext, IDbStore } from '../storage';
+import type { EntityDraftRecord } from './types';
 
 export interface UseEntityDraftIndexResult {
     drafts: Map<string, JsonPatchOp[]>;
@@ -15,14 +14,20 @@ export function useEntityDraftIndex(entityName: string): UseEntityDraftIndexResu
     const [isLoading, setIsLoading] = React.useState(false);
 
     React.useEffect(() => {
-        if (!database) return;
+        if (!database) {
+            return;
+        }
+
         let cancelled = false;
         const load = async () => {
-            if (cancelled) return;
             setIsLoading(true);
+
             try {
-                const records = await IDbStore.getAll<IDbDraftRecord>(database, `patch:${entityName}`);
-                if (cancelled) return;
+                const records = await IDbStore.getAll<EntityDraftRecord>(database, `patch:${entityName}`);
+                if (cancelled) {
+                    return;
+                }
+
                 const map = new Map<string, JsonPatchOp[]>();
                 for (const r of records) {
                     if (r.ops.length > 0) map.set(r.id, r.ops);
@@ -34,6 +39,7 @@ export function useEntityDraftIndex(entityName: string): UseEntityDraftIndexResu
                 if (!cancelled) setIsLoading(false);
             }
         };
+
         void load();
         return () => {
             cancelled = true;

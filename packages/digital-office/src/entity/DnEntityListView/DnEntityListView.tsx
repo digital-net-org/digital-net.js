@@ -16,7 +16,7 @@ import { type DnEntityName } from '../DnEntitySchemaProvider';
 import { useEntityList } from '../useEntityList';
 import { useEntitySchema } from '../useEntitySchema';
 import { useEntityDelete } from '../useEntityDelete';
-import { useEntityDraftIndex } from '../../storage';
+import { useEntityDraftIndex } from '../useEntityDraftIndex';
 
 const defaultRenderCell: DnRenderCell<Entity> = (col, value) => {
     if (col.schema.type === 'Boolean') return value ? 'Oui' : 'Non';

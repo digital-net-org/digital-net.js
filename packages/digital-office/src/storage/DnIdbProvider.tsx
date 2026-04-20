@@ -3,17 +3,11 @@ import { IDbAccessor } from './IDbAccessor';
 import { DnIdbContext, type DnIdbContextValue } from './DnIdbContext';
 import type { IDbConfig } from './types';
 
-const DEFAULT_CONFIG: IDbConfig = {
-    name: 'office-drafts',
-    version: 1,
-    stores: ['patch:pages'] as const,
-};
-
 export interface DnIdbProviderProps extends PropsWithChildren {
-    config?: IDbConfig;
+    config: IDbConfig;
 }
 
-export function DnIdbProvider({ children, config = DEFAULT_CONFIG }: DnIdbProviderProps) {
+export function DnIdbProvider({ children, config }: DnIdbProviderProps) {
     const [database, setDatabase] = React.useState<IDBDatabase | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
     const [hasError, setHasError] = React.useState(false);

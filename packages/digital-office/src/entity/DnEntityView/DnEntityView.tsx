@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { styled, css } from '@mui/material/styles';
 import { Delete as DeleteIcon, Save as SaveIcon } from '@mui/icons-material';
-import { urlString, useUrlQueryState } from '../useUrlQueryState';
+import { UrlParamBuilder, useUrlQueryState } from '../../router';
 import { DnDialog } from '../../ui';
 
 export interface DnEntityViewTab {
@@ -63,7 +63,9 @@ export function DnEntityView({
     onDelete,
     onReload,
 }: DnEntityViewProps) {
-    const [{ tab }, setState] = useUrlQueryState({ tab: urlString(tabs?.length ? tabs[0].key : '', 'tab') });
+    const [{ tab }, setState] = useUrlQueryState({
+        tab: UrlParamBuilder.buildString(tabs?.length ? tabs[0].key : '', 'tab'),
+    });
     const activeTab = tabs?.length ? (tabs.find(t => t.key === tab) ?? tabs[0]) : null;
     const [reloadDialogOpen, setReloadDialogOpen] = React.useState(false);
 

@@ -1,6 +1,7 @@
 import type { JsonPatchOp } from '@digital-net-org/digital-api-sdk';
 
-export interface IDbDraftRecord {
+/** Shape of a per-entity draft record persisted in IndexedDB. */
+export interface EntityDraftRecord {
     id: string;
     ops: JsonPatchOp[];
     baselineUpdatedAt: string | null;
