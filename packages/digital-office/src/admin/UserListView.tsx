@@ -13,7 +13,7 @@ const staticProps: DnEntityListViewProps<UserDto> = {
         { key: 'isActive', label: 'Actif' },
         { key: 'isAdmin', label: 'Administrateur' },
     ],
-    schemaPath: 'user',
+    entityName: 'user',
     listPath: 'admin/user',
     deletePath: 'admin/user/:id',
     filters: [

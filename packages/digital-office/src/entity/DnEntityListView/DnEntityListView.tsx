@@ -12,6 +12,7 @@ import {
 } from '../../ui';
 import { DnEntityDialogFailure } from './DnEntityDialogFailure';
 import { type EntityIdentifier } from './identifier';
+import { type DnEntityName } from '../DnEntitySchemaProvider';
 import { useEntityList } from '../useEntityList';
 import { useEntitySchema } from '../useEntitySchema';
 import { useEntityDelete } from '../useEntityDelete';
@@ -26,7 +27,7 @@ export interface DnEntityListViewProps<T extends Entity> {
     description: string;
     identifier: EntityIdentifier;
     identifierAccessor: keyof T;
-    schemaPath: string;
+    entityName: DnEntityName;
     listPath: string;
     deletePath: string;
     columns?: DnColumnDefinition<T>[];
@@ -41,7 +42,7 @@ export function DnEntityListView<T extends Entity>({
     description,
     identifier,
     identifierAccessor,
-    schemaPath,
+    entityName,
     listPath,
     deletePath,
     columns,
@@ -50,7 +51,7 @@ export function DnEntityListView<T extends Entity>({
     onRowClick,
     onCreate,
 }: DnEntityListViewProps<T>) {
-    const schema = useEntitySchema(schemaPath);
+    const { schemas, loading: isSchemaLoading } = useEntitySchema(entityName);
     const {
         entitiesResult,
         isLoading,
@@ -78,7 +79,7 @@ export function DnEntityListView<T extends Entity>({
     return (
         <DnView title={title} description={description}>
             <DnEntityTable
-                schema={schema}
+                schema={schemas}
                 rows={entitiesResult?.value ?? []}
                 columns={columns}
                 renderCell={defaultRenderCell as DnRenderCell<T>}
@@ -87,7 +88,7 @@ export function DnEntityListView<T extends Entity>({
                 onRowClick={handleRowClick}
                 onCreate={onCreate}
                 onDelete={handleDelete}
-                loading={isLoading}
+                loading={isLoading || isSchemaLoading}
                 sort={sort}
                 onSortChange={toggleSort}
                 filters={filters}

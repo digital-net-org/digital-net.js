@@ -4,6 +4,7 @@ import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
 import { DnThemeProvider } from './ui';
 import { DnApiProvider } from './api';
 import { DnUserProvider } from './user';
+import { DnEntitySchemaProvider } from './entity';
 import { DigitalNetLogo, DnAppProvider, DnToastProvider } from './app';
 
 export interface DigitalOfficeProviderProps {
@@ -22,7 +23,11 @@ export function DigitalOfficeProvider({ api, appLogo, children }: DigitalOfficeP
                 <BrowserRouter>
                     <DnToastProvider>
                         <DnUserProvider>
-                            <DnAppProvider appLogo={appLogo ?? <DigitalNetLogo />}>{children}</DnAppProvider>
+                            <DnEntitySchemaProvider>
+                                <DnAppProvider appLogo={appLogo ?? <DigitalNetLogo />}>
+                                    {children}
+                                </DnAppProvider>
+                            </DnEntitySchemaProvider>
                         </DnUserProvider>
                     </DnToastProvider>
                 </BrowserRouter>

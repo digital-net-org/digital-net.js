@@ -1,15 +1,22 @@
-import { type SchemaProperty } from '@digital-net-org/digital-api-sdk';
-import { useQuery } from '@tanstack/react-query';
-import { useDnApi } from '../api';
+import * as React from 'react';
+import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
+import { type DnEntityName, useDnEntitySchemaContext } from './DnEntitySchemaProvider';
 
-export function useEntitySchema(schemaPath: string): SchemaProperty[] {
-    const api = useDnApi();
-    const { data } = useQuery<SchemaProperty[]>({
-        queryKey: ['dn-entity-schema', schemaPath],
-        queryFn: async () => {
-            const result = await api.catalog.getSchema(schemaPath);
-            return result.hasError ? [] : result.value;
-        },
-    });
-    return data ?? [];
+export interface UseEntitySchemaResult {
+    schemas: SchemaProperty[];
+    loading: boolean;
+}
+
+export function useEntitySchema(entityName: DnEntityName): UseEntitySchemaResult {
+    const { schemas, errors, loadingEntities, loadSchema } = useDnEntitySchemaContext();
+
+    React.useEffect(() => loadSchema(entityName), [entityName, loadSchema]);
+
+    const error = errors[entityName];
+    if (error) throw error;
+
+    return {
+        schemas: schemas[entityName] ?? [],
+        loading: loadingEntities.has(entityName) || !(entityName in schemas),
+    };
 }

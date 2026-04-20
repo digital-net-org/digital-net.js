@@ -37,6 +37,6 @@ const staticProps: Record<string, { label: string; helperText: string }> = {
 };
 
 export function PageEditTabGeneral({ page, isNew }: PageEditTabGeneralProps) {
-    const schema = useEntitySchema('cms/pages');
-    return <DnEntityForm schemas={schema} staticProps={staticProps} />;
+    const { schemas } = useEntitySchema('page');
+    return <DnEntityForm schemas={schemas} staticProps={staticProps} />;
 }

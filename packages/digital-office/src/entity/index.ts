@@ -1,6 +1,7 @@
 export * from './DnEntityInput';
 export * from './DnEntityForm';
 export * from './DnEntityListView';
+export * from './DnEntitySchemaProvider';
 export * from './DnEntityView';
 export * from './useEntityDelete';
 export * from './useEntityGet';

@@ -13,7 +13,7 @@ const staticProps: DnEntityListViewProps<PageDto> = {
         { key: 'indexed', label: 'Indexée' },
         { key: 'published', label: 'Publiée' },
     ],
-    schemaPath: 'cms/pages',
+    entityName: 'page',
     listPath: 'cms/pages',
     deletePath: 'cms/pages/:id',
     filters: [
