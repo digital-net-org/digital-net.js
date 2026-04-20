@@ -3,7 +3,8 @@ import { type QueryKey, useQueryClient } from '@tanstack/react-query';
 import { HttpClientError, type Entity, type QueryResult } from '@digital-net-org/digital-api-sdk';
 import { ArrayBuilder } from '@digital-net-org/digital-core';
 import { type DnEntityFailureDialogContentProps } from './DnEntityListView/DnEntityDialogFailure';
-import { type EntityIdentifier, resolveDeleteLabel } from './DnEntityListView/identifier';
+import { resolveDeleteLabel } from './DnEntityListView/identifier';
+import { type EntityIdentifier } from './types';
 import { useDnApi } from '../api';
 import { useDnToast } from '../app';
 

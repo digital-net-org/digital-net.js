@@ -1,10 +1,6 @@
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityForm, useDnEntityFormContext, useEntitySchema } from '../../entity';
 
-export interface PageEditTabGeneralProps {
-    isNew: boolean;
-}
-
 const staticProps: Record<string, { label: string; helperText: string }> = {
     Path: {
         label: 'Chemin',
@@ -34,7 +30,7 @@ const staticProps: Record<string, { label: string; helperText: string }> = {
     },
 };
 
-export function PageEditTabGeneral({ isNew: _isNew }: PageEditTabGeneralProps) {
+export function PageEditTabGeneral() {
     const { schemas } = useEntitySchema('page');
     const { values, setField, errors, disabled } = useDnEntityFormContext<PageDto>();
     return (

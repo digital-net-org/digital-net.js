@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { Divider, Stack, Typography } from '@mui/material';
-import { css, styled } from '@mui/material/styles';
 import { type Entity } from '@digital-net-org/digital-api-sdk';
 import {
     type DnColumnDefinition,
@@ -11,7 +9,7 @@ import {
     DnView,
 } from '../../ui';
 import { DnEntityDialogFailure } from './DnEntityDialogFailure';
-import { type EntityIdentifier } from './identifier';
+import { type EntityIdentifier } from '../types';
 import { type DnEntityName } from '../DnEntitySchemaProvider';
 import { useEntityList } from '../useEntityList';
 import { useEntitySchema } from '../useEntitySchema';

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Typography } from '@mui/material';
 import { DnDialog } from '../../ui';
-import { type EntityIdentifier, resolveDeleteLabel, resolveNextLabel } from './identifier';
+import { resolveDeleteLabel, resolveNextLabel } from './identifier';
+import { type EntityIdentifier } from '../types';
 
 export interface DnEntityFailureDialogContentProps {
     open: boolean;

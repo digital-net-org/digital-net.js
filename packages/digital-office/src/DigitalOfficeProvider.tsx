@@ -5,13 +5,8 @@ import { DnApiProvider } from './api';
 import { DnUserProvider } from './user';
 import { DnEntitySchemaProvider } from './entity';
 import { DigitalNetLogo, DnAppProvider, DnToastProvider } from './app';
-import { DnIdbProvider, type IDbConfig } from './storage';
-
-const DRAFTS_DB_CONFIG: IDbConfig = {
-    name: 'office-drafts',
-    version: 1,
-    stores: ['patch:pages'] as const,
-};
+import { DnIdbProvider } from './storage';
+import { DRAFTS_DB_CONFIG } from './constants';
 
 export interface DigitalOfficeProviderProps {
     api: DigitalApi;

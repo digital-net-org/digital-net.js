@@ -38,6 +38,18 @@ describe('StringResolver', () => {
         });
     });
 
+    describe('capitalize()', () => {
+        it.each([
+            { input: 'page', expected: 'Page' },
+            { input: 'Page', expected: 'Page' },
+            { input: '', expected: '' },
+            { input: '   ', expected: '' },
+            { input: 'a', expected: 'A' },
+        ])('should transform "$input" to "$expected"', ({ input, expected }) => {
+            expect(StringResolver.capitalize(input)).toBe(expected);
+        });
+    });
+
     describe('truncateWithEllipsis()', () => {
         it.each([
             { input: 'Too long sry lol!', maxLength: 6, expected: 'Too...' },

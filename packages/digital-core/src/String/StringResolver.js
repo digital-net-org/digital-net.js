@@ -55,6 +55,16 @@ export class StringResolver {
     }
 
     /**
+     * Returns the string with the first character uppercased.
+     * @param {string} str
+     * @returns {string}
+     */
+    static capitalize(str) {
+        if (StringMatcher.isEmptyOrWhitespace(str)) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    /**
      * Truncate a string that exceeds the provided length and adds ellipsis.
      * @param {string} input
      * @param {number} maxLength
