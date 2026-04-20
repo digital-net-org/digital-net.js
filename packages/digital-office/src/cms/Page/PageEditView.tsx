@@ -4,9 +4,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import type { JsonPatchOp, PageDto } from '@digital-net-org/digital-api-sdk';
 import {
     DnEntityView,
-    EntityFormProvider,
+    DnEntityFormProvider,
     type DnEntityViewTab,
-    type EntityFormBinding,
+    type DnEntityFormBinding,
     useEntityDraft,
     useEntityFormState,
     useEntityGet,
@@ -57,7 +57,7 @@ export function PageEditView() {
         [errors, rawSetField]
     );
 
-    const binding: EntityFormBinding<PageDto> = isNew
+    const binding: DnEntityFormBinding<PageDto> = isNew
         ? { values: create.values, setField, isDirty: create.isDirty, errors, disabled: inputsDisabled }
         : { values: edit.values, setField, isDirty: edit.isDirty, errors, disabled: inputsDisabled };
 
@@ -154,7 +154,7 @@ export function PageEditView() {
     ];
 
     return (
-        <EntityFormProvider binding={binding}>
+        <DnEntityFormProvider binding={binding}>
             <DnEntityView
                 title={isNew ? 'Créer une nouvelle page' : `Édition : ${page!.path}`}
                 tabs={tabs}
@@ -186,6 +186,6 @@ export function PageEditView() {
             >
                 Si vous quittez cette page, les données saisies seront perdues. Continuer ?
             </DnDialog>
-        </EntityFormProvider>
+        </DnEntityFormProvider>
     );
 }

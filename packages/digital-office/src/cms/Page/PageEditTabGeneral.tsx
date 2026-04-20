@@ -1,5 +1,5 @@
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityForm, useEntityFormBinding, useEntitySchema } from '../../entity';
+import { DnEntityForm, useDnEntityFormContext, useEntitySchema } from '../../entity';
 
 export interface PageEditTabGeneralProps {
     isNew: boolean;
@@ -36,7 +36,7 @@ const staticProps: Record<string, { label: string; helperText: string }> = {
 
 export function PageEditTabGeneral({ isNew: _isNew }: PageEditTabGeneralProps) {
     const { schemas } = useEntitySchema('page');
-    const { values, setField, errors, disabled } = useEntityFormBinding<PageDto>();
+    const { values, setField, errors, disabled } = useDnEntityFormContext<PageDto>();
     return (
         <DnEntityForm
             schemas={schemas}

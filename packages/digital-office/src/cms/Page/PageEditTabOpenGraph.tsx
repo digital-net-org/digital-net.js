@@ -1,9 +1,9 @@
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
-import { useEntityFormBinding } from '../../entity';
+import { useDnEntityFormContext } from '../../entity';
 import { DnInput } from '../../ui';
 
 export function PageEditTabOpenGraph() {
-    const { values, setField, disabled } = useEntityFormBinding<PageDto>();
+    const { values, setField, disabled } = useDnEntityFormContext<PageDto>();
     return (
         <DnInput
             label="OpenGraph"
