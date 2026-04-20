@@ -15,10 +15,14 @@ import {
     TableSortLabel,
     Typography,
 } from '@mui/material';
-import type { Entity, SchemaProperty } from '@digital-net-org/digital-api-sdk';
+import type { Entity, JsonPatchOp, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { DnEntityTableToolbar } from './DnEntityTableToolbar';
 import { type DnColumnDefinition, type ResolvedColumn, resolveColumns } from './resolveColumns';
 import { DnDialog } from '../DnDialog';
+
+export interface DnRowDraftInfo {
+    ops: JsonPatchOp[];
+}
 
 export type { DnColumnDefinition, ResolvedColumn };
 
@@ -59,6 +63,7 @@ export interface DnEntityTableProps<T extends Entity> {
     onFilterChange?: (patch: Record<string, string>) => void;
     onFilterReset?: () => void;
     activeFilterCount?: number;
+    getRowDraftInfo?: (row: T) => DnRowDraftInfo | undefined;
 }
 
 export function DnEntityTable<T extends Entity>({
@@ -79,6 +84,7 @@ export function DnEntityTable<T extends Entity>({
     onFilterChange,
     onFilterReset,
     activeFilterCount,
+    getRowDraftInfo,
 }: DnEntityTableProps<T>) {
     const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
     const [deleting, setDeleting] = React.useState(false);
@@ -215,8 +221,18 @@ export function DnEntityTable<T extends Entity>({
                         ) : (
                             rows.map(row => {
                                 const isSelected = selectedIds.has(row.id);
+                                const draftInfo = getRowDraftInfo?.(row);
+                                const dirtyAccessors = draftInfo
+                                    ? new Set(draftInfo.ops.map(op => op.path.replace(/^\//, '').split('/')[0]))
+                                    : null;
                                 return (
-                                    <TableRow key={row.id} hover selected={isSelected} onClick={() => onRowClick(row)}>
+                                    <TableRow
+                                        key={row.id}
+                                        hover
+                                        selected={isSelected}
+                                        onClick={() => onRowClick(row)}
+                                        $dirty={Boolean(draftInfo)}
+                                    >
                                         <TableBodyCell padding="checkbox" onClick={e => e.stopPropagation()}>
                                             <Checkbox
                                                 checked={isSelected}
@@ -225,11 +241,35 @@ export function DnEntityTable<T extends Entity>({
                                                 size="small"
                                             />
                                         </TableBodyCell>
-                                        {resolvedColumns.map(col => {
+                                        {resolvedColumns.map((col, colIndex) => {
                                             const value = (row as Record<string, unknown>)[col.accessor];
+                                            const isDirtyCell = dirtyAccessors?.has(col.accessor) ?? false;
+                                            const isFirstColumn = colIndex === 0;
                                             return (
-                                                <TableBodyCell key={col.accessor}>
+                                                <TableBodyCell
+                                                    key={col.accessor}
+                                                    sx={{
+                                                        position: isFirstColumn && draftInfo ? 'relative' : undefined,
+                                                        fontStyle: draftInfo ? 'italic' : undefined,
+                                                    }}
+                                                >
                                                     {renderCell ? renderCell(col, value, row) : String(value ?? '')}
+                                                    {isFirstColumn && draftInfo ? (
+                                                        <Typography
+                                                            variant="caption"
+                                                            sx={{
+                                                                position: 'absolute',
+                                                                bottom: 4,
+                                                                left: 4,
+                                                                fontSize: '0.7rem',
+                                                                fontStyle: 'italic',
+                                                                color: 'warning.main',
+                                                                pointerEvents: 'none',
+                                                            }}
+                                                        >
+                                                            (changements non sauvegardés)
+                                                        </Typography>
+                                                    ) : null}
                                                 </TableBodyCell>
                                             );
                                         })}
@@ -308,9 +348,18 @@ const TableBodyCell = styled(MuiTableCell)(
     `
 );
 
-const TableRow = styled(MuiTableRow)(
-    () => css`
+const TableRow = styled(MuiTableRow, {
+    shouldForwardProp: prop => prop !== '$dirty',
+})<{ $dirty?: boolean }>(
+    ({ theme, $dirty }) => css`
         cursor: pointer;
+        ${$dirty &&
+        css`
+            background-color: ${alpha(theme.palette.divider, 0.15)};
+            & td {
+                padding-bottom: 12px;
+            }
+        `}
     `
 );
 

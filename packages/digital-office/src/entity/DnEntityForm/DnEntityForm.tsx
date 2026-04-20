@@ -8,9 +8,21 @@ export type EntityInputStaticProps = Record<string, { label: string; helperText:
 export interface DnEntityFormProps {
     schemas: SchemaProperty[];
     staticProps: EntityInputStaticProps;
+    values: Record<string, unknown>;
+    onFieldChange: (_path: string, _value: unknown) => void;
+    errors?: ReadonlySet<string>;
+    disabled?: boolean;
 }
 
-export function DnEntityForm({ schemas, staticProps }: DnEntityFormProps) {
+function schemaNameToPath(name: string): string {
+    return `/${name.charAt(0).toLowerCase()}${name.slice(1)}`;
+}
+
+function schemaNameToAccessor(name: string): string {
+    return `${name.charAt(0).toLowerCase()}${name.slice(1)}`;
+}
+
+export function DnEntityForm({ schemas, staticProps, values, onFieldChange, errors, disabled }: DnEntityFormProps) {
     const resolvedSchemas = React.useMemo(
         () =>
             Object.entries(staticProps).reduce<(EntityInputStaticProps[string] & { schema: SchemaProperty })[]>(
@@ -28,9 +40,22 @@ export function DnEntityForm({ schemas, staticProps }: DnEntityFormProps) {
 
     return (
         <Stack spacing={2} sx={{ maxWidth: 720 }}>
-            {resolvedSchemas.map(s => (
-                <DnEntityInput key={s.schema.name} {...s} />
-            ))}
+            {resolvedSchemas.map(s => {
+                const accessor = schemaNameToAccessor(s.schema.name);
+                const path = schemaNameToPath(s.schema.name);
+                return (
+                    <DnEntityInput
+                        key={s.schema.name}
+                        schema={s.schema}
+                        label={s.label}
+                        helperText={s.helperText}
+                        value={values[accessor]}
+                        onChange={next => onFieldChange(path, next)}
+                        error={errors?.has(accessor)}
+                        disabled={disabled}
+                    />
+                );
+            })}
         </Stack>
     );
 }

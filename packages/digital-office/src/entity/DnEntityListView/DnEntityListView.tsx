@@ -16,6 +16,7 @@ import { type DnEntityName } from '../DnEntitySchemaProvider';
 import { useEntityList } from '../useEntityList';
 import { useEntitySchema } from '../useEntitySchema';
 import { useEntityDelete } from '../useEntityDelete';
+import { useEntityDraftIndex } from '../../storage';
 
 const defaultRenderCell: DnRenderCell<Entity> = (col, value) => {
     if (col.schema.type === 'Boolean') return value ? 'Oui' : 'Non';
@@ -30,6 +31,12 @@ export interface DnEntityListViewProps<T extends Entity> {
     entityName: DnEntityName;
     listPath: string;
     deletePath: string;
+    /**
+     * Name of the draft store, used to highlight rows that have local unsaved
+     * changes. Should match the key used by `useEntityDraft`, e.g. `"pages"`.
+     * Omit to disable the draft indicator.
+     */
+    draftStoreName?: string;
     columns?: DnColumnDefinition<T>[];
     filters?: DnFilterDefinition[];
     protectedDelete?: boolean;
@@ -45,6 +52,7 @@ export function DnEntityListView<T extends Entity>({
     entityName,
     listPath,
     deletePath,
+    draftStoreName,
     columns,
     filters,
     protectedDelete = false,
@@ -74,6 +82,17 @@ export function DnEntityListView<T extends Entity>({
         protectedDelete,
     });
 
+    const { drafts } = useEntityDraftIndex(draftStoreName ?? '');
+
+    const getRowDraftInfo = React.useCallback(
+        (row: T) => {
+            if (!draftStoreName) return undefined;
+            const ops = drafts.get(row.id);
+            return ops ? { ops } : undefined;
+        },
+        [draftStoreName, drafts]
+    );
+
     const handleRowClick = React.useCallback((row: T) => (onRowClick ? onRowClick(row) : void 0), [onRowClick]);
 
     return (
@@ -96,6 +115,7 @@ export function DnEntityListView<T extends Entity>({
                 onFilterChange={setFilterValues}
                 onFilterReset={resetFilters}
                 activeFilterCount={activeFilterCount}
+                getRowDraftInfo={draftStoreName ? getRowDraftInfo : undefined}
             />
             {protectedDelete ? <DnDialogConfirmPassword {...passwordDialog} /> : null}
             <DnEntityDialogFailure

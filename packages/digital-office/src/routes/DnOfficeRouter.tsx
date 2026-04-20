@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Routes, Route } from 'react-router';
+import { createBrowserRouter, Outlet, RouterProvider } from 'react-router';
 import { AdminGuard, AuthGuard, GuestGuard } from './guards';
 import { DnAppLayout } from '../app';
 import { useDnUser } from '../user';
@@ -10,53 +10,62 @@ export interface DnOfficeRouterProps {
     routes?: DigitalOfficeRoute[];
 }
 
-export function DnOfficeRouter({ routes }: DnOfficeRouterProps) {
-    const { isAdmin, isLoading } = useDnUser();
+function guardFor(route: DigitalOfficeRoute): React.ReactNode {
+    if (route.isPublic) return <GuestGuard>{route.element}</GuestGuard>;
+    if (route.isAdmin) return <AdminGuard>{route.element}</AdminGuard>;
+    return <AuthGuard>{route.element}</AuthGuard>;
+}
 
-    const resolvedRoutes = React.useMemo<DigitalOfficeRoute[]>(
-        () => [...APP_ROUTES, ...ADMIN_ROUTES, ...CMS_ROUTES, ...(routes ?? [])],
-        [routes]
-    );
+function RouterLayout({ allRoutes }: { allRoutes: DigitalOfficeRoute[] }) {
+    const { isAdmin } = useDnUser();
 
-    const routePatterns = React.useMemo(
-        () => resolvedRoutes.map(r => r.path).filter(p => !p.includes('*')),
-        [resolvedRoutes]
-    );
-
-    const resolvedNavigation = React.useMemo(
-        () => ({
-            ...resolvedRoutes
+    const navigation = React.useMemo(
+        () =>
+            allRoutes
                 .filter(r => r.navGroup && r.navLabel && (!r.isAdmin || isAdmin))
                 .reduce<Record<string, { path: string; label: string }[]>>((acc, curr) => {
                     const item = { path: curr.path, label: curr.navLabel! };
-                    if (acc[curr.navGroup!]) {
-                        acc[curr.navGroup!].push(item);
-                    } else {
-                        acc[curr.navGroup!] = [item];
-                    }
+                    if (acc[curr.navGroup!]) acc[curr.navGroup!].push(item);
+                    else acc[curr.navGroup!] = [item];
                     return acc;
                 }, {}),
-        }),
-        [resolvedRoutes, isAdmin]
+        [allRoutes, isAdmin]
     );
+
+    const routePatterns = React.useMemo(
+        () => allRoutes.map(r => r.path).filter(p => !p.includes('*')),
+        [allRoutes]
+    );
+
+    return (
+        <DnAppLayout navigation={navigation} routePatterns={routePatterns}>
+            <Outlet />
+        </DnAppLayout>
+    );
+}
+
+export function DnOfficeRouter({ routes }: DnOfficeRouterProps) {
+    const { isLoading } = useDnUser();
+
+    const router = React.useMemo(() => {
+        const allRoutes: DigitalOfficeRoute[] = [
+            ...APP_ROUTES,
+            ...ADMIN_ROUTES,
+            ...CMS_ROUTES,
+            ...(routes ?? []),
+        ];
+        return createBrowserRouter([
+            {
+                element: <RouterLayout allRoutes={allRoutes} />,
+                children: allRoutes.map(r => ({
+                    path: r.path,
+                    element: guardFor(r),
+                })),
+            },
+        ]);
+    }, [routes]);
 
     if (isLoading) return null;
 
-    return (
-        <DnAppLayout navigation={resolvedNavigation} routePatterns={routePatterns}>
-            <Routes>
-                {resolvedRoutes.map(({ element, isPublic, isAdmin: admin, path }) => {
-                    let guarded: React.ReactNode;
-                    if (isPublic) {
-                        guarded = <GuestGuard>{element}</GuestGuard>;
-                    } else if (admin) {
-                        guarded = <AdminGuard>{element}</AdminGuard>;
-                    } else {
-                        guarded = <AuthGuard>{element}</AuthGuard>;
-                    }
-                    return <Route key={path} path={path} element={guarded} />;
-                })}
-            </Routes>
-        </DnAppLayout>
-    );
+    return <RouterProvider router={router} />;
 }

@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { BrowserRouter } from 'react-router';
 import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
 import { DnThemeProvider } from './ui';
 import { DnApiProvider } from './api';
 import { DnUserProvider } from './user';
 import { DnEntitySchemaProvider } from './entity';
 import { DigitalNetLogo, DnAppProvider, DnToastProvider } from './app';
+import { DnIdbProvider } from './storage';
 
 export interface DigitalOfficeProviderProps {
     api: DigitalApi;
@@ -15,22 +15,26 @@ export interface DigitalOfficeProviderProps {
 
 /**
  * Provides the dependencies and contexts for the digital-office library.
+ *
+ * Note: router context is provided by `DigitalOfficeRouter` (which uses
+ * `createBrowserRouter` + `<RouterProvider>`), so it lives as a child
+ * of these providers — none of the providers below need router hooks.
  */
 export function DigitalOfficeProvider({ api, appLogo, children }: DigitalOfficeProviderProps) {
     return (
         <DnApiProvider api={api}>
             <DnThemeProvider>
-                <BrowserRouter>
-                    <DnToastProvider>
-                        <DnUserProvider>
+                <DnToastProvider>
+                    <DnUserProvider>
+                        <DnIdbProvider>
                             <DnEntitySchemaProvider>
                                 <DnAppProvider appLogo={appLogo ?? <DigitalNetLogo />}>
                                     {children}
                                 </DnAppProvider>
                             </DnEntitySchemaProvider>
-                        </DnUserProvider>
-                    </DnToastProvider>
-                </BrowserRouter>
+                        </DnIdbProvider>
+                    </DnUserProvider>
+                </DnToastProvider>
             </DnThemeProvider>
         </DnApiProvider>
     );

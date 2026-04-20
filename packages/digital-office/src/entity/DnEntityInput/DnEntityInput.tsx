@@ -12,6 +12,7 @@ export interface DnEntityInputProps {
     disabled?: boolean;
     multiline?: boolean;
     rows?: number;
+    error?: boolean;
 }
 
 export function DnEntityInput({
@@ -23,6 +24,7 @@ export function DnEntityInput({
     disabled,
     multiline,
     rows,
+    error,
 }: DnEntityInputProps) {
     const resolvedLabel = React.useMemo(() => label ?? schema.name, [label, schema]);
     const resolvedDisabled = React.useMemo(
@@ -36,8 +38,9 @@ export function DnEntityInput({
             disabled: resolvedDisabled,
             required: schema.isRequired,
             helperText: helperText,
+            error: error,
         }),
-        [helperText, resolvedDisabled, resolvedLabel, schema.isRequired, value]
+        [error, helperText, resolvedDisabled, resolvedLabel, schema.isRequired, value]
     );
 
     const handleChange = (next: unknown) => onChange(next);

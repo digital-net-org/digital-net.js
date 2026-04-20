@@ -10,6 +10,10 @@ export const lightPalette: PaletteOptions = {
         main: '#b62929',
         light: '#c74545',
     },
+    warning: {
+        main: '#004aad',
+        light: '#2c6fc7',
+    },
     background: {
         default: '#f0f0f0',
         paper: '#fcfcfc',
@@ -31,6 +35,10 @@ export const darkPalette: PaletteOptions = {
     error: {
         main: '#c14141',
         light: '#c85959',
+    },
+    warning: {
+        main: '#2f69b2',
+        light: '#6191cf',
     },
     background: {
         default: '#181818',

@@ -1,16 +1,15 @@
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
+import { useEntityFormBinding } from '../../entity';
 import { DnInput } from '../../ui';
 
-export interface PageEditTabOpenGraphProps {
-    page: PageDto | undefined;
-}
-
-export function PageEditTabOpenGraph({ page }: PageEditTabOpenGraphProps) {
+export function PageEditTabOpenGraph() {
+    const { values, setField, disabled } = useEntityFormBinding<PageDto>();
     return (
         <DnInput
             label="OpenGraph"
-            value={page?.openGraph ?? ''}
-            disabled
+            value={values.openGraph ?? ''}
+            onChange={event => setField('/openGraph', event.target.value)}
+            disabled={disabled}
             fullWidth
             multiline
             rows={16}

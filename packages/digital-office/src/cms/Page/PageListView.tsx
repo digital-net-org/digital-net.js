@@ -4,7 +4,7 @@ import { DnEntityListView, type DnEntityListViewProps } from '../../entity';
 
 const staticProps: DnEntityListViewProps<PageDto> = {
     title: 'Pages',
-    description: 'Gérez les pages du site.',
+    description: 'Gérez les méta-données, les redirections, les scripts ou feuilles de style des pages du site.',
     identifier: { singular: 'page', plural: 'pages', gender: 'f' },
     identifierAccessor: 'path',
     columns: [
@@ -16,6 +16,7 @@ const staticProps: DnEntityListViewProps<PageDto> = {
     entityName: 'page',
     listPath: 'cms/pages',
     deletePath: 'cms/pages/:id',
+    draftStoreName: 'pages',
     filters: [
         { type: 'like', key: 'path', label: 'Chemin', placeholder: '/blog/...' },
         { type: 'boolean', key: 'published', label: 'Publiées uniquement' },
