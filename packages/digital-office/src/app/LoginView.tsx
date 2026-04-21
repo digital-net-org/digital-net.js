@@ -17,6 +17,7 @@ export function LoginView() {
 
     const [loginInput, setLoginInput] = React.useState('');
     const [passwordInput, setPasswordInput] = React.useState('');
+    const [invalidCredentials, setInvalidCredentials] = React.useState(false);
 
     const { data: online, isLoading: isPingLoading } = useQuery<boolean>({
         queryKey: [PING_KEY],
@@ -42,6 +43,7 @@ export function LoginView() {
                 { password: passwordInput, login: loginInput },
                 {
                     onStatus: {
+                        401: () => setInvalidCredentials(true),
                         429: () => invalidateLocked(),
                     },
                 }
@@ -63,8 +65,11 @@ export function LoginView() {
         if (locked) {
             return 'Vous avez effectué un trop grand nombre de tentatives de connexion. Par mesure de sécurité, votre accès est temporairement bloqué pendant 15 minutes.';
         }
+        if (invalidCredentials) {
+            return 'Identifiant ou mot de passe incorrect.';
+        }
         return null;
-    }, [online, locked]);
+    }, [online, locked, invalidCredentials]);
 
     const handleSubmit = React.useCallback(
         (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -87,7 +92,10 @@ export function LoginView() {
                         name="login"
                         inputProps={{ maxLength: 48 }}
                         value={loginInput}
-                        onChange={e => setLoginInput(e.target.value)}
+                        onChange={e => {
+                            setLoginInput(e.target.value);
+                            setInvalidCredentials(false);
+                        }}
                         disabled={isDisabled}
                         required
                     />
@@ -96,7 +104,10 @@ export function LoginView() {
                         name="password"
                         inputProps={{ maxLength: 256, autoComplete: 'off' }}
                         value={passwordInput}
-                        onChange={e => setPasswordInput(e.target.value)}
+                        onChange={e => {
+                            setPasswordInput(e.target.value);
+                            setInvalidCredentials(false);
+                        }}
                         disabled={isDisabled}
                         type="password"
                         required
@@ -120,7 +131,7 @@ const Layout = styled(Stack)(
         border-radius: ${theme.shape.borderRadius};
         padding: 2rem;
         background-color: ${theme.palette.background.paper};
-        max-width: 320px;
+        max-width: 360px;
         margin-top: 9rem;
     `
 );
