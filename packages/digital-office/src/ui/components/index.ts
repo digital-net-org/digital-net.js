@@ -3,6 +3,7 @@ export * from './DnAppBarMenu';
 export * from './DnAppDrawer';
 export * from './DnBreadcrumbs';
 export * from './DnButton';
+export * from './DnCodeEditor';
 export * from './DnCollapseBlock';
 export * from './DnInput';
 export * from './DnLoadingView';
