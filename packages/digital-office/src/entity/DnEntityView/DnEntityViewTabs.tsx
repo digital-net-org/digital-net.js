@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, Box, CircularProgress, Link, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Alert, CircularProgress, Link, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { Delete as DeleteIcon, Refresh as RefreshIcon, Save as SaveIcon } from '@mui/icons-material';
 import { DnDialog, DnIconButton } from '../../ui';
 import { formatDate } from './formatDate';
@@ -84,7 +84,7 @@ export function DnEntityViewTabs({
                 ) : null}
             </Stack>
             {hasConflict ? (
-                <Alert severity="warning" sx={{ width: '100%', mt: 1 }}>
+                <Alert severity="warning" variant="outlined" sx={{ mt: 1 }}>
                     <Typography variant="body2">
                         Cette entité a été modifiée ailleurs depuis le début de votre édition locale.
                     </Typography>
@@ -104,7 +104,7 @@ export function DnEntityViewTabs({
                     ) : null}
                 </Alert>
             ) : null}
-            <Box sx={{ pt: 2 }}>{activeTab.content}</Box>
+            <Stack sx={{ pt: 2, height: '100%' }}>{activeTab.content}</Stack>
             <DnDialog
                 open={reloadDialogOpen}
                 onClose={() => setReloadDialogOpen(false)}

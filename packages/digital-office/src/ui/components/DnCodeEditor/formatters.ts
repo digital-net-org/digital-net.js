@@ -22,7 +22,8 @@ export async function formatCode(source: string, language: DnCodeEditorLanguage)
             singleQuote: true,
             printWidth: 120,
         });
-    } catch {
+    } catch (err) {
+        console.warn('[DnCodeEditor] Prettier format failed:', err);
         return source;
     }
 }

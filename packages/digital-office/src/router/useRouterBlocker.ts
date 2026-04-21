@@ -17,9 +17,19 @@ export interface UseRouterBlockerResult {
  * `beforeunload` handler for tab close / reload. Returns dialog control state
  * so the caller can render a custom confirmation UI and drive it via
  * `confirm()` (proceed with the pending navigation) or `cancel()` (stay).
+ *
+ * Navigations that keep the same `pathname` (e.g. tab switching via query
+ * string, hash updates) are treated as intra-page state changes and are
+ * never blocked.
  */
 export function useRouterBlocker({ when }: UseRouterBlockerOptions): UseRouterBlockerResult {
-    const blocker = useBlocker(when);
+    const shouldBlock = React.useCallback<
+        (_args: { currentLocation: { pathname: string }; nextLocation: { pathname: string } }) => boolean
+    >(
+        ({ currentLocation, nextLocation }) => when && currentLocation.pathname !== nextLocation.pathname,
+        [when]
+    );
+    const blocker = useBlocker(shouldBlock);
 
     React.useEffect(() => {
         if (!when) return;
