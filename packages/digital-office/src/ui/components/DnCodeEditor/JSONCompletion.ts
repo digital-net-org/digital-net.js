@@ -176,7 +176,7 @@ export class JSONCompletion {
             const docText = isLeaf ? getJsonLdDescription(anchor.type, prop.property) : undefined;
             out.push(this.aceCompletion({ ...prop, property: segment }, meta, docText));
         }
-        return out;
+        return this.sortAlphabetical(out);
     }
 
     private suggestValues(stack: Frame[], currentKey: string | null): AceCompletion[] {
@@ -192,16 +192,17 @@ export class JSONCompletion {
 
         const prop = this.findProperty(stack, currentKey);
         if (!prop || !prop.enumValues || prop.enumValues.length < 2) return [];
-        return prop.enumValues.map(v => this.valueCompletion(v, prop.valueType, v));
+        return this.sortAlphabetical(prop.enumValues.map(v => this.valueCompletion(v, prop.valueType, v)));
     }
 
     private suggestTypeValues(stack: Frame[]): AceCompletion[] {
         // At root: suggest the full catalog grouped by feature.
         if (stack.length <= 1) {
-            return JSONLD_TYPE_NAMES.map(name => {
+            const all = JSONLD_TYPE_NAMES.map(name => {
                 const spec = JSONLD_TYPES[name];
                 return this.valueCompletion(name, spec.feature, `${spec.feature} — ${name}`);
             });
+            return this.sortAlphabetical(all);
         }
         // Nested: suggest types valid for the parent property, via parent @type.container.valueType.
         const innermost = stack[stack.length - 1];
@@ -209,9 +210,14 @@ export class JSONCompletion {
         if (!parentKey) return [];
         const prop = this.findProperty(stack.slice(0, -1), parentKey, true);
         if (!prop) return [];
-        return this.splitPipe(prop.valueType)
+        const nested = this.splitPipe(prop.valueType)
             .filter(t => JSONLD_TYPES[t])
             .map(t => this.valueCompletion(t, JSONLD_TYPES[t].feature, `${JSONLD_TYPES[t].feature} — ${t}`));
+        return this.sortAlphabetical(nested);
+    }
+
+    private sortAlphabetical(items: AceCompletion[]): AceCompletion[] {
+        return [...items].sort((a, b) => a.value.localeCompare(b.value));
     }
 
     private findTypeAnchor(stack: Frame[]): { type: string; relativePath: string[] } | null {
@@ -252,19 +258,16 @@ export class JSONCompletion {
     }
 
     private aceCompletion(prop: JsonLdPropertySpec, meta?: string, docText?: string): AceCompletion {
+        // Uniform score — ACE preserves input order when scores tie, so the alphabetical
+        // sort applied by suggestKeys / suggestValues is what the user sees. Required /
+        // Recommended status is surfaced via the meta label (see propertyMeta).
         return {
             caption: prop.property,
             value: prop.property,
             meta: meta ?? prop.valueType,
             docText,
-            score: this.scoreFor(prop.status),
+            score: 1000,
         };
-    }
-
-    private scoreFor(status: JsonLdPropertySpec['status']): number {
-        if (status === 'Required') return 1100;
-        if (status === 'Recommended') return 1050;
-        return 1000;
     }
 
     private valueCompletion(value: string, meta: string, docText?: string): AceCompletion {

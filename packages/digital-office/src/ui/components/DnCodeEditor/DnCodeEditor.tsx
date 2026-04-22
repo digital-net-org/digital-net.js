@@ -134,7 +134,10 @@ export function DnCodeEditor({ value, onChange, language, autocomplete, disabled
         editor.on('change', () => onChangeRef.current(editor.getValue()));
         editor.on('change', (delta: { action: string; lines: string[] }) => {
             if (delta.action !== 'insert') return;
-            if (delta.lines.length !== 1 || delta.lines[0] !== '"') return;
+            // Catch both a lone `"` and the auto-paired `""` ACE inserts when
+            // `behavioursEnabled` is on (the default). Trigger as soon as the cursor
+            // lands inside a freshly-opened string.
+            if (!delta.lines.some(l => l.includes('"'))) return;
             if (!jsonldCompleters.has(editor)) return;
             window.setTimeout(() => {
                 if (editorRef.current !== editor) return;
