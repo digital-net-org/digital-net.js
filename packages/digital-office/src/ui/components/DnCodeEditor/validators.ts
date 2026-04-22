@@ -19,16 +19,11 @@ const parserMap: Record<DnCodeEditorLanguage, string> = {
     json: 'json',
 };
 
-interface PrettierErrorLike {
-    loc?: { start?: { line?: number; column?: number } };
-    message?: string;
-}
+export async function validateCode(source: string, language: DnCodeEditorLanguage): Promise<CodeAnnotation | null> {
+    if (!source.trim()) {
+        return null;
+    }
 
-export async function validateCode(
-    source: string,
-    language: DnCodeEditorLanguage
-): Promise<CodeAnnotation | null> {
-    if (!source.trim()) return null;
     try {
         await prettier.format(source, {
             parser: parserMap[language],
@@ -36,10 +31,15 @@ export async function validateCode(
         });
         return null;
     } catch (err) {
-        const e = err as PrettierErrorLike;
+        const e = err as {
+            loc?: { start?: { line?: number; column?: number } };
+            message?: string;
+        };
+
         const line = e.loc?.start?.line ?? 1;
         const column = e.loc?.start?.column ?? 1;
         const message = (e.message ?? 'Erreur de syntaxe').split('\n')[0];
+
         return {
             row: Math.max(0, line - 1),
             column: Math.max(0, column - 1),

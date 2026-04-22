@@ -12,174 +12,58 @@ import 'ace-builds/src-noconflict/theme-github_light_default';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import { formatCode } from './formatters';
 import { validateCode } from './validators';
+import { JSONCompletion } from './JSONCompletion';
 
 export type DnCodeEditorLanguage = 'javascript' | 'html' | 'css' | 'json';
-
-export interface DnCodeEditorCompletion {
-    value: string;
-    caption?: string;
-    meta?: string;
-    description?: string;
-    /** Nested suggestions proposed when the cursor is editing the value of this key (JSON only). */
-    values?: DnCodeEditorCompletion[];
-}
+export type DnCodeEditorAutocomplete = 'javascript' | 'html' | 'css' | 'jsonld';
 
 export interface DnCodeEditorProps {
     value: string;
     onChange: (value: string) => void;
     language: DnCodeEditorLanguage;
+    autocomplete?: DnCodeEditorAutocomplete;
     disabled?: boolean;
-    completions?: DnCodeEditorCompletion[];
     sx?: SxProps<Theme>;
 }
 
-// Shared across all DnCodeEditor instances: a single global ACE completer
-// reads the list to suggest for each editor via this map.
-const editorCompletions = new WeakMap<Ace.Editor, DnCodeEditorCompletion[]>();
-let completerRegistered = false;
-
-type JsonContext = { kind: 'key' } | { kind: 'value'; key?: string } | { kind: 'none' };
-
-/**
- * Walk backwards from (row, col) in JSON source, skipping string contents,
- * tracking balanced {}/[] pairs, to identify whether the cursor edits a key
- * or a value. For values inside an object, also returns the enclosing key.
- *
- * Assumption: the cursor is inside a quoted string — so the first `"` we
- * encounter walking back is the opening quote of the current string.
- */
-function getJsonContext(session: Ace.EditSession, row: number, col: number): JsonContext {
-    let depth = 0;
-    let mostRecent: ',' | ':' | null = null;
-    let colonAt: { row: number; col: number } | null = null;
-    let insideString = true;
-    let r = row;
-    let c = col;
-
-    while (r >= 0) {
-        const line = session.getLine(r);
-        const scanFrom = r === row ? c - 1 : line.length - 1;
-        for (let i = scanFrom; i >= 0; i--) {
-            const ch = line[i];
-            if (ch === '"' && (i === 0 || line[i - 1] !== '\\')) {
-                insideString = !insideString;
-                continue;
-            }
-            if (insideString) continue;
-            if (ch === '}' || ch === ']') {
-                depth++;
-                continue;
-            }
-            if (ch === '{') {
-                if (depth === 0) {
-                    if (mostRecent === ':' && colonAt) {
-                        const key = extractKeyBeforeColon(session, colonAt.row, colonAt.col);
-                        return { kind: 'value', key: key ?? undefined };
-                    }
-                    return { kind: 'key' };
-                }
-                depth--;
-                continue;
-            }
-            if (ch === '[') {
-                if (depth === 0) return { kind: 'value' };
-                depth--;
-                continue;
-            }
-            if (depth > 0) continue;
-            if (ch === ':' && mostRecent === null) {
-                mostRecent = ':';
-                colonAt = { row: r, col: i };
-            } else if (ch === ',' && mostRecent === null) {
-                mostRecent = ',';
-            }
-        }
-        r--;
-        c = Number.MAX_SAFE_INTEGER;
-    }
-    return { kind: 'none' };
+interface AceCompleterRegistry {
+    completers?: unknown[];
 }
 
-/** Walk back from right before a `:` and capture the preceding `"..."` text. */
-function extractKeyBeforeColon(session: Ace.EditSession, row: number, col: number): string | null {
-    let r = row;
-    let c = col;
-    let phase: 'skipWs' | 'readingKey' = 'skipWs';
-    const chars: string[] = [];
-    while (r >= 0) {
-        const line = session.getLine(r);
-        const scanFrom = r === row ? c - 1 : line.length - 1;
-        for (let i = scanFrom; i >= 0; i--) {
-            const ch = line[i];
-            if (phase === 'skipWs') {
-                if (ch === ' ' || ch === '\t') continue;
-                if (ch === '"') {
-                    phase = 'readingKey';
-                    continue;
-                }
-                return null;
-            }
-            if (ch === '"' && (i === 0 || line[i - 1] !== '\\')) {
-                return chars.reverse().join('');
-            }
-            chars.push(ch);
-        }
-        r--;
-        c = Number.MAX_SAFE_INTEGER;
-    }
-    return null;
+const jsonldCompleters = new WeakMap<Ace.Editor, JSONCompletion>();
+const defaultCompleterSnapshots = new WeakMap<Ace.Editor, unknown[] | undefined>();
+
+const jsonldAceCompleter: unknown = {
+    identifierRegexps: [/[@a-zA-Z_0-9\-:/.]/],
+    getCompletions(
+        editor: Ace.Editor,
+        session: Ace.EditSession,
+        pos: { row: number; column: number },
+        _prefix: string,
+        callback: (_err: Error | null, _items: unknown[]) => void
+    ) {
+        const completion = jsonldCompleters.get(editor);
+        if (!completion) return callback(null, []);
+        callback(null, completion.getCompletions(session, pos));
+    },
+};
+
+function resolveAutocomplete(
+    language: DnCodeEditorLanguage,
+    autocomplete: DnCodeEditorAutocomplete | undefined
+): DnCodeEditorAutocomplete | null {
+    if (autocomplete) return autocomplete;
+    if (language === 'json') return null;
+    return language;
 }
 
-function isJsonMode(session: Ace.EditSession): boolean {
-    return (session.getMode() as { $id?: string }).$id === 'ace/mode/json';
-}
-
-function mapCompletion(c: DnCodeEditorCompletion) {
-    return {
-        caption: c.caption ?? c.value,
-        value: c.value,
-        meta: c.meta ?? '',
-        docText: c.description,
-        score: 1000,
-    };
-}
-
-function ensureCompleter() {
-    if (completerRegistered) return;
-    completerRegistered = true;
-    const langTools = (ace as unknown as { require: (_: string) => unknown }).require('ace/ext/language_tools') as {
-        addCompleter: (_completer: unknown) => void;
-    };
-    langTools.addCompleter({
-        identifierRegexps: [/[@a-zA-Z_0-9\-:/.]/],
-        getCompletions(
-            editor: Ace.Editor,
-            session: Ace.EditSession,
-            pos: { row: number; column: number },
-            _prefix: string,
-            callback: (_err: Error | null, _items: unknown[]) => void
-        ) {
-            const list = editorCompletions.get(editor);
-            if (!list || list.length === 0) return callback(null, []);
-            if (!isJsonMode(session)) return callback(null, list.map(mapCompletion));
-            const ctx = getJsonContext(session, pos.row, pos.column);
-            if (ctx.kind === 'key') return callback(null, list.map(mapCompletion));
-            if (ctx.kind === 'value' && ctx.key) {
-                const parent = list.find(c => c.value === ctx.key);
-                const nested = parent?.values;
-                if (nested && nested.length > 0) return callback(null, nested.map(mapCompletion));
-            }
-            callback(null, []);
-        },
-    });
-}
-
-export function DnCodeEditor({ value, onChange, language, disabled, completions, sx }: DnCodeEditorProps) {
+export function DnCodeEditor({ value, onChange, language, autocomplete, disabled, sx }: DnCodeEditorProps) {
     const theme = useTheme();
     const containerRef = React.useRef<HTMLDivElement>(null);
     const editorRef = React.useRef<Ace.Editor | null>(null);
     const onChangeRef = React.useRef(onChange);
     const formatRef = React.useRef<() => Promise<void>>(async () => void 0);
+    const activeMode = resolveAutocomplete(language, autocomplete);
 
     React.useEffect(() => {
         onChangeRef.current = onChange;
@@ -216,7 +100,7 @@ export function DnCodeEditor({ value, onChange, language, disabled, completions,
         editor.on('change', (delta: { action: string; lines: string[] }) => {
             if (delta.action !== 'insert') return;
             if (delta.lines.length !== 1 || delta.lines[0] !== '"') return;
-            if (!editorCompletions.has(editor)) return;
+            if (!jsonldCompleters.has(editor)) return;
             window.setTimeout(() => {
                 if (editorRef.current !== editor) return;
                 editor.execCommand('startAutocomplete');
@@ -271,16 +155,33 @@ export function DnCodeEditor({ value, onChange, language, disabled, completions,
     React.useEffect(() => {
         const editor = editorRef.current;
         if (!editor) return;
-        if (completions && completions.length > 0) {
-            ensureCompleter();
-            editorCompletions.set(editor, completions);
+        // ACE exposes a public `completers` array on the editor, but it is not surfaced in
+        // the TS types — access it through a local structural type.
+        const reg = editor as unknown as AceCompleterRegistry;
+        if (activeMode === 'jsonld') {
+            jsonldCompleters.set(editor, new JSONCompletion());
+            // Replace ACE's default completer chain so the built-in "local word" completer
+            // doesn't surface noisy suggestions (e.g. document keywords) inside free-text
+            // JSON values. Snapshot the defaults so we can restore them on teardown.
+            if (!defaultCompleterSnapshots.has(editor)) {
+                defaultCompleterSnapshots.set(editor, reg.completers);
+            }
+            reg.completers = [jsonldAceCompleter];
         } else {
-            editorCompletions.delete(editor);
+            jsonldCompleters.delete(editor);
+            if (defaultCompleterSnapshots.has(editor)) {
+                reg.completers = defaultCompleterSnapshots.get(editor);
+                defaultCompleterSnapshots.delete(editor);
+            }
         }
         return () => {
-            editorCompletions.delete(editor);
+            jsonldCompleters.delete(editor);
+            if (defaultCompleterSnapshots.has(editor)) {
+                reg.completers = defaultCompleterSnapshots.get(editor);
+                defaultCompleterSnapshots.delete(editor);
+            }
         };
-    }, [completions]);
+    }, [activeMode]);
 
     return (
         <Wrapper

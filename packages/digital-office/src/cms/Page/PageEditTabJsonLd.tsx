@@ -4,31 +4,10 @@ import { styled, css } from '@mui/material/styles';
 import { OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
 import { useDnEntityFormContext } from '../../entity';
-import { DnButton, DnCodeEditor, type DnCodeEditorCompletion } from '../../ui';
+import { DnButton, DnCodeEditor } from '../../ui';
 
 const JSON_LD_DOC_URL = 'https://developers.google.com/search/docs/appearance/structured-data/search-gallery';
 const JSON_LD_TEST_URL = 'https://search.google.com/test/rich-results';
-
-const JSON_LD_COMPLETIONS: DnCodeEditorCompletion[] = [
-    {
-        value: '@context',
-        meta: 'JSON-LD',
-        description: 'Contexte de vocabulaire.',
-        values: [{ value: 'https://schema.org', meta: 'URL' }],
-    },
-    {
-        value: '@type',
-        meta: 'JSON-LD',
-        description: 'Type de schéma.',
-        values: [
-            { value: 'Article', meta: 'Schema.org' },
-            { value: 'Product', meta: 'Schema.org' },
-            { value: 'Organization', meta: 'Schema.org' },
-            { value: 'WebSite', meta: 'Schema.org' },
-            { value: 'WebPage', meta: 'Schema.org' },
-        ],
-    },
-];
 
 export function PageEditTabJsonLd() {
     const { values, setField, disabled } = useDnEntityFormContext<PageDto>();
@@ -48,8 +27,8 @@ export function PageEditTabJsonLd() {
                     value={values.jsonLd ?? ''}
                     onChange={value => setField('/jsonLd', value)}
                     language="json"
+                    autocomplete="jsonld"
                     disabled={disabled}
-                    completions={JSON_LD_COMPLETIONS}
                 />
             </Stack>
         </Stack>
