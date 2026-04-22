@@ -1,5 +1,5 @@
 import type { Ace } from 'ace-builds';
-import { JSONLD_TYPES, JSONLD_TYPE_NAMES, type JsonLdPropertySpec } from './schemas';
+import { JSONLD_TYPES, JSONLD_TYPE_NAMES, getJsonLdDescription, type JsonLdPropertySpec } from './schemas';
 
 export interface AceCompletion {
     caption: string;
@@ -148,12 +148,14 @@ export class JSONCompletion {
         if (!anchor) {
             return [
                 this.aceCompletion(
-                    { property: '@context', valueType: 'URL', status: 'Required', description: 'https://schema.org' },
-                    'JSON-LD'
+                    { property: '@context', valueType: 'URL', status: 'Required' },
+                    'JSON-LD',
+                    'Contexte du vocabulaire JSON-LD'
                 ),
                 this.aceCompletion(
-                    { property: '@type', valueType: 'Text', status: 'Required', description: 'Schema type' },
-                    'JSON-LD'
+                    { property: '@type', valueType: 'Text', status: 'Required' },
+                    'JSON-LD',
+                    'Type de schéma.org'
                 ),
             ];
         }
@@ -169,8 +171,10 @@ export class JSONCompletion {
             const segment = rest.split('.')[0];
             if (seen.has(segment)) continue;
             seen.add(segment);
-            const meta = this.propertyMeta(prop, segment === rest);
-            out.push(this.aceCompletion({ ...prop, property: segment }, meta));
+            const isLeaf = segment === rest;
+            const meta = this.propertyMeta(prop, isLeaf);
+            const docText = isLeaf ? getJsonLdDescription(anchor.type, prop.property) : undefined;
+            out.push(this.aceCompletion({ ...prop, property: segment }, meta, docText));
         }
         return out;
     }
@@ -187,8 +191,8 @@ export class JSONCompletion {
         }
 
         const prop = this.findProperty(stack, currentKey);
-        if (!prop) return [];
-        return this.extractEnumValues(prop.description, prop.valueType);
+        if (!prop || !prop.enumValues || prop.enumValues.length < 2) return [];
+        return prop.enumValues.map(v => this.valueCompletion(v, prop.valueType, v));
     }
 
     private suggestTypeValues(stack: Frame[]): AceCompletion[] {
@@ -235,15 +239,6 @@ export class JSONCompletion {
         return spec.properties.find(p => p.property === joined) ?? null;
     }
 
-    private extractEnumValues(description: string, valueType: string): AceCompletion[] {
-        const tokens = this.splitPipe(description);
-        if (tokens.length < 2) return [];
-        // Filter out descriptive text mixed with enums (e.g. "Audiobook | EBook | Hardcover | Paperback" is clean,
-        // but "DesktopWeb | Android | iOS" too). A token with spaces is likely natural language, skip entirely.
-        if (tokens.some(t => t.includes(' '))) return [];
-        return tokens.map(t => this.valueCompletion(t, valueType, t));
-    }
-
     private splitPipe(raw: string): string[] {
         return raw
             .split('|')
@@ -256,12 +251,12 @@ export class JSONCompletion {
         return prop.status === 'Required' ? `${prop.valueType} *` : prop.valueType;
     }
 
-    private aceCompletion(prop: JsonLdPropertySpec, meta?: string): AceCompletion {
+    private aceCompletion(prop: JsonLdPropertySpec, meta?: string, docText?: string): AceCompletion {
         return {
             caption: prop.property,
             value: prop.property,
             meta: meta ?? prop.valueType,
-            docText: prop.description,
+            docText,
             score: this.scoreFor(prop.status),
         };
     }
