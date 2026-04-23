@@ -36,21 +36,47 @@ export interface DnInputProps extends Pick<
 > {
     variant?: 'default' | 'text';
     loading?: boolean;
+    loadingNonBlocking?: boolean;
     max?: number;
+    regex?: RegExp;
     inputProps?: SlotProps<React.ElementType<InputBaseProps['inputProps']>, {}, TextFieldOwnerState>;
 }
 
-export function DnInput({ className, variant, loading, disabled, max, inputProps, ...muiProps }: DnInputProps) {
+const DEFAULT_REGEX_ERROR = 'Format invalide.';
+
+export function DnInput({
+    className,
+    variant,
+    loading,
+    loadingNonBlocking,
+    disabled,
+    max,
+    inputProps,
+    regex,
+    error,
+    helperText,
+    ...muiProps
+}: DnInputProps) {
     const [uncontrolledLength, setUncontrolledLength] = React.useState(
         typeof muiProps.defaultValue === 'string' ? muiProps.defaultValue.length : 0
+    );
+    const [uncontrolledValue, setUncontrolledValue] = React.useState(
+        typeof muiProps.defaultValue === 'string' ? muiProps.defaultValue : ''
     );
 
     const valueLength = typeof muiProps.value === 'string' ? muiProps.value.length : uncontrolledLength;
     const resolvedMaxLength = max ?? (inputProps as { maxLength?: number } | undefined)?.maxLength;
+    const effectiveValue = typeof muiProps.value === 'string' ? muiProps.value : uncontrolledValue;
+    const regexMismatch = regex !== undefined && effectiveValue !== '' && !regex.test(effectiveValue);
+    const effectiveError = Boolean(error) || regexMismatch;
+    const effectiveHelper = regexMismatch ? DEFAULT_REGEX_ERROR : helperText;
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (max !== undefined) {
             setUncontrolledLength(event.target.value.length);
+        }
+        if (regex !== undefined && typeof muiProps.value !== 'string') {
+            setUncontrolledValue(event.target.value);
         }
         muiProps.onChange?.(event);
     };
@@ -64,6 +90,8 @@ export function DnInput({ className, variant, loading, disabled, max, inputProps
             ) : null}
             <CustomTextField
                 {...muiProps}
+                error={effectiveError}
+                helperText={effectiveHelper}
                 onChange={onChange}
                 className={`DnInput ${className ?? ''}`}
                 size="medium"
@@ -75,11 +103,12 @@ export function DnInput({ className, variant, loading, disabled, max, inputProps
                         ...(resolvedMaxLength !== undefined ? { maxLength: resolvedMaxLength } : {}),
                     },
                     input: {
-                        endAdornment: loading ? (
-                            <Stack sx={{ position: 'absolute', right: 8 }}>
-                                <CircularProgress size="1rem" />
-                            </Stack>
-                        ) : undefined,
+                        endAdornment:
+                            loading || loadingNonBlocking ? (
+                                <Stack sx={{ position: 'absolute', right: 8 }}>
+                                    <CircularProgress size="1rem" />
+                                </Stack>
+                            ) : undefined,
                     },
                 }}
             />

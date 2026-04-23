@@ -1,10 +1,25 @@
+import * as React from 'react';
+import { useParams } from 'react-router';
+import { PathAnalyzer } from '@digital-net-org/digital-core';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityForm, useDnEntityFormContext, useEntitySchema } from '../../entity';
+import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../entity';
+import { useDnApi } from '../../api';
+import { DnInputDebounced } from '../../ui';
 
-const staticProps: Record<string, { label: string; helperText: string }> = {
+const ENTITY_TYPE_HELPER = "Définit l'entité DB associée au dernier slug dynamique du chemin.";
+const ENTITY_TYPE_LOCKED_HELPER = 'Ajoutez un slug dynamique (:xxx) dans le chemin pour activer ce champ.';
+const PATH_HELPER = "Chemin d'accès vers la page depuis le site client.";
+const PATH_AVAILABILITY_ERROR = 'Ce chemin est déjà utilisé.';
+const PATH_DEBOUNCE_MS = 1500;
+
+const baseFieldProps: DnEntityFormProps['fieldProps'] = {
     Path: {
         label: 'Chemin',
-        helperText: "Chemin d'acces vers la page depuis le site client.",
+        helperText: PATH_HELPER,
+    },
+    EntityType: {
+        label: "Type d'entité",
+        helperText: ENTITY_TYPE_HELPER,
     },
     Title: {
         label: 'Titre',
@@ -31,12 +46,70 @@ const staticProps: Record<string, { label: string; helperText: string }> = {
 };
 
 export function PageEditTabGeneral() {
+    const api = useDnApi();
+    const { id } = useParams<{ id: string }>();
     const { schemas } = useEntitySchema('page');
     const { values, setField, errors, disabled } = useDnEntityFormContext<PageDto>();
+
+    const pathSchema = React.useMemo(() => schemas.find(s => s.name === 'Path'), [schemas]);
+    const pathRegex = React.useMemo(
+        () => (pathSchema?.regexValidation ? new RegExp(pathSchema.regexValidation) : null),
+        [pathSchema]
+    );
+
+    const currentPath = String(values.path ?? '');
+    const slugPresent = PathAnalyzer.hasDynamicSlug(currentPath);
+    const currentEntityType = values.entityType ?? null;
+
+    React.useEffect(
+        () => (!slugPresent && currentEntityType != null ? setField('/entityType', null) : void 0),
+        [slugPresent, currentEntityType, setField]
+    );
+
+    const [pathAvailabilityError, setPathAvailabilityError] = React.useState(false);
+    const handlePathChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setPathAvailabilityError(false);
+        setField('/path', event.target.value);
+    };
+    const handlePathDebounced = async (next: string, signal: AbortSignal) => {
+        const res = await api.catalog.page.checkAvailability(next, id, { signal });
+        if (signal.aborted) return;
+        setPathAvailabilityError(!res.hasError && !res.value);
+    };
+
+    const fieldProps: DnEntityFormProps['fieldProps'] = {
+        ...baseFieldProps,
+        Path: {
+            ...baseFieldProps.Path,
+            render:
+                pathSchema && pathRegex ? (
+                    <DnInputDebounced
+                        type="text"
+                        label="Chemin"
+                        value={currentPath}
+                        max={pathSchema.maxLength ?? undefined}
+                        required={pathSchema.isRequired ?? undefined}
+                        disabled={disabled}
+                        regex={pathRegex}
+                        error={errors?.has('path') || pathAvailabilityError}
+                        helperText={pathAvailabilityError ? PATH_AVAILABILITY_ERROR : PATH_HELPER}
+                        debounceInMs={PATH_DEBOUNCE_MS}
+                        onChange={handlePathChange}
+                        onDebounced={handlePathDebounced}
+                    />
+                ) : null,
+        },
+        EntityType: {
+            ...baseFieldProps.EntityType,
+            disabled: !slugPresent,
+            helperText: slugPresent ? ENTITY_TYPE_HELPER : ENTITY_TYPE_LOCKED_HELPER,
+        },
+    };
+
     return (
         <DnEntityForm
             schemas={schemas}
-            staticProps={staticProps}
+            fieldProps={fieldProps}
             values={values as Record<string, unknown>}
             onFieldChange={setField}
             errors={errors}

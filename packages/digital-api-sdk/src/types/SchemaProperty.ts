@@ -7,7 +7,8 @@ export type SchemaValueType =
     | 'Boolean'
     | 'DateTime'
     | 'DateTimeOffset'
-    | 'Guid';
+    | 'Guid'
+    | 'Enum';
 
 export interface SchemaProperty {
     name: string;
@@ -22,4 +23,5 @@ export interface SchemaProperty {
     isIdentity: boolean;
     isForeignKey: boolean;
     regexValidation: string | null;
+    enumValues: string[] | null;
 }

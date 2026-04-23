@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FormControl, FormControlLabel, FormHelperText, Divider } from '@mui/material';
+import { Divider, FormControl, FormControlLabel, FormHelperText, MenuItem, TextField } from '@mui/material';
 import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { DnInput, DnSwitch } from '../../ui';
 
@@ -66,6 +66,34 @@ export function DnEntityInput({
                         </React.Fragment>
                     ) : null}
                 </FormControl>
+            );
+        case 'Enum':
+            return (
+                <TextField
+                    select
+                    fullWidth
+                    label={resolvedLabel}
+                    value={value ?? ''}
+                    required={schema.isRequired}
+                    disabled={resolvedDisabled}
+                    error={error}
+                    helperText={helperText}
+                    onChange={event => {
+                        const raw = event.target.value;
+                        handleChange(raw === '' ? null : raw);
+                    }}
+                    slotProps={{
+                        inputLabel: { shrink: true },
+                        select: { displayEmpty: true },
+                    }}
+                >
+                    {!schema.isRequired ? <MenuItem value="">-- Aucun --</MenuItem> : null}
+                    {(schema.enumValues ?? []).map(option => (
+                        <MenuItem key={option} value={option}>
+                            {option}
+                        </MenuItem>
+                    ))}
+                </TextField>
             );
         case 'Int32':
         case 'Int64':
