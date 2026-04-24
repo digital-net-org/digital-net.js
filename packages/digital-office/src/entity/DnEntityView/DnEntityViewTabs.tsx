@@ -3,6 +3,7 @@ import { Alert, CircularProgress, Link, Stack, Tab, Tabs, Typography } from '@mu
 import { Delete as DeleteIcon, Refresh as RefreshIcon, Save as SaveIcon } from '@mui/icons-material';
 import { DnDialog, DnIconButton } from '../../ui';
 import { formatDate } from './formatDate';
+import { css, styled } from '@mui/material/styles';
 
 export interface DnEntityViewTab {
     key: string;
@@ -52,14 +53,14 @@ export function DnEntityViewTabs({
 
     return (
         <React.Fragment>
-            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}>
+            <TabsWrapper>
                 <Tabs value={activeTab.key} onChange={(_, v) => onTabChange(v)}>
                     {tabs.map(t => (
                         <Tab key={t.key} value={t.key} label={t.label} />
                     ))}
                 </Tabs>
                 {hasActions ? (
-                    <Stack direction="row" sx={{ alignItems: 'center', gap: 1, pr: 1 }}>
+                    <ActionsWrapper>
                         {isSaving ? <CircularProgress size={20} /> : null}
                         {onSave ? (
                             <DnIconButton tooltip="Enregistrer" disabled={saveDisabled} onClick={() => void onSave()}>
@@ -80,9 +81,9 @@ export function DnEntityViewTabs({
                                 <DeleteIcon />
                             </DnIconButton>
                         ) : null}
-                    </Stack>
+                    </ActionsWrapper>
                 ) : null}
-            </Stack>
+            </TabsWrapper>
             {hasConflict ? (
                 <Alert severity="warning" variant="outlined" sx={{ mt: 1 }}>
                     <Typography variant="body2">
@@ -104,7 +105,7 @@ export function DnEntityViewTabs({
                     ) : null}
                 </Alert>
             ) : null}
-            <Stack sx={{ pt: 2, height: '100%' }}>{activeTab.content}</Stack>
+            <ContentWrapper>{activeTab.content}</ContentWrapper>
             <DnDialog
                 open={reloadDialogOpen}
                 onClose={() => setReloadDialogOpen(false)}
@@ -117,3 +118,30 @@ export function DnEntityViewTabs({
         </React.Fragment>
     );
 }
+
+const ActionsWrapper = styled(Stack)(
+    () => css`
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+        padding-right: 0.5rem;
+    `
+);
+
+const TabsWrapper = styled(Stack)(
+    () => css`
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    `
+);
+
+const ContentWrapper = styled(Stack)(
+    () => css`
+        width: 100%;
+        height: 100%;
+        overflow-y: hidden;
+        padding-top: 1.25rem;
+    `
+);

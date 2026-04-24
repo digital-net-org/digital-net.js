@@ -49,22 +49,24 @@ export function DnEntityView({
 
     return (
         <View>
-            <Stack sx={{ pb: 2 }}>
-                <Stack direction="row" sx={{ alignItems: 'baseline', gap: 2 }}>
-                    <Typography variant="h2">{title}</Typography>
-                    {isDirty ? (
-                        <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'warning.main' }}>
-                            (changements non sauvegardés)
+            <Stack>
+                <Stack sx={{ pb: 2 }}>
+                    <Stack direction="row" sx={{ alignItems: 'baseline', gap: 2 }}>
+                        <Typography variant="h2">{title}</Typography>
+                        {isDirty ? (
+                            <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'warning.main' }}>
+                                (changements non sauvegardés)
+                            </Typography>
+                        ) : null}
+                    </Stack>
+                    {description ? (
+                        <Typography variant="body2" sx={{ ml: 0.35, mt: 1 }}>
+                            {description}
                         </Typography>
                     ) : null}
                 </Stack>
-                {description ? (
-                    <Typography variant="body2" sx={{ ml: 0.35, mt: 1 }}>
-                        {description}
-                    </Typography>
-                ) : null}
+                <Divider />
             </Stack>
-            <Divider />
             {tabs?.length && activeTab ? (
                 <DnEntityViewTabs
                     tabs={tabs}
@@ -91,6 +93,6 @@ const View = styled(Stack)(
     () => css`
         width: 100%;
         height: 100%;
-        overflow-y: auto;
+        overflow-y: hidden;
     `
 );

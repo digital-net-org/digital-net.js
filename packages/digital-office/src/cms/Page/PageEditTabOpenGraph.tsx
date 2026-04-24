@@ -34,7 +34,7 @@ export function PageEditTabOpenGraph() {
             );
         }
         return (
-            <Stack sx={{ gap: 1 }}>
+            <Body>
                 {rows.map(row => (
                     <Stack key={row.id} direction="row" sx={{ gap: 1, alignItems: 'flex-start' }}>
                         <Autocomplete
@@ -72,16 +72,7 @@ export function PageEditTabOpenGraph() {
                         </IconButton>
                     </Stack>
                 ))}
-                <Stack direction="row">
-                    <DnButton
-                        icon={<AddIcon fontSize="small" />}
-                        onClick={handleAdd}
-                        disabled={disabled || !canAdd}
-                    >
-                        Ajouter une propriété
-                    </DnButton>
-                </Stack>
-            </Stack>
+            </Body>
         );
     };
 
@@ -90,7 +81,16 @@ export function PageEditTabOpenGraph() {
             <Alert severity="info" variant="outlined">
                 <Stack direction="row" sx={{ width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Stack>Définissez les métadonnées OpenGraph de votre page.</Stack>
-                    <ExternalButton link={OG_DOC_URL}>Documentation</ExternalButton>
+                    <Stack direction="row" sx={{ gap: 2 }}>
+                        <ExternalButton link={OG_DOC_URL}>Documentation</ExternalButton>
+                        <DnButton
+                            icon={<AddIcon fontSize="small" />}
+                            onClick={handleAdd}
+                            disabled={disabled || !canAdd}
+                        >
+                            Ajouter une propriété
+                        </DnButton>
+                    </Stack>
                 </Stack>
             </Alert>
             {renderBody()}
@@ -109,6 +109,14 @@ function ExternalButton({ link, children }: { link: string; children?: React.Rea
         </DnButton>
     );
 }
+
+const Body = styled(Stack)(
+    () => css`
+        padding-top: 1rem;
+        overflow-y: auto;
+        gap: 1rem;
+    `
+);
 
 const Alert = styled(MuiAlert)(
     () => css`
