@@ -37,7 +37,7 @@ export interface DnEntityEditViewProps<T extends Entity> {
     validate?: (_values: Partial<T>, _schemas: SchemaProperty[]) => Set<string>;
 }
 
-function defaultValidate<T>(values: Partial<T>, schemas: SchemaProperty[]): Set<string> {
+export function defaultValidate<T>(values: Partial<T>, schemas: SchemaProperty[]): Set<string> {
     const missing = new Set<string>();
     const record = values as Record<string, unknown>;
     for (const s of schemas) {
@@ -222,7 +222,7 @@ export function DnEntityEditView<T extends Entity>({
                 apiUpdatedAt={edit.apiUpdatedAt}
                 onSave={handleSave}
                 onDelete={() => setDeleteDialogOpen(true)}
-                onReload={edit.discard}
+                onReload={isNew ? undefined : edit.discard}
             />
             <DnDialog
                 open={deleteDialogOpen}

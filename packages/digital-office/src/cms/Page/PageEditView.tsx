@@ -1,5 +1,6 @@
-import type { JsonPatchOp, PageDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityEditView } from '../../entity';
+import * as React from 'react';
+import type { JsonPatchOp, OpenGraphEntry, PageDto, SchemaProperty } from '@digital-net-org/digital-api-sdk';
+import { DnEntityEditView, defaultValidate } from '../../entity';
 import { useDnApi } from '../../api';
 import { PageEditTabGeneral } from './PageEditTabGeneral';
 import { PageEditTabJsonLd } from './PageEditTabJsonLd';
@@ -8,6 +9,38 @@ import { PageEditTabSheets } from './PageEditTabSheets';
 
 export function PageEditView() {
     const api = useDnApi();
+
+    const handleGet = React.useCallback((id: string) => api.catalog.page.getById(id), [api.catalog.page]);
+
+    const handleDelete = React.useCallback((id: string) => api.catalog.page.delete(id), [api.catalog.page]);
+
+    const handleUpdate = React.useCallback(
+        (id: string, ops: JsonPatchOp[]) => api.catalog.page.update(id, ops),
+        [api.catalog.page]
+    );
+
+    const handleCreate = React.useCallback(
+        async (values: Partial<PageDto>) => {
+            const created = await api.catalog.page.create({ path: String(values.path ?? '') });
+            if (created.hasError || !created.value) return created;
+            const extraOps: JsonPatchOp[] = Object.entries(values)
+                .filter(([key, value]) => key !== 'path' && value !== undefined)
+                .map(([key, value]) => ({ op: 'replace', path: `/${key}`, value }));
+            if (extraOps.length > 0) await api.catalog.page.update(created.value, extraOps);
+            return created;
+        },
+        [api.catalog.page]
+    );
+
+    const handleValidate = (values: Partial<PageDto>, schemas: SchemaProperty[]) => {
+        const missing = defaultValidate(values, schemas);
+        const og = values.openGraph as OpenGraphEntry[] | undefined;
+        if (og && og.some(entry => !entry.property || !entry.content)) {
+            missing.add('openGraph');
+        }
+        return missing;
+    };
+
     return (
         <DnEntityEditView<PageDto>
             entityName="page"
@@ -22,18 +55,11 @@ export function PageEditView() {
                 { key: 'opengraph', label: 'OpenGraph', content: <PageEditTabOpenGraph /> },
                 { key: 'sheets', label: 'Sheets', content: <PageEditTabSheets /> },
             ]}
-            onGet={id => api.catalog.page.getById(id)}
-            onCreate={async values => {
-                const created = await api.catalog.page.create({ path: String(values.path ?? '') });
-                if (created.hasError || !created.value) return created;
-                const extraOps: JsonPatchOp[] = Object.entries(values)
-                    .filter(([key, value]) => key !== 'path' && value !== undefined)
-                    .map(([key, value]) => ({ op: 'replace', path: `/${key}`, value }));
-                if (extraOps.length > 0) await api.catalog.page.update(created.value, extraOps);
-                return created;
-            }}
-            onUpdate={(id, ops) => api.catalog.page.update(id, ops)}
-            onDelete={id => api.catalog.page.delete(id)}
+            onGet={handleGet}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+            onCreate={handleCreate}
+            validate={handleValidate}
         />
     );
 }

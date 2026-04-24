@@ -4,9 +4,7 @@ export interface DnEntityFormBinding<T> {
     values: Partial<T>;
     setField: (_path: string, _value: unknown) => void;
     isDirty: boolean;
-    /** Accessors (camelCase field keys) currently flagged as errored. */
     errors?: ReadonlySet<string>;
-    /** When true, all inputs in the form should render as disabled (save/delete/refetch in flight). */
     disabled?: boolean;
 }
 

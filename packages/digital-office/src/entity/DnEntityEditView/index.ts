@@ -1,1 +1,1 @@
-export { DnEntityEditView, type DnEntityEditViewProps } from './DnEntityEditView';
+export { DnEntityEditView, type DnEntityEditViewProps, defaultValidate } from './DnEntityEditView';

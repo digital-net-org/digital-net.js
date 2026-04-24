@@ -1,7 +1,7 @@
-import { DN_API_PAGE, DN_API_PAGE_BY_ID, DN_API_PAGE_PATH_AVAILABILITY } from '../../routes';
+import { DN_API_PAGE, DN_API_PAGE_BY_ID, DN_API_PAGE_OG_SCHEMA, DN_API_PAGE_PATH_AVAILABILITY } from '../../routes';
 import { CatalogRunner } from '../CatalogRunner';
 import type { HttpClient } from '../../HttpClient';
-import type { JsonPatchOp, PageDto, Result } from '../../types';
+import type { JsonPatchOp, OpenGraphPropertySchema, PageDto, Result } from '../../types';
 import type { CatalogCallbacks } from '../types';
 import type { PagePayload } from './types';
 
@@ -59,8 +59,16 @@ export class PageCatalog {
     public async delete(id: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
+
             { method: 'DELETE', path: DN_API_PAGE_BY_ID, slugs: { id } },
             options
         );
+    }
+
+    /** GET `cms/pages/schema/open-graph` — Returns the list of valid OpenGraph properties. — JWT/ApiKey */
+    public async getOpenGraphSchema(
+        options: CatalogCallbacks<OpenGraphPropertySchema[]> = {}
+    ): Promise<Result<OpenGraphPropertySchema[]>> {
+        return CatalogRunner.run<OpenGraphPropertySchema[]>(this.http, { path: DN_API_PAGE_OG_SCHEMA }, options);
     }
 }
