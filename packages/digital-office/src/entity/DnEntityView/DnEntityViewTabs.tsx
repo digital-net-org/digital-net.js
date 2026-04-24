@@ -15,6 +15,7 @@ export interface DnEntityViewTabsProps {
     tabs: DnEntityViewTab[];
     activeTab: DnEntityViewTab;
     onTabChange: (_key: string) => void;
+    isPending?: boolean;
     isNew?: boolean;
     isSaving?: boolean;
     isDirty?: boolean;
@@ -30,6 +31,7 @@ export function DnEntityViewTabs({
     tabs,
     activeTab,
     onTabChange,
+    isPending = false,
     isNew = false,
     isSaving = false,
     isDirty = false,
@@ -105,7 +107,9 @@ export function DnEntityViewTabs({
                     ) : null}
                 </Alert>
             ) : null}
-            <ContentWrapper>{activeTab.content}</ContentWrapper>
+            <ContentWrapper sx={{ opacity: isPending ? 0.5 : 1, transition: 'opacity 150ms' }}>
+                {activeTab.content}
+            </ContentWrapper>
             <DnDialog
                 open={reloadDialogOpen}
                 onClose={() => setReloadDialogOpen(false)}

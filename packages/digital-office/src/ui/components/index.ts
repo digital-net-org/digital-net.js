@@ -6,6 +6,7 @@ export * from './DnButton';
 export * from './DnCodeEditor';
 export * from './DnCollapseBlock';
 export * from './DnInput';
+export * from './DnLazyMount';
 export * from './DnLoadingView';
 export * from './DnDialog';
 export * from './DnDialogConfirmPassword';

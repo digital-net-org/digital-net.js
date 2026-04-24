@@ -4,7 +4,7 @@ import { css, styled } from '@mui/material/styles';
 import { Add as AddIcon, DeleteOutlined as DeleteIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
 import { useDnEntityFormContext, useOgSchema, useOgState } from '../../entity';
-import { DnButton } from '../../ui';
+import { DnButton, DnLazyMount } from '../../ui';
 
 const OG_DOC_URL = 'https://ogp.me/';
 
@@ -37,36 +37,40 @@ export function PageEditTabOpenGraph() {
             <Body>
                 {rows.map(row => (
                     <Stack key={row.id} direction="row" sx={{ gap: 1, alignItems: 'flex-start' }}>
-                        <Autocomplete
-                            sx={{ flex: '0 0 38%' }}
-                            size="small"
-                            options={optionsFor(row).map(p => p.key)}
-                            value={row.property || null}
-                            onChange={(_, value) => handlePropertyChange(row.id, value ?? '')}
-                            disabled={disabled}
-                            autoHighlight
-                            renderInput={params => (
-                                <TextField
-                                    {...params}
-                                    label="Property"
-                                    size="small"
-                                    required
-                                    error={showErrors && row.property === ''}
-                                    helperText={showErrors && row.property === '' ? 'Requis' : undefined}
-                                />
-                            )}
-                        />
-                        <TextField
-                            sx={{ flex: 1 }}
-                            size="small"
-                            label="Content"
-                            value={row.content}
-                            onChange={e => handleContentChange(row.id, e.target.value)}
-                            disabled={disabled}
-                            required
-                            error={showErrors && row.content === ''}
-                            helperText={showErrors && row.content === '' ? 'Requis' : undefined}
-                        />
+                        <LazyMount flex={1}>
+                            <Autocomplete
+                                sx={{ flex: '0 0 38%' }}
+                                size="small"
+                                options={optionsFor(row).map(p => p.key)}
+                                value={row.property || null}
+                                onChange={(_, value) => handlePropertyChange(row.id, value ?? '')}
+                                disabled={disabled}
+                                autoHighlight
+                                renderInput={params => (
+                                    <TextField
+                                        {...params}
+                                        label="Property"
+                                        size="small"
+                                        required
+                                        error={showErrors && row.property === ''}
+                                        helperText={showErrors && row.property === '' ? 'Requis' : undefined}
+                                    />
+                                )}
+                            />
+                        </LazyMount>
+                        <LazyMount flex={2}>
+                            <TextField
+                                sx={{ flex: 1 }}
+                                size="small"
+                                label="Content"
+                                value={row.content}
+                                onChange={e => handleContentChange(row.id, e.target.value)}
+                                disabled={disabled}
+                                required
+                                error={showErrors && row.content === ''}
+                                helperText={showErrors && row.content === '' ? 'Requis' : undefined}
+                            />
+                        </LazyMount>
                         <IconButton aria-label="delete" onClick={() => handleDelete(row.id)} disabled={disabled}>
                             <DeleteIcon />
                         </IconButton>
@@ -107,6 +111,14 @@ function ExternalButton({ link, children }: { link: string; children?: React.Rea
         >
             {children}
         </DnButton>
+    );
+}
+
+function LazyMount({ children, flex }: { children: React.ReactNode; flex: number }) {
+    return (
+        <DnLazyMount sx={{ minHeight: 48, flex }} placeholder={<Skeleton variant="rounded" height={48} />}>
+            {children}
+        </DnLazyMount>
     );
 }
 

@@ -27,12 +27,23 @@ const toRows = (entries: OpenGraphEntry[] | undefined): OgRow[] =>
 
 const toEntries = (rows: OgRow[]): OpenGraphEntry[] => rows.map(({ property, content }) => ({ property, content }));
 
+const entriesEqual = (a: OpenGraphEntry[] | undefined, b: OpenGraphEntry[] | undefined): boolean => {
+    const aArr = a ?? [];
+    const bArr = b ?? [];
+    if (aArr.length !== bArr.length) return false;
+    return aArr.every((entry, i) => entry.property === bArr[i].property && entry.content === bArr[i].content);
+};
+
 export function useOgState(
     initialEntries: OpenGraphEntry[] | undefined,
     onChange: (_entries: OpenGraphEntry[] | null) => void
 ): UseOgStateResult {
     const { schema } = useOgSchema();
     const [rows, setRows] = React.useState<OgRow[]>(() => toRows(initialEntries));
+
+    React.useEffect(() => {
+        setRows(current => (entriesEqual(toEntries(current), initialEntries) ? current : toRows(initialEntries)));
+    }, [initialEntries]);
 
     const usedKeyCounts = React.useMemo(() => {
         const counts = new Map<string, number>();
@@ -58,8 +69,18 @@ export function useOgState(
     const handleContentChange = (id: string, content: string) =>
         updateRows(rows.map(r => (r.id === id ? { ...r, content } : r)));
 
-    const optionsFor = (row: OgRow) =>
-        schema.filter(p => p.allowMultiple || (usedKeyCounts.get(p.key) ?? 0) === 0 || p.key === row.property);
+    const optionsMap = React.useMemo(() => {
+        const map = new Map<string, OpenGraphPropertySchema[]>();
+        for (const row of rows) {
+            map.set(
+                row.id,
+                schema.filter(p => p.allowMultiple || (usedKeyCounts.get(p.key) ?? 0) === 0 || p.key === row.property)
+            );
+        }
+        return map;
+    }, [rows, schema, usedKeyCounts]);
+
+    const optionsFor = React.useCallback((row: OgRow) => optionsMap.get(row.id) ?? [], [optionsMap]);
 
     return {
         rows,

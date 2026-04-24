@@ -41,6 +41,7 @@ export function DnEntityView({
         tab: UrlParamBuilder.buildString(tabs?.length ? tabs[0].key : '', 'tab'),
     });
     const activeTab = tabs?.length ? (tabs.find(t => t.key === tab) ?? tabs[0]) : null;
+    const [isPending, startTransition] = React.useTransition();
 
     React.useEffect(
         () => (tabs?.length && activeTab && activeTab.key !== tab ? setState({ tab: activeTab.key }) : void 0),
@@ -71,7 +72,8 @@ export function DnEntityView({
                 <DnEntityViewTabs
                     tabs={tabs}
                     activeTab={activeTab}
-                    onTabChange={key => setState({ tab: key })}
+                    onTabChange={key => startTransition(() => setState({ tab: key }))}
+                    isPending={isPending}
                     isNew={isNew}
                     isSaving={isSaving}
                     isDirty={isDirty}
