@@ -3,3 +3,5 @@ export const DN_API_PAGE_BY_ID = 'cms/pages/:id' as const;
 export const DN_API_PAGE_PATH = 'cms/pages/path' as const;
 export const DN_API_PAGE_PATH_AVAILABILITY = 'cms/pages/path/availability' as const;
 export const DN_API_PAGE_OG_SCHEMA = 'cms/pages/schema/open-graph' as const;
+export const DN_API_PAGE_OPENGRAPH = 'cms/pages/:id/openGraph' as const;
+export const DN_API_PAGE_SHEETS = 'cms/pages/:id/sheets' as const;

@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { HttpClientError, type Result } from '@digital-net-org/digital-api-sdk';
-import { NotFoundException } from '../app/NotFoundException';
+import { NotFoundException } from '../app';
 import { useDnApi } from '../api';
+import { DN_QUERY_KEY_GET } from './DnQueryKeys';
 
 export interface UseEntityGetResult<T> {
     data: T | undefined;
@@ -22,7 +23,7 @@ export function useEntityGet<T>(entityPath: string, id: string | undefined): Use
     const isNew = !id;
 
     const { data, isLoading, isFetching, error } = useQuery<T | undefined>({
-        queryKey: ['entity-get', entityPath, id],
+        queryKey: [DN_QUERY_KEY_GET, entityPath, id],
         queryFn: async () => {
             const response = await api.http.request<unknown>({
                 path: entityPath,

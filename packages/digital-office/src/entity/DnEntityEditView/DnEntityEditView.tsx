@@ -10,7 +10,7 @@ import { useEntitySchema } from '../useEntitySchema';
 import { type DnEntityName } from '../DnEntitySchemaProvider';
 import { useRouterBlocker } from '../../router';
 import { DnDialog, DnLoadingView } from '../../ui';
-import { useDnToast } from '../../app';
+import { NotFoundView, useDnToast } from '../../app';
 import { type DnDraftStoreName } from '../../constants';
 import { type EntityIdentifier } from '../types';
 import {
@@ -20,6 +20,7 @@ import {
     buildDeleteTitle,
     buildDeletedToast,
 } from './identifier';
+import { DN_QUERY_KEY_GET, DN_QUERY_KEY_LIST } from '../DnQueryKeys';
 
 export interface DnEntityEditViewProps<T extends Entity> {
     entityName: DnEntityName;
@@ -75,8 +76,9 @@ export function DnEntityEditView<T extends Entity>({
         data: entity,
         isLoading,
         isFetching,
+        isError,
     } = useQuery<T | undefined>({
-        queryKey: ['entity-get', entityName, id],
+        queryKey: [DN_QUERY_KEY_GET, entityName, id],
         queryFn: async () => {
             const result = await onGet(id!);
             if (result.hasError) {
@@ -96,6 +98,7 @@ export function DnEntityEditView<T extends Entity>({
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
     const [errors, setErrors] = React.useState<ReadonlySet<string>>(new Set());
+    const [resetSignal, setResetSignal] = React.useState(0);
 
     const blocker = useRouterBlocker({ when: isNew && create.isDirty && !isSaving });
 
@@ -119,16 +122,35 @@ export function DnEntityEditView<T extends Entity>({
 
     const binding: DnEntityFormBinding<T> = isNew
         ? { values: create.values, setField, isDirty: create.isDirty, errors, disabled: inputsDisabled }
-        : { values: edit.values, setField, isDirty: edit.isDirty, errors, disabled: inputsDisabled };
+        : {
+              values: edit.values,
+              apiData: entity,
+              setField,
+              isDirty: edit.isDirty,
+              errors,
+              disabled: inputsDisabled,
+              resetSignal,
+          };
 
     const invalidateList = React.useCallback(
-        () => queryClient.invalidateQueries({ queryKey: ['dn-entity-list', listPath] }),
+        () => queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_LIST, listPath] }),
         [queryClient, listPath]
     );
+
     const invalidateGet = React.useCallback(
-        () => queryClient.invalidateQueries({ queryKey: ['entity-get', entityName, id] }),
+        () => queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_GET, entityName, id] }),
         [queryClient, entityName, id]
     );
+
+    const handleReload = React.useCallback(async () => {
+        await edit.discard();
+        await invalidateGet();
+        // Force children that hold derived local state (sheets rows, opengraph rows) to re-init
+        // from the freshly fetched API payload — TanStack's structural sharing keeps the same
+        // reference when the server returns identical content, which would otherwise hide the
+        // change from `useSheetsState` / `useOgState`.
+        setResetSignal(s => s + 1);
+    }, [edit, invalidateGet]);
 
     const handleSave = React.useCallback(async () => {
         if (isSaving) return;
@@ -203,6 +225,7 @@ export function DnEntityEditView<T extends Entity>({
     }, [edit, id, identifier, invalidateList, navigate, onDelete, redirectPath, showToast]);
 
     if (!isNew && isLoading) return <DnLoadingView />;
+    if (!isNew && isError) return <NotFoundView />;
 
     const title = isNew
         ? buildCreateTitle(identifier)
@@ -222,7 +245,7 @@ export function DnEntityEditView<T extends Entity>({
                 apiUpdatedAt={edit.apiUpdatedAt}
                 onSave={handleSave}
                 onDelete={() => setDeleteDialogOpen(true)}
-                onReload={isNew ? undefined : edit.discard}
+                onReload={isNew ? undefined : handleReload}
             />
             <DnDialog
                 open={deleteDialogOpen}

@@ -49,7 +49,7 @@ export function PageEditTabGeneral() {
     const api = useDnApi();
     const { id } = useParams<{ id: string }>();
     const { schemas } = useEntitySchema('page');
-    const { values, setField, errors, disabled } = useDnEntityFormContext<PageDto>();
+    const { values, apiData, setField, errors, disabled } = useDnEntityFormContext<PageDto>();
 
     const pathSchema = React.useMemo(() => schemas.find(s => s.name === 'Path'), [schemas]);
     const pathRegex = React.useMemo(
@@ -58,6 +58,7 @@ export function PageEditTabGeneral() {
     );
 
     const currentPath = String(values.path ?? '');
+    const apiPath = String(apiData?.path ?? '');
     const slugPresent = PathAnalyzer.hasDynamicSlug(currentPath);
     const currentEntityType = values.entityType ?? null;
 
@@ -94,6 +95,7 @@ export function PageEditTabGeneral() {
                         error={errors?.has('path') || pathAvailabilityError}
                         helperText={pathAvailabilityError ? PATH_AVAILABILITY_ERROR : PATH_HELPER}
                         debounceInMs={PATH_DEBOUNCE_MS}
+                        skipWhen={value => value === apiPath}
                         onChange={handlePathChange}
                         onDebounced={handlePathDebounced}
                     />

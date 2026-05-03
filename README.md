@@ -58,3 +58,4 @@ Consumers need a GitHub token with `read:packages` and the following
 @digital-net-org:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
+

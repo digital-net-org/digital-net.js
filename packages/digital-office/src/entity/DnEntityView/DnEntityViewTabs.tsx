@@ -107,9 +107,21 @@ export function DnEntityViewTabs({
                     ) : null}
                 </Alert>
             ) : null}
-            <ContentWrapper sx={{ opacity: isPending ? 0.5 : 1, transition: 'opacity 150ms' }}>
-                {activeTab.content}
-            </ContentWrapper>
+            {tabs.map(t => {
+                const isActive = t.key === activeTab.key;
+                return (
+                    <ContentWrapper
+                        key={t.key}
+                        sx={{
+                            display: isActive ? undefined : 'none',
+                            opacity: isPending && isActive ? 0.5 : 1,
+                            transition: 'opacity 150ms',
+                        }}
+                    >
+                        {t.content}
+                    </ContentWrapper>
+                );
+            })}
             <DnDialog
                 open={reloadDialogOpen}
                 onClose={() => setReloadDialogOpen(false)}

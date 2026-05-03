@@ -4,6 +4,12 @@ import { DnInput, type DnInputProps } from './DnInput';
 export interface DnInputDebouncedProps extends DnInputProps {
     onDebounced?: (_value: string, _signal: AbortSignal) => void | Promise<void>;
     debounceInMs?: number;
+    /**
+     * Optional predicate. When it returns `true` for the current value, the debounce timer,
+     * the loader (`loadingNonBlocking`) and the `onDebounced` call are all short-circuited.
+     * Use this to skip noop work when the value is e.g. equal to the pristine API value.
+     */
+    skipWhen?: (_value: string) => boolean;
 }
 
 const DEFAULT_DEBOUNCE_MS = 1500;
@@ -24,6 +30,7 @@ export function DnInputDebounced({
     debounceInMs = DEFAULT_DEBOUNCE_MS,
     onChange,
     regex,
+    skipWhen,
     loadingNonBlocking,
     ...rest
 }: DnInputDebouncedProps) {
@@ -67,16 +74,24 @@ export function DnInputDebounced({
         [debounceInMs]
     );
 
+    // Keep the predicate in a ref so we don't re-run the watch effect when the parent passes a
+    // fresh arrow on each render.
+    const skipWhenRef = React.useRef(skipWhen);
+    React.useEffect(() => {
+        skipWhenRef.current = skipWhen;
+    }, [skipWhen]);
+
     // Track the last value we handled. Anything else showing up in `rest.value` is an external
     // change (hydration, programmatic reset) and triggers a debounce pass — but ONLY when the
-    // new value passes `shouldDebounce`, so empty strings or regex-invalid values never fire.
+    // new value passes `shouldDebounce` and is not skipped, so empty strings, regex-invalid
+    // values or pristine values never fire.
     const lastHandledRef = React.useRef<string | undefined>(undefined);
     React.useEffect(() => {
         const current = pickValue(rest.value, rest.defaultValue);
         if (lastHandledRef.current === current) return;
         lastHandledRef.current = current;
         cancelPending();
-        if (!onDebouncedRef.current || !shouldDebounce(current, regex)) {
+        if (!onDebouncedRef.current || !shouldDebounce(current, regex) || skipWhenRef.current?.(current)) {
             setIsPending(false);
             return;
         }
@@ -90,7 +105,7 @@ export function DnInputDebounced({
         onChange?.(event);
         cancelPending();
 
-        if (!onDebounced || !shouldDebounce(next, regex)) {
+        if (!onDebounced || !shouldDebounce(next, regex) || skipWhen?.(next)) {
             setIsPending(false);
             return;
         }

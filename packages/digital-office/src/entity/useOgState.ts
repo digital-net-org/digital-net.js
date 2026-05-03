@@ -3,7 +3,8 @@ import type { OpenGraphEntry, OpenGraphPropertySchema } from '@digital-net-org/d
 import { useOgSchema } from './useOgSchema';
 
 export interface OgRow {
-    id: string;
+    id: string;             // local UUID, stable across re-renders
+    entityId?: string;      // OpenGraphEntry.id from the DB if it exists
     property: string;
     content: string;
 }
@@ -11,84 +12,82 @@ export interface OgRow {
 export interface UseOgStateResult {
     rows: OgRow[];
     canAdd: boolean;
+    options: OpenGraphPropertySchema[];
     handleAdd: () => void;
     handleDelete: (_id: string) => void;
     handlePropertyChange: (_id: string, _property: string) => void;
     handleContentChange: (_id: string, _content: string) => void;
-    optionsFor: (_row: OgRow) => OpenGraphPropertySchema[];
 }
 
 const toRows = (entries: OpenGraphEntry[] | undefined): OgRow[] =>
     (entries ?? []).map(entry => ({
         id: crypto.randomUUID(),
+        entityId: entry.id,
         property: entry.property,
         content: entry.content,
     }));
 
-const toEntries = (rows: OgRow[]): OpenGraphEntry[] => rows.map(({ property, content }) => ({ property, content }));
+const toEntries = (rows: OgRow[]): OpenGraphEntry[] =>
+    rows.map(({ entityId, property, content }) => ({ id: entityId, property, content }));
 
 const entriesEqual = (a: OpenGraphEntry[] | undefined, b: OpenGraphEntry[] | undefined): boolean => {
     const aArr = a ?? [];
     const bArr = b ?? [];
     if (aArr.length !== bArr.length) return false;
-    return aArr.every((entry, i) => entry.property === bArr[i].property && entry.content === bArr[i].content);
+    return aArr.every(
+        (entry, i) =>
+            entry.id === bArr[i].id && entry.property === bArr[i].property && entry.content === bArr[i].content
+    );
 };
 
 export function useOgState(
     initialEntries: OpenGraphEntry[] | undefined,
-    onChange: (_entries: OpenGraphEntry[] | null) => void
+    onChange: (_entries: OpenGraphEntry[]) => void,
+    resetSignal?: number
 ): UseOgStateResult {
     const { schema } = useOgSchema();
     const [rows, setRows] = React.useState<OgRow[]>(() => toRows(initialEntries));
+    const [lastInitial, setLastInitial] = React.useState(initialEntries);
+    const [lastResetSignal, setLastResetSignal] = React.useState(resetSignal);
 
-    React.useEffect(() => {
-        setRows(current => (entriesEqual(toEntries(current), initialEntries) ? current : toRows(initialEntries)));
-    }, [initialEntries]);
-
-    const usedKeyCounts = React.useMemo(() => {
-        const counts = new Map<string, number>();
-        for (const row of rows) {
-            if (!row.property) continue;
-            counts.set(row.property, (counts.get(row.property) ?? 0) + 1);
+    // Sync from upstream when the `initialEntries` reference changes AND its content differs
+    // from the current rows. Done during render (not in an effect) to avoid the cascading
+    // re-render warned about by `react-hooks/set-state-in-effect`.
+    if (initialEntries !== lastInitial) {
+        setLastInitial(initialEntries);
+        if (!entriesEqual(toEntries(rows), initialEntries)) {
+            setRows(toRows(initialEntries));
         }
-        return counts;
-    }, [rows]);
+    }
 
-    const canAdd = schema.some(p => p.allowMultiple || (usedKeyCounts.get(p.key) ?? 0) === 0);
+    // Explicit reset: parent told us local edits were discarded. Re-init from `initialEntries`
+    // unconditionally — TanStack structural sharing may keep the same array ref even though
+    // the user expects an UI reset, so we cannot rely on `initialEntries !== lastInitial`.
+    if (resetSignal !== lastResetSignal) {
+        setLastResetSignal(resetSignal);
+        setRows(toRows(initialEntries));
+    }
 
     const updateRows = (next: OgRow[]) => {
         setRows(next);
-        const entries = toEntries(next);
-        onChange(entries.length > 0 ? entries : null);
+        onChange(toEntries(next));
     };
 
-    const handleAdd = () => updateRows([...rows, { id: crypto.randomUUID(), property: '', content: '' }]);
+    const handleAdd = () =>
+        updateRows([...rows, { id: crypto.randomUUID(), entityId: undefined, property: '', content: '' }]);
     const handleDelete = (id: string) => updateRows(rows.filter(r => r.id !== id));
     const handlePropertyChange = (id: string, property: string) =>
         updateRows(rows.map(r => (r.id === id ? { ...r, property } : r)));
     const handleContentChange = (id: string, content: string) =>
         updateRows(rows.map(r => (r.id === id ? { ...r, content } : r)));
 
-    const optionsMap = React.useMemo(() => {
-        const map = new Map<string, OpenGraphPropertySchema[]>();
-        for (const row of rows) {
-            map.set(
-                row.id,
-                schema.filter(p => p.allowMultiple || (usedKeyCounts.get(p.key) ?? 0) === 0 || p.key === row.property)
-            );
-        }
-        return map;
-    }, [rows, schema, usedKeyCounts]);
-
-    const optionsFor = React.useCallback((row: OgRow) => optionsMap.get(row.id) ?? [], [optionsMap]);
-
     return {
         rows,
-        canAdd,
+        canAdd: schema.length > 0,
+        options: schema,
         handleAdd,
         handleDelete,
         handlePropertyChange,
         handleContentChange,
-        optionsFor,
     };
 }

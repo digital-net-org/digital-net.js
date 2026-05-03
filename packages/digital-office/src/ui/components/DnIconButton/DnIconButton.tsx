@@ -3,17 +3,7 @@ import { Badge, IconButton, Tooltip, type IconButtonProps, type TooltipProps } f
 
 export interface DnIconButtonProps extends Pick<
     IconButtonProps,
-    | 'onClick'
-    | 'type'
-    | 'sx'
-    | 'className'
-    | 'id'
-    | 'color'
-    | 'size'
-    | 'aria-label'
-    | 'aria-haspopup'
-    | 'aria-controls'
-    | 'aria-expanded'
+    'onClick' | 'type' | 'sx' | 'className' | 'id' | 'color' | 'size'
 > {
     children: React.ReactNode;
     tooltip?: string;

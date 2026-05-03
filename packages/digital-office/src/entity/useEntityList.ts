@@ -4,6 +4,7 @@ import { type Entity, type QueryResult } from '@digital-net-org/digital-api-sdk'
 import { type DnFilterDefinition, type DnPaginationState } from '../ui';
 import { type UrlParam, UrlParamBuilder, useUrlQueryState } from '../router';
 import { useDnApi } from '../api';
+import { DN_QUERY_KEY_LIST } from './DnQueryKeys';
 
 export type SortDirection = 'asc' | 'desc' | '';
 
@@ -46,7 +47,7 @@ export function useEntityList<T extends Entity>(
     const [filterValues, setFilterValues] = useUrlQueryState(filterSchema);
 
     const urlPage = React.useMemo(() => Math.max(0, query.page - 1), [query.page]);
-    const listQueryKey = React.useMemo<QueryKey>(() => ['dn-entity-list', listPath], [listPath]);
+    const listQueryKey = React.useMemo<QueryKey>(() => [DN_QUERY_KEY_LIST, listPath], [listPath]);
 
     const activeFilters = React.useMemo(() => {
         const out: Record<string, string> = {};

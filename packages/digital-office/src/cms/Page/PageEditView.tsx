@@ -1,6 +1,6 @@
 import * as React from 'react';
-import type { JsonPatchOp, OpenGraphEntry, PageDto, SchemaProperty } from '@digital-net-org/digital-api-sdk';
-import { DnEntityEditView, defaultValidate } from '../../entity';
+import type { JsonPatchOp, PageDto } from '@digital-net-org/digital-api-sdk';
+import { DnEntityEditView } from '../../entity';
 import { useDnApi } from '../../api';
 import { PageEditTabGeneral } from './PageEditTabGeneral';
 import { PageEditTabJsonLd } from './PageEditTabJsonLd';
@@ -32,15 +32,6 @@ export function PageEditView() {
         [api.catalog.page]
     );
 
-    const handleValidate = (values: Partial<PageDto>, schemas: SchemaProperty[]) => {
-        const missing = defaultValidate(values, schemas);
-        const og = values.openGraph as OpenGraphEntry[] | undefined;
-        if (og && og.some(entry => !entry.property || !entry.content)) {
-            missing.add('openGraph');
-        }
-        return missing;
-    };
-
     return (
         <DnEntityEditView<PageDto>
             entityName="page"
@@ -59,7 +50,6 @@ export function PageEditView() {
             onDelete={handleDelete}
             onUpdate={handleUpdate}
             onCreate={handleCreate}
-            validate={handleValidate}
         />
     );
 }

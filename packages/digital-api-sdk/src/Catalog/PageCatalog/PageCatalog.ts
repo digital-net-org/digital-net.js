@@ -1,7 +1,21 @@
-import { DN_API_PAGE, DN_API_PAGE_BY_ID, DN_API_PAGE_OG_SCHEMA, DN_API_PAGE_PATH_AVAILABILITY } from '../../routes';
+import {
+    DN_API_PAGE,
+    DN_API_PAGE_BY_ID,
+    DN_API_PAGE_OG_SCHEMA,
+    DN_API_PAGE_OPENGRAPH,
+    DN_API_PAGE_PATH_AVAILABILITY,
+    DN_API_PAGE_SHEETS,
+} from '../../routes';
 import { CatalogRunner } from '../CatalogRunner';
 import type { HttpClient } from '../../HttpClient';
-import type { JsonPatchOp, OpenGraphPropertySchema, PageDto, Result } from '../../types';
+import type {
+    JsonPatchOp,
+    OpenGraphEntry,
+    OpenGraphPropertySchema,
+    PageDto,
+    PageSheet,
+    Result,
+} from '../../types';
 import type { CatalogCallbacks } from '../types';
 import type { PagePayload } from './types';
 
@@ -70,5 +84,29 @@ export class PageCatalog {
         options: CatalogCallbacks<OpenGraphPropertySchema[]> = {}
     ): Promise<Result<OpenGraphPropertySchema[]>> {
         return CatalogRunner.run<OpenGraphPropertySchema[]>(this.http, { path: DN_API_PAGE_OG_SCHEMA }, options);
+    }
+
+    /** GET `cms/pages/:id/sheets` — Editable sheet list owned by the page (ordered). — JWT/ApiKey */
+    public async getSheetsForEdit(
+        id: string,
+        options: CatalogCallbacks<PageSheet[]> = {}
+    ): Promise<Result<PageSheet[]>> {
+        return CatalogRunner.run<PageSheet[]>(
+            this.http,
+            { path: DN_API_PAGE_SHEETS, slugs: { id } },
+            options
+        );
+    }
+
+    /** GET `cms/pages/:id/openGraph` — Editable OpenGraph entries owned by the page (ordered). — JWT/ApiKey */
+    public async getOpenGraphForEdit(
+        id: string,
+        options: CatalogCallbacks<OpenGraphEntry[]> = {}
+    ): Promise<Result<OpenGraphEntry[]>> {
+        return CatalogRunner.run<OpenGraphEntry[]>(
+            this.http,
+            { path: DN_API_PAGE_OPENGRAPH, slugs: { id } },
+            options
+        );
     }
 }

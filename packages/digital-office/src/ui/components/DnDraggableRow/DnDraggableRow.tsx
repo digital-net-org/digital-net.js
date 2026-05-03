@@ -1,0 +1,89 @@
+import * as React from 'react';
+import { Stack } from '@mui/material';
+import { css, styled } from '@mui/material/styles';
+import { DeleteOutlined as DeleteIcon, DragIndicator as DragIndicatorIcon } from '@mui/icons-material';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { DnIconButton } from '../DnIconButton';
+
+export interface DnDraggableRowProps {
+    /** Stable identifier used by `@dnd-kit/sortable` to track the row. */
+    id: string;
+    disabled?: boolean;
+    children?: React.ReactNode;
+    onDelete?: (id: string) => void;
+}
+
+export function DnDraggableRow({ id, disabled = false, onDelete = undefined, children }: DnDraggableRowProps) {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+        id,
+        disabled,
+    });
+
+    const style: React.CSSProperties = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.6 : 1,
+    };
+
+    const handleDelete = (): void => onDelete?.(id);
+
+    return (
+        <Row ref={setNodeRef} style={style} data-dragging={isDragging || undefined}>
+            <DragHandle {...attributes} {...listeners} disabled={disabled}>
+                <DragIndicatorIcon fontSize="small" />
+            </DragHandle>
+            <Content>{children}</Content>
+            {onDelete ? (
+                <DnIconButton tooltip="Supprimer" disabled={disabled} onClick={handleDelete}>
+                    <DeleteIcon />
+                </DnIconButton>
+            ) : null}
+        </Row>
+    );
+}
+
+const Row = styled(Stack)(
+    ({ theme }) => css`
+        border: 1px solid ${theme.palette.divider};
+        border-radius: ${theme.shape.borderRadius};
+        background: ${theme.palette.background.paper};
+        padding: 0.75rem;
+        flex-direction: row;
+        align-items: start;
+
+        &[data-dragging] {
+            box-shadow: ${theme.shadows[4]};
+        }
+    `
+);
+
+const Content = styled(Stack)(
+    () => css`
+        width: 100%;
+        padding: 0.15rem 0.15rem 0;
+        flex-direction: column;
+    `
+);
+
+const DragHandle = styled('button', { shouldForwardProp: prop => prop !== 'disabled' })<{ disabled: boolean }>(
+    ({ theme, disabled }) => css`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        padding: 0.42rem 0.5rem 0 0;
+        color: ${theme.palette.text.secondary};
+        cursor: ${disabled ? 'not-allowed' : 'grab'};
+
+        &:active {
+            cursor: ${disabled ? 'not-allowed' : 'grabbing'};
+        }
+
+        &:focus-visible {
+            outline: 2px solid ${theme.palette.primary.main};
+            outline-offset: 2px;
+        }
+    `
+);
