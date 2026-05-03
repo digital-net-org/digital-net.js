@@ -99,6 +99,13 @@ export function DnEntityEditView<T extends Entity>({
     const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
     const [errors, setErrors] = React.useState<ReadonlySet<string>>(new Set());
     const [resetSignal, setResetSignal] = React.useState(0);
+    const subValidatorsRef = React.useRef(new Map<string, () => Set<string>>());
+    const registerSubValidator = React.useCallback((key: string, fn: () => Set<string>) => {
+        subValidatorsRef.current.set(key, fn);
+        return () => {
+            subValidatorsRef.current.delete(key);
+        };
+    }, []);
 
     const blocker = useRouterBlocker({ when: isNew && create.isDirty && !isSaving });
 
@@ -121,7 +128,14 @@ export function DnEntityEditView<T extends Entity>({
     );
 
     const binding: DnEntityFormBinding<T> = isNew
-        ? { values: create.values, setField, isDirty: create.isDirty, errors, disabled: inputsDisabled }
+        ? {
+              values: create.values,
+              setField,
+              isDirty: create.isDirty,
+              errors,
+              disabled: inputsDisabled,
+              registerSubValidator,
+          }
         : {
               values: edit.values,
               apiData: entity,
@@ -130,6 +144,7 @@ export function DnEntityEditView<T extends Entity>({
               errors,
               disabled: inputsDisabled,
               resetSignal,
+              registerSubValidator,
           };
 
     const invalidateList = React.useCallback(
@@ -155,7 +170,10 @@ export function DnEntityEditView<T extends Entity>({
     const handleSave = React.useCallback(async () => {
         if (isSaving) return;
         const values = (isNew ? create.values : edit.values) as Partial<T>;
-        const missing = (validate ?? defaultValidate)(values, schemas);
+        const missing = new Set((validate ?? defaultValidate)(values, schemas));
+        for (const fn of subValidatorsRef.current.values()) {
+            for (const key of fn()) missing.add(key);
+        }
         if (missing.size > 0) {
             setErrors(missing);
             showToast(missing.size > 1 ? 'Certains champs requis sont vides' : 'Un champ requis est vide', 'error');

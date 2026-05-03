@@ -79,7 +79,7 @@ export class PageCatalog {
         );
     }
 
-    /** GET `cms/pages/schema/open-graph` — Returns the list of valid OpenGraph properties. — JWT/ApiKey */
+    /** GET `cms/pages/open-graph-values/schema` — Returns the list of valid OpenGraph properties. — JWT/ApiKey */
     public async getOpenGraphSchema(
         options: CatalogCallbacks<OpenGraphPropertySchema[]> = {}
     ): Promise<Result<OpenGraphPropertySchema[]>> {
@@ -98,7 +98,7 @@ export class PageCatalog {
         );
     }
 
-    /** GET `cms/pages/:id/openGraph` — Editable OpenGraph entries owned by the page (ordered). — JWT/ApiKey */
+    /** GET `cms/pages/:id/open-graph` — Editable OpenGraph entries owned by the page (ordered). — JWT/ApiKey */
     public async getOpenGraphForEdit(
         id: string,
         options: CatalogCallbacks<OpenGraphEntry[]> = {}

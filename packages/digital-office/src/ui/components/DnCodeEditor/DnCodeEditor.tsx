@@ -29,6 +29,7 @@ export interface DnCodeEditorProps {
     autocomplete?: DnCodeEditorAutocomplete;
     disabled?: boolean;
     sx?: SxProps<Theme>;
+    error?: boolean;
 }
 
 interface AceCompleterRegistry {
@@ -93,7 +94,7 @@ function resolveAutocomplete(
     return language;
 }
 
-export function DnCodeEditor({ value, onChange, language, autocomplete, disabled, sx }: DnCodeEditorProps) {
+export function DnCodeEditor({ value, onChange, language, autocomplete, disabled, error, sx }: DnCodeEditorProps) {
     const theme = useTheme();
     const containerRef = React.useRef<HTMLDivElement>(null);
     const editorRef = React.useRef<Ace.Editor | null>(null);
@@ -302,6 +303,7 @@ export function DnCodeEditor({ value, onChange, language, autocomplete, disabled
             sx={sx}
             data-disabled={disabled || undefined}
             aria-disabled={disabled || undefined}
+            data-error={error || undefined}
         >
             <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
             {activeMode === 'jsonld' && hoverError && (
@@ -332,6 +334,10 @@ const Wrapper = styled(Box)(
             pointer-events: none;
             cursor: not-allowed;
             border-color: ${theme.palette.action.disabled};
+        }
+
+        &[data-error] {
+            border-color: ${theme.palette.error.main};
         }
 
         & .ace_editor {

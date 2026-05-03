@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Collapse, FormControlLabel, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Box, Collapse, FormControlLabel, MenuItem, Stack, TextField } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import type { SheetType } from '@digital-net-org/digital-api-sdk';
 import { DnCodeEditor, DnDraggableRow, DnExpandButton, DnInput, DnSwitch } from '../../../ui';
@@ -34,6 +34,11 @@ export function EditSheetRow({
     const nameError = showErrors && (errors?.has('name') ?? false);
     const contentError = showErrors && (errors?.has('content') ?? false);
 
+    React.useEffect(() => {
+        if (row.expanded || !contentError) return;
+        onToggleExpand(row.id);
+    }, [contentError, onToggleExpand, row.expanded, row.id]);
+
     return (
         <DnDraggableRow id={row.id} disabled={disabled} onDelete={onDelete}>
             <Header>
@@ -44,7 +49,6 @@ export function EditSheetRow({
                     disabled={disabled}
                     required
                     error={nameError}
-                    helperText={nameError ? 'Requis' : undefined}
                     sx={{ flex: 2 }}
                 />
                 <TextField
@@ -80,21 +84,21 @@ export function EditSheetRow({
                         label="Publié"
                     />
                 </Stack>
-                <DnExpandButton onClick={() => onToggleExpand(row.id)} expanded={row.expanded} />
+                <DnExpandButton
+                    onClick={() => onToggleExpand(row.id)}
+                    expanded={row.expanded}
+                    disabled={contentError}
+                />
             </Header>
             <Collapse in={row.expanded} unmountOnExit>
                 <Box sx={{ height: 320, marginTop: 1 }}>
                     <DnCodeEditor
-                        value={row.content}
+                        value={row.content ?? ''}
                         onChange={value => onFieldChange(row.id, 'content', value)}
                         language={LANGUAGE_TYPES[row.type]}
                         disabled={disabled}
+                        error={contentError}
                     />
-                    {contentError && (
-                        <Typography variant="caption" color="error" sx={{ mt: 0.5 }}>
-                            Le contenu est requis.
-                        </Typography>
-                    )}
                 </Box>
             </Collapse>
         </DnDraggableRow>

@@ -15,3 +15,4 @@ export * from './useEntityGet';
 export * from './useEntityList';
 export * from './useEntitySchema';
 export * from './useEntityRowsState';
+export * from './computeRowErrors';

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import type { OpenGraphEntry, OpenGraphPropertySchema } from '@digital-net-org/digital-api-sdk';
-import { useEntityRowsState } from '../../../entity';
+import type { OpenGraphEntry, OpenGraphPropertySchema, SchemaProperty } from '@digital-net-org/digital-api-sdk';
+import { computeRowErrors, useEntityRowsState } from '../../../entity';
 import { useOgSchema } from './useOgSchema';
 
 export interface OgRow {
@@ -40,23 +40,14 @@ const createRow = (): OgRow => ({
     content: '',
 });
 
-const computeRowErrors = (rows: OgRow[]): Map<string, Set<string>> => {
-    const map = new Map<string, Set<string>>();
-    for (const row of rows) {
-        const errors = new Set<string>();
-        if (!row.property.trim()) errors.add('property');
-        if (!row.content.trim()) errors.add('content');
-        if (errors.size > 0) map.set(row.id, errors);
-    }
-    return map;
-};
-
 export function useOgState(
     initialEntries: OpenGraphEntry[] | undefined,
     onChange: (_entries: OpenGraphEntry[]) => void,
-    resetSignal?: number
+    resetSignal: number | undefined,
+    schemas: SchemaProperty[]
 ) {
     const { schema } = useOgSchema();
+    const computeErrors = React.useCallback((rows: OgRow[]) => computeRowErrors(rows, schemas), [schemas]);
     const base = useEntityRowsState<OgRow, OpenGraphEntry>({
         initial: initialEntries,
         onChange,
@@ -65,7 +56,7 @@ export function useOgState(
         toPayload,
         payloadEqual,
         createRow,
-        computeRowErrors,
+        computeErrors,
     });
 
     const handlePropertyChange = React.useCallback(
@@ -85,7 +76,7 @@ export function useOgState(
     return {
         rows: base.rows,
         canAdd: schema.length > 0,
-        options: schema,
+        options: schema as OpenGraphPropertySchema[],
         handleAdd: base.handleAdd,
         handleDelete: base.handleDelete,
         handleReorder: base.handleReorder,

@@ -39,7 +39,6 @@ export function EditOpenGraphRow({
                         disabled={disabled}
                         required
                         error={propertyError}
-                        helperText={propertyError ? 'Requis' : undefined}
                     />
                 </Stack>
                 <Stack sx={{ flex: 3 }}>
@@ -50,7 +49,6 @@ export function EditOpenGraphRow({
                         disabled={disabled}
                         required
                         error={contentError}
-                        helperText={contentError ? 'Requis' : undefined}
                     />
                 </Stack>
             </Stack>

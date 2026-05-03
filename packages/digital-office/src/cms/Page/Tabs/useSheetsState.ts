@@ -1,15 +1,14 @@
 import * as React from 'react';
-import type { PageSheet, SheetType } from '@digital-net-org/digital-api-sdk';
-import { useEntityRowsState } from '../../../entity';
+import type { PageSheet, SchemaProperty } from '@digital-net-org/digital-api-sdk';
+import { computeRowErrors, useEntityRowsState } from '../../../entity';
 
-const VALID_TYPES: readonly SheetType[] = ['css', 'js', 'html'] as const;
 const CONTENT_DEBOUNCE_MS = 300;
 
 export interface SheetRow {
     id: string;
     entityId?: string;
     name: string;
-    type: SheetType;
+    type: PageSheet['type'];
     content: string;
     published: boolean;
     expanded: boolean;
@@ -72,23 +71,13 @@ const createRow = (): SheetRow => ({
     expanded: true,
 });
 
-const computeRowErrors = (rows: SheetRow[]): Map<string, Set<string>> => {
-    const map = new Map<string, Set<string>>();
-    for (const row of rows) {
-        const errors = new Set<string>();
-        if (!row.name.trim()) errors.add('name');
-        if (!VALID_TYPES.includes(row.type)) errors.add('type');
-        if (!row.content.trim()) errors.add('content');
-        if (errors.size > 0) map.set(row.id, errors);
-    }
-    return map;
-};
-
 export function useSheetsState(
     initial: PageSheet[] | undefined,
     onChange: (_next: PageSheet[]) => void,
-    resetSignal?: number
+    resetSignal: number | undefined,
+    schemas: SchemaProperty[]
 ): UseSheetsStateResult {
+    const computeErrors = React.useCallback((rows: SheetRow[]) => computeRowErrors(rows, schemas), [schemas]);
     const base = useEntityRowsState<SheetRow, PageSheet>({
         initial,
         onChange,
@@ -97,7 +86,7 @@ export function useSheetsState(
         toPayload,
         payloadEqual,
         createRow,
-        computeRowErrors,
+        computeErrors,
         debounceMs: CONTENT_DEBOUNCE_MS,
     });
 

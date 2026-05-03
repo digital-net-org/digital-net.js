@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { CircularProgress, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import type { PageDto, PageSheet } from '@digital-net-org/digital-api-sdk';
 import { useDnApi } from '../../../api';
-import { useDnEntityFormContext } from '../../../entity';
+import { useDnEntityFormContext, useEntitySchema } from '../../../entity';
 import { DnButton, DnDraggableContext, DnLoadingView } from '../../../ui';
 import { DN_QUERY_KEY_GET } from '../../../entity/DnQueryKeys';
 import { DnEntityTabHelper } from '../../../entity/DnEntityTabHelper';
@@ -12,9 +12,11 @@ import { EditSheetRow } from './EditSheetRow';
 import { useSheetsState } from './useSheetsState';
 
 export function PageTabSheets() {
-    const { values, setField, disabled, errors, resetSignal } = useDnEntityFormContext<PageDto>();
+    const { values, setField, disabled, errors, resetSignal, registerSubValidator } =
+        useDnEntityFormContext<PageDto>();
     const api = useDnApi();
     const pageId = values.id;
+    const { schemas: sheetSchemas, loading: sheetSchemaLoading } = useEntitySchema('pageSheet');
     const { data: initialSheets, isLoading: isLoadingSheets } = useQuery<PageSheet[] | undefined>({
         queryKey: [DN_QUERY_KEY_GET, 'page', pageId, 'sheets'],
         queryFn: async () => {
@@ -29,8 +31,21 @@ export function PageTabSheets() {
     });
     const draftSheets = (values as { sheets?: PageSheet[] }).sheets;
     const seedSheets = React.useMemo(() => draftSheets ?? initialSheets, [draftSheets, initialSheets]);
-    const state = useSheetsState(seedSheets, next => setField('/sheets', next), resetSignal);
+    const state = useSheetsState(seedSheets, next => setField('/sheets', next), resetSignal, sheetSchemas);
     const showErrors = errors?.has('sheets') ?? false;
+
+    const validityRef = React.useRef({ isValid: state.isValid, schemaLoading: sheetSchemaLoading });
+    React.useEffect(() => {
+        validityRef.current = { isValid: state.isValid, schemaLoading: sheetSchemaLoading };
+    }, [state.isValid, sheetSchemaLoading]);
+    React.useEffect(() => {
+        if (!registerSubValidator) return;
+        return registerSubValidator('sheets', () =>
+            validityRef.current.schemaLoading || !validityRef.current.isValid
+                ? new Set(['sheets'])
+                : new Set()
+        );
+    }, [registerSubValidator]);
 
     return (
         <Stack sx={{ gap: 2, height: '100%' }}>

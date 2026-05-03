@@ -24,4 +24,5 @@ export interface SchemaProperty {
     isForeignKey: boolean;
     regexValidation: string | null;
     enumValues: string[] | null;
+    oneOfValues: string[] | null;
 }

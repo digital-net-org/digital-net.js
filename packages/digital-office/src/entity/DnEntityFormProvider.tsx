@@ -16,6 +16,12 @@ export interface DnEntityFormBinding<T> {
      * keep the same array reference when the content has not changed).
      */
     resetSignal?: number;
+    /**
+     * Register a sub-validator that runs alongside `defaultValidate` at save time. The returned
+     * accessors are added to the `errors` set; if any is non-empty, the save is blocked. The
+     * function returned by `registerSubValidator` is the unregister handler — call it on cleanup.
+     */
+    registerSubValidator?: (_key: string, _validate: () => Set<string>) => () => void;
 }
 
 const DnEntityFormContext = React.createContext<DnEntityFormBinding<unknown> | null>(null);
