@@ -1,13 +1,16 @@
 import * as React from 'react';
+import { arrayMove } from '@dnd-kit/sortable';
 import type { OpenGraphEntry, OpenGraphPropertySchema } from '@digital-net-org/digital-api-sdk';
 import { useOgSchema } from './useOgSchema';
 
 export interface OgRow {
-    id: string;             // local UUID, stable across re-renders
-    entityId?: string;      // OpenGraphEntry.id from the DB if it exists
+    id: string;
+    entityId?: string;
     property: string;
     content: string;
 }
+
+type RowField = keyof Omit<OgRow, 'id' | 'entityId'>;
 
 export interface UseOgStateResult {
     rows: OgRow[];
@@ -17,6 +20,9 @@ export interface UseOgStateResult {
     handleDelete: (_id: string) => void;
     handlePropertyChange: (_id: string, _property: string) => void;
     handleContentChange: (_id: string, _content: string) => void;
+    handleReorder: (_fromId: string, _toId: string) => void;
+    rowErrors: Map<string, Set<RowField>>;
+    isValid: boolean;
 }
 
 const toRows = (entries: OpenGraphEntry[] | undefined): OgRow[] =>
@@ -40,6 +46,17 @@ const entriesEqual = (a: OpenGraphEntry[] | undefined, b: OpenGraphEntry[] | und
     );
 };
 
+function computeRowErrors(rows: OgRow[]): Map<string, Set<RowField>> {
+    const map = new Map<string, Set<RowField>>();
+    for (const row of rows) {
+        const errors = new Set<RowField>();
+        if (!row.property.trim()) errors.add('property');
+        if (!row.content.trim()) errors.add('content');
+        if (errors.size > 0) map.set(row.id, errors);
+    }
+    return map;
+}
+
 export function useOgState(
     initialEntries: OpenGraphEntry[] | undefined,
     onChange: (_entries: OpenGraphEntry[]) => void,
@@ -49,10 +66,9 @@ export function useOgState(
     const [rows, setRows] = React.useState<OgRow[]>(() => toRows(initialEntries));
     const [lastInitial, setLastInitial] = React.useState(initialEntries);
     const [lastResetSignal, setLastResetSignal] = React.useState(resetSignal);
+    const rowsRef = React.useRef(rows);
+    const onChangeRef = React.useRef(onChange);
 
-    // Sync from upstream when the `initialEntries` reference changes AND its content differs
-    // from the current rows. Done during render (not in an effect) to avoid the cascading
-    // re-render warned about by `react-hooks/set-state-in-effect`.
     if (initialEntries !== lastInitial) {
         setLastInitial(initialEntries);
         if (!entriesEqual(toEntries(rows), initialEntries)) {
@@ -68,18 +84,58 @@ export function useOgState(
         setRows(toRows(initialEntries));
     }
 
-    const updateRows = (next: OgRow[]) => {
-        setRows(next);
-        onChange(toEntries(next));
-    };
+    React.useEffect(() => {
+        rowsRef.current = rows;
+    }, [rows]);
 
-    const handleAdd = () =>
-        updateRows([...rows, { id: crypto.randomUUID(), entityId: undefined, property: '', content: '' }]);
-    const handleDelete = (id: string) => updateRows(rows.filter(r => r.id !== id));
-    const handlePropertyChange = (id: string, property: string) =>
-        updateRows(rows.map(r => (r.id === id ? { ...r, property } : r)));
-    const handleContentChange = (id: string, content: string) =>
-        updateRows(rows.map(r => (r.id === id ? { ...r, content } : r)));
+    React.useEffect(() => {
+        onChangeRef.current = onChange;
+    }, [onChange]);
+
+    const commit = React.useCallback((next: OgRow[]) => {
+        setRows(next);
+        rowsRef.current = next;
+        onChangeRef.current(toEntries(next));
+    }, []);
+
+    const handleAdd = React.useCallback(() => {
+        commit([...rowsRef.current, { id: crypto.randomUUID(), entityId: undefined, property: '', content: '' }]);
+    }, [commit]);
+
+    const handleDelete = React.useCallback(
+        (id: string) => {
+            commit(rowsRef.current.filter(r => r.id !== id));
+        },
+        [commit]
+    );
+
+    const handlePropertyChange = React.useCallback(
+        (id: string, property: string) => {
+            commit(rowsRef.current.map(r => (r.id === id ? { ...r, property } : r)));
+        },
+        [commit]
+    );
+
+    const handleContentChange = React.useCallback(
+        (id: string, content: string) => {
+            commit(rowsRef.current.map(r => (r.id === id ? { ...r, content } : r)));
+        },
+        [commit]
+    );
+
+    const handleReorder = React.useCallback(
+        (fromId: string, toId: string) => {
+            const current = rowsRef.current;
+            const fromIndex = current.findIndex(r => r.id === fromId);
+            const toIndex = current.findIndex(r => r.id === toId);
+            if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return;
+            commit(arrayMove(current, fromIndex, toIndex));
+        },
+        [commit]
+    );
+
+    const rowErrors = React.useMemo(() => computeRowErrors(rows), [rows]);
+    const isValid = rowErrors.size === 0;
 
     return {
         rows,
@@ -89,5 +145,8 @@ export function useOgState(
         handleDelete,
         handlePropertyChange,
         handleContentChange,
+        handleReorder,
+        rowErrors,
+        isValid,
     };
 }

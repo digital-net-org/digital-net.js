@@ -10,7 +10,6 @@ export * from './DnDraggableContext';
 export * from './DnExpandButton';
 export * from './DnExternalButton';
 export * from './DnInput';
-export * from './DnLazyMount';
 export * from './DnLoadingView';
 export * from './DnDialog';
 export * from './DnDialogConfirmPassword';

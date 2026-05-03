@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {
-    Alert as MuiAlert,
     Box,
     Collapse,
     FormControlLabel,
@@ -47,7 +46,12 @@ export function PageEditTabSheets() {
         enabled: !!pageId,
         retry: false,
     });
-    const state = useSheetsState(initialSheets, next => setField('/sheets', next), resetSignal);
+    const draftSheets = (values as { sheets?: PageSheet[] }).sheets;
+    const seedSheets = React.useMemo(
+        () => draftSheets ?? initialSheets,
+        [draftSheets, initialSheets]
+    );
+    const state = useSheetsState(seedSheets, next => setField('/sheets', next), resetSignal);
     const showErrors = errors?.has('sheets') ?? false;
 
     return (
@@ -140,7 +144,7 @@ function SheetEditRow({
                     }}
                 >
                     {LANGUAGE_TYPES_MAP.map(x => (
-                        <MenuItem key={x} value="x">
+                        <MenuItem key={x} value={x}>
                             {x.toUpperCase()}
                         </MenuItem>
                     ))}

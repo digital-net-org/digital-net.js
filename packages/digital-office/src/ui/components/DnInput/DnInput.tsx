@@ -55,6 +55,8 @@ export function DnInput({
     regex,
     error,
     helperText,
+    value,
+    onChange,
     ...muiProps
 }: DnInputProps) {
     const [uncontrolledLength, setUncontrolledLength] = React.useState(
@@ -64,21 +66,21 @@ export function DnInput({
         typeof muiProps.defaultValue === 'string' ? muiProps.defaultValue : ''
     );
 
-    const valueLength = typeof muiProps.value === 'string' ? muiProps.value.length : uncontrolledLength;
+    const valueLength = typeof value === 'string' ? value.length : uncontrolledLength;
     const resolvedMaxLength = max ?? (inputProps as { maxLength?: number } | undefined)?.maxLength;
-    const effectiveValue = typeof muiProps.value === 'string' ? muiProps.value : uncontrolledValue;
+    const effectiveValue = typeof value === 'string' ? value : uncontrolledValue;
     const regexMismatch = regex !== undefined && effectiveValue !== '' && !regex.test(effectiveValue);
     const effectiveError = Boolean(error) || regexMismatch;
     const effectiveHelper = regexMismatch ? DEFAULT_REGEX_ERROR : helperText;
 
-    const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (max !== undefined) {
             setUncontrolledLength(event.target.value.length);
         }
-        if (regex !== undefined && typeof muiProps.value !== 'string') {
+        if (regex !== undefined && typeof value !== 'string') {
             setUncontrolledValue(event.target.value);
         }
-        muiProps.onChange?.(event);
+        onChange?.(event);
     };
 
     return (
@@ -88,11 +90,12 @@ export function DnInput({
                     {valueLength}/{max}
                 </Counter>
             ) : null}
-            <CustomTextField
+            <DnStyledTextField
                 {...muiProps}
+                value={value ?? ''}
+                onChange={handleOnChange}
                 error={effectiveError}
                 helperText={effectiveHelper}
-                onChange={onChange}
                 className={`DnInput ${className ?? ''}`}
                 size="medium"
                 variant={({ default: 'outlined', text: 'filled' } as const)[variant ?? 'default']}
@@ -140,7 +143,7 @@ const Counter = styled(Typography)(
     `
 );
 
-const CustomTextField = styled(TextField)(
+export const DnStyledTextField = styled(TextField)(
     ({ theme }) => css`
         width: 100%;
         & .MuiInputBase-root {
@@ -155,6 +158,13 @@ const CustomTextField = styled(TextField)(
 
         & .MuiInputBase-input {
             padding: ${basePaddingX}rem ${basePaddingY}rem;
+        }
+        & .MuiAutocomplete-inputRoot {
+            padding: ${basePaddingX}rem ${basePaddingY}rem;
+        }
+        & .MuiAutocomplete-input {
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
         & .MuiInputLabel-outlined.MuiInputLabel-root {
