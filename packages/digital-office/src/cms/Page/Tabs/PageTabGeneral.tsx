@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useParams } from 'react-router';
 import { PathAnalyzer } from '@digital-net-org/digital-core';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../entity';
-import { useDnApi } from '../../api';
-import { DnInputDebounced } from '../../ui';
+import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
+import { useDnApi } from '../../../api';
+import { DnInputDebounced } from '../../../ui';
 
 const ENTITY_TYPE_HELPER = "Définit l'entité DB associée au dernier slug dynamique du chemin.";
 const ENTITY_TYPE_LOCKED_HELPER = 'Ajoutez un slug dynamique (:xxx) dans le chemin pour activer ce champ.';
@@ -45,7 +45,7 @@ const baseFieldProps: DnEntityFormProps['fieldProps'] = {
     },
 };
 
-export function PageEditTabGeneral() {
+export function PageTabGeneral() {
     const api = useDnApi();
     const { id } = useParams<{ id: string }>();
     const { schemas } = useEntitySchema('page');

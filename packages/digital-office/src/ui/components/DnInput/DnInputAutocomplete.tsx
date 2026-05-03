@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Autocomplete, type AutocompleteProps, type SxProps, type Theme } from '@mui/material';
-import { DnStyledTextField } from './DnInput';
+import { DnStyledTextField } from './DnStyledTextField';
 
 type MuiAutocompleteOmitted =
     | 'renderInput'

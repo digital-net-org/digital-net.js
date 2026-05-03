@@ -2,10 +2,7 @@ import * as React from 'react';
 import type { JsonPatchOp, PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityEditView } from '../../entity';
 import { useDnApi } from '../../api';
-import { PageEditTabGeneral } from './PageEditTabGeneral';
-import { PageEditTabJsonLd } from './PageEditTabJsonLd';
-import { PageEditTabOpenGraph } from './PageEditTabOpenGraph';
-import { PageEditTabSheets } from './PageEditTabSheets';
+import { PageTabGeneral, PageTabJsonLd, PageTabOpenGraph, PageTabSheets } from './Tabs';
 
 export function PageEditView() {
     const api = useDnApi();
@@ -41,10 +38,10 @@ export function PageEditView() {
             listPath="cms/pages"
             redirectPath="/content-manager/pages"
             tabs={[
-                { key: 'general', label: 'Général', content: <PageEditTabGeneral /> },
-                { key: 'jsonld', label: 'JSON-LD', content: <PageEditTabJsonLd /> },
-                { key: 'opengraph', label: 'OpenGraph', content: <PageEditTabOpenGraph /> },
-                { key: 'sheets', label: 'Sheets', content: <PageEditTabSheets /> },
+                { key: 'general', label: 'Général', content: <PageTabGeneral /> },
+                { key: 'jsonld', label: 'JSON-LD', content: <PageTabJsonLd /> },
+                { key: 'opengraph', label: 'OpenGraph', content: <PageTabOpenGraph /> },
+                { key: 'sheets', label: 'Sheets', content: <PageTabSheets /> },
             ]}
             onGet={handleGet}
             onDelete={handleDelete}

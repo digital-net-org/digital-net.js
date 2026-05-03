@@ -38,7 +38,7 @@ export function DnInputDebounced({
     const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
     const abortRef = React.useRef<AbortController | null>(null);
 
-    // Stabilise `onDebounced` (parent usually passes a fresh arrow on each render) so
+    // Stabilize `onDebounced` (parent usually passes a fresh arrow on each render) so
     // `runDebounce` stays referentially stable and the watch effect does not re-fire on each
     // parent render.
     const onDebouncedRef = React.useRef(onDebounced);

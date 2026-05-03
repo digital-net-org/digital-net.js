@@ -1,3 +1,3 @@
-export * from './DnInput';
-export * from './DnInputAutocomplete';
-export * from './DnInputDebounced';
+export { DnInput, type DnInputProps } from './DnInput';
+export { DnInputAutocomplete, type DnInputAutocompleteProps } from './DnInputAutocomplete';
+export { DnInputDebounced, type DnInputDebouncedProps } from './DnInputDebounced';
