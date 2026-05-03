@@ -3,6 +3,8 @@ import type { Entity, JsonPatchOp } from '@digital-net-org/digital-api-sdk';
 import { DnIdbContext, IDbStore, JsonPatch } from '../storage';
 import type { EntityDraftRecord } from './types';
 
+const PERSIST_DEBOUNCE_MS = 500;
+
 export interface UseEntityDraftOptions {
     enabled?: boolean;
 }
@@ -17,10 +19,6 @@ export interface UseEntityDraftResult<T extends Entity> {
     setField: (_path: string, _value: unknown) => void;
     discard: () => Promise<void>;
     commit: () => Promise<void>;
-}
-
-function storeName(entityName: string): string {
-    return `patch:${entityName}`;
 }
 
 function pathToAccessor(path: string): string {
@@ -39,36 +37,7 @@ export function useEntityDraft<T extends Entity>(
     const [ops, setOps] = React.useState<JsonPatchOp[]>([]);
     const [baselineUpdatedAt, setBaseline] = React.useState<string | null>(null);
 
-    const store = storeName(entityName);
-
-    React.useEffect(() => {
-        let cancelled = false;
-        const load = async () => {
-            if (!database || !enabled || !id) {
-                if (cancelled) return;
-                setOps([]);
-                setBaseline(null);
-                return;
-            }
-            const record = await IDbStore.get<EntityDraftRecord>(database, store, id);
-            if (cancelled) return;
-            setOps(record?.ops ?? []);
-            setBaseline(record?.baselineUpdatedAt ?? null);
-        };
-        void load();
-        return () => {
-            cancelled = true;
-        };
-    }, [database, enabled, id, store]);
-
-    const values = React.useMemo<Partial<T>>(
-        () => JsonPatch.applyOps<T>(apiData as Partial<T> | undefined, ops),
-        [apiData, ops]
-    );
-
-    const isDirty = ops.length > 0;
-    const apiUpdatedAt = apiData?.updatedAt ?? null;
-    const hasConflict = isDirty && !!apiUpdatedAt && !!baselineUpdatedAt && apiUpdatedAt > baselineUpdatedAt;
+    const store = `patch:${entityName}`;
 
     const persist = React.useCallback(
         async (nextOps: JsonPatchOp[], nextBaseline: string | null) => {
@@ -89,6 +58,72 @@ export function useEntityDraft<T extends Entity>(
         [database, id, notifyDraftChange, store]
     );
 
+    const timerRef = React.useRef<number | null>(null);
+    const pendingRef = React.useRef<{ ops: JsonPatchOp[]; baseline: string | null } | null>(null);
+
+    const cancelPending = React.useCallback(() => {
+        if (timerRef.current !== null) {
+            window.clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+        pendingRef.current = null;
+    }, []);
+
+    const schedulePersist = React.useCallback(
+        (nextOps: JsonPatchOp[], nextBaseline: string | null) => {
+            pendingRef.current = { ops: nextOps, baseline: nextBaseline };
+            if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+            timerRef.current = window.setTimeout(() => {
+                timerRef.current = null;
+                const pending = pendingRef.current;
+                if (!pending) return;
+                pendingRef.current = null;
+                void persist(pending.ops, pending.baseline);
+            }, PERSIST_DEBOUNCE_MS);
+        },
+        [persist]
+    );
+
+    React.useEffect(() => {
+        let cancelled = false;
+        const load = async () => {
+            if (!database || !enabled || !id) {
+                if (cancelled) return;
+                setOps([]);
+                setBaseline(null);
+                return;
+            }
+            const record = await IDbStore.get<EntityDraftRecord>(database, store, id);
+            if (cancelled) return;
+            setOps(record?.ops ?? []);
+            setBaseline(record?.baselineUpdatedAt ?? null);
+        };
+        void load();
+        return () => {
+            // Flush any pending IDB write before switching id/store or unmounting,
+            // using the persist closure captured at this render (matches the previous id).
+            if (timerRef.current !== null) {
+                window.clearTimeout(timerRef.current);
+                timerRef.current = null;
+            }
+            const pending = pendingRef.current;
+            if (pending) {
+                pendingRef.current = null;
+                void persist(pending.ops, pending.baseline);
+            }
+            cancelled = true;
+        };
+    }, [database, enabled, id, store, persist]);
+
+    const values = React.useMemo<Partial<T>>(
+        () => JsonPatch.applyOps<T>(apiData as Partial<T> | undefined, ops),
+        [apiData, ops]
+    );
+
+    const isDirty = ops.length > 0;
+    const apiUpdatedAt = apiData?.updatedAt ?? null;
+    const hasConflict = isDirty && !!apiUpdatedAt && !!baselineUpdatedAt && apiUpdatedAt > baselineUpdatedAt;
+
     const setField = React.useCallback(
         (path: string, value: unknown) => {
             const accessor = pathToAccessor(path);
@@ -98,19 +133,20 @@ export function useEntityDraft<T extends Entity>(
             const nextBaseline = baselineUpdatedAt ?? (nextOps.length > 0 ? (apiData?.updatedAt ?? null) : null);
             setOps(nextOps);
             setBaseline(nextOps.length > 0 ? nextBaseline : null);
-            void persist(nextOps, nextOps.length > 0 ? nextBaseline : null);
+            schedulePersist(nextOps, nextOps.length > 0 ? nextBaseline : null);
         },
-        [apiData, baselineUpdatedAt, ops, persist]
+        [apiData, baselineUpdatedAt, ops, schedulePersist]
     );
 
     const discard = React.useCallback(async () => {
+        cancelPending();
         setOps([]);
         setBaseline(null);
         if (database && id) {
             await IDbStore.delete(database, store, id);
             notifyDraftChange();
         }
-    }, [database, id, notifyDraftChange, store]);
+    }, [cancelPending, database, id, notifyDraftChange, store]);
 
     const commit = discard;
 

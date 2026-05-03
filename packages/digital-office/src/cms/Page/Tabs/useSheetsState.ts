@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { PageSheet, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { computeRowErrors, useEntityRowsState } from '../../../entity';
 
-const CONTENT_DEBOUNCE_MS = 300;
+const CONTENT_DEBOUNCE_MS = 500;
 
 export interface SheetRow {
     id: string;
