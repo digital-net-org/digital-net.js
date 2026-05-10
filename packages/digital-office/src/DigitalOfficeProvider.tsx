@@ -3,7 +3,7 @@ import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
 import { DnThemeProvider } from './ui';
 import { DnApiProvider } from './api';
 import { DnUserProvider } from './user';
-import { DnEntitySchemaProvider, DnOgSchemaProvider } from './entity';
+import { DnEntitySchemaProvider, DnEntityVariablesProvider, DnOgSchemaProvider } from './entity';
 import { DigitalNetLogo, DnAppProvider, DnToastProvider } from './app';
 import { DnIdbProvider } from './storage';
 import { DRAFTS_DB_CONFIG } from './constants';
@@ -30,9 +30,11 @@ export function DigitalOfficeProvider({ api, appLogo, children }: DigitalOfficeP
                         <DnIdbProvider config={DRAFTS_DB_CONFIG}>
                             <DnEntitySchemaProvider>
                                 <DnOgSchemaProvider>
-                                    <DnAppProvider appLogo={appLogo ?? <DigitalNetLogo />}>
-                                        {children}
-                                    </DnAppProvider>
+                                    <DnEntityVariablesProvider>
+                                        <DnAppProvider appLogo={appLogo ?? <DigitalNetLogo />}>
+                                            {children}
+                                        </DnAppProvider>
+                                    </DnEntityVariablesProvider>
                                 </DnOgSchemaProvider>
                             </DnEntitySchemaProvider>
                         </DnIdbProvider>

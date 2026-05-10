@@ -2,16 +2,15 @@ import * as React from 'react';
 import { Stack } from '@mui/material';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnCodeEditor, DnExternalButton } from '../../../ui';
-import { useDnEntityFormContext } from '../../../entity';
-import { DnEntityTabHelper } from '../../../entity/DnEntityTabHelper';
-import { useTemplateVariables } from '../templating/TemplateVariablesContext';
+import { DnEntityTabHelper, useDnEntityFormContext } from '../../../entity';
+import { usePageVariables } from './usePageVariables';
 
 const JSON_LD_DOC_URL = 'https://developers.google.com/search/docs/appearance/structured-data/search-gallery';
 const JSON_LD_TEST_URL = 'https://search.google.com/test/rich-results';
 
 export function PageTabJsonLd() {
     const { values, setField, disabled } = useDnEntityFormContext<PageDto>();
-    const { variables } = useTemplateVariables();
+    const variables = usePageVariables();
     return (
         <Stack sx={{ gap: 2, height: '100%' }}>
             <DnEntityTabHelper description="Définissez les résultats enrichis de votre page.">

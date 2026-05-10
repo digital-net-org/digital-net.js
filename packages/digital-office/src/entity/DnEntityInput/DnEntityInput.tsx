@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Divider, FormControl, FormControlLabel, FormHelperText, MenuItem, TextField } from '@mui/material';
-import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
+import type { SchemaProperty, TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { DnInput, type DnInputProps, DnInputInterpolated, DnSwitch } from '../../ui';
-import { useTemplateVariables } from '../../cms/Page/templating/TemplateVariablesContext';
+import { useEntityVariables } from '../useEntityVariables';
 
 export interface DnEntityInputProps {
     schema: SchemaProperty;
@@ -14,6 +14,7 @@ export interface DnEntityInputProps {
     multiline?: boolean;
     rows?: number;
     error?: boolean;
+    variables: TemplateVariable[];
 }
 
 export function DnEntityInput({
@@ -26,6 +27,7 @@ export function DnEntityInput({
     multiline,
     rows,
     error,
+    variables,
 }: DnEntityInputProps) {
     const resolvedLabel = React.useMemo(() => label ?? schema.name, [label, schema]);
     const resolvedDisabled = React.useMemo(
@@ -45,9 +47,8 @@ export function DnEntityInput({
     );
 
     const handleChange = (next: unknown) => onChange(next);
-    const { variables, isAvailable } = useTemplateVariables();
     const useTemplatableInput =
-        schema.isTemplatable && isAvailable && (schema.type === 'String' || schema.type === 'Guid');
+        schema.isTemplatable && variables.length > 0 && (schema.type === 'String' || schema.type === 'Guid');
 
     switch (schema.type) {
         case 'Boolean':

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Stack } from '@mui/material';
-import { type SchemaProperty } from '@digital-net-org/digital-api-sdk';
+import type { SchemaProperty, TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { DnEntityInput } from '../DnEntityInput';
 
 export interface EntityInputFieldProps {
@@ -18,6 +18,7 @@ export interface DnEntityFormProps {
     onFieldChange: (_path: string, _value: unknown) => void;
     errors?: ReadonlySet<string>;
     disabled?: boolean;
+    variables: TemplateVariable[];
 }
 
 function schemaNameToPath(name: string): string {
@@ -28,7 +29,15 @@ function schemaNameToAccessor(name: string): string {
     return `${name.charAt(0).toLowerCase()}${name.slice(1)}`;
 }
 
-export function DnEntityForm({ schemas, fieldProps, values, onFieldChange, errors, disabled }: DnEntityFormProps) {
+export function DnEntityForm({
+    schemas,
+    fieldProps,
+    values,
+    onFieldChange,
+    errors,
+    disabled,
+    variables,
+}: DnEntityFormProps) {
     const resolvedSchemas = React.useMemo(
         () =>
             Object.entries(fieldProps).reduce<(EntityInputFieldProps & { schema: SchemaProperty })[]>(
@@ -62,6 +71,7 @@ export function DnEntityForm({ schemas, fieldProps, values, onFieldChange, error
                         onChange={next => onFieldChange(path, next)}
                         error={s.error ?? errors?.has(accessor)}
                         disabled={disabled || s.disabled}
+                        variables={variables}
                     />
                 );
             })}

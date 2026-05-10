@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import type { OpenGraphPropertySchema } from '@digital-net-org/digital-api-sdk';
 import { DnDraggableRow, DnInput, type DnInputProps, DnInputAutocomplete, DnInputInterpolated } from '../../../ui';
-import { useTemplateVariables } from '../templating/TemplateVariablesContext';
+import { usePageVariables } from './usePageVariables';
 import { type OgRow } from './useOgState';
 
 export interface EditOpenGraphRowProps {
@@ -27,7 +27,8 @@ export function EditOpenGraphRow({
 }: EditOpenGraphRowProps) {
     const propertyError = showErrors && (errors?.has('property') ?? false);
     const contentError = showErrors && (errors?.has('content') ?? false);
-    const { variables, isAvailable } = useTemplateVariables();
+    const variables = usePageVariables();
+    const isAvailable = variables.length > 0;
 
     return (
         <DnDraggableRow id={row.id} disabled={disabled} onDelete={onDelete}>

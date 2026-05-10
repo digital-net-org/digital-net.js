@@ -5,6 +5,7 @@ import type { PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
 import { useDnApi } from '../../../api';
 import { DnInputDebounced } from '../../../ui';
+import { usePageVariables } from './usePageVariables';
 
 const ENTITY_TYPE_HELPER = "Définit l'entité DB associée au dernier slug dynamique du chemin.";
 const ENTITY_TYPE_LOCKED_HELPER = 'Ajoutez un slug dynamique (:xxx) dans le chemin pour activer ce champ.';
@@ -50,6 +51,7 @@ export function PageTabGeneral() {
     const { id } = useParams<{ id: string }>();
     const { schemas } = useEntitySchema('page');
     const { values, apiData, setField, errors, disabled } = useDnEntityFormContext<PageDto>();
+    const variables = usePageVariables();
 
     const pathSchema = React.useMemo(() => schemas.find(s => s.name === 'Path'), [schemas]);
     const pathRegex = React.useMemo(
@@ -116,6 +118,7 @@ export function PageTabGeneral() {
             onFieldChange={setField}
             errors={errors}
             disabled={disabled}
+            variables={variables}
         />
     );
 }

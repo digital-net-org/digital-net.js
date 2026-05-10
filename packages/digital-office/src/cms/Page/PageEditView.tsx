@@ -3,7 +3,6 @@ import type { JsonPatchOp, PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityEditView } from '../../entity';
 import { useDnApi } from '../../api';
 import { PageTabGeneral, PageTabJsonLd, PageTabOpenGraph, PageTabSheets } from './Tabs';
-import { PageTemplateScope } from './templating/PageTemplateScope';
 
 export function PageEditView() {
     const api = useDnApi();
@@ -42,38 +41,22 @@ export function PageEditView() {
                 {
                     key: 'general',
                     label: 'Général',
-                    content: (
-                        <PageTemplateScope>
-                            <PageTabGeneral />
-                        </PageTemplateScope>
-                    ),
+                    content: <PageTabGeneral />,
                 },
                 {
                     key: 'jsonld',
                     label: 'JSON-LD',
-                    content: (
-                        <PageTemplateScope>
-                            <PageTabJsonLd />
-                        </PageTemplateScope>
-                    ),
+                    content: <PageTabJsonLd />,
                 },
                 {
                     key: 'opengraph',
                     label: 'OpenGraph',
-                    content: (
-                        <PageTemplateScope>
-                            <PageTabOpenGraph />
-                        </PageTemplateScope>
-                    ),
+                    content: <PageTabOpenGraph />,
                 },
                 {
                     key: 'sheets',
                     label: 'Sheets',
-                    content: (
-                        <PageTemplateScope>
-                            <PageTabSheets />
-                        </PageTemplateScope>
-                    ),
+                    content: <PageTabSheets />,
                 },
             ]}
             onGet={handleGet}

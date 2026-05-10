@@ -4,16 +4,13 @@ import { Add as AddIcon } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import type { PageDto, PageSheet } from '@digital-net-org/digital-api-sdk';
 import { useDnApi } from '../../../api';
-import { useDnEntityFormContext, useEntitySchema } from '../../../entity';
+import { useDnEntityFormContext, useEntitySchema, DN_QUERY_KEY_GET, DnEntityTabHelper } from '../../../entity';
 import { DnButton, DnDraggableContext, DnLoadingView } from '../../../ui';
-import { DN_QUERY_KEY_GET } from '../../../entity/DnQueryKeys';
-import { DnEntityTabHelper } from '../../../entity/DnEntityTabHelper';
 import { EditSheetRow } from './EditSheetRow';
 import { useSheetsState } from './useSheetsState';
 
 export function PageTabSheets() {
-    const { values, setField, disabled, errors, resetSignal, registerSubValidator } =
-        useDnEntityFormContext<PageDto>();
+    const { values, setField, disabled, errors, resetSignal, registerSubValidator } = useDnEntityFormContext<PageDto>();
     const api = useDnApi();
     const pageId = values.id;
     const { schemas: sheetSchemas, loading: sheetSchemaLoading } = useEntitySchema('pageSheet');
@@ -41,9 +38,7 @@ export function PageTabSheets() {
     React.useEffect(() => {
         if (!registerSubValidator) return;
         return registerSubValidator('sheets', () =>
-            validityRef.current.schemaLoading || !validityRef.current.isValid
-                ? new Set(['sheets'])
-                : new Set()
+            validityRef.current.schemaLoading || !validityRef.current.isValid ? new Set(['sheets']) : new Set()
         );
     }, [registerSubValidator]);
 
