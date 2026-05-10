@@ -3,6 +3,7 @@ import type { JsonPatchOp, PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityEditView } from '../../entity';
 import { useDnApi } from '../../api';
 import { PageTabGeneral, PageTabJsonLd, PageTabOpenGraph, PageTabSheets } from './Tabs';
+import { PageTemplateScope } from './templating/PageTemplateScope';
 
 export function PageEditView() {
     const api = useDnApi();
@@ -38,10 +39,42 @@ export function PageEditView() {
             listPath="cms/pages"
             redirectPath="/content-manager/pages"
             tabs={[
-                { key: 'general', label: 'Général', content: <PageTabGeneral /> },
-                { key: 'jsonld', label: 'JSON-LD', content: <PageTabJsonLd /> },
-                { key: 'opengraph', label: 'OpenGraph', content: <PageTabOpenGraph /> },
-                { key: 'sheets', label: 'Sheets', content: <PageTabSheets /> },
+                {
+                    key: 'general',
+                    label: 'Général',
+                    content: (
+                        <PageTemplateScope>
+                            <PageTabGeneral />
+                        </PageTemplateScope>
+                    ),
+                },
+                {
+                    key: 'jsonld',
+                    label: 'JSON-LD',
+                    content: (
+                        <PageTemplateScope>
+                            <PageTabJsonLd />
+                        </PageTemplateScope>
+                    ),
+                },
+                {
+                    key: 'opengraph',
+                    label: 'OpenGraph',
+                    content: (
+                        <PageTemplateScope>
+                            <PageTabOpenGraph />
+                        </PageTemplateScope>
+                    ),
+                },
+                {
+                    key: 'sheets',
+                    label: 'Sheets',
+                    content: (
+                        <PageTemplateScope>
+                            <PageTabSheets />
+                        </PageTemplateScope>
+                    ),
+                },
             ]}
             onGet={handleGet}
             onDelete={handleDelete}

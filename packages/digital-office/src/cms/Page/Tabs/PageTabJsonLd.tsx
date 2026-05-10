@@ -4,12 +4,14 @@ import type { PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnCodeEditor, DnExternalButton } from '../../../ui';
 import { useDnEntityFormContext } from '../../../entity';
 import { DnEntityTabHelper } from '../../../entity/DnEntityTabHelper';
+import { useTemplateVariables } from '../templating/TemplateVariablesContext';
 
 const JSON_LD_DOC_URL = 'https://developers.google.com/search/docs/appearance/structured-data/search-gallery';
 const JSON_LD_TEST_URL = 'https://search.google.com/test/rich-results';
 
 export function PageTabJsonLd() {
     const { values, setField, disabled } = useDnEntityFormContext<PageDto>();
+    const { variables } = useTemplateVariables();
     return (
         <Stack sx={{ gap: 2, height: '100%' }}>
             <DnEntityTabHelper description="Définissez les résultats enrichis de votre page.">
@@ -23,6 +25,7 @@ export function PageTabJsonLd() {
                     language="json"
                     autocomplete="jsonld"
                     disabled={disabled}
+                    templateVariables={variables}
                 />
             </Stack>
         </Stack>

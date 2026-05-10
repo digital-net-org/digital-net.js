@@ -1,0 +1,1 @@
+export { getVirtualAnchor } from './getVirtualAnchor';

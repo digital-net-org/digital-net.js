@@ -102,6 +102,10 @@ export function DnInput({
                 disabled={disabled || loading}
                 slotProps={{
                     htmlInput: {
+                        spellCheck: false,
+                        autoCorrect: 'off',
+                        autoCapitalize: 'off',
+                        autoComplete: 'off',
                         ...(inputProps ?? {}),
                         ...(resolvedMaxLength !== undefined ? { maxLength: resolvedMaxLength } : {}),
                     },

@@ -5,6 +5,7 @@ import {
     DN_API_PAGE_OPENGRAPH,
     DN_API_PAGE_PATH_AVAILABILITY,
     DN_API_PAGE_SHEETS,
+    DN_API_PAGE_TEMPLATE_VARIABLES,
 } from '../../routes';
 import { CatalogRunner } from '../CatalogRunner';
 import type { HttpClient } from '../../HttpClient';
@@ -13,8 +14,10 @@ import type {
     OpenGraphEntry,
     OpenGraphPropertySchema,
     PageDto,
+    PageEntityType,
     PageSheet,
     Result,
+    TemplateVariable,
 } from '../../types';
 import type { CatalogCallbacks } from '../types';
 import type { PagePayload } from './types';
@@ -91,11 +94,7 @@ export class PageCatalog {
         id: string,
         options: CatalogCallbacks<PageSheet[]> = {}
     ): Promise<Result<PageSheet[]>> {
-        return CatalogRunner.run<PageSheet[]>(
-            this.http,
-            { path: DN_API_PAGE_SHEETS, slugs: { id } },
-            options
-        );
+        return CatalogRunner.run<PageSheet[]>(this.http, { path: DN_API_PAGE_SHEETS, slugs: { id } }, options);
     }
 
     /** GET `cms/pages/:id/open-graph` — Editable OpenGraph entries owned by the page (ordered). — JWT/ApiKey */
@@ -103,9 +102,21 @@ export class PageCatalog {
         id: string,
         options: CatalogCallbacks<OpenGraphEntry[]> = {}
     ): Promise<Result<OpenGraphEntry[]>> {
-        return CatalogRunner.run<OpenGraphEntry[]>(
+        return CatalogRunner.run<OpenGraphEntry[]>(this.http, { path: DN_API_PAGE_OPENGRAPH, slugs: { id } }, options);
+    }
+
+    /**
+     * GET `cms/pages/template-variables/:entityType` — Lists `{{ source.field }}` placeholders
+     * exposed for a given PageEntityType. Empty when the entity exposes no `[Templatable]`
+     * field. — JWT/ApiKey
+     */
+    public async getTemplateVariables(
+        entityType: PageEntityType,
+        options: CatalogCallbacks<TemplateVariable[]> = {}
+    ): Promise<Result<TemplateVariable[]>> {
+        return CatalogRunner.run<TemplateVariable[]>(
             this.http,
-            { path: DN_API_PAGE_OPENGRAPH, slugs: { id } },
+            { path: DN_API_PAGE_TEMPLATE_VARIABLES, slugs: { entityType } },
             options
         );
     }

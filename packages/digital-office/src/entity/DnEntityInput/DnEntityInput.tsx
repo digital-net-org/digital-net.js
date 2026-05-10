@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Divider, FormControl, FormControlLabel, FormHelperText, MenuItem, TextField } from '@mui/material';
 import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
-import { DnInput, DnSwitch } from '../../ui';
+import { DnInput, type DnInputProps, DnInputInterpolated, DnSwitch } from '../../ui';
+import { useTemplateVariables } from '../../cms/Page/templating/TemplateVariablesContext';
 
 export interface DnEntityInputProps {
     schema: SchemaProperty;
@@ -44,6 +45,9 @@ export function DnEntityInput({
     );
 
     const handleChange = (next: unknown) => onChange(next);
+    const { variables, isAvailable } = useTemplateVariables();
+    const useTemplatableInput =
+        schema.isTemplatable && isAvailable && (schema.type === 'String' || schema.type === 'Guid');
 
     switch (schema.type) {
         case 'Boolean':
@@ -121,15 +125,19 @@ export function DnEntityInput({
         case 'Guid':
         case 'String':
         default:
-            return (
-                <DnInput
-                    type="text"
-                    {...resolvedInputProps}
-                    multiline={multiline}
-                    rows={rows}
-                    max={schema.maxLength ?? undefined}
-                    onChange={event => handleChange(event.target.value)}
-                />
+            const resolvedDnInputProps = {
+                type: 'text',
+                ...resolvedInputProps,
+                multiline,
+                rows,
+                max: schema.maxLength ?? undefined,
+                onChange: e => handleChange(e.target.value),
+            } satisfies DnInputProps;
+
+            return useTemplatableInput ? (
+                <DnInputInterpolated variables={variables} {...resolvedDnInputProps} />
+            ) : (
+                <DnInput {...resolvedDnInputProps} />
             );
     }
 }

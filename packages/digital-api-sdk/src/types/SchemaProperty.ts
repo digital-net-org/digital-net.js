@@ -14,11 +14,11 @@ export interface SchemaProperty {
     name: string;
     path: string;
     type: SchemaValueType;
-    dataFlag: string | null;
     isReadOnly: boolean;
     isSecret: boolean;
     isRequired: boolean;
     isUnique: boolean;
+    isTemplatable: boolean;
     maxLength: number | null;
     isIdentity: boolean;
     isForeignKey: boolean;

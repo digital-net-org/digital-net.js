@@ -7,3 +7,4 @@ export const DN_API_PAGE_OPENGRAPH = 'cms/pages/:id/open-graph' as const;
 export const DN_API_PAGE_SHEETS = 'cms/pages/:id/sheets' as const;
 export const DN_API_PAGE_SHEET_SCHEMA = 'cms/pages/sheet/schema' as const;
 export const DN_API_PAGE_OPENGRAPH_ENTRY_SCHEMA = 'cms/pages/open-graph-entry/schema' as const;
+export const DN_API_PAGE_TEMPLATE_VARIABLES = 'cms/pages/template-variables/:entityType' as const;

@@ -1,6 +1,7 @@
 import { Stack } from '@mui/material';
 import type { OpenGraphPropertySchema } from '@digital-net-org/digital-api-sdk';
-import { DnDraggableRow, DnInput, DnInputAutocomplete } from '../../../ui';
+import { DnDraggableRow, DnInput, type DnInputProps, DnInputAutocomplete, DnInputInterpolated } from '../../../ui';
+import { useTemplateVariables } from '../templating/TemplateVariablesContext';
 import { type OgRow } from './useOgState';
 
 export interface EditOpenGraphRowProps {
@@ -26,6 +27,7 @@ export function EditOpenGraphRow({
 }: EditOpenGraphRowProps) {
     const propertyError = showErrors && (errors?.has('property') ?? false);
     const contentError = showErrors && (errors?.has('content') ?? false);
+    const { variables, isAvailable } = useTemplateVariables();
 
     return (
         <DnDraggableRow id={row.id} disabled={disabled} onDelete={onDelete}>
@@ -42,14 +44,22 @@ export function EditOpenGraphRow({
                     />
                 </Stack>
                 <Stack sx={{ flex: 3 }}>
-                    <DnInput
-                        label="Content"
-                        value={row.content}
-                        onChange={e => onContentChange(row.id, e.target.value)}
-                        disabled={disabled}
-                        required
-                        error={contentError}
-                    />
+                    {(() => {
+                        const baseProps = {
+                            label: 'Content',
+                            value: row.content,
+                            onChange: e => onContentChange(row.id, e.target.value),
+                            disabled,
+                            required: true,
+                            error: contentError,
+                        } satisfies DnInputProps;
+
+                        return isAvailable ? (
+                            <DnInputInterpolated {...baseProps} variables={variables} />
+                        ) : (
+                            <DnInput {...baseProps} />
+                        );
+                    })()}
                 </Stack>
             </Stack>
         </DnDraggableRow>

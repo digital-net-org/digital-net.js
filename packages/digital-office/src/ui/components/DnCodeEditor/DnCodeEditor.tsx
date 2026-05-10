@@ -18,6 +18,9 @@ import { formatCode } from './formatters';
 import { validateCode } from './validators';
 import { JSONCompletion } from './JSONCompletion';
 import { JSONValidator, type JsonLdValidationError } from './JSONValidator';
+import { createTemplateCompleter } from './aceTemplateCompleter';
+import { validateInterpolatedString } from '../DnInput/utils/interpolated';
+import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
 
 export type DnCodeEditorLanguage = 'javascript' | 'html' | 'css' | 'json';
 export type DnCodeEditorAutocomplete = 'javascript' | 'html' | 'css' | 'jsonld';
@@ -30,6 +33,7 @@ export interface DnCodeEditorProps {
     disabled?: boolean;
     sx?: SxProps<Theme>;
     error?: boolean;
+    templateVariables?: TemplateVariable[];
 }
 
 interface AceCompleterRegistry {
@@ -94,7 +98,16 @@ function resolveAutocomplete(
     return language;
 }
 
-export function DnCodeEditor({ value, onChange, language, autocomplete, disabled, error, sx }: DnCodeEditorProps) {
+export function DnCodeEditor({
+    value,
+    onChange,
+    language,
+    autocomplete,
+    disabled,
+    error,
+    sx,
+    templateVariables,
+}: DnCodeEditorProps) {
     const theme = useTheme();
     const containerRef = React.useRef<HTMLDivElement>(null);
     const editorRef = React.useRef<Ace.Editor | null>(null);
@@ -102,6 +115,8 @@ export function DnCodeEditor({ value, onChange, language, autocomplete, disabled
     const formatRef = React.useRef<() => Promise<void>>(async () => void 0);
     const markerIdsRef = React.useRef<number[]>([]);
     const errorsRef = React.useRef<JsonLdValidationError[]>([]);
+    const templateMarkerIdsRef = React.useRef<number[]>([]);
+    const templateErrorsRef = React.useRef<{ start: number; end: number; message: string }[]>([]);
     const [hoverError, setHoverError] = React.useState<{ message: string; x: number; y: number } | null>(null);
     const activeMode = resolveAutocomplete(language, autocomplete);
 
@@ -144,6 +159,17 @@ export function DnCodeEditor({ value, onChange, language, autocomplete, disabled
             // lands inside a freshly-opened string.
             if (!delta.lines.some(l => l.includes('"'))) return;
             if (!jsonldCompleters.has(editor)) return;
+            window.setTimeout(() => {
+                if (editorRef.current !== editor) return;
+                editor.execCommand('startAutocomplete');
+            }, 0);
+        });
+        editor.on('change', (delta: { action: string; lines: string[] }) => {
+            if (delta.action !== 'insert') return;
+            // Trigger the autocomplete popup as soon as the user types a `{{`.
+            // The template completer filters itself out when out of context, so
+            // this is harmless when no template variables are available.
+            if (!delta.lines.some(l => l.includes('{{'))) return;
             window.setTimeout(() => {
                 if (editorRef.current !== editor) return;
                 editor.execCommand('startAutocomplete');
@@ -232,14 +258,51 @@ export function DnCodeEditor({ value, onChange, language, autocomplete, disabled
     }, [value, activeMode]);
 
     React.useEffect(() => {
+        const editor = editorRef.current;
+        if (!editor) return;
+
+        const clearTemplateMarkers = () => {
+            for (const id of templateMarkerIdsRef.current) editor.session.removeMarker(id);
+            templateMarkerIdsRef.current = [];
+            templateErrorsRef.current = [];
+        };
+
+        const variables = templateVariables ?? [];
+        if (variables.length === 0) {
+            clearTemplateMarkers();
+            return;
+        }
+
+        const timer = window.setTimeout(() => {
+            if (editorRef.current !== editor) return;
+            clearTemplateMarkers();
+            const invalid = validateInterpolatedString(value, variables);
+            templateErrorsRef.current = invalid.map(e => ({ start: e.start, end: e.end, message: e.message }));
+            for (const err of invalid) {
+                const start = offsetToRowCol(value, err.start);
+                const end = offsetToRowCol(value, err.end);
+                const range = new AceRange(start.row, start.column, end.row, end.column);
+                const id = editor.session.addMarker(range, 'dn-template-error', 'text', false);
+                templateMarkerIdsRef.current.push(id);
+            }
+        }, 250);
+
+        return () => window.clearTimeout(timer);
+    }, [value, templateVariables]);
+
+    React.useEffect(() => {
         const container = containerRef.current;
         const editor = editorRef.current;
         if (!container || !editor) return;
-        if (activeMode !== 'jsonld') return;
+
+        const hasJsonLd = activeMode === 'jsonld';
+        const hasTemplate = (templateVariables?.length ?? 0) > 0;
+        if (!hasJsonLd && !hasTemplate) return;
 
         const handleMove = (event: MouseEvent) => {
-            const errors = errorsRef.current;
-            if (errors.length === 0) {
+            const jsonErrors = errorsRef.current;
+            const templateErrors = templateErrorsRef.current;
+            if (jsonErrors.length === 0 && templateErrors.length === 0) {
                 setHoverError(prev => (prev ? null : prev));
                 return;
             }
@@ -248,12 +311,17 @@ export function DnCodeEditor({ value, onChange, language, autocomplete, disabled
             };
             const { row, column } = renderer.screenToTextCoordinates(event.clientX, event.clientY);
             const offset = rowColToOffset(editor.getValue(), row, column);
-            const match = errors.find(e => offset >= e.range.start && offset < e.range.end);
-            if (!match) {
-                setHoverError(prev => (prev ? null : prev));
+            const jsonMatch = jsonErrors.find(e => offset >= e.range.start && offset < e.range.end);
+            if (jsonMatch) {
+                setHoverError({ message: jsonMatch.message, x: event.clientX, y: event.clientY });
                 return;
             }
-            setHoverError({ message: match.message, x: event.clientX, y: event.clientY });
+            const tplMatch = templateErrors.find(e => offset >= e.start && offset < e.end);
+            if (tplMatch) {
+                setHoverError({ message: tplMatch.message, x: event.clientX, y: event.clientY });
+                return;
+            }
+            setHoverError(prev => (prev ? null : prev));
         };
 
         const handleLeave = () => setHoverError(null);
@@ -264,7 +332,7 @@ export function DnCodeEditor({ value, onChange, language, autocomplete, disabled
             container.removeEventListener('mousemove', handleMove);
             container.removeEventListener('mouseleave', handleLeave);
         };
-    }, [activeMode]);
+    }, [activeMode, templateVariables]);
 
     React.useEffect(() => {
         const editor = editorRef.current;
@@ -272,30 +340,33 @@ export function DnCodeEditor({ value, onChange, language, autocomplete, disabled
         // ACE exposes a public `completers` array on the editor, but it is not surfaced in
         // the TS types — access it through a local structural type.
         const reg = editor as unknown as AceCompleterRegistry;
+
+        // Snapshot ACE's default completer chain once so we can restore it later.
+        if (!defaultCompleterSnapshots.has(editor)) {
+            defaultCompleterSnapshots.set(editor, reg.completers);
+        }
+        const defaults = defaultCompleterSnapshots.get(editor) ?? [];
+
         if (activeMode === 'jsonld') {
             jsonldCompleters.set(editor, new JSONCompletion());
-            // Replace ACE's default completer chain so the built-in "local word" completer
-            // doesn't surface noisy suggestions (e.g. document keywords) inside free-text
-            // JSON values. Snapshot the defaults so we can restore them on teardown.
-            if (!defaultCompleterSnapshots.has(editor)) {
-                defaultCompleterSnapshots.set(editor, reg.completers);
-            }
-            reg.completers = [jsonldAceCompleter];
         } else {
             jsonldCompleters.delete(editor);
-            if (defaultCompleterSnapshots.has(editor)) {
-                reg.completers = defaultCompleterSnapshots.get(editor);
-                defaultCompleterSnapshots.delete(editor);
-            }
         }
+
+        const tplCompleter =
+            templateVariables && templateVariables.length > 0 ? createTemplateCompleter(templateVariables) : null;
+        // In JSON-LD mode, replace the noisy "local word" completer by the JSON-LD one.
+        // Otherwise keep the ACE defaults. Template completer (when present) is prepended
+        // so its suggestions take priority inside `{{ … }}` contexts.
+        const baseCompleters = activeMode === 'jsonld' ? [jsonldAceCompleter] : defaults;
+        reg.completers = tplCompleter ? [tplCompleter, ...baseCompleters] : [...baseCompleters];
+
         return () => {
             jsonldCompleters.delete(editor);
-            if (defaultCompleterSnapshots.has(editor)) {
-                reg.completers = defaultCompleterSnapshots.get(editor);
-                defaultCompleterSnapshots.delete(editor);
-            }
+            const snap = defaultCompleterSnapshots.get(editor);
+            if (snap) reg.completers = snap;
         };
-    }, [activeMode]);
+    }, [activeMode, templateVariables]);
 
     return (
         <Wrapper
@@ -306,7 +377,7 @@ export function DnCodeEditor({ value, onChange, language, autocomplete, disabled
             data-error={error || undefined}
         >
             <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
-            {activeMode === 'jsonld' && hoverError && (
+            {hoverError && (
                 <HoverTooltip style={{ left: hoverError.x + 12, top: hoverError.y + 16 }}>
                     {hoverError.message}
                 </HoverTooltip>
@@ -354,6 +425,13 @@ const Wrapper = styled(Box)(
             position: absolute;
             background: ${theme.palette.error.main}33;
             border-bottom: 2px solid ${theme.palette.error.main};
+            cursor: help;
+        }
+        & .dn-template-error {
+            position: absolute;
+            background: ${theme.palette.error.main}33;
+            border-bottom: 2px wavy ${theme.palette.error.main};
+            text-decoration: underline wavy ${theme.palette.error.main};
             cursor: help;
         }
     `

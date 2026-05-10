@@ -4,6 +4,7 @@ import { css, styled } from '@mui/material/styles';
 import type { SheetType } from '@digital-net-org/digital-api-sdk';
 import { DnCodeEditor, DnDraggableRow, DnExpandButton, DnInput, DnSwitch } from '../../../ui';
 import { type SheetRow } from './useSheetsState';
+import { useTemplateVariables } from '../templating/TemplateVariablesContext';
 
 const LANGUAGE_TYPES = { css: 'css', js: 'javascript', html: 'html' } as const;
 const LANGUAGE_TYPES_MAP = Object.keys(LANGUAGE_TYPES) as (keyof typeof LANGUAGE_TYPES)[];
@@ -33,6 +34,7 @@ export function EditSheetRow({
 }: EditSheetRowProps) {
     const nameError = showErrors && (errors?.has('name') ?? false);
     const contentError = showErrors && (errors?.has('content') ?? false);
+    const { variables } = useTemplateVariables();
 
     React.useEffect(() => {
         if (row.expanded || !contentError) return;
@@ -98,6 +100,7 @@ export function EditSheetRow({
                         language={LANGUAGE_TYPES[row.type]}
                         disabled={disabled}
                         error={contentError}
+                        templateVariables={variables}
                     />
                 </Box>
             </Collapse>
