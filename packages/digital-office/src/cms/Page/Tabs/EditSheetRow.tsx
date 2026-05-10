@@ -3,7 +3,7 @@ import { Box, Collapse, FormControlLabel, MenuItem, Stack, TextField } from '@mu
 import { css, styled } from '@mui/material/styles';
 import type { SheetType } from '@digital-net-org/digital-api-sdk';
 import type { SheetRow } from './useSheetsState';
-import { DnCodeEditor, DnDraggableRow, DnExpandButton, DnInput, DnSwitch } from '../../../ui';
+import { DnInputCode, DnDraggableRow, DnExpandButton, DnInput, DnSwitch } from '../../../ui';
 import { usePageVariables } from './usePageVariables';
 
 const LANGUAGE_TYPES = { css: 'css', js: 'javascript', html: 'html' } as const;
@@ -94,7 +94,7 @@ export function EditSheetRow({
             </Header>
             <Collapse in={row.expanded} unmountOnExit>
                 <Box sx={{ height: 320, marginTop: 1 }}>
-                    <DnCodeEditor
+                    <DnInputCode
                         value={row.content ?? ''}
                         onChange={value => onFieldChange(row.id, 'content', value)}
                         language={LANGUAGE_TYPES[row.type]}

@@ -3,7 +3,7 @@ export * from './DnAppBarMenu';
 export * from './DnAppDrawer';
 export * from './DnBreadcrumbs';
 export * from './DnButton';
-export * from './DnCodeEditor';
+export * from './DnInputCode';
 export * from './DnCollapseBlock';
 export * from './DnDraggableRow';
 export * from './DnDraggableContext';

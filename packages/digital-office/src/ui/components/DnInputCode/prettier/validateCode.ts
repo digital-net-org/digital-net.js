@@ -3,30 +3,21 @@ import pluginBabel from 'prettier/plugins/babel';
 import pluginEstree from 'prettier/plugins/estree';
 import pluginHtml from 'prettier/plugins/html';
 import pluginCss from 'prettier/plugins/postcss';
-import type { DnCodeEditorLanguage } from './DnCodeEditor';
+import { resolveParserName } from './resolveParserName';
+import type { CodeAnnotation } from './types';
+import type { DnInputCodeProps } from '../DnInputCode';
 
-export interface CodeAnnotation {
-    row: number; // 0-indexed
-    column: number; // 0-indexed
-    text: string;
-    type: 'error' | 'warning' | 'info';
-}
-
-const parserMap: Record<DnCodeEditorLanguage, string> = {
-    javascript: 'babel',
-    html: 'html',
-    css: 'css',
-    json: 'json',
-};
-
-export async function validateCode(source: string, language: DnCodeEditorLanguage): Promise<CodeAnnotation | null> {
+export async function validateCode(
+    source: string,
+    language: DnInputCodeProps['language']
+): Promise<CodeAnnotation | null> {
     if (!source.trim()) {
         return null;
     }
 
     try {
         await prettier.format(source, {
-            parser: parserMap[language],
+            parser: resolveParserName(language),
             plugins: [pluginBabel, pluginEstree, pluginHtml, pluginCss],
         });
         return null;

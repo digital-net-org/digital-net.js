@@ -3,27 +3,21 @@ import pluginBabel from 'prettier/plugins/babel';
 import pluginEstree from 'prettier/plugins/estree';
 import pluginHtml from 'prettier/plugins/html';
 import pluginCss from 'prettier/plugins/postcss';
-import type { DnCodeEditorLanguage } from './DnCodeEditor';
+import type { DnInputCodeProps } from '../DnInputCode';
+import { resolveParserName } from './resolveParserName';
 
-const parserMap: Record<DnCodeEditorLanguage, string> = {
-    javascript: 'babel',
-    html: 'html',
-    css: 'css',
-    json: 'json',
-};
-
-export async function formatCode(source: string, language: DnCodeEditorLanguage): Promise<string> {
+export async function formatCode(source: string, language: DnInputCodeProps['language']): Promise<string> {
     if (!source.trim()) return source;
     try {
         return await prettier.format(source, {
-            parser: parserMap[language],
+            parser: resolveParserName(language),
             plugins: [pluginBabel, pluginEstree, pluginHtml, pluginCss],
             tabWidth: 4,
             singleQuote: true,
             printWidth: 120,
         });
     } catch (err) {
-        console.warn('[DnCodeEditor] Prettier format failed:', err);
+        console.warn('[DnInputCode] Prettier format failed:', err);
         return source;
     }
 }

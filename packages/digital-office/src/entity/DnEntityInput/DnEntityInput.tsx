@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Divider, FormControl, FormControlLabel, FormHelperText, MenuItem, TextField } from '@mui/material';
 import type { SchemaProperty, TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { DnInput, type DnInputProps, DnInputInterpolated, DnSwitch } from '../../ui';
-import { useEntityVariables } from '../useEntityVariables';
 
 export interface DnEntityInputProps {
     schema: SchemaProperty;
