@@ -3,7 +3,6 @@ import { type DnEntityVariableKey, useDnEntityFormContext, useEntityVariables } 
 
 const PAGE_ENTITY_KEY: Record<PageEntityType, DnEntityVariableKey> = {
     Article: 'page:article',
-    Form: 'page:form',
 };
 
 export function usePageVariables() {

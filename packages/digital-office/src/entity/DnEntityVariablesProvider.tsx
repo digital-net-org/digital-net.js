@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { Result, TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { useDnApi } from '../api';
 
-export type DnEntityVariableKey = 'page:article' | 'page:form';
+export type DnEntityVariableKey = 'page:article';
 
 type Fetcher = () => Promise<Result<TemplateVariable[]>>;
 
@@ -30,7 +30,6 @@ export function DnEntityVariablesProvider({ children }: DnEntityVariablesProvide
     const registry = React.useMemo<Record<DnEntityVariableKey, Fetcher>>(
         () => ({
             'page:article': () => api.catalog.page.getTemplateVariables('Article'),
-            'page:form': () => api.catalog.page.getTemplateVariables('Form'),
         }),
         [api]
     );

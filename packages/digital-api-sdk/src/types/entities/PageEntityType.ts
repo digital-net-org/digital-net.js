@@ -1,1 +1,1 @@
-export type PageEntityType = 'Article' | 'Form';
+export type PageEntityType = 'Article';
