@@ -18,7 +18,7 @@ export interface DnEntityFormProps {
     onFieldChange: (_path: string, _value: unknown) => void;
     errors?: ReadonlySet<string>;
     disabled?: boolean;
-    variables: TemplateVariable[];
+    variables?: TemplateVariable[];
 }
 
 function schemaNameToPath(name: string): string {
@@ -71,7 +71,7 @@ export function DnEntityForm({
                         onChange={next => onFieldChange(path, next)}
                         error={s.error ?? errors?.has(accessor)}
                         disabled={disabled || s.disabled}
-                        variables={variables}
+                        variables={variables ?? []}
                     />
                 );
             })}

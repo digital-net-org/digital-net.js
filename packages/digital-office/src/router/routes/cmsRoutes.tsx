@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PageEditView, PageListView } from '../../cms';
+import { PageEditView, PageListView, TagEditView, TagListView } from '../../cms';
 import type { DigitalOfficeRoute } from '../types';
 
 export const CMS_ROUTES: DigitalOfficeRoute[] = [
@@ -16,5 +16,19 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
     {
         path: '/content-manager/pages/:id',
         element: <PageEditView />,
+    },
+    {
+        path: '/content-manager/tags',
+        navGroup: 'Gestionnaire de contenu',
+        navLabel: 'Tags',
+        element: <TagListView />,
+    },
+    {
+        path: '/content-manager/tags/new',
+        element: <TagEditView />,
+    },
+    {
+        path: '/content-manager/tags/:id',
+        element: <TagEditView />,
     },
 ];
