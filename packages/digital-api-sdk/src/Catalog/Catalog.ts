@@ -2,6 +2,7 @@ import { ApplicationCatalog } from './ApplicationCatalog';
 import { AuthCatalog } from './AuthCatalog';
 import { CatalogRunner } from './CatalogRunner';
 import { PageCatalog } from './PageCatalog';
+import { TagCatalog } from './TagCatalog';
 import { UserCatalog } from './UserCatalog';
 import type { HttpClient } from '../HttpClient';
 import type { Result, SchemaProperty } from '../types';
@@ -15,6 +16,7 @@ export class Catalog {
     public readonly application: ApplicationCatalog;
     public readonly auth: AuthCatalog;
     public readonly page: PageCatalog;
+    public readonly tag: TagCatalog;
     public readonly user: UserCatalog;
 
     public constructor(http: HttpClient) {
@@ -22,6 +24,7 @@ export class Catalog {
         this.application = new ApplicationCatalog(http);
         this.auth = new AuthCatalog(http);
         this.page = new PageCatalog(http);
+        this.tag = new TagCatalog(http);
         this.user = new UserCatalog(http);
     }
 

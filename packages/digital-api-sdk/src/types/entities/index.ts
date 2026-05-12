@@ -4,4 +4,5 @@ export * from './PageDto';
 export * from './PageEntityType';
 export * from './PageSheet';
 export * from './OpenGraphEntry';
+export * from './TagDto';
 export * from './UserDto';
