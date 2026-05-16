@@ -1,5 +1,7 @@
 export * from './Entity';
 export * from './AvatarDto';
+export * from './MediaDto';
+export * from './MediaVariantDto';
 export * from './PageDto';
 export * from './PageEntityType';
 export * from './PageSheet';

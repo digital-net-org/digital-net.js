@@ -25,6 +25,10 @@ export class HttpClient {
         this.apiKeyHeader = (config.keyPrefix ?? '') + DN_API_KEY_HEADER;
     }
 
+    public getBaseUrl(): string {
+        return this.baseUrl;
+    }
+
     public async request<T = any, B = any>(config: HttpRequestConfig<B>): Promise<HttpResponse<T>> {
         return this.doRequest<T, B>(config, false);
     }

@@ -1,6 +1,7 @@
 import { ApplicationCatalog } from './ApplicationCatalog';
 import { AuthCatalog } from './AuthCatalog';
 import { CatalogRunner } from './CatalogRunner';
+import { MediaCatalog } from './MediaCatalog';
 import { PageCatalog } from './PageCatalog';
 import { TagCatalog } from './TagCatalog';
 import { UserCatalog } from './UserCatalog';
@@ -15,6 +16,7 @@ export class Catalog {
     private readonly http: HttpClient;
     public readonly application: ApplicationCatalog;
     public readonly auth: AuthCatalog;
+    public readonly media: MediaCatalog;
     public readonly page: PageCatalog;
     public readonly tag: TagCatalog;
     public readonly user: UserCatalog;
@@ -23,6 +25,7 @@ export class Catalog {
         this.http = http;
         this.application = new ApplicationCatalog(http);
         this.auth = new AuthCatalog(http);
+        this.media = new MediaCatalog(http);
         this.page = new PageCatalog(http);
         this.tag = new TagCatalog(http);
         this.user = new UserCatalog(http);
