@@ -26,7 +26,7 @@ export interface DnRowDraftInfo {
 
 export type { DnColumnDefinition, ResolvedColumn };
 
-export type DnRenderCell<T> = (_col: ResolvedColumn, _value: unknown, _row: T) => React.ReactNode;
+export type DnRenderCell<T> = (_col: ResolvedColumn<T>, _value: unknown, _row: T) => React.ReactNode;
 
 export interface DnPaginationState {
     /** 0-based page index (MUI TablePagination convention). API `QueryResult.index` is 1-based. */
@@ -190,14 +190,15 @@ export function DnEntityTable<T extends Entity>({
                                 />
                             </TableHeadCell>
                             {resolvedColumns.map(col => {
-                                const isActive = sort?.orderBy === col.accessor && sort.order !== '';
+                                const sortable = col.kind === 'schema' && Boolean(onSortChange);
+                                const isActive = sortable && sort?.orderBy === col.accessor && sort.order !== '';
                                 return (
                                     <TableHeadCell key={col.accessor}>
-                                        {onSortChange ? (
+                                        {sortable ? (
                                             <TableSortLabel
                                                 active={isActive}
                                                 direction={isActive ? (sort!.order as 'asc' | 'desc') : 'desc'}
-                                                onClick={() => onSortChange(col.accessor)}
+                                                onClick={() => onSortChange!(col.accessor)}
                                             >
                                                 {col.header}
                                             </TableSortLabel>
@@ -239,17 +240,34 @@ export function DnEntityTable<T extends Entity>({
                                             />
                                         </TableBodyCell>
                                         {resolvedColumns.map((col, colIndex) => {
-                                            const value = (row as Record<string, unknown>)[col.accessor];
                                             const isFirstColumn = colIndex === 0;
+                                            let cellContent: React.ReactNode;
+                                            if (col.kind === 'preview') {
+                                                cellContent = (
+                                                    <PreviewImage
+                                                        src={col.getSrc(row)}
+                                                        alt={col.alt?.(row) ?? ''}
+                                                        $size={col.size}
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                    />
+                                                );
+                                            } else {
+                                                const value = (row as Record<string, unknown>)[col.accessor];
+                                                cellContent = renderCell
+                                                    ? renderCell(col, value, row)
+                                                    : String(value ?? '');
+                                            }
                                             return (
                                                 <TableBodyCell
                                                     key={col.accessor}
                                                     sx={{
                                                         position: isFirstColumn && draftInfo ? 'relative' : undefined,
-                                                        fontStyle: draftInfo ? 'italic' : undefined,
+                                                        fontStyle:
+                                                            draftInfo && col.kind === 'schema' ? 'italic' : undefined,
                                                     }}
                                                 >
-                                                    {renderCell ? renderCell(col, value, row) : String(value ?? '')}
+                                                    {cellContent}
                                                     {isFirstColumn && draftInfo ? (
                                                         <Typography
                                                             variant="caption"
@@ -356,6 +374,18 @@ const TableRow = styled(MuiTableRow, {
                 padding-bottom: 12px;
             }
         `}
+    `
+);
+
+const PreviewImage = styled('img', {
+    shouldForwardProp: prop => prop !== '$size',
+})<{ $size: number }>(
+    ({ $size }) => css`
+        display: block;
+        width: ${$size}px;
+        height: ${$size}px;
+        object-fit: cover;
+        border-radius: 4px;
     `
 );
 

@@ -16,10 +16,11 @@ import { useEntitySchema } from '../useEntitySchema';
 import { useEntityDelete } from '../useEntityDelete';
 import { useEntityDraftIndex } from '../useEntityDraftIndex';
 
-const defaultRenderCell: DnRenderCell<Entity> = (col, value) => {
-    if (col.schema.type === 'Boolean') return value ? 'Oui' : 'Non';
+function defaultRenderCell<T extends Entity>(...args: Parameters<DnRenderCell<T>>): React.ReactNode {
+    const [col, value] = args;
+    if (col.kind === 'schema' && col.schema.type === 'Boolean') return value ? 'Oui' : 'Non';
     return String(value ?? '');
-};
+}
 
 export interface DnEntityListViewProps<T extends Entity> {
     title: string;
@@ -99,7 +100,7 @@ export function DnEntityListView<T extends Entity>({
                 schema={schemas}
                 rows={entitiesResult?.value ?? []}
                 columns={columns}
-                renderCell={defaultRenderCell as DnRenderCell<T>}
+                renderCell={defaultRenderCell}
                 pagination={pagination}
                 onPaginationChange={setPagination}
                 onRowClick={handleRowClick}
