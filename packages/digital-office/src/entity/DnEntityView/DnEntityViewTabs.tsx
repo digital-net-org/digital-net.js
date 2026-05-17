@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Alert, CircularProgress, Link, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { Delete as DeleteIcon, Refresh as RefreshIcon, Save as SaveIcon } from '@mui/icons-material';
-import { DnDialog, DnIconButton } from '../../ui';
-import { formatDate } from './formatDate';
+import { DnDialog, DnIconButton, formatDate } from '../../ui';
 import { css, styled } from '@mui/material/styles';
 
 export interface DnEntityViewTab {

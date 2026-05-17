@@ -1,4 +1,4 @@
-export function formatDate(iso?: string): string {
+export function formatDate(iso?: string | null): string {
     if (!iso) return '—';
     try {
         return new Intl.DateTimeFormat('fr-FR', {
