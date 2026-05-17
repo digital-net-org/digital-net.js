@@ -2,6 +2,7 @@ import {
     DN_API_MEDIA,
     DN_API_MEDIA_BY_ID,
     DN_API_MEDIA_CONTENT_TYPES,
+    DN_API_MEDIA_IMAGE,
     DN_API_MEDIA_MAX_SIZE,
     DN_API_MEDIA_VARIANT_BY_ID,
     DN_API_MEDIA_VARIANTS_OF_MEDIA,
@@ -89,6 +90,30 @@ export class MediaCatalog {
     /** DELETE `cms/media/variants` — purges every cached variant across the whole system. — JWT/ApiKey */
     public async purgeAllVariants(options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(this.http, { method: 'DELETE', path: DN_API_MEDIA_VARIANTS_PURGE_ALL }, options);
+    }
+
+    /**
+     * GET `cms/media/image/:id.:ext` — fetches the binary asset through the authenticated `HttpClient`.
+     * Use this in the backoffice (where `<img src>` cannot carry the Bearer token).
+     * — JWT/ApiKey/Application
+     */
+    public async getImageBlob(
+        mediaId: string,
+        options: { width?: number; quality?: number; extension?: string } = {},
+        callbacks: CatalogCallbacks<Blob> = {}
+    ): Promise<Result<Blob>> {
+        const params: Record<string, unknown> = {};
+        if (options.width !== undefined) params.w = options.width;
+        if (options.quality !== undefined) params.q = options.quality;
+        return CatalogRunner.run<Blob>(
+            this.http,
+            {
+                path: DN_API_MEDIA_IMAGE,
+                slugs: { id: mediaId, ext: options.extension ?? 'webp' },
+                params,
+            },
+            callbacks
+        );
     }
 
     /**
