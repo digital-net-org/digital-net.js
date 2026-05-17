@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Box } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
 import { useDnApi } from '../../api';
+import { DN_QUERY_KEY_GET } from '../../entity';
 import { MediaPreviewDialog } from './MediaPreviewDialog';
 
 export type MediaPreviewVariant = 'default' | 'list';
@@ -20,13 +22,14 @@ interface VariantConfig {
 }
 
 const VARIANT_CONFIG: Record<MediaPreviewVariant, VariantConfig> = {
-    default: { size: 240, quality: 80, borderRadius: 8, marginY: 0 },
+    default: { size: 240, quality: 100, borderRadius: 8, marginY: 0 },
     list: { size: 54, quality: 100, borderRadius: 4, marginY: '.25rem' },
 };
 
 export function MediaPreview({ mediaId, extension, alt = '', variant = 'default' }: MediaPreviewProps) {
     const config = VARIANT_CONFIG[variant];
     const api = useDnApi();
+    const queryClient = useQueryClient();
     const [blobUrl, setBlobUrl] = React.useState<string | null>(null);
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -45,13 +48,16 @@ export function MediaPreview({ mediaId, extension, alt = '', variant = 'default'
             if (cancelled || result.hasError || !result.value) return;
             currentUrl = URL.createObjectURL(result.value);
             setBlobUrl(currentUrl);
+            // The fetch may have triggered backend lazy variant generation; refresh the cached
+            // MediaDto so `values.variants` reflects the new entry in MediaTabVariants.
+            await queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_GET, 'media', mediaId] });
         })();
 
         return () => {
             cancelled = true;
             if (currentUrl) URL.revokeObjectURL(currentUrl);
         };
-    }, [api, mediaId, extension, config.size, config.quality]);
+    }, [api, queryClient, mediaId, extension, config.size, config.quality]);
 
     if (!blobUrl) {
         return (

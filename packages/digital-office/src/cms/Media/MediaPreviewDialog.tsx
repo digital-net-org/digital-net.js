@@ -2,7 +2,9 @@ import * as React from 'react';
 import { Box, CircularProgress, Dialog, DialogContent, IconButton } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
+import { useQueryClient } from '@tanstack/react-query';
 import { useDnApi } from '../../api';
+import { DN_QUERY_KEY_GET } from '../../entity';
 
 export interface MediaPreviewDialogProps {
     open: boolean;
@@ -13,6 +15,7 @@ export interface MediaPreviewDialogProps {
 
 export function MediaPreviewDialog({ open, onClose, mediaId, alt = '' }: MediaPreviewDialogProps) {
     const api = useDnApi();
+    const queryClient = useQueryClient();
     const [blobUrl, setBlobUrl] = React.useState<string | null>(null);
     const [isZoomed, setIsZoomed] = React.useState(false);
 
@@ -26,6 +29,7 @@ export function MediaPreviewDialog({ open, onClose, mediaId, alt = '' }: MediaPr
             if (cancelled || result.hasError || !result.value) return;
             currentUrl = URL.createObjectURL(result.value);
             setBlobUrl(currentUrl);
+            await queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_GET, 'media', mediaId] });
         })();
 
         return () => {
@@ -34,7 +38,7 @@ export function MediaPreviewDialog({ open, onClose, mediaId, alt = '' }: MediaPr
             setBlobUrl(null);
             setIsZoomed(false);
         };
-    }, [open, api, mediaId]);
+    }, [open, api, queryClient, mediaId]);
 
     return (
         <Dialog open={open} onClose={onClose} fullScreen>
