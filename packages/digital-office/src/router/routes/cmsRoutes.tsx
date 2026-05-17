@@ -1,5 +1,7 @@
 import * as React from 'react';
 import {
+    ArticleEditView,
+    ArticleListView,
     MediaEditView,
     MediaListView,
     PageEditView,
@@ -9,10 +11,22 @@ import {
 } from '../../cms';
 import type { DigitalOfficeRoute } from '../types';
 
+const NAV_GROUP = 'Gestionnaire de contenu';
+
 export const CMS_ROUTES: DigitalOfficeRoute[] = [
     {
+        path: '/content-manager/articles',
+        navGroup: NAV_GROUP,
+        navLabel: 'Articles',
+        element: <ArticleListView />,
+    },
+    {
+        path: '/content-manager/articles/:id',
+        element: <ArticleEditView />,
+    },
+    {
         path: '/content-manager/pages',
-        navGroup: 'Gestionnaire de contenu',
+        navGroup: NAV_GROUP,
         navLabel: 'Pages',
         element: <PageListView />,
     },
@@ -26,7 +40,7 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
     },
     {
         path: '/content-manager/tags',
-        navGroup: 'Gestionnaire de contenu',
+        navGroup: NAV_GROUP,
         navLabel: 'Tags',
         element: <TagListView />,
     },
@@ -40,7 +54,7 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
     },
     {
         path: '/content-manager/media',
-        navGroup: 'Gestionnaire de contenu',
+        navGroup: NAV_GROUP,
         navLabel: 'Médias',
         element: <MediaListView />,
     },

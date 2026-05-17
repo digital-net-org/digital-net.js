@@ -16,7 +16,7 @@ const staticProps: DnEntityListViewProps<TagDto> = {
     listPath: 'cms/tags',
     deletePath: 'cms/tags/:id',
     draftStoreName: 'tags',
-    filters: [{ type: 'like', key: 'name', label: 'Nom', placeholder: 'react, design...' }],
+    filters: [{ type: 'like', key: 'name', label: 'Nom', placeholder: 'marketing, design...' }],
 };
 
 export function TagListView() {

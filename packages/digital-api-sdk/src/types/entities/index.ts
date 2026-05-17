@@ -1,4 +1,5 @@
 export * from './Entity';
+export * from './ArticleListDto';
 export * from './AvatarDto';
 export * from './MediaDto';
 export * from './MediaVariantDto';
