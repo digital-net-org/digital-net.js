@@ -27,7 +27,7 @@ const staticProps: DnEntityListViewProps<PageDto> = {
 export function PageListView() {
     const navigate = useNavigate();
     return (
-        <DnEntityListView<PageDto>
+        <DnEntityListView
             {...staticProps}
             onRowClick={row => navigate(`/content-manager/pages/${row.id}`)}
             onCreate={() => navigate('new')}

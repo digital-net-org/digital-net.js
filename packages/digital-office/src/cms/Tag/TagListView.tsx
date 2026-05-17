@@ -22,7 +22,7 @@ const staticProps: DnEntityListViewProps<TagDto> = {
 export function TagListView() {
     const navigate = useNavigate();
     return (
-        <DnEntityListView<TagDto>
+        <DnEntityListView
             {...staticProps}
             onRowClick={row => navigate(`/content-manager/tags/${row.id}`)}
             onCreate={() => navigate('new')}

@@ -28,7 +28,7 @@ export function TagEditView() {
     );
 
     return (
-        <DnEntityEditView<TagDto>
+        <DnEntityEditView
             entityName="tag"
             identifier={{ singular: 'tag', plural: 'tags', gender: 'm' }}
             identifierAccessor="name"

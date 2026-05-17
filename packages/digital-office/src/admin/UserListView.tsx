@@ -33,11 +33,5 @@ const staticProps: DnEntityListViewProps<UserDto> = {
 
 export function UserListView() {
     const navigate = useNavigate();
-    return (
-        <DnEntityListView<UserDto>
-            {...staticProps}
-            onRowClick={row => navigate(`/admin/user/${row.id}`)}
-            protectedDelete
-        />
-    );
+    return <DnEntityListView {...staticProps} onRowClick={row => navigate(`/admin/user/${row.id}`)} protectedDelete />;
 }

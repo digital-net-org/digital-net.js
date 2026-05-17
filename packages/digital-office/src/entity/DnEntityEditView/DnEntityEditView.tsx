@@ -30,7 +30,7 @@ export interface DnEntityEditViewProps<T extends Entity> {
     tabs: DnEntityViewTab[];
     description?: string;
     onGet: (_id: string) => Promise<Result<T>>;
-    onCreate: (_values: Partial<T>) => Promise<Result<string>>;
+    onCreate?: (_values: Partial<T>) => Promise<Result<string>>;
     onUpdate: (_id: string, _ops: JsonPatchOp[]) => Promise<Result<unknown>>;
     onDelete: (_id: string) => Promise<Result<unknown>>;
     redirectPath: string;
@@ -183,6 +183,10 @@ export function DnEntityEditView<T extends Entity>({
         setIsSaving(true);
         try {
             if (isNew) {
+                if (!onCreate) {
+                    showToast('Cette élément ne peut pas être créé sur cette page.', 'error');
+                    return;
+                }
                 const created = await onCreate(values);
                 if (created.hasError || !created.value) {
                     showToast(buildCreateErrorToast(identifier), 'error');

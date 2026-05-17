@@ -7,6 +7,7 @@ import {
     DnDialogConfirmPassword,
     DnEntityTable,
     DnView,
+    formatDate,
 } from '../../ui';
 import { DnEntityDialogFailure } from './DnEntityDialogFailure';
 import { type EntityIdentifier } from '../types';
@@ -18,7 +19,11 @@ import { useEntityDraftIndex } from '../useEntityDraftIndex';
 
 function defaultRenderCell<T extends Entity>(...args: Parameters<DnRenderCell<T>>): React.ReactNode {
     const [col, value] = args;
-    if (col.kind === 'schema' && col.schema.type === 'Boolean') return value ? 'Oui' : 'Non';
+    if (col.kind === 'schema') {
+        if (col.schema.type === 'Boolean') return value ? 'Oui' : 'Non';
+        if (['DateTime', 'DateTimeOffset'].includes(col.schema.type)) return formatDate(value as string);
+    }
+
     return String(value ?? '');
 }
 

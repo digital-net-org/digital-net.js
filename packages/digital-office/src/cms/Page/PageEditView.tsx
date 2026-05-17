@@ -30,7 +30,7 @@ export function PageEditView() {
     );
 
     return (
-        <DnEntityEditView<PageDto>
+        <DnEntityEditView
             entityName="page"
             identifier={{ singular: 'page', plural: 'pages', gender: 'f' }}
             identifierAccessor="path"

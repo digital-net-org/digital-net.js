@@ -5,7 +5,7 @@ import type { MediaDto } from '@digital-net-org/digital-api-sdk';
 import { DN_QUERY_KEY_LIST, DnEntityListView, type DnEntityListViewProps } from '../../entity';
 import { type DnColumnDefinition, formatFileSize, formatDimensions } from '../../ui';
 import { MediaImportDialog } from './MediaImportDialog';
-import { MediaPreviewList } from './MediaPreviewList';
+import { MediaPreview } from './MediaPreview';
 
 const staticProps: DnEntityListViewProps<MediaDto> = {
     title: 'Médias',
@@ -32,7 +32,7 @@ export function MediaListView() {
             kind: 'computed',
             key: 'preview',
             label: 'Aperçu',
-            compute: row => <MediaPreviewList mediaId={row.id} alt={row.alt ?? ''} />,
+            compute: row => <MediaPreview variant="list" mediaId={row.id} alt={row.alt ?? ''} />,
         },
         { key: 'name', label: 'Nom' },
         { key: 'alt', label: 'Alt' },
