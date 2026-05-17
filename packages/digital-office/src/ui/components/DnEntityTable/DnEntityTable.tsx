@@ -242,16 +242,8 @@ export function DnEntityTable<T extends Entity>({
                                         {resolvedColumns.map((col, colIndex) => {
                                             const isFirstColumn = colIndex === 0;
                                             let cellContent: React.ReactNode;
-                                            if (col.kind === 'preview') {
-                                                cellContent = (
-                                                    <PreviewImage
-                                                        src={col.getSrc(row)}
-                                                        alt={col.alt?.(row) ?? ''}
-                                                        $size={col.size}
-                                                        loading="lazy"
-                                                        decoding="async"
-                                                    />
-                                                );
+                                            if (col.kind === 'computed') {
+                                                cellContent = col.compute(row);
                                             } else {
                                                 const value = (row as Record<string, unknown>)[col.accessor];
                                                 cellContent = renderCell
@@ -374,18 +366,6 @@ const TableRow = styled(MuiTableRow, {
                 padding-bottom: 12px;
             }
         `}
-    `
-);
-
-const PreviewImage = styled('img', {
-    shouldForwardProp: prop => prop !== '$size',
-})<{ $size: number }>(
-    ({ $size }) => css`
-        display: block;
-        width: ${$size}px;
-        height: ${$size}px;
-        object-fit: cover;
-        border-radius: 4px;
     `
 );
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { useDnApi } from '../api';
 
-export type DnEntityName = 'page' | 'user' | 'pageSheet' | 'openGraphEntry' | 'tag';
+export type DnEntityName = 'page' | 'user' | 'pageSheet' | 'openGraphEntry' | 'tag' | 'media';
 
 const DN_ENTITY_API_PATH: Record<DnEntityName, string> = {
     page: 'cms/pages',
@@ -10,6 +10,7 @@ const DN_ENTITY_API_PATH: Record<DnEntityName, string> = {
     pageSheet: 'cms/pages/sheet',
     openGraphEntry: 'cms/pages/open-graph-entry',
     tag: 'cms/tags',
+    media: 'cms/media',
 };
 
 export interface DnEntitySchemaContextValue {

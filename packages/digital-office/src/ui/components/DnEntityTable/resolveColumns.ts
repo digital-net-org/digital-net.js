@@ -1,25 +1,22 @@
+import type * as React from 'react';
 import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
 
 export type DnColumnDefinition<T> =
     | { kind?: 'schema'; key: keyof T; label?: string }
     | {
-          kind: 'preview';
+          kind: 'computed';
           key: string;
-          label?: string;
-          getSrc: (_row: T) => string;
-          alt?: (_row: T) => string;
-          size?: number;
+          label: string;
+          compute: (_row: T) => React.ReactNode;
       };
 
 export type ResolvedColumn<T = unknown> =
     | { kind: 'schema'; header: string; accessor: string; schema: SchemaProperty }
     | {
-          kind: 'preview';
+          kind: 'computed';
           header: string;
           accessor: string;
-          size: number;
-          getSrc: (_row: T) => string;
-          alt?: (_row: T) => string;
+          compute: (_row: T) => React.ReactNode;
       };
 
 export function resolveColumns<T>(
@@ -37,20 +34,16 @@ export function resolveColumns<T>(
 
     if (!columns || columns.length === 0) return base;
 
-    const byAccessor = new Map(
-        base.flatMap(c => (c.kind === 'schema' ? [[c.accessor, c] as const] : []))
-    );
+    const byAccessor = new Map(base.flatMap(c => (c.kind === 'schema' ? [[c.accessor, c] as const] : [])));
 
     return columns
         .map<ResolvedColumn<T> | null>(def => {
-            if (def.kind === 'preview') {
+            if (def.kind === 'computed') {
                 return {
-                    kind: 'preview',
-                    header: def.label ?? def.key,
+                    kind: 'computed',
+                    header: def.label,
                     accessor: def.key,
-                    size: def.size ?? 40,
-                    getSrc: def.getSrc,
-                    alt: def.alt,
+                    compute: def.compute,
                 };
             }
             const col = byAccessor.get(String(def.key));
