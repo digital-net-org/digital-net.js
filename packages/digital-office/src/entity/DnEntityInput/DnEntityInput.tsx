@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Divider, FormControl, FormControlLabel, FormHelperText, MenuItem, TextField } from '@mui/material';
 import type { SchemaProperty, TemplateVariable } from '@digital-net-org/digital-api-sdk';
-import { DnInput, type DnInputProps, DnInputInterpolated, DnSwitch } from '../../ui';
+import { DnInput, type DnInputProps, DnInputDate, DnInputInterpolated, DnSwitch } from '../../ui';
 
 export interface DnEntityInputProps {
     schema: SchemaProperty;
@@ -116,7 +116,7 @@ export function DnEntityInput({
         case 'DateTime':
         case 'DateTimeOffset':
             return (
-                <DnInput
+                <DnInputDate
                     type="datetime-local"
                     {...resolvedInputProps}
                     onChange={event => handleChange(event.target.value)}
@@ -131,6 +131,7 @@ export function DnEntityInput({
                 multiline,
                 rows,
                 max: schema.maxLength ?? undefined,
+                pattern: schema.regexValidation ?? undefined,
                 onChange: e => handleChange(e.target.value),
             } satisfies DnInputProps;
 

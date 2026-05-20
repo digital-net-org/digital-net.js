@@ -1,4 +1,5 @@
 import { ApplicationCatalog } from './ApplicationCatalog';
+import { ArticleCatalog } from './ArticleCatalog';
 import { AuthCatalog } from './AuthCatalog';
 import { CatalogRunner } from './CatalogRunner';
 import { MediaCatalog } from './MediaCatalog';
@@ -15,6 +16,7 @@ import type { CatalogCallbacks } from './types';
 export class Catalog {
     private readonly http: HttpClient;
     public readonly application: ApplicationCatalog;
+    public readonly article: ArticleCatalog;
     public readonly auth: AuthCatalog;
     public readonly media: MediaCatalog;
     public readonly page: PageCatalog;
@@ -24,6 +26,7 @@ export class Catalog {
     public constructor(http: HttpClient) {
         this.http = http;
         this.application = new ApplicationCatalog(http);
+        this.article = new ArticleCatalog(http);
         this.auth = new AuthCatalog(http);
         this.media = new MediaCatalog(http);
         this.page = new PageCatalog(http);

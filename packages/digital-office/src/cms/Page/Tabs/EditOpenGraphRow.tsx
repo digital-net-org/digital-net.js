@@ -37,8 +37,8 @@ export function EditOpenGraphRow({
                     <DnInputAutocomplete
                         label="Property"
                         options={options.map(p => p.key)}
-                        value={row.property}
-                        onChange={value => onPropertyChange(row.id, value)}
+                        value={row.property || null}
+                        onChange={value => onPropertyChange(row.id, value ?? '')}
                         disabled={disabled}
                         required
                         error={propertyError}

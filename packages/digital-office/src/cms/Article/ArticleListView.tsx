@@ -48,7 +48,7 @@ export function ArticleListView() {
             {...staticProps}
             columns={columns}
             onRowClick={row => navigate(`/content-manager/articles/${row.id}`)}
-            // US-ART-04
+            onCreate={() => navigate('new')}
         />
     );
 }

@@ -9,17 +9,19 @@ export interface DnButtonProps extends Pick<
 > {
     icon?: React.ReactNode;
     severity?: Severity;
+    size?: 'small' | 'medium';
 }
 
-export function DnButton({ children, className, icon, severity, ...muiProps }: DnButtonProps) {
+export function DnButton({ children, className, icon, severity, size, ...muiProps }: DnButtonProps) {
     const resolvedProps = React.useMemo(
         () => ({
             ...muiProps,
             ...(icon ? { endIcon: icon } : {}),
             ...(severity ? { color: severity } : {}),
+            ...(size ? { size } : {}),
             ...(muiProps.variant !== 'contained' ? { disableRipple: true } : {}),
         }),
-        [muiProps, icon, severity]
+        [muiProps, icon, severity, size]
     );
 
     return (
@@ -35,6 +37,11 @@ const CustomButton = styled(Button)(
         transition: 0.2s ease-in-out;
         font-size: ${theme.typography.button.fontSize};
         padding: 0.25rem 0.75rem;
+
+        &.MuiButton-sizeSmall {
+            font-size: 0.85rem;
+            padding: 0.1875rem 0.5625rem;
+        }
 
         &.DnButton.MuiButton-contained {
             border: 1px solid ${theme.palette.primary.main};

@@ -23,6 +23,7 @@ export interface DnInputProps extends Pick<
     | 'value'
     | 'defaultValue'
     | 'onChange'
+    | 'onBlur'
     | 'type'
     | 'fullWidth'
     | 'multiline'
@@ -38,11 +39,11 @@ export interface DnInputProps extends Pick<
     loading?: boolean;
     loadingNonBlocking?: boolean;
     max?: number;
-    regex?: RegExp;
+    pattern?: string;
     inputProps?: SlotProps<React.ElementType<InputBaseProps['inputProps']>, {}, TextFieldOwnerState>;
 }
 
-const DEFAULT_REGEX_ERROR = 'Format invalide.';
+const DEFAULT_PATTERN_ERROR = 'Format invalide.';
 
 export function DnInput({
     className,
@@ -52,7 +53,7 @@ export function DnInput({
     disabled,
     max,
     inputProps,
-    regex,
+    pattern,
     error,
     helperText,
     value,
@@ -62,23 +63,19 @@ export function DnInput({
     const [uncontrolledLength, setUncontrolledLength] = React.useState(
         typeof muiProps.defaultValue === 'string' ? muiProps.defaultValue.length : 0
     );
-    const [uncontrolledValue, setUncontrolledValue] = React.useState(
-        typeof muiProps.defaultValue === 'string' ? muiProps.defaultValue : ''
-    );
+    const [patternMismatch, setPatternMismatch] = React.useState(false);
 
     const valueLength = typeof value === 'string' ? value.length : uncontrolledLength;
     const resolvedMaxLength = max ?? (inputProps as { maxLength?: number } | undefined)?.maxLength;
-    const effectiveValue = typeof value === 'string' ? value : uncontrolledValue;
-    const regexMismatch = regex !== undefined && effectiveValue !== '' && !regex.test(effectiveValue);
-    const effectiveError = Boolean(error) || regexMismatch;
-    const effectiveHelper = regexMismatch ? DEFAULT_REGEX_ERROR : helperText;
+    const effectiveError = Boolean(error) || patternMismatch;
+    const effectiveHelper = patternMismatch ? DEFAULT_PATTERN_ERROR : helperText;
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (max !== undefined) {
             setUncontrolledLength(event.target.value.length);
         }
-        if (regex !== undefined && typeof value !== 'string') {
-            setUncontrolledValue(event.target.value);
+        if (pattern !== undefined) {
+            setPatternMismatch(event.target.validity.patternMismatch);
         }
         onChange?.(event);
     };
@@ -108,6 +105,7 @@ export function DnInput({
                         autoComplete: 'off',
                         ...(inputProps ?? {}),
                         ...(resolvedMaxLength !== undefined ? { maxLength: resolvedMaxLength } : {}),
+                        ...(pattern !== undefined ? { pattern } : {}),
                     },
                     input: {
                         endAdornment:

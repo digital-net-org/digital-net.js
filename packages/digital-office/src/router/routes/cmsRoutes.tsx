@@ -21,6 +21,10 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
         element: <ArticleListView />,
     },
     {
+        path: '/content-manager/articles/new',
+        element: <ArticleEditView />,
+    },
+    {
         path: '/content-manager/articles/:id',
         element: <ArticleEditView />,
     },

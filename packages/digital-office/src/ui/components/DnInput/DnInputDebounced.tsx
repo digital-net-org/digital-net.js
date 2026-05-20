@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { StringValidation } from '@digital-net-org/digital-core';
 import { DnInput, type DnInputProps } from './DnInput';
 
 export interface DnInputDebouncedProps extends DnInputProps {
@@ -20,20 +21,21 @@ function pickValue(value: DnInputProps['value'], fallback: DnInputProps['default
     return '';
 }
 
-function shouldDebounce(candidate: string, regex: RegExp | undefined): boolean {
+function shouldDebounce(candidate: string, patternRegex: RegExp | undefined): boolean {
     if (candidate.length === 0) return false;
-    return !(regex !== undefined && !regex.test(candidate));
+    return !(patternRegex !== undefined && !patternRegex.test(candidate));
 }
 
 export function DnInputDebounced({
     onDebounced,
     debounceInMs = DEFAULT_DEBOUNCE_MS,
     onChange,
-    regex,
+    pattern,
     skipWhen,
     loadingNonBlocking,
     ...rest
 }: DnInputDebouncedProps) {
+    const patternRegex = React.useMemo(() => StringValidation.buildSafeRegex(pattern), [pattern]);
     const [isPending, setIsPending] = React.useState(false);
     const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
     const abortRef = React.useRef<AbortController | null>(null);
@@ -91,13 +93,13 @@ export function DnInputDebounced({
         if (lastHandledRef.current === current) return;
         lastHandledRef.current = current;
         cancelPending();
-        if (!onDebouncedRef.current || !shouldDebounce(current, regex) || skipWhenRef.current?.(current)) {
+        if (!onDebouncedRef.current || !shouldDebounce(current, patternRegex) || skipWhenRef.current?.(current)) {
             setIsPending(false);
             return;
         }
         setIsPending(true);
         runDebounce(current);
-    }, [rest.value, rest.defaultValue, regex, runDebounce, cancelPending]);
+    }, [rest.value, rest.defaultValue, patternRegex, runDebounce, cancelPending]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const next = event.target.value;
@@ -105,7 +107,7 @@ export function DnInputDebounced({
         onChange?.(event);
         cancelPending();
 
-        if (!onDebounced || !shouldDebounce(next, regex) || skipWhen?.(next)) {
+        if (!onDebounced || !shouldDebounce(next, patternRegex) || skipWhen?.(next)) {
             setIsPending(false);
             return;
         }
@@ -117,7 +119,7 @@ export function DnInputDebounced({
     return (
         <DnInput
             {...rest}
-            regex={regex}
+            pattern={pattern}
             loadingNonBlocking={Boolean(loadingNonBlocking) || isPending}
             onChange={handleChange}
         />

@@ -54,10 +54,7 @@ export function PageTabGeneral() {
     const variables = usePageVariables();
 
     const pathSchema = React.useMemo(() => schemas.find(s => s.name === 'Path'), [schemas]);
-    const pathRegex = React.useMemo(
-        () => (pathSchema?.regexValidation ? new RegExp(pathSchema.regexValidation) : null),
-        [pathSchema]
-    );
+    const pathPattern = pathSchema?.regexValidation ?? undefined;
 
     const currentPath = String(values.path ?? '');
     const apiPath = String(apiData?.path ?? '');
@@ -85,7 +82,7 @@ export function PageTabGeneral() {
         Path: {
             ...baseFieldProps.Path,
             render:
-                pathSchema && pathRegex ? (
+                pathSchema && pathPattern ? (
                     <DnInputDebounced
                         type="text"
                         label="Chemin"
@@ -93,7 +90,7 @@ export function PageTabGeneral() {
                         max={pathSchema.maxLength ?? undefined}
                         required={pathSchema.isRequired ?? undefined}
                         disabled={disabled}
-                        regex={pathRegex}
+                        pattern={pathPattern}
                         error={errors?.has('path') || pathAvailabilityError}
                         helperText={pathAvailabilityError ? PATH_AVAILABILITY_ERROR : PATH_HELPER}
                         debounceInMs={PATH_DEBOUNCE_MS}

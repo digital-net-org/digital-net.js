@@ -1,4 +1,5 @@
 export * from './ApplicationCatalog';
+export * from './ArticleCatalog';
 export * from './AuthCatalog';
 export * from './Catalog';
 export * from './MediaCatalog';
