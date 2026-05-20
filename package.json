@@ -18,7 +18,7 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "packageManager": "pnpm@11.0.9",
+    "packageManager": "pnpm@11.1.2",
     "devDependencies": {
         "eslint": "9.39.4",
         "eslint-plugin-react": "7.37.5",
@@ -26,9 +26,9 @@
         "happy-dom": "20.9.0",
         "prettier": "3.8.3",
         "typescript": "6.0.3",
-        "typescript-eslint": "8.58.2",
-        "vite": "8.0.8",
-        "vite-plugin-dts": "4.5.4",
-        "vitest": "4.1.4"
+        "typescript-eslint": "8.59.3",
+        "vite": "8.0.13",
+        "vite-plugin-dts": "5.0.0",
+        "vitest": "4.1.6"
     }
 }
