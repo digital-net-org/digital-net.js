@@ -4,6 +4,7 @@ import {
     type TextFieldProps,
     type SlotProps,
     type TextFieldOwnerState,
+    Box,
     CircularProgress,
     Stack,
     Typography,
@@ -41,6 +42,7 @@ export interface DnInputProps extends Pick<
     max?: number;
     pattern?: string;
     inputProps?: SlotProps<React.ElementType<InputBaseProps['inputProps']>, {}, TextFieldOwnerState>;
+    endAction?: React.ReactNode;
 }
 
 const DEFAULT_PATTERN_ERROR = 'Format invalide.';
@@ -54,6 +56,7 @@ export function DnInput({
     max,
     inputProps,
     pattern,
+    endAction,
     error,
     helperText,
     value,
@@ -109,10 +112,19 @@ export function DnInput({
                     },
                     input: {
                         endAdornment:
-                            loading || loadingNonBlocking ? (
-                                <Stack sx={{ position: 'absolute', right: 8 }}>
-                                    <CircularProgress size="1rem" />
-                                </Stack>
+                            loading || loadingNonBlocking || endAction ? (
+                                <Box
+                                    sx={{
+                                        position: 'absolute',
+                                        right: 8,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 0.5,
+                                    }}
+                                >
+                                    {(loading || loadingNonBlocking) && <CircularProgress size="1rem" />}
+                                    {endAction}
+                                </Box>
                             ) : undefined,
                     },
                 }}

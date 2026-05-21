@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Box, Chip, Stack, Typography } from '@mui/material';
+import { AutoAwesome as AutoAwesomeIcon } from '@mui/icons-material';
+import { StringResolver } from '@digital-net-org/digital-core';
 import type { ArticleDto, PageDto, QueryResult } from '@digital-net-org/digital-api-sdk';
 import { useDnApi } from '../../../api';
 import {
@@ -11,7 +13,7 @@ import {
     useDnEntityFormContext,
     useEntitySchema,
 } from '../../../entity';
-import { DnButton, DnInputAutocomplete, DnInputDebounced } from '../../../ui';
+import { DnButton, DnIconButton, DnInputAutocomplete, DnInputDebounced } from '../../../ui';
 
 const SLUG_HELPER = 'Segment d\'URL public de l\'article (ex: "mon-article").';
 const SLUG_AVAILABILITY_ERROR = "Ce segment d'URL est déjà utilisé.";
@@ -59,6 +61,13 @@ export function ArticleTabGeneral() {
         if (signal.aborted) return;
         setSlugAvailabilityError(!res.hasError && !res.value);
     };
+    const titleSource = String(values.title ?? '');
+    const handleAutoSlug = () => {
+        const next = StringResolver.toKebabCase(titleSource);
+        if (!next || next === currentSlug) return;
+        setSlugAvailabilityError(false);
+        setField('/slug', next);
+    };
 
     const fieldProps: DnEntityFormProps['fieldProps'] = {
         ...baseFieldProps,
@@ -80,6 +89,15 @@ export function ArticleTabGeneral() {
                         skipWhen={value => value === apiSlug}
                         onChange={handleSlugChange}
                         onDebounced={handleSlugDebounced}
+                        endAction={
+                            <DnIconButton
+                                tooltip="Générer le segment depuis le titre"
+                                disabled={disabled || !titleSource.trim()}
+                                onClick={handleAutoSlug}
+                            >
+                                <AutoAwesomeIcon />
+                            </DnIconButton>
+                        }
                     />
                 ) : null,
         },

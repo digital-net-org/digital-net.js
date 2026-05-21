@@ -1,5 +1,12 @@
 import * as React from 'react';
-import { Autocomplete, type AutocompleteProps, Paper, type PaperProps, type SxProps, type Theme } from '@mui/material';
+import {
+    Autocomplete,
+    Paper as MuiPaper,
+    type AutocompleteProps,
+    type PaperProps,
+    type SxProps,
+    type Theme,
+} from '@mui/material';
 import { DnStyledTextField } from './DnStyledTextField';
 import { css, styled } from '@mui/material/styles';
 
@@ -89,16 +96,16 @@ type DnAutocompletePaperProps = PaperProps & { renderListAction?: React.ReactNod
 
 function DnAutocompletePaper({ renderListAction, children, ...paperProps }: DnAutocompletePaperProps) {
     return (
-        <StyledPaper {...paperProps}>
+        <Paper {...paperProps}>
             {children}
             {renderListAction !== undefined ? (
                 <ActionsWrapper onMouseDown={event => event.preventDefault()}>{renderListAction}</ActionsWrapper>
             ) : null}
-        </StyledPaper>
+        </Paper>
     );
 }
 
-const StyledPaper = styled(Paper)(
+const Paper = styled(MuiPaper)(
     ({ theme }) => css`
         & .MuiAutocomplete-listbox {
             font-size: ${theme.typography.button.fontSize};

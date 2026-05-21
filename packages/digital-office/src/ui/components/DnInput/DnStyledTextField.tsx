@@ -67,5 +67,14 @@ const StyledTextFieldImpl = styled(TextField)(
             margin: 0;
             padding-left: 0.5rem;
         }
+
+        & .MuiSvgIcon-fontSizeMedium {
+            width: 100%;
+        }
+
+        & .MuiIconButton-root {
+            width: 22px;
+            height: 22px;
+        }
     `
 );
