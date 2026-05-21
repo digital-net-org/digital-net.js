@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Box, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import type { ArticleDto } from '@digital-net-org/digital-api-sdk';
 import { useDnEntityFormContext } from '../../../entity';
 import { DnInputCode } from '../../../ui';
+import { LexicalRichEditor } from '../LexicalEditor';
 
 type EditorMode = 'wysiwyg' | 'html';
 
@@ -10,10 +11,8 @@ export function ArticleTabContent() {
     const { values, setField, disabled } = useDnEntityFormContext<ArticleDto>();
     const [mode, setMode] = React.useState<EditorMode>('wysiwyg');
 
-    const handleModeChange = (_: React.MouseEvent<HTMLElement>, next: EditorMode | null) => {
-        if (next) setMode(next);
-    };
-
+    const handleModeChange = (_: React.MouseEvent<HTMLElement>, next: EditorMode | null) =>
+        next ? setMode(next) : void 0;
     const handleContentChange = (value: string) => setField('/content', value);
 
     return (
@@ -38,19 +37,11 @@ export function ArticleTabContent() {
                         disabled={disabled}
                     />
                 ) : (
-                    <Box
-                        sx={{
-                            p: 4,
-                            border: '1px dashed',
-                            borderColor: 'divider',
-                            borderRadius: 1,
-                            textAlign: 'center',
-                        }}
-                    >
-                        <Typography color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                            Éditeur Lexical à venir (US-ART-06).
-                        </Typography>
-                    </Box>
+                    <LexicalRichEditor
+                        value={values.content ?? ''}
+                        onChange={handleContentChange}
+                        disabled={disabled}
+                    />
                 )}
             </Stack>
         </Stack>
