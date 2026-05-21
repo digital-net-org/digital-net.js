@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Box, Chip, Stack, Typography } from '@mui/material';
 import type { ArticleDto, PageDto, QueryResult } from '@digital-net-org/digital-api-sdk';
@@ -10,9 +11,13 @@ import {
     useDnEntityFormContext,
     useEntitySchema,
 } from '../../../entity';
-import { DnButton, DnInputAutocomplete } from '../../../ui';
+import { DnButton, DnInputAutocomplete, DnInputDebounced } from '../../../ui';
 
-const fieldProps: DnEntityFormProps['fieldProps'] = {
+const SLUG_HELPER = 'Segment d\'URL public de l\'article (ex: "mon-article").';
+const SLUG_AVAILABILITY_ERROR = "Ce segment d'URL est déjà utilisé.";
+const SLUG_DEBOUNCE_MS = 1500;
+
+const baseFieldProps: DnEntityFormProps['fieldProps'] = {
     Title: {
         label: 'Titre',
         helperText: "Titre éditorial de l'article, affiché dans les listings et utilisé pour le rendu.",
@@ -22,8 +27,8 @@ const fieldProps: DnEntityFormProps['fieldProps'] = {
         helperText: 'Description courte (peut être utilisée par la page-template).',
     },
     Slug: {
-        label: 'Slug',
-        helperText: 'Segment d\'URL public de l\'article (ex: "mon-article").',
+        label: 'Segment URL',
+        helperText: SLUG_HELPER,
     },
     PublishedAt: {
         label: 'Publié le',
@@ -35,8 +40,50 @@ const INTERPOLABLE_PAGES_PAGE_SIZE = 10;
 
 export function ArticleTabGeneral() {
     const api = useDnApi();
+    const { id } = useParams<{ id: string }>();
     const { schemas } = useEntitySchema('article');
-    const { values, setField, errors, disabled } = useDnEntityFormContext<ArticleDto>();
+    const { values, apiData, setField, errors, disabled } = useDnEntityFormContext<ArticleDto>();
+
+    const slugSchema = React.useMemo(() => schemas.find(s => s.name === 'Slug'), [schemas]);
+    const slugPattern = slugSchema?.regexValidation ?? undefined;
+    const currentSlug = String(values.slug ?? '');
+    const apiSlug = String(apiData?.slug ?? '');
+
+    const [slugAvailabilityError, setSlugAvailabilityError] = React.useState(false);
+    const handleSlugChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setSlugAvailabilityError(false);
+        setField('/slug', event.target.value);
+    };
+    const handleSlugDebounced = async (next: string, signal: AbortSignal) => {
+        const res = await api.catalog.article.checkSlugAvailability(next, id, { signal });
+        if (signal.aborted) return;
+        setSlugAvailabilityError(!res.hasError && !res.value);
+    };
+
+    const fieldProps: DnEntityFormProps['fieldProps'] = {
+        ...baseFieldProps,
+        Slug: {
+            ...baseFieldProps.Slug,
+            render:
+                slugSchema && slugPattern ? (
+                    <DnInputDebounced
+                        type="text"
+                        label="Segment URL"
+                        value={currentSlug}
+                        max={slugSchema.maxLength ?? undefined}
+                        required={slugSchema.isRequired ?? undefined}
+                        disabled={disabled}
+                        pattern={slugPattern}
+                        error={errors?.has('slug') || slugAvailabilityError}
+                        helperText={slugAvailabilityError ? SLUG_AVAILABILITY_ERROR : SLUG_HELPER}
+                        debounceInMs={SLUG_DEBOUNCE_MS}
+                        skipWhen={value => value === apiSlug}
+                        onChange={handleSlugChange}
+                        onDebounced={handleSlugDebounced}
+                    />
+                ) : null,
+        },
+    };
 
     const [pagesSize, setPagesSize] = React.useState(INTERPOLABLE_PAGES_PAGE_SIZE);
 

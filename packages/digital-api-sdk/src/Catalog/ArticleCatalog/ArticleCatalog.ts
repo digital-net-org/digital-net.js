@@ -1,4 +1,4 @@
-import { DN_API_ARTICLE, DN_API_ARTICLE_BY_ID } from '../../routes';
+import { DN_API_ARTICLE, DN_API_ARTICLE_BY_ID, DN_API_ARTICLE_SLUG_AVAILABILITY } from '../../routes';
 import { CatalogRunner } from '../CatalogRunner';
 import type { HttpClient } from '../../HttpClient';
 import type { ArticleDto, JsonPatchOp, Result } from '../../types';
@@ -20,6 +20,24 @@ export class ArticleCatalog {
     /** POST `cms/articles` — JWT/ApiKey. Returns the new article id. */
     public async create(payload: ArticlePayload, options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         return CatalogRunner.run<string>(this.http, { method: 'POST', path: DN_API_ARTICLE, body: payload }, options);
+    }
+
+    /** GET `cms/articles/slug/availability?slug=...&excludeId=...` — JWT/ApiKey */
+    public async checkSlugAvailability(
+        slug: string,
+        excludeId?: string,
+        options: CatalogCallbacks<boolean> & { signal?: AbortSignal } = {}
+    ): Promise<Result<boolean>> {
+        const { signal, ...cbs } = options;
+        return CatalogRunner.run<boolean>(
+            this.http,
+            {
+                path: DN_API_ARTICLE_SLUG_AVAILABILITY,
+                params: { slug, ...(excludeId ? { excludeId } : {}) },
+                signal,
+            },
+            cbs
+        );
     }
 
     /** PATCH `cms/articles/:id` — body = JSON Patch (RFC 6902). — JWT/ApiKey */
