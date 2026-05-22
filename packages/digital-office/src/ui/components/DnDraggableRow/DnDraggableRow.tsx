@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import { DeleteOutlined as DeleteIcon, DragIndicator as DragIndicatorIcon } from '@mui/icons-material';
 import { useSortable } from '@dnd-kit/sortable';
@@ -30,9 +30,11 @@ export function DnDraggableRow({ id, disabled = false, onDelete = undefined, chi
 
     return (
         <Row ref={setNodeRef} style={style} data-dragging={isDragging || undefined}>
-            <DragHandle {...attributes} {...listeners} disabled={disabled}>
-                <DragIndicatorIcon fontSize="small" />
-            </DragHandle>
+            <Box sx={{ marginBottom: 0.585 }}>
+                <DragHandle {...attributes} {...listeners} disabled={disabled}>
+                    <DragIndicatorIcon fontSize="small" />
+                </DragHandle>
+            </Box>
             <Content>{children}</Content>
             {onDelete ? (
                 <DnIconButton tooltip="Supprimer" disabled={disabled} onClick={handleDelete}>
@@ -50,7 +52,7 @@ const Row = styled(Stack)(
         background: ${theme.palette.background.paper};
         padding: 0.75rem;
         flex-direction: row;
-        align-items: start;
+        align-items: center;
 
         &[data-dragging] {
             box-shadow: ${theme.shadows[4]};

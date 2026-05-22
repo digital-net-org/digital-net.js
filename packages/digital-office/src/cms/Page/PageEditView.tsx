@@ -21,7 +21,7 @@ export function PageEditView() {
             const created = await api.catalog.page.create({ path: String(values.path ?? '') });
             if (created.hasError || !created.value) return created;
             const extraOps: JsonPatchOp[] = Object.entries(values)
-                .filter(([key, value]) => key !== 'path' && value !== undefined)
+                .filter(([key, value]) => !['path', 'media'].includes(key) && value !== undefined)
                 .map(([key, value]) => ({ op: 'replace', path: `/${key}`, value }));
             if (extraOps.length > 0) await api.catalog.page.update(created.value, extraOps);
             return created;

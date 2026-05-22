@@ -1,3 +1,4 @@
+import type { ArticleMedia } from './ArticleMedia';
 import type { Entity } from './Entity';
 import type { TagDto } from './TagDto';
 
@@ -9,4 +10,5 @@ export interface ArticleDto extends Entity {
     publishedAt?: string | null;
     pageId?: string | null;
     tags: TagDto[];
+    media: ArticleMedia[];
 }

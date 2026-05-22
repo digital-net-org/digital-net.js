@@ -7,7 +7,8 @@ import {
     type SxProps,
     type Theme,
 } from '@mui/material';
-import { DnStyledTextField } from './DnStyledTextField';
+import { DnBaseInput } from './DnBaseInput';
+import { DnBaseInputWrapper } from './DnBaseInputWrapper';
 import { css, styled } from '@mui/material/styles';
 
 type MuiAutocompleteOmitted =
@@ -65,36 +66,38 @@ export function DnInputAutocomplete<T = string>({
     );
 
     return (
-        <Autocomplete<T>
-            {...autocompleteProps}
-            options={options}
-            value={value}
-            onChange={(_, next) => onChange(next ?? null)}
-            disabled={disabled}
-            autoHighlight
-            sx={sx}
-            getOptionLabel={resolvedGetOptionLabel}
-            isOptionEqualToValue={isOptionEqualToValue}
-            slots={{ paper: DnAutocompletePaper }}
-            slotProps={{ paper: { renderListAction } as DnAutocompletePaperProps }}
-            renderInput={params => (
-                <DnStyledTextField
-                    {...params}
-                    label={label}
-                    placeholder={placeholder}
-                    required={required}
-                    error={error}
-                    helperText={helperText}
-                    className="DnInput"
-                />
-            )}
-        />
+        <DnBaseInputWrapper>
+            <Autocomplete<T>
+                {...autocompleteProps}
+                options={options}
+                value={value}
+                onChange={(_, next) => onChange(next ?? null)}
+                disabled={disabled}
+                autoHighlight
+                sx={sx}
+                getOptionLabel={resolvedGetOptionLabel}
+                isOptionEqualToValue={isOptionEqualToValue}
+                slots={{ paper: DnAutocompletePaper }}
+                slotProps={{ paper: { renderListAction } as DnAutocompletePaperProps }}
+                renderInput={params => (
+                    <DnBaseInput
+                        {...params}
+                        label={label}
+                        placeholder={placeholder}
+                        required={required}
+                        error={error}
+                        helperText={helperText}
+                        className="DnInput"
+                    />
+                )}
+            />
+        </DnBaseInputWrapper>
     );
 }
 
-type DnAutocompletePaperProps = PaperProps & { renderListAction?: React.ReactNode };
+export type DnAutocompletePaperProps = PaperProps & { renderListAction?: React.ReactNode };
 
-function DnAutocompletePaper({ renderListAction, children, ...paperProps }: DnAutocompletePaperProps) {
+export function DnAutocompletePaper({ renderListAction, children, ...paperProps }: DnAutocompletePaperProps) {
     return (
         <Paper {...paperProps}>
             {children}

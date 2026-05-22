@@ -31,7 +31,6 @@ export function PageListView() {
             {...staticProps}
             onRowClick={row => navigate(`/content-manager/pages/${row.id}`)}
             onCreate={() => navigate('new')}
-            protectedDelete
         />
     );
 }

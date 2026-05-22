@@ -2,14 +2,14 @@ import * as React from 'react';
 import { css, styled } from '@mui/material/styles';
 import { type TextFieldProps, TextField } from '@mui/material';
 
-export function DnStyledTextField(props: TextFieldProps) {
-    return <StyledTextFieldImpl {...props} />;
+export function DnBaseInput(props: TextFieldProps) {
+    return <StyledTextField {...props} />;
 }
 
 export const basePaddingX = 0.25;
 export const basePaddingY = 0.5;
 
-const StyledTextFieldImpl = styled(TextField)(
+const StyledTextField = styled(TextField)(
     ({ theme }) => css`
         width: 100%;
         & .MuiInputBase-root {

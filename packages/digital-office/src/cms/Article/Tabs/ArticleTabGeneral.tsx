@@ -13,6 +13,7 @@ import {
     useDnEntityFormContext,
     useEntitySchema,
 } from '../../../entity';
+import { useCustomNode } from '../../../custom-render';
 import { DnButton, DnIconButton, DnInputAutocomplete, DnInputDebounced } from '../../../ui';
 
 const SLUG_HELPER = 'Segment d\'URL public de l\'article (ex: "mon-article").';
@@ -45,6 +46,7 @@ export function ArticleTabGeneral() {
     const { id } = useParams<{ id: string }>();
     const { schemas } = useEntitySchema('article');
     const { values, apiData, setField, errors, disabled } = useDnEntityFormContext<ArticleDto>();
+    const { renderCustomNode } = useCustomNode();
 
     const slugSchema = React.useMemo(() => schemas.find(s => s.name === 'Slug'), [schemas]);
     const slugPattern = slugSchema?.regexValidation ?? undefined;
@@ -126,6 +128,7 @@ export function ArticleTabGeneral() {
 
     return (
         <Stack spacing={2} sx={{ maxWidth: 720 }}>
+            {renderCustomNode({ entity: 'article', view: 'edit:tab:general:before' })}
             <DnEntityForm
                 schemas={schemas}
                 fieldProps={fieldProps}
@@ -182,6 +185,7 @@ export function ArticleTabGeneral() {
                     L&apos;édition des tags via le pivot `ArticleTag` est différée à une US suivante.
                 </Typography>
             </Box>
+            {renderCustomNode({ entity: 'article', view: 'edit:tab:general:after' })}
         </Stack>
     );
 }

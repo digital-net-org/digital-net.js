@@ -1,5 +1,6 @@
 import type { Entity } from './Entity';
 import type { PageEntityType } from './PageEntityType';
+import type { PageMedia } from './PageMedia';
 
 export interface PageDto extends Entity {
     path: string;
@@ -10,6 +11,7 @@ export interface PageDto extends Entity {
     description?: string;
     jsonLd?: string;
     redirect?: string;
+    media: PageMedia[];
     createdAt: string;
     updatedAt?: string;
 }

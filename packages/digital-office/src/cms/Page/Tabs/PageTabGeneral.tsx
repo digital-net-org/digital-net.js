@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { useParams } from 'react-router';
+import { Stack } from '@mui/material';
 import { PathAnalyzer } from '@digital-net-org/digital-core';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
+import { useCustomNode } from '../../../custom-render';
 import { useDnApi } from '../../../api';
 import { DnInputDebounced } from '../../../ui';
 import { usePageVariables } from './usePageVariables';
@@ -52,6 +54,7 @@ export function PageTabGeneral() {
     const { schemas } = useEntitySchema('page');
     const { values, apiData, setField, errors, disabled } = useDnEntityFormContext<PageDto>();
     const variables = usePageVariables();
+    const { renderCustomNode } = useCustomNode();
 
     const pathSchema = React.useMemo(() => schemas.find(s => s.name === 'Path'), [schemas]);
     const pathPattern = pathSchema?.regexValidation ?? undefined;
@@ -108,14 +111,18 @@ export function PageTabGeneral() {
     };
 
     return (
-        <DnEntityForm
-            schemas={schemas}
-            fieldProps={fieldProps}
-            values={values as Record<string, unknown>}
-            onFieldChange={setField}
-            errors={errors}
-            disabled={disabled}
-            variables={variables}
-        />
+        <Stack spacing={2}>
+            {renderCustomNode({ entity: 'page', view: 'edit:tab:general:before' })}
+            <DnEntityForm
+                schemas={schemas}
+                fieldProps={fieldProps}
+                values={values as Record<string, unknown>}
+                onFieldChange={setField}
+                errors={errors}
+                disabled={disabled}
+                variables={variables}
+            />
+            {renderCustomNode({ entity: 'page', view: 'edit:tab:general:after' })}
+        </Stack>
     );
 }

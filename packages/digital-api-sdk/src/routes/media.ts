@@ -1,6 +1,7 @@
 export const DN_API_MEDIA = 'cms/media' as const;
 export const DN_API_MEDIA_BY_ID = 'cms/media/:id' as const;
 export const DN_API_MEDIA_CONTENT_TYPES = 'cms/media/content-types' as const;
+export const DN_API_MEDIA_LABELS = 'cms/media/labels' as const;
 export const DN_API_MEDIA_MAX_SIZE = 'cms/media/max-size' as const;
 export const DN_API_MEDIA_VARIANTS_PURGE_ALL = 'cms/media/variants' as const;
 export const DN_API_MEDIA_VARIANT_BY_ID = 'cms/media/variants/:variantId' as const;

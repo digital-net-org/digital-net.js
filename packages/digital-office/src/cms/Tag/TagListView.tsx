@@ -26,7 +26,6 @@ export function TagListView() {
             {...staticProps}
             onRowClick={row => navigate(`/content-manager/tags/${row.id}`)}
             onCreate={() => navigate('new')}
-            protectedDelete
         />
     );
 }

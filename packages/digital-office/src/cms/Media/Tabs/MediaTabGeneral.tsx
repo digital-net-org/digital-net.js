@@ -2,6 +2,7 @@ import { Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import type { MediaDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
+import { useCustomNode } from '../../../custom-render';
 import { formatDate, formatDimensions, formatFileSize } from '../../../ui';
 import { MediaPreview } from '../MediaPreview';
 
@@ -23,9 +24,11 @@ const fieldProps: DnEntityFormProps['fieldProps'] = {
 export function MediaTabGeneral() {
     const { schemas } = useEntitySchema('media');
     const { values, setField, errors, disabled } = useDnEntityFormContext<MediaDto>();
+    const { renderCustomNode } = useCustomNode();
 
     return (
         <Stack spacing={3}>
+            {renderCustomNode({ entity: 'media', view: 'edit:tab:general:before' })}
             {values.id ? (
                 <Stack direction="row" spacing={3} sx={{ alignItems: 'flex-start' }}>
                     <MediaPreview mediaId={values.id} alt={values.alt ?? ''} />
@@ -45,6 +48,7 @@ export function MediaTabGeneral() {
                 errors={errors}
                 disabled={disabled}
             />
+            {renderCustomNode({ entity: 'media', view: 'edit:tab:general:after' })}
         </Stack>
     );
 }

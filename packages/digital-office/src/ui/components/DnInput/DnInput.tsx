@@ -1,16 +1,9 @@
 import * as React from 'react';
-import { css, styled } from '@mui/material/styles';
-import {
-    type TextFieldProps,
-    type SlotProps,
-    type TextFieldOwnerState,
-    Box,
-    CircularProgress,
-    Stack,
-    Typography,
-} from '@mui/material';
+import { type TextFieldProps, type SlotProps, type TextFieldOwnerState, Box, CircularProgress } from '@mui/material';
 import type { InputBaseProps } from '@mui/material/InputBase';
-import { basePaddingY, DnStyledTextField } from './DnStyledTextField';
+import { DnBaseInput } from './DnBaseInput';
+import { DnBaseInputWrapper } from './DnBaseInputWrapper';
+import { DnBaseInputCount } from './DnBaseInputCount';
 
 export interface DnInputProps extends Pick<
     TextFieldProps,
@@ -70,6 +63,7 @@ export function DnInput({
 
     const valueLength = typeof value === 'string' ? value.length : uncontrolledLength;
     const resolvedMaxLength = max ?? (inputProps as { maxLength?: number } | undefined)?.maxLength;
+
     const effectiveError = Boolean(error) || patternMismatch;
     const effectiveHelper = patternMismatch ? DEFAULT_PATTERN_ERROR : helperText;
 
@@ -84,13 +78,9 @@ export function DnInput({
     };
 
     return (
-        <Wrapper>
-            {max !== undefined ? (
-                <Counter>
-                    {valueLength}/{max}
-                </Counter>
-            ) : null}
-            <DnStyledTextField
+        <DnBaseInputWrapper>
+            <DnBaseInputCount value={valueLength} max={max} />
+            <DnBaseInput
                 {...muiProps}
                 value={value ?? ''}
                 onChange={handleOnChange}
@@ -129,27 +119,6 @@ export function DnInput({
                     },
                 }}
             />
-        </Wrapper>
+        </DnBaseInputWrapper>
     );
 }
-
-const Wrapper = styled('div')(
-    () => css`
-        position: relative;
-        width: 100%;
-    `
-);
-
-const Counter = styled(Typography)(
-    ({ theme }) => css`
-        position: absolute;
-        top: -0.75rem;
-        right: ${basePaddingY}rem;
-        z-index: 1;
-        font-size: 0.7rem;
-        line-height: 1;
-        color: ${theme.palette.text.secondary};
-        pointer-events: none;
-        user-select: none;
-    `
-);

@@ -29,7 +29,7 @@ export function ArticleEditView() {
             const extraOps: JsonPatchOp[] = Object.entries(values)
                 .filter(
                     ([key, value]) =>
-                        !['title', 'slug', 'description', 'content', 'pageId', 'tags'].includes(key) &&
+                        !['title', 'slug', 'description', 'content', 'pageId', 'tags', 'media'].includes(key) &&
                         value !== undefined
                 )
                 .map(([key, value]) => ({ op: 'replace', path: `/${key}`, value }));

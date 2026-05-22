@@ -6,12 +6,14 @@ import { DnUserProvider } from './user';
 import { DnEntitySchemaProvider, DnEntityVariablesProvider, DnOgSchemaProvider } from './entity';
 import { DigitalNetLogo, DnAppProvider, DnToastProvider } from './app';
 import { DnIdbProvider } from './storage';
+import { DnCustomRenderProvider, type DnCustomRenderFn } from './custom-render';
 import { DRAFTS_DB_CONFIG } from './constants';
 
 export interface DigitalOfficeProviderProps {
     api: DigitalApi;
     children: React.ReactNode;
     appLogo?: React.ReactNode;
+    onCustomRender?: DnCustomRenderFn;
 }
 
 /**
@@ -21,7 +23,7 @@ export interface DigitalOfficeProviderProps {
  * `createBrowserRouter` + `<RouterProvider>`), so it lives as a child
  * of these providers — none of the providers below need router hooks.
  */
-export function DigitalOfficeProvider({ api, appLogo, children }: DigitalOfficeProviderProps) {
+export function DigitalOfficeProvider({ api, appLogo, onCustomRender, children }: DigitalOfficeProviderProps) {
     return (
         <DnApiProvider api={api}>
             <DnThemeProvider>
@@ -32,7 +34,9 @@ export function DigitalOfficeProvider({ api, appLogo, children }: DigitalOfficeP
                                 <DnOgSchemaProvider>
                                     <DnEntityVariablesProvider>
                                         <DnAppProvider appLogo={appLogo ?? <DigitalNetLogo />}>
-                                            {children}
+                                            <DnCustomRenderProvider onCustomRender={onCustomRender}>
+                                                {children}
+                                            </DnCustomRenderProvider>
                                         </DnAppProvider>
                                     </DnEntityVariablesProvider>
                                 </DnOgSchemaProvider>

@@ -14,7 +14,7 @@ export interface UseEntityRowsStateOptions<TRow extends BaseRow, TPayload> {
     toPayload: (_rows: TRow[]) => TPayload[];
     payloadEqual: (_a: TPayload[] | undefined, _b: TPayload[] | undefined) => boolean;
     createRow: () => TRow;
-    computeErrors: (_rows: TRow[]) => Map<string, Set<string>>;
+    computeErrors?: (_rows: TRow[]) => Map<string, Set<string>>;
     debounceMs?: number;
 }
 
@@ -140,7 +140,7 @@ export function useEntityRowsState<TRow extends BaseRow, TPayload>(
         [commitWith]
     );
 
-    const rowErrors = React.useMemo(() => computeErrors(rows), [rows, computeErrors]);
+    const rowErrors = React.useMemo(() => computeErrors?.(rows) ?? new Map(), [rows, computeErrors]);
     const isValid = rowErrors.size === 0;
 
     return {

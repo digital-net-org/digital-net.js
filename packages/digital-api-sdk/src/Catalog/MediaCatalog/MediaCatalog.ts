@@ -3,6 +3,7 @@ import {
     DN_API_MEDIA_BY_ID,
     DN_API_MEDIA_CONTENT_TYPES,
     DN_API_MEDIA_IMAGE,
+    DN_API_MEDIA_LABELS,
     DN_API_MEDIA_MAX_SIZE,
     DN_API_MEDIA_VARIANT_BY_ID,
     DN_API_MEDIA_VARIANTS_OF_MEDIA,
@@ -67,6 +68,20 @@ export class MediaCatalog {
     /** GET `cms/media/max-size` — maximum file size (in bytes) accepted by the upload endpoint. — JWT/ApiKey */
     public async getMaxSize(options: CatalogCallbacks<number> = {}): Promise<Result<number>> {
         return CatalogRunner.run<number>(this.http, { path: DN_API_MEDIA_MAX_SIZE }, options);
+    }
+
+    /**
+     * GET `cms/media/labels?search=…` — distinct labels currently in use across all
+     * ArticleMedia/PageMedia pivots, alphabetically sorted. `search` is an optional case-insensitive
+     * substring filter.
+     * Pass `options.signal` to cancel an in-flight request (debounced autocomplete pattern). — JWT/ApiKey
+     */
+    public async getLabels(
+        params: { search?: string } = {},
+        options: CatalogCallbacks<string[]> & { signal?: AbortSignal } = {}
+    ): Promise<Result<string[]>> {
+        const { signal, ...cbs } = options;
+        return CatalogRunner.run<string[]>(this.http, { path: DN_API_MEDIA_LABELS, params, signal }, cbs);
     }
 
     /** DELETE `cms/media/variants/:variantId` — purges a single cached variant. — JWT/ApiKey */
