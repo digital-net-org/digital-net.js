@@ -124,18 +124,29 @@ export function useEntityDraft<T extends Entity>(
     const apiUpdatedAt = apiData?.updatedAt ?? null;
     const hasConflict = isDirty && !!apiUpdatedAt && !!baselineUpdatedAt && apiUpdatedAt > baselineUpdatedAt;
 
+    // Mirror ops in a ref so setField can read the latest value within a
+    // single render tick, even if it's called multiple times before React
+    // commits — otherwise the second call would clobber the first.
+    const opsRef = React.useRef(ops);
+    React.useEffect(() => {
+        opsRef.current = ops;
+    }, [ops]);
+
     const setField = React.useCallback(
         (path: string, value: unknown) => {
             const accessor = pathToAccessor(path);
             const apiValue = (apiData as Record<string, unknown> | undefined)?.[accessor];
             const matchesApi = Object.is(value, apiValue);
-            const nextOps = matchesApi ? ops.filter(o => o.path !== path) : JsonPatch.setOp(ops, path, value);
+            const nextOps = matchesApi
+                ? opsRef.current.filter(o => o.path !== path)
+                : JsonPatch.setOp(opsRef.current, path, value);
+            opsRef.current = nextOps;
             const nextBaseline = baselineUpdatedAt ?? (nextOps.length > 0 ? (apiData?.updatedAt ?? null) : null);
             setOps(nextOps);
             setBaseline(nextOps.length > 0 ? nextBaseline : null);
             schedulePersist(nextOps, nextOps.length > 0 ? nextBaseline : null);
         },
-        [apiData, baselineUpdatedAt, ops, schedulePersist]
+        [apiData, baselineUpdatedAt, schedulePersist]
     );
 
     const discard = React.useCallback(async () => {

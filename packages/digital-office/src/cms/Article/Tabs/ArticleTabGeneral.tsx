@@ -126,6 +126,26 @@ export function ArticleTabGeneral() {
     const selectedPage = pages.find(p => p.id === values.pageId) ?? null;
     const hasMorePages = pagesResult ? pages.length < pagesResult.total : false;
 
+    const setFieldWithAutoSlug = (path: string, value: unknown) => {
+        if (path === '/title' && typeof value === 'string') {
+            const slug = String(values.slug ?? '');
+            const currentKebab = StringResolver.toKebabCase(String(values.title ?? ''));
+            const nextKebab = StringResolver.toKebabCase(value);
+            if (slug === currentKebab || slug === nextKebab) {
+                setSlugAvailabilityError(false);
+                setField('/slug', nextKebab);
+            }
+        }
+        setField(path, value);
+    };
+
+    const pageDefaultedRef = React.useRef(false);
+    React.useEffect(() => {
+        if (pageDefaultedRef.current || values.pageId || pages.length === 0) return;
+        pageDefaultedRef.current = true;
+        setField('/pageId', pages[0].id);
+    }, [values.pageId, pages, setField]);
+
     return (
         <Stack spacing={2} sx={{ maxWidth: 720 }}>
             {renderCustomNode({ entity: 'article', view: 'edit:tab:general:before' })}
@@ -133,14 +153,14 @@ export function ArticleTabGeneral() {
                 schemas={schemas}
                 fieldProps={fieldProps}
                 values={values as Record<string, unknown>}
-                onFieldChange={setField}
+                onFieldChange={setFieldWithAutoSlug}
                 errors={errors}
                 disabled={disabled}
             />
 
             <DnInputAutocomplete
                 label="Page associée"
-                helperText={'Page qui servira l\'article (doit être de type "Article").'}
+                helperText={"Page qui servira l'article."}
                 value={selectedPage}
                 options={pages}
                 loading={pagesLoading}
@@ -169,7 +189,12 @@ export function ArticleTabGeneral() {
                 {values.tags && values.tags.length > 0 ? (
                     <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
                         {values.tags.map(tag => (
-                            <Chip key={tag.id} size="small" label={tag.name} sx={{ bgcolor: tag.color ?? undefined }} />
+                            <Chip
+                                key={tag.id}
+                                size="small"
+                                label={tag.name}
+                                sx={{ backgroundColor: tag.color ?? undefined }}
+                            />
                         ))}
                     </Stack>
                 ) : (

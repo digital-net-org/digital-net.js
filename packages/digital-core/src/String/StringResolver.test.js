@@ -33,6 +33,9 @@ describe('StringResolver', () => {
             { input: 'SOME_TEST', expected: 'some-test' },
             { input: 'Some Test', expected: 'some-test' },
             { input: 'Some    Test ofAString!!lol', expected: 'some-test-of-a-string-lol' },
+            { input: 'Les bons plans de mémé', expected: 'les-bons-plans-de-meme' },
+            { input: 'Café à gogo', expected: 'cafe-a-gogo' },
+            { input: 'crème brûlée', expected: 'creme-brulee' },
         ])('should transform "$input" to "$expected"', ({ input, expected }) => {
             expect(StringResolver.toKebabCase(input)).toBe(expected);
         });

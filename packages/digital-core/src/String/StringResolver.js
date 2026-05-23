@@ -37,7 +37,8 @@ export class StringResolver {
 
     /**
      * Converts any string to kebab-case.
-     * Handles PascalCase, camelCase, snake_case, and strings with spaces or symbols.
+     * Handles PascalCase, camelCase, snake_case, accented characters,
+     * and strings with spaces or symbols.
      * @param {string} str
      * @returns {string}
      */
@@ -46,6 +47,8 @@ export class StringResolver {
         if (StringMatcher.isKebabCase(str)) return str;
 
         return str
+            .normalize('NFD')
+            .replace(/[̀-ͯ]/g, '')
             .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
             .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
             .toLowerCase()

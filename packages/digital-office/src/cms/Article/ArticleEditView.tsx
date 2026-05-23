@@ -1,8 +1,10 @@
 import * as React from 'react';
-import type { ArticleDto, JsonPatchOp } from '@digital-net-org/digital-api-sdk';
+import type { ArticleDto, JsonPatchOp, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { useDnApi } from '../../api';
-import { DnEntityEditView } from '../../entity';
+import { DnEntityEditView, defaultValidate } from '../../entity';
 import { ArticleTabContent, ArticleTabGeneral } from './Tabs';
+
+const DEFAULT_CONTENT = '<p class="paragraph"></p>';
 
 export function ArticleEditView() {
     const api = useDnApi();
@@ -12,8 +14,23 @@ export function ArticleEditView() {
     const handleDelete = React.useCallback((id: string) => api.catalog.article.delete(id), [api.catalog.article]);
 
     const handleUpdate = React.useCallback(
-        (id: string, ops: JsonPatchOp[]) => api.catalog.article.update(id, ops),
+        (id: string, ops: JsonPatchOp[]) => {
+            const patched = ops.map(op =>
+                // @ts-expect-error - Value does exists in some cases
+                op.path === '/content' && !op.value ? { ...op, value: DEFAULT_CONTENT } : op
+            );
+            return api.catalog.article.update(id, patched);
+        },
         [api.catalog.article]
+    );
+
+    const validate = React.useCallback(
+        (values: Partial<ArticleDto>, schemas: SchemaProperty[]) =>
+            defaultValidate(
+                values,
+                schemas.filter(s => s.name !== 'Content')
+            ),
+        []
     );
 
     const handleCreate = React.useCallback(
@@ -22,7 +39,7 @@ export function ArticleEditView() {
                 title: String(values.title ?? ''),
                 slug: String(values.slug ?? ''),
                 description: values.description,
-                content: values.content,
+                content: values.content || DEFAULT_CONTENT,
                 pageId: values.pageId ?? null,
             });
             if (created.hasError || !created.value) return created;
@@ -63,6 +80,7 @@ export function ArticleEditView() {
             onDelete={handleDelete}
             onUpdate={handleUpdate}
             onCreate={handleCreate}
+            validate={validate}
         />
     );
 }

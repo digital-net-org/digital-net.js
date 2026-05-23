@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
@@ -103,21 +103,7 @@ function EditorBody({ initialValue, onChange, disabled }: EditorBodyProps) {
                         }}
                     />
                 }
-                placeholder={
-                    <Typography
-                        component="div"
-                        color="text.secondary"
-                        sx={{
-                            position: 'absolute',
-                            top: 12,
-                            left: 16,
-                            pointerEvents: 'none',
-                            fontStyle: 'italic',
-                        }}
-                    >
-                        Écrivez votre article…
-                    </Typography>
-                }
+                placeholder={null}
                 ErrorBoundary={LexicalErrorBoundary}
             />
             <OnChangePlugin onChange={handleChange} ignoreSelectionChange />

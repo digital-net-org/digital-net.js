@@ -16,13 +16,22 @@ export function ArticleTabContent() {
     const handleContentChange = (value: string) => setField('/content', value);
 
     return (
-        <Stack sx={{ gap: 2, height: '100%' }}>
+        <Stack sx={{ height: '100%', position: 'relative' }}>
             <ToggleButtonGroup
                 value={mode}
-                exclusive
                 onChange={handleModeChange}
+                exclusive
                 size="small"
                 aria-label="Mode d'édition"
+                sx={theme => ({
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    zIndex: 1,
+                    height: '2.55rem',
+                    transformOrigin: 'top right',
+                    background: theme.palette.background.paper,
+                })}
             >
                 <ToggleButton value="wysiwyg">WYSIWYG</ToggleButton>
                 <ToggleButton value="html">HTML</ToggleButton>
