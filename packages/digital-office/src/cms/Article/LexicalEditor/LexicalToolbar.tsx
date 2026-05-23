@@ -84,25 +84,27 @@ export function LexicalToolbar({ disabled = false }: LexicalToolbarProps) {
             <LexicalToolbarDivider />
             {LEXICAL_HEADING_LEVELS.map(tag => (
                 <Tooltip key={tag} title={tag.toUpperCase()}>
-                    <IconButton
-                        size="small"
-                        disabled={disabled}
-                        onClick={() => formatHeading(tag)}
-                        sx={{ position: 'relative' }}
-                    >
-                        <TitleIcon fontSize="small" />
-                        <span
-                            style={{
-                                position: 'absolute',
-                                bottom: 2,
-                                right: 2,
-                                fontSize: 9,
-                                fontWeight: 700,
-                            }}
+                    <span style={{ display: 'inline-flex' }}>
+                        <IconButton
+                            size="small"
+                            disabled={disabled}
+                            onClick={() => formatHeading(tag)}
+                            sx={{ position: 'relative' }}
                         >
-                            {tag.slice(1)}
-                        </span>
-                    </IconButton>
+                            <TitleIcon fontSize="small" />
+                            <span
+                                style={{
+                                    position: 'absolute',
+                                    bottom: 2,
+                                    right: 2,
+                                    fontSize: 9,
+                                    fontWeight: 700,
+                                }}
+                            >
+                                {tag.slice(1)}
+                            </span>
+                        </IconButton>
+                    </span>
                 </Tooltip>
             ))}
             <LexicalToolbarDivider />

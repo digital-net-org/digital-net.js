@@ -90,7 +90,7 @@ function EditorBody({ initialValue, onChange, disabled }: EditorBodyProps) {
     );
 
     return (
-        <Box sx={{ position: 'relative', flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ position: 'relative', flex: 1, minHeight: 0, overflowY: 'auto' }}>
             <RichTextPlugin
                 contentEditable={
                     <ContentEditable
@@ -98,8 +98,6 @@ function EditorBody({ initialValue, onChange, disabled }: EditorBodyProps) {
                             outline: 'none',
                             padding: '12px 16px',
                             minHeight: 240,
-                            flex: 1,
-                            overflowY: 'auto',
                         }}
                     />
                 }

@@ -12,9 +12,11 @@ interface LexicalToolbarButtonProps {
 export function LexicalToolbarButton({ children, label, ...iconButtonProps }: LexicalToolbarButtonProps) {
     return (
         <Tooltip title={label}>
-            <Button size="small" {...iconButtonProps}>
-                {children}
-            </Button>
+            <span style={{ display: 'inline-flex' }}>
+                <Button size="small" {...iconButtonProps}>
+                    {children}
+                </Button>
+            </span>
         </Tooltip>
     );
 }
