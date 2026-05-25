@@ -61,5 +61,14 @@ describe('StringResolver', () => {
         ])('should truncate "$input" to "$expected" with limit $maxLength', ({ input, maxLength, expected }) => {
             expect(StringResolver.truncateWithEllipsis(input, maxLength)).toBe(expected);
         });
+
+        it('should return an empty string by default for empty input', () => {
+            expect(StringResolver.truncateWithEllipsis('', 10)).toBe('');
+        });
+
+        it('should return the provided fallback for empty or whitespace input', () => {
+            expect(StringResolver.truncateWithEllipsis('', 10, '—')).toBe('—');
+            expect(StringResolver.truncateWithEllipsis('   ', 10, '—')).toBe('—');
+        });
     });
 });

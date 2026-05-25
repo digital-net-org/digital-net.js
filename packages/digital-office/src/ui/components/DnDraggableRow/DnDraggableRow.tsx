@@ -7,7 +7,6 @@ import { CSS } from '@dnd-kit/utilities';
 import { DnIconButton } from '../DnIconButton';
 
 export interface DnDraggableRowProps {
-    /** Stable identifier used by `@dnd-kit/sortable` to track the row. */
     id: string;
     disabled?: boolean;
     children?: React.ReactNode;
@@ -30,16 +29,18 @@ export function DnDraggableRow({ id, disabled = false, onDelete = undefined, chi
 
     return (
         <Row ref={setNodeRef} style={style} data-dragging={isDragging || undefined}>
-            <Box sx={{ marginBottom: 0.585 }}>
+            <ActionWrapper>
                 <DragHandle {...attributes} {...listeners} disabled={disabled}>
                     <DragIndicatorIcon fontSize="small" />
                 </DragHandle>
-            </Box>
+            </ActionWrapper>
             <Content>{children}</Content>
             {onDelete ? (
-                <DnIconButton tooltip="Supprimer" disabled={disabled} onClick={handleDelete}>
-                    <DeleteIcon />
-                </DnIconButton>
+                <ActionWrapper>
+                    <DnIconButton tooltip="Supprimer" disabled={disabled} onClick={handleDelete}>
+                        <DeleteIcon />
+                    </DnIconButton>
+                </ActionWrapper>
             ) : null}
         </Row>
     );
@@ -47,13 +48,11 @@ export function DnDraggableRow({ id, disabled = false, onDelete = undefined, chi
 
 const Row = styled(Stack)(
     ({ theme }) => css`
-        border: 1px solid ${theme.palette.divider};
         border-radius: ${theme.shape.borderRadius};
         background: ${theme.palette.background.paper};
         padding: 0.75rem;
         flex-direction: row;
         align-items: center;
-
         &[data-dragging] {
             box-shadow: ${theme.shadows[4]};
         }
@@ -68,6 +67,14 @@ const Content = styled(Stack)(
     `
 );
 
+const ActionWrapper = styled(Box)(
+    () => css`
+        height: 100%;
+        flex-direction: column;
+        justify-content: flex-start;
+    `
+);
+
 const DragHandle = styled('button', { shouldForwardProp: prop => prop !== 'disabled' })<{ disabled: boolean }>(
     ({ theme, disabled }) => css`
         display: flex;
@@ -75,7 +82,7 @@ const DragHandle = styled('button', { shouldForwardProp: prop => prop !== 'disab
         justify-content: center;
         background: transparent;
         border: none;
-        padding: 0.42rem 0.5rem 0 0;
+        padding: 0.5rem 0.5rem 0 0;
         color: ${theme.palette.text.secondary};
         cursor: ${disabled ? 'not-allowed' : 'grab'};
 

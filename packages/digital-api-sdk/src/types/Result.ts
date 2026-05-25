@@ -6,3 +6,10 @@ export interface Result<T = null> {
     errors: ResultMessage[];
     infos: ResultMessage[];
 }
+
+export const defaultResult = {
+    value: null,
+    hasError: false,
+    errors: [],
+    infos: [],
+} satisfies Result;

@@ -71,10 +71,11 @@ export class StringResolver {
      * Truncate a string that exceeds the provided length and adds ellipsis.
      * @param {string} input
      * @param {number} maxLength
+     * @param {string} [fallback] Value returned when the input is empty or whitespace (defaults to '').
      * @returns {string}
      */
-    static truncateWithEllipsis(input, maxLength) {
-        if (StringMatcher.isEmptyOrWhitespace(input)) return '';
+    static truncateWithEllipsis(input, maxLength, fallback = '') {
+        if (StringMatcher.isEmptyOrWhitespace(input)) return fallback;
         const ellipsis = '...';
         if (input.length <= maxLength) {
             return input;

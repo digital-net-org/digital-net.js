@@ -1,0 +1,168 @@
+import * as React from 'react';
+import { useParams } from 'react-router';
+import { ObjectMapper } from '@digital-net-org/digital-core';
+import {
+    type FormDto,
+    type FormFieldDto,
+    type FormFieldPayload,
+    type JsonPatchOp,
+    type Result,
+    defaultResult,
+} from '@digital-net-org/digital-api-sdk';
+import { DnEntityEditView } from '../../entity';
+import { useDnApi } from '../../api';
+import { FormTabFields, FormTabGeneral, FormTabSubmissions } from './Tabs';
+
+const FIELD_PAYLOAD_KEYS = [
+    'name',
+    'type',
+    'label',
+    'placeholder',
+    'defaultValue',
+    'required',
+    'sortOrder',
+    'validationJson',
+    'optionsJson',
+] as const satisfies readonly (keyof FormFieldPayload)[];
+
+function buildFieldReplaceOps(old: FormFieldDto, current: FormFieldDto): JsonPatchOp[] {
+    const ops: JsonPatchOp[] = [];
+    for (const key of FIELD_PAYLOAD_KEYS) {
+        if (old[key] !== current[key]) {
+            ops.push({ op: 'replace', path: `/${key}`, value: current[key] ?? null });
+        }
+    }
+    return ops;
+}
+
+export function FormEditView() {
+    const api = useDnApi();
+    const { id } = useParams<{ id: string }>();
+    const initialFieldsRef = React.useRef<FormFieldDto[]>([]);
+
+    const handleGet = React.useCallback(
+        async (id: string) => {
+            const result = await api.catalog.form.getById(id);
+            if (result.value) initialFieldsRef.current = result.value.fields ?? [];
+            return result;
+        },
+        [api.catalog.form]
+    );
+
+    const handleDelete = React.useCallback((id: string) => api.catalog.form.delete(id), [api.catalog.form]);
+
+    const syncFields = React.useCallback(
+        async (id: string, newFields: FormFieldDto[]): Promise<Result<any>> => {
+            const oldFields = initialFieldsRef.current;
+            const oldById = new Map(oldFields.map(f => [f.id, f]));
+            const newIds = new Set(newFields.filter(f => f.id).map(f => f.id));
+
+            for (const oldField of oldFields) {
+                if (newIds.has(oldField.id)) continue;
+                const deleted = await api.catalog.form.deleteField(id, oldField.id);
+                if (deleted.hasError) return deleted;
+            }
+
+            for (const field of newFields) {
+                if (!field.id) {
+                    const created = await api.catalog.form.createField(
+                        id,
+                        ObjectMapper.pick(field, FIELD_PAYLOAD_KEYS)
+                    );
+                    if (created.hasError) return created;
+                    continue;
+                }
+                const previous = oldById.get(field.id);
+                if (!previous) continue;
+                const fieldOps = buildFieldReplaceOps(previous, field);
+                if (fieldOps.length === 0) continue;
+                const patched = await api.catalog.form.updateField(id, field.id, fieldOps);
+                if (patched.hasError) return patched;
+            }
+
+            initialFieldsRef.current = newFields;
+            return defaultResult;
+        },
+        [api.catalog.form]
+    );
+
+    const handleUpdate = React.useCallback(
+        async (id: string, ops: JsonPatchOp[]) => {
+            const fieldsOp = ops.find(op => op.path === '/fields');
+            const restOps = ops.filter(op => op.path !== '/fields');
+
+            if (fieldsOp && 'value' in fieldsOp) {
+                const newFields = (fieldsOp.value as FormFieldDto[] | null) ?? [];
+                const syncResult = await syncFields(id, newFields);
+                if (syncResult.hasError) return syncResult;
+            }
+
+            if (restOps.length === 0) return defaultResult;
+            return api.catalog.form.update(id, restOps);
+        },
+        [api.catalog.form, syncFields]
+    );
+
+    const handleCreate = React.useCallback(
+        async (values: Partial<FormDto>) => {
+            const created = await api.catalog.form.create({
+                name: String(values.name ?? ''),
+                description: values.description ?? undefined,
+                submitLabel: values.submitLabel ?? undefined,
+                path: values.path ?? undefined,
+            });
+            if (created.hasError || !created.value) return created;
+            const formId = created.value;
+
+            const ignoredKeys = new Set([
+                'id',
+                'createdAt',
+                'updatedAt',
+                'fields',
+                'name',
+                'description',
+                'submitLabel',
+                'path',
+            ]);
+            const extraOps: JsonPatchOp[] = Object.entries(values)
+                .filter(([key, value]) => !ignoredKeys.has(key) && value !== undefined)
+                .map(([key, value]) => ({ op: 'replace', path: `/${key}`, value }));
+            if (extraOps.length > 0) {
+                const patched = await api.catalog.form.update(formId, extraOps);
+                if (patched.hasError) return created;
+            }
+
+            for (const field of values.fields ?? []) {
+                await api.catalog.form.createField(formId, ObjectMapper.pick(field, FIELD_PAYLOAD_KEYS));
+            }
+
+            return created;
+        },
+        [api.catalog.form]
+    );
+
+    return (
+        <DnEntityEditView
+            entityName="form"
+            identifier={{ singular: 'formulaire', plural: 'formulaires', gender: 'm' }}
+            identifierAccessor="name"
+            draftStoreName="forms"
+            listPath="cms/forms"
+            redirectPath="/content-manager/forms"
+            tabs={[
+                { key: 'general', label: 'Général', content: <FormTabGeneral /> },
+                { key: 'fields', label: 'Champs', content: <FormTabFields /> },
+                {
+                    key: 'submissions',
+                    label: 'Réponses soumises',
+                    content: <FormTabSubmissions />,
+                    disabled: !id,
+                },
+            ]}
+            onGet={handleGet}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+            onCreate={handleCreate}
+        />
+    );
+}

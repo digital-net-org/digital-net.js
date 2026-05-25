@@ -11,7 +11,9 @@ export type DnEntityName =
     | 'tag'
     | 'media'
     | 'article'
-    | 'articleMedia';
+    | 'articleMedia'
+    | 'form'
+    | 'formField';
 
 const DN_ENTITY_API_PATH: Record<DnEntityName, string> = {
     page: 'cms/pages',
@@ -23,6 +25,8 @@ const DN_ENTITY_API_PATH: Record<DnEntityName, string> = {
     media: 'cms/media',
     article: 'cms/articles',
     articleMedia: 'cms/articles/media',
+    form: 'cms/forms',
+    formField: 'cms/forms/fields',
 };
 
 export interface DnEntitySchemaContextValue {

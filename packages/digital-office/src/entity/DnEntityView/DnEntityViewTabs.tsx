@@ -8,6 +8,7 @@ export interface DnEntityViewTab {
     key: string;
     label: string;
     content: React.ReactNode;
+    disabled?: boolean;
 }
 
 export interface DnEntityViewTabsProps {
@@ -57,7 +58,7 @@ export function DnEntityViewTabs({
             <TabsWrapper>
                 <Tabs value={activeTab.key} onChange={(_, v) => onTabChange(v)}>
                     {tabs.map(t => (
-                        <Tab key={t.key} value={t.key} label={t.label} />
+                        <Tab key={t.key} value={t.key} label={t.label} disabled={t.disabled} />
                     ))}
                 </Tabs>
                 {hasActions ? (

@@ -2,6 +2,7 @@ export * from './ApplicationCatalog';
 export * from './ArticleCatalog';
 export * from './AuthCatalog';
 export * from './Catalog';
+export * from './FormCatalog';
 export * from './MediaCatalog';
 export * from './PageCatalog';
 export * from './TagCatalog';

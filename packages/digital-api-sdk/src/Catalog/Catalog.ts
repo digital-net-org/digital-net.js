@@ -2,6 +2,7 @@ import { ApplicationCatalog } from './ApplicationCatalog';
 import { ArticleCatalog } from './ArticleCatalog';
 import { AuthCatalog } from './AuthCatalog';
 import { CatalogRunner } from './CatalogRunner';
+import { FormCatalog } from './FormCatalog';
 import { MediaCatalog } from './MediaCatalog';
 import { PageCatalog } from './PageCatalog';
 import { TagCatalog } from './TagCatalog';
@@ -18,6 +19,7 @@ export class Catalog {
     public readonly application: ApplicationCatalog;
     public readonly article: ArticleCatalog;
     public readonly auth: AuthCatalog;
+    public readonly form: FormCatalog;
     public readonly media: MediaCatalog;
     public readonly page: PageCatalog;
     public readonly tag: TagCatalog;
@@ -28,6 +30,7 @@ export class Catalog {
         this.application = new ApplicationCatalog(http);
         this.article = new ArticleCatalog(http);
         this.auth = new AuthCatalog(http);
+        this.form = new FormCatalog(http);
         this.media = new MediaCatalog(http);
         this.page = new PageCatalog(http);
         this.tag = new TagCatalog(http);

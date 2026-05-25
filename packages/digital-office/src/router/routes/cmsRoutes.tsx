@@ -2,6 +2,9 @@ import * as React from 'react';
 import {
     ArticleEditView,
     ArticleListView,
+    FormEditView,
+    FormListView,
+    FormSubmissionDetailView,
     MediaEditView,
     MediaListView,
     PageEditView,
@@ -65,5 +68,23 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
     {
         path: '/content-manager/media/:id',
         element: <MediaEditView />,
+    },
+    {
+        path: '/content-manager/forms',
+        navGroup: NAV_GROUP,
+        navLabel: 'Formulaires',
+        element: <FormListView />,
+    },
+    {
+        path: '/content-manager/forms/new',
+        element: <FormEditView />,
+    },
+    {
+        path: '/content-manager/forms/:id',
+        element: <FormEditView />,
+    },
+    {
+        path: '/content-manager/forms/:formId/submissions/:id',
+        element: <FormSubmissionDetailView />,
     },
 ];

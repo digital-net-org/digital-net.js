@@ -1,0 +1,9 @@
+export const DN_API_FORM = 'cms/forms' as const;
+export const DN_API_FORM_BY_ID = 'cms/forms/:id' as const;
+export const DN_API_FORM_FIELDS_SCHEMA = 'cms/forms/fields/schema' as const;
+export const DN_API_FORM_FIELDS_NESTED = 'cms/forms/:formId/fields' as const;
+export const DN_API_FORM_FIELD_BY_ID_NESTED = 'cms/forms/:formId/fields/:fieldId' as const;
+export const DN_API_FORM_SUBMISSIONS = 'cms/forms/submissions' as const;
+export const DN_API_FORM_SUBMISSION_BY_ID = 'cms/forms/submissions/:id' as const;
+export const DN_API_FORM_DEFINITION = 'cms/forms/:id/definition' as const;
+export const DN_API_FORM_SUBMIT = 'cms/forms/:id/submit' as const;
