@@ -1,6 +1,7 @@
 export * from './Entity';
 export * from './ArticleDto';
 export * from './ArticleListDto';
+export * from './ArticleRefDto';
 export * from './ArticleMedia';
 export * from './ArticleMediaPayload';
 export * from './AvatarDto';

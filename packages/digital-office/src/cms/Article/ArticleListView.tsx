@@ -21,16 +21,21 @@ const staticProps: DnEntityListViewProps<ArticleListDto> = {
 
 const columns: DnColumnDefinition<ArticleListDto>[] = [
     { key: 'title', label: 'Titre' },
-    { key: 'slug', label: 'Slug' },
+    { key: 'slug', label: 'Segment URL' },
     {
         kind: 'computed',
         key: 'tags',
-        label: 'Tags',
+        label: 'Associated tags',
         compute: row =>
             row.tags.length > 0 ? (
-                <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
+                <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1 }}>
                     {row.tags.map(tag => (
-                        <Chip key={tag.id} size="small" label={tag.name} sx={{ bgcolor: tag.color ?? undefined }} />
+                        <Chip
+                            key={tag.id}
+                            size="small"
+                            label={tag.name}
+                            sx={{ backgroundColor: tag.color ?? undefined }}
+                        />
                     ))}
                 </Stack>
             ) : (

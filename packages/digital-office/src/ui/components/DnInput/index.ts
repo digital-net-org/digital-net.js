@@ -1,9 +1,11 @@
 export { DnInput, type DnInputProps } from './DnInput';
 export { DnInputAutocomplete, type DnInputAutocompleteProps } from './DnInputAutocomplete';
+export { DnInputAutocompleteFreesolo, type DnInputAutocompleteFreesoloProps } from './DnInputAutocompleteFreesolo';
+export { DnInputAutocompleteMultiple, type DnInputAutocompleteMultipleProps } from './DnInputAutocompleteMultiple';
 export {
-    DnInputAutocompleteFreesolo,
-    type DnInputAutocompleteFreesoloProps,
-} from './DnInputAutocompleteFreesolo';
+    DnInputAutocompleteMultipleFreesolo,
+    type DnInputAutocompleteMultipleFreesoloProps,
+} from './DnInputAutocompleteMultipleFreesolo';
 export { DnInputDate, type DnInputDateProps } from './DnInputDate';
 export { DnInputDebounced, type DnInputDebouncedProps } from './DnInputDebounced';
 export { DnInputInterpolated, type DnInputInterpolatedProps } from './DnInputInterpolated';
