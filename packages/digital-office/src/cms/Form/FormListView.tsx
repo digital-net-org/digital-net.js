@@ -5,7 +5,7 @@ import type { DnColumnDefinition } from '../../ui';
 
 const staticProps: DnEntityListViewProps<FormDto> = {
     title: 'Formulaires',
-    description: 'Gérez les formulaires du site et consultez les soumissions des visiteurs.',
+    description: 'Gérez les formulaires du site et consultez les réponses des visiteurs.',
     identifier: { singular: 'formulaire', plural: 'formulaires', gender: 'm' },
     identifierAccessor: 'name',
     entityName: 'form',

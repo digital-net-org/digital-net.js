@@ -7,6 +7,7 @@ import { DnButton, DnDraggableContext, DnLoadingView } from '../../../ui';
 import { FormFieldRow } from './FormFieldRow';
 import { useFieldsState } from './useFieldsState';
 import { useFieldSchema } from './useFieldSchema';
+import { css, styled } from '@mui/material/styles';
 
 export function FormTabFields() {
     const { values, apiData, setField, disabled, errors, resetSignal, registerSubValidator } =
@@ -39,7 +40,7 @@ export function FormTabFields() {
         <Stack sx={{ gap: 2, height: '100%' }}>
             <DnEntityTabHelper description="Définissez les champs de saisie de votre formulaire." />
             <DnDraggableContext onSort={state.handleReorder} rows={state.rows}>
-                <Stack sx={{ gap: 1 }}>
+                <Wrapper>
                     {state.rows.map(row => (
                         <FormFieldRow
                             key={row.id}
@@ -54,8 +55,18 @@ export function FormTabFields() {
                     <DnButton icon={<AddIcon fontSize="small" />} onClick={state.handleAdd} disabled={disabled}>
                         Ajouter un champ
                     </DnButton>
-                </Stack>
+                </Wrapper>
             </DnDraggableContext>
         </Stack>
     );
 }
+
+const Wrapper = styled(Stack)(
+    ({ theme }) => css`
+        padding-right: ${theme.spacing(1)};
+        gap: ${theme.spacing(1)};
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    `
+);
