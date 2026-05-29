@@ -7,6 +7,7 @@ export * from './DnInputCode';
 export * from './DnCollapseBlock';
 export * from './DnDraggableRow';
 export * from './DnDraggableContext';
+export * from './DnDraggableList';
 export * from './DnExpandButton';
 export * from './DnExternalButton';
 export * from './DnImport';

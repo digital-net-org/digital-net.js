@@ -1,24 +1,24 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-    Box,
-    IconButton,
-    Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TablePagination,
-    TableRow,
-    Typography,
-} from '@mui/material';
-import { DeleteOutlined as DeleteIcon } from '@mui/icons-material';
-import type { FormDto } from '@digital-net-org/digital-api-sdk';
+import { Stack } from '@mui/material';
+import type { FormDto, FormSubmissionDto } from '@digital-net-org/digital-api-sdk';
 import { useDnApi } from '../../../api';
-import { DN_QUERY_KEY_GET, DnEntityTabHelper, useDnEntityFormContext } from '../../../entity';
-import { DnLoadingView, formatDate, formatEllipsis } from '../../../ui';
 import { useDnToast } from '../../../app';
+import { DN_QUERY_KEY_GET, useDnEntityFormContext } from '../../../entity';
+import {
+    type DnColumnDefinition,
+    type DnPaginationState,
+    DnEntityTable,
+    formatDate,
+    formatEllipsis,
+} from '../../../ui';
+
+const columns: DnColumnDefinition<FormSubmissionDto>[] = [
+    { kind: 'computed', key: 'createdAt', label: 'Reçue le', compute: row => formatDate(row.createdAt) },
+    { kind: 'computed', key: 'submitterIp', label: 'Adresse IP', compute: row => formatEllipsis(row.submitterIp, 60) },
+    { kind: 'computed', key: 'userAgent', label: 'User-Agent', compute: row => formatEllipsis(row.userAgent, 60) },
+];
 
 export function FormTabSubmissions() {
     const navigate = useNavigate();
@@ -28,17 +28,28 @@ export function FormTabSubmissions() {
     const queryClient = useQueryClient();
     const { showToast } = useDnToast();
 
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [pagination, setPagination] = React.useState<DnPaginationState>({
+        page: 0,
+        rowsPerPage: 10,
+        totalRows: 0,
+    });
 
-    const queryKey = [DN_QUERY_KEY_GET, 'form', formId, 'submissions', page, rowsPerPage] as const;
+    const queryKey = [
+        DN_QUERY_KEY_GET,
+        'form',
+        formId,
+        'submissions',
+        pagination.page,
+        pagination.rowsPerPage,
+    ] as const;
+
     const { data, isLoading } = useQuery({
         queryKey,
         queryFn: async () => {
             const result = await api.catalog.form.getSubmissions({
                 formId,
-                index: page + 1,
-                size: rowsPerPage,
+                index: pagination.page + 1,
+                size: pagination.rowsPerPage,
             });
             if (result.hasError) {
                 throw new Error(result.errors?.[0]?.message ?? 'Failed to fetch submissions');
@@ -49,82 +60,35 @@ export function FormTabSubmissions() {
     });
 
     const handleDelete = React.useCallback(
-        async (submissionId: string) => {
-            const result = await api.catalog.form.deleteSubmission(submissionId);
-            if (result.hasError) {
+        async (ids: Set<string>) => {
+            const results = await Promise.all([...ids].map(id => api.catalog.form.deleteSubmission(id)));
+            if (results.some(r => r.hasError)) {
                 showToast('Erreur lors de la suppression', 'error');
-                return;
+                return false;
             }
-            showToast('Soumission supprimée', 'info');
+            showToast(`${ids.size} soumission${ids.size > 1 ? 's' : ''} supprimée${ids.size > 1 ? 's' : ''}`, 'info');
             await queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_GET, 'form', formId, 'submissions'] });
+            return true;
         },
         [api.catalog.form, formId, queryClient, showToast]
     );
 
     if (!formId) return null;
-    if (isLoading) return <DnLoadingView />;
+
+    const rows = data?.value ?? [];
+    const totalRows = data?.total ?? 0;
+
     return (
         <Stack sx={{ gap: 2, height: '100%' }}>
-            <DnEntityTabHelper description="Liste des soumissions reçues. Cliquez sur une ligne pour ouvrir le détail en lecture seule." />
-            <Box sx={{ width: '100%', overflow: 'auto' }}>
-                <Table size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Reçue le</TableCell>
-                            <TableCell>Adresse IP</TableCell>
-                            <TableCell>User-Agent</TableCell>
-                            <TableCell align="right">Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {!data?.value?.length ? (
-                            <TableRow>
-                                <TableCell colSpan={4} align="center">
-                                    <Typography variant="body2" color="text.secondary" sx={{ py: 4 }}>
-                                        Aucune soumission pour ce formulaire.
-                                    </Typography>
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            data.value.map(submission => (
-                                <TableRow
-                                    key={submission.id}
-                                    hover
-                                    sx={{ cursor: 'pointer' }}
-                                    onClick={() =>
-                                        navigate(`/content-manager/forms/${formId}/submissions/${submission.id}`)
-                                    }
-                                >
-                                    <TableCell>{formatDate(submission.createdAt)}</TableCell>
-                                    <TableCell>{submission.submitterIp ?? '—'}</TableCell>
-                                    <TableCell>{formatEllipsis(submission.userAgent, 60)}</TableCell>
-                                    <TableCell align="right" onClick={event => event.stopPropagation()}>
-                                        <IconButton
-                                            size="small"
-                                            aria-label="Supprimer la soumission"
-                                            onClick={() => handleDelete(submission.id)}
-                                        >
-                                            <DeleteIcon fontSize="small" />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
-                <TablePagination
-                    component="div"
-                    count={data?.total ?? 0}
-                    page={page}
-                    onPageChange={(_, newPage) => setPage(newPage)}
-                    rowsPerPage={rowsPerPage}
-                    onRowsPerPageChange={event => {
-                        setRowsPerPage(parseInt(event.target.value, 10));
-                        setPage(0);
-                    }}
-                    rowsPerPageOptions={[10, 25, 50]}
-                />
-            </Box>
+            <DnEntityTable<FormSubmissionDto>
+                rows={rows}
+                columns={columns}
+                pagination={{ ...pagination, totalRows }}
+                onPaginationChange={setPagination}
+                onRowClick={row => navigate(`/content-manager/forms/${formId}/submissions/${row.id}`)}
+                onDelete={handleDelete}
+                loading={isLoading}
+            />
         </Stack>
     );
 }

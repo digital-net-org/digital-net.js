@@ -46,7 +46,7 @@ export type DnFilterDefinition =
     | { type: 'select'; key: string; label: string; options: { value: string; label: string }[] };
 
 export interface DnEntityTableProps<T extends Entity> {
-    schema: SchemaProperty[];
+    schema?: SchemaProperty[];
     rows: T[];
     columns?: DnColumnDefinition<T>[];
     renderCell?: DnRenderCell<T>;
@@ -67,7 +67,7 @@ export interface DnEntityTableProps<T extends Entity> {
 }
 
 export function DnEntityTable<T extends Entity>({
-    schema,
+    schema = [],
     rows,
     columns,
     renderCell,
