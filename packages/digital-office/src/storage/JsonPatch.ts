@@ -54,6 +54,40 @@ export class JsonPatch {
         return result as Partial<T>;
     }
 
+    /**
+     * Builds `replace` ops for every key whose value changed between `previous` and `next`.
+     * When `keys` is provided only those keys are compared, otherwise every key of `next` is.
+     * `undefined` values are normalized to `null` so a field cleared by the user is explicitly reset.
+     */
+    public static diff<T extends object>(previous: Partial<T>, next: T, keys?: readonly (keyof T)[]): JsonPatchOp[] {
+        const compared = keys ?? (Object.keys(next) as (keyof T)[]);
+        const ops: JsonPatchOp[] = [];
+        for (const key of compared) {
+            if (previous[key] !== next[key]) {
+                ops.push({ op: 'replace', path: `/${String(key)}`, value: next[key] ?? null });
+            }
+        }
+        return ops;
+    }
+
+    /**
+     * Builds `replace` ops for every defined (non-`undefined`) entry of `values`, skipping any key
+     * listed in `options.omit`. Typically used right after creating an entity to persist the
+     * remaining fields in a single PATCH.
+     */
+    public static fromValues<T extends object>(
+        values: Partial<T>,
+        options: { omit?: readonly (keyof T)[] } = {}
+    ): JsonPatchOp[] {
+        const omitted = new Set<PropertyKey>(options.omit);
+        const ops: JsonPatchOp[] = [];
+        for (const [key, value] of Object.entries(values)) {
+            if (value === undefined || omitted.has(key)) continue;
+            ops.push({ op: 'replace', path: `/${key}`, value });
+        }
+        return ops;
+    }
+
     /** Returns a new ops array with the `/path` op upserted (removes any prior op on the same path). */
     public static setOp(ops: JsonPatchOp[], path: string, value: unknown): JsonPatchOp[] {
         const filtered = ops.filter(o => o.path !== path);

@@ -11,6 +11,7 @@ import {
 } from '@digital-net-org/digital-api-sdk';
 import { DnEntityEditView } from '../../entity';
 import { useDnApi } from '../../api';
+import { JsonPatch } from '../../storage';
 import { FormTabFields, FormTabGeneral, FormTabSubmissions } from './Tabs';
 
 const FIELD_PAYLOAD_KEYS = [
@@ -24,16 +25,6 @@ const FIELD_PAYLOAD_KEYS = [
     'validationJson',
     'optionsJson',
 ] as const satisfies readonly (keyof FormFieldPayload)[];
-
-function buildFieldReplaceOps(old: FormFieldDto, current: FormFieldDto): JsonPatchOp[] {
-    const ops: JsonPatchOp[] = [];
-    for (const key of FIELD_PAYLOAD_KEYS) {
-        if (old[key] !== current[key]) {
-            ops.push({ op: 'replace', path: `/${key}`, value: current[key] ?? null });
-        }
-    }
-    return ops;
-}
 
 export function FormEditView() {
     const api = useDnApi();
@@ -74,7 +65,7 @@ export function FormEditView() {
                 }
                 const previous = oldById.get(field.id);
                 if (!previous) continue;
-                const fieldOps = buildFieldReplaceOps(previous, field);
+                const fieldOps = JsonPatch.diff(previous, field, FIELD_PAYLOAD_KEYS);
                 if (fieldOps.length === 0) continue;
                 const patched = await api.catalog.form.updateField(id, field.id, fieldOps);
                 if (patched.hasError) return patched;
@@ -114,19 +105,9 @@ export function FormEditView() {
             if (created.hasError || !created.value) return created;
             const formId = created.value;
 
-            const ignoredKeys = new Set([
-                'id',
-                'createdAt',
-                'updatedAt',
-                'fields',
-                'name',
-                'description',
-                'submitLabel',
-                'path',
-            ]);
-            const extraOps: JsonPatchOp[] = Object.entries(values)
-                .filter(([key, value]) => !ignoredKeys.has(key) && value !== undefined)
-                .map(([key, value]) => ({ op: 'replace', path: `/${key}`, value }));
+            const extraOps = JsonPatch.fromValues(values, {
+                omit: ['id', 'createdAt', 'updatedAt', 'fields', 'name', 'description', 'submitLabel', 'path'],
+            });
             if (extraOps.length > 0) {
                 const patched = await api.catalog.form.update(formId, extraOps);
                 if (patched.hasError) return created;

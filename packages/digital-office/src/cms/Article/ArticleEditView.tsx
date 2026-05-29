@@ -1,6 +1,8 @@
 import * as React from 'react';
+import { ObjectMapper } from '@digital-net-org/digital-core';
 import type { ArticleDto, JsonPatchOp, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { useDnApi } from '../../api';
+import { JsonPatch } from '../../storage';
 import { DnEntityEditView, defaultValidate } from '../../entity';
 import { ArticleTabContent, ArticleTabGeneral } from './Tabs';
 
@@ -10,17 +12,13 @@ export function ArticleEditView() {
     const api = useDnApi();
 
     const handleGet = React.useCallback((id: string) => api.catalog.article.getById(id), [api.catalog.article]);
-
     const handleDelete = React.useCallback((id: string) => api.catalog.article.delete(id), [api.catalog.article]);
 
     const handleUpdate = React.useCallback(
         (id: string, ops: JsonPatchOp[]) => {
-            const patched = ops.map(op => {
-                if (op.path === '/tags') return { ...op, path: '/tag' };
-                // @ts-expect-error - Value does exists in some cases
-                if (op.path === '/content' && !op.value) return { ...op, value: DEFAULT_CONTENT };
-                return op;
-            });
+            const patched = ops.map(op =>
+                op.op !== 'remove' && op.path === '/content' && !op.value ? { ...op, value: DEFAULT_CONTENT } : op
+            );
             return api.catalog.article.update(id, patched);
         },
         [api.catalog.article]
@@ -45,9 +43,7 @@ export function ArticleEditView() {
                 pageId: values.pageId ?? null,
             });
             if (created.hasError || !created.value) return created;
-            const extraOps: JsonPatchOp[] = [];
-            if (values.tags?.length) extraOps.push({ op: 'replace', path: '/tag', value: values.tags });
-            if (values.related?.length) extraOps.push({ op: 'replace', path: '/related', value: values.related });
+            const extraOps = JsonPatch.fromValues(ObjectMapper.pick(values, ['tags', 'related']));
             if (extraOps.length > 0) await api.catalog.article.update(created.value, extraOps);
             return created;
         },
