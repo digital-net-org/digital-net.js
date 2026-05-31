@@ -5,6 +5,8 @@ export * from './ArticleRefDto';
 export * from './ArticleMedia';
 export * from './ArticleMediaPayload';
 export * from './AvatarDto';
+export * from './ConfigValueDto';
+export * from './ConfigValueType';
 export * from './FormDto';
 export * from './FormFieldDto';
 export * from './FormFieldType';

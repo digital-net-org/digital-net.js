@@ -1,5 +1,6 @@
 export * from './article';
 export * from './auth';
+export * from './configValue';
 export * from './form';
 export * from './media';
 export * from './page';
