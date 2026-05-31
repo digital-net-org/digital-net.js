@@ -12,14 +12,13 @@ import {
     TagEditView,
     TagListView,
 } from '../../cms';
+import { DigitalOfficeNavGroup } from '../navGroups';
 import type { DigitalOfficeRoute } from '../types';
-
-const NAV_GROUP = 'Gestionnaire de contenu';
 
 export const CMS_ROUTES: DigitalOfficeRoute[] = [
     {
         path: '/content-manager/pages',
-        navGroup: NAV_GROUP,
+        navGroup: DigitalOfficeNavGroup.ContentManager,
         navLabel: 'Pages',
         element: <PageListView />,
     },
@@ -33,7 +32,7 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
     },
     {
         path: '/content-manager/articles',
-        navGroup: NAV_GROUP,
+        navGroup: DigitalOfficeNavGroup.ContentManager,
         navLabel: 'Articles',
         element: <ArticleListView />,
     },
@@ -47,7 +46,7 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
     },
     {
         path: '/content-manager/forms',
-        navGroup: NAV_GROUP,
+        navGroup: DigitalOfficeNavGroup.ContentManager,
         navLabel: 'Formulaires',
         element: <FormListView />,
     },
@@ -65,7 +64,7 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
     },
     {
         path: '/content-manager/media',
-        navGroup: NAV_GROUP,
+        navGroup: DigitalOfficeNavGroup.ContentManager,
         navLabel: 'Médias',
         element: <MediaListView />,
     },
@@ -75,7 +74,7 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
     },
     {
         path: '/content-manager/tags',
-        navGroup: NAV_GROUP,
+        navGroup: DigitalOfficeNavGroup.ContentManager,
         navLabel: 'Tags',
         element: <TagListView />,
     },

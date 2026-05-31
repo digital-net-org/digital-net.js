@@ -7,7 +7,14 @@ import { useDnEntityFormContext } from './entity';
 export * from './ui';
 export * from './storage';
 export { DigitalOfficeProvider, type DigitalOfficeProviderProps } from './DigitalOfficeProvider';
-export { AdminGuard, AuthGuard, GuestGuard } from './router';
+export {
+    AdminGuard,
+    AuthGuard,
+    GuestGuard,
+    DigitalOfficeNavGroup,
+    type DigitalOfficeRoute,
+    type DnOfficeRouterProps as DigitalOfficeRouterProps,
+} from './router';
 export { DnEntityListView, type DnEntityListViewProps, useEntitySchema } from './entity';
 export { MediaPicker, type MediaPickerProps, useMediaPivot } from './cms/Media';
 export {
@@ -19,16 +26,28 @@ export {
 } from './custom-render';
 
 /**
- * Root router for the Office application.
+ * Root router for the Office application. Provides a `BrowserRouter` internally.
  *
- * Provides a `BrowserRouter` internally.
+ * Consumers add their own pages through the `routes` prop
+ * (`DigitalOfficeRoute[]`). Custom routes are always appended **after** the
+ * built-in ones and are guarded by default (`AuthGuard`, unless the route sets
+ * `isPublic` or `isAdmin`).
  *
- * Built-in routes:
- * - `/`      — Home page (authenticated, wrapped in {@link DnAppLayout})
- * - `/login` — Login page (guest-only)
+ * A custom route shows up in the navigation menu as soon as it declares both
+ * `navGroup` and `navLabel`. Use {@link DigitalOfficeNavGroup} to drop the page
+ * into an existing group, or pass any new string to create a new group.
  *
- * Additional `<Route>` elements can be passed as `children`
- * and will be rendered alongside the built-in routes (without guards).
+ * @example
+ * <DigitalOfficeRouter
+ *     routes={[
+ *         {
+ *             path: '/parameters',
+ *             navGroup: DigitalOfficeNavGroup.ContentManager,
+ *             navLabel: 'Paramétrage',
+ *             element: <ParametersView />,
+ *         },
+ *     ]}
+ * />
  */
 export const DigitalOfficeRouter = DnOfficeRouter;
 
