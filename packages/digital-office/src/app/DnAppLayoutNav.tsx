@@ -20,26 +20,24 @@ export function DnAppLayoutNav({ navigation }: DnAppLayoutNavProps) {
     return (
         <Container>
             {Object.entries(navigation).map(([key, items]) => (
-                <React.Fragment key={key}>
-                    <DnCollapsibleBlock label={<MenuLabel>{key}</MenuLabel>} storageKey={`DN_NAV_GROUP_${key}`}>
-                        <MenuList>
-                            {items.map(({ label, path }) => {
-                                const current = checkIsCurrent(path);
-                                return (
-                                    <MenuItem
-                                        key={path}
-                                        selected={current}
-                                        disableRipple={current}
-                                        disableTouchRipple={current}
-                                        onClick={() => (!current ? navigate(path) : void 0)}
-                                    >
-                                        {label}
-                                    </MenuItem>
-                                );
-                            })}
-                        </MenuList>
-                    </DnCollapsibleBlock>
-                </React.Fragment>
+                <DnCollapsibleBlock key={key} label={<MenuLabel>{key}</MenuLabel>} storageKey={`DN_NAV_GROUP_${key}`}>
+                    <MenuList>
+                        {items.map(({ label, path }) => {
+                            const current = checkIsCurrent(path);
+                            return (
+                                <MenuItem
+                                    key={path}
+                                    selected={current}
+                                    disableRipple={current}
+                                    disableTouchRipple={current}
+                                    onClick={() => (!current ? navigate(path) : void 0)}
+                                >
+                                    {label}
+                                </MenuItem>
+                            );
+                        })}
+                    </MenuList>
+                </DnCollapsibleBlock>
             ))}
         </Container>
     );
@@ -72,6 +70,7 @@ const MenuList = styled(MuiMenuList)(
 
 const MenuItem = styled(MuiMenuItem)(
     ({ theme }) => css`
+        margin: 0.25rem 0.25rem;
         padding: 0.25rem 0.5rem;
         border-radius: ${theme.shape.borderRadius};
         font-size: 0.9rem;
