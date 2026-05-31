@@ -1,27 +1,32 @@
 import * as React from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { ObjectMapper } from '@digital-net-org/digital-core';
 import type { ArticleDto, JsonPatchOp, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { useDnApi } from '../../api';
 import { JsonPatch } from '../../storage';
-import { DnEntityEditView, defaultValidate } from '../../entity';
+import { DN_QUERY_KEY_LIST, DnEntityEditView, defaultValidate } from '../../entity';
 import { ArticleTabContent, ArticleTabGeneral } from './Tabs';
 
 const DEFAULT_CONTENT = '<p class="paragraph"></p>';
 
 export function ArticleEditView() {
     const api = useDnApi();
+    const queryClient = useQueryClient();
 
     const handleGet = React.useCallback((id: string) => api.catalog.article.getById(id), [api.catalog.article]);
     const handleDelete = React.useCallback((id: string) => api.catalog.article.delete(id), [api.catalog.article]);
 
     const handleUpdate = React.useCallback(
-        (id: string, ops: JsonPatchOp[]) => {
+        async (id: string, ops: JsonPatchOp[]) => {
             const patched = ops.map(op =>
                 op.op !== 'remove' && op.path === '/content' && !op.value ? { ...op, value: DEFAULT_CONTENT } : op
             );
-            return api.catalog.article.update(id, patched);
+            const result = await api.catalog.article.update(id, patched);
+            if (!result.hasError && patched.some(op => op.path.startsWith('/tags')))
+                await queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_LIST, 'cms/tags'] });
+            return result;
         },
-        [api.catalog.article]
+        [api.catalog.article, queryClient]
     );
 
     const validate = React.useCallback(
@@ -45,9 +50,11 @@ export function ArticleEditView() {
             if (created.hasError || !created.value) return created;
             const extraOps = JsonPatch.fromValues(ObjectMapper.pick(values, ['tags', 'related']));
             if (extraOps.length > 0) await api.catalog.article.update(created.value, extraOps);
+            if (extraOps.some(op => op.path.startsWith('/tags')))
+                await queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_LIST, 'cms/tags'] });
             return created;
         },
-        [api.catalog.article]
+        [api.catalog.article, queryClient]
     );
 
     return (

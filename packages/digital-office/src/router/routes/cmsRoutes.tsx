@@ -18,20 +18,6 @@ const NAV_GROUP = 'Gestionnaire de contenu';
 
 export const CMS_ROUTES: DigitalOfficeRoute[] = [
     {
-        path: '/content-manager/articles',
-        navGroup: NAV_GROUP,
-        navLabel: 'Articles',
-        element: <ArticleListView />,
-    },
-    {
-        path: '/content-manager/articles/new',
-        element: <ArticleEditView />,
-    },
-    {
-        path: '/content-manager/articles/:id',
-        element: <ArticleEditView />,
-    },
-    {
         path: '/content-manager/pages',
         navGroup: NAV_GROUP,
         navLabel: 'Pages',
@@ -46,28 +32,18 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
         element: <PageEditView />,
     },
     {
-        path: '/content-manager/tags',
+        path: '/content-manager/articles',
         navGroup: NAV_GROUP,
-        navLabel: 'Tags',
-        element: <TagListView />,
+        navLabel: 'Articles',
+        element: <ArticleListView />,
     },
     {
-        path: '/content-manager/tags/new',
-        element: <TagEditView />,
+        path: '/content-manager/articles/new',
+        element: <ArticleEditView />,
     },
     {
-        path: '/content-manager/tags/:id',
-        element: <TagEditView />,
-    },
-    {
-        path: '/content-manager/media',
-        navGroup: NAV_GROUP,
-        navLabel: 'Médias',
-        element: <MediaListView />,
-    },
-    {
-        path: '/content-manager/media/:id',
-        element: <MediaEditView />,
+        path: '/content-manager/articles/:id',
+        element: <ArticleEditView />,
     },
     {
         path: '/content-manager/forms',
@@ -86,5 +62,29 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
     {
         path: '/content-manager/forms/:formId/submissions/:id',
         element: <FormSubmissionDetailView />,
+    },
+    {
+        path: '/content-manager/media',
+        navGroup: NAV_GROUP,
+        navLabel: 'Médias',
+        element: <MediaListView />,
+    },
+    {
+        path: '/content-manager/media/:id',
+        element: <MediaEditView />,
+    },
+    {
+        path: '/content-manager/tags',
+        navGroup: NAV_GROUP,
+        navLabel: 'Tags',
+        element: <TagListView />,
+    },
+    {
+        path: '/content-manager/tags/new',
+        element: <TagEditView />,
+    },
+    {
+        path: '/content-manager/tags/:id',
+        element: <TagEditView />,
     },
 ];
