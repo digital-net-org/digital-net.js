@@ -1,6 +1,6 @@
 import React from 'react';
 import type { JsonPatchOp } from '@digital-net-org/digital-api-sdk';
-import { DnIdbContext, IDbStore } from '../storage';
+import { IdbContext, IDbStore } from '../storage';
 import type { EntityDraftRecord } from './types';
 
 export interface UseEntityDraftIndexResult {
@@ -9,7 +9,7 @@ export interface UseEntityDraftIndexResult {
 }
 
 export function useEntityDraftIndex(entityName: string): UseEntityDraftIndexResult {
-    const { database, draftBump } = React.useContext(DnIdbContext);
+    const { database, draftBump } = React.useContext(IdbContext);
     const [drafts, setDrafts] = React.useState<Map<string, JsonPatchOp[]>>(new Map());
     const [isLoading, setIsLoading] = React.useState(false);
 

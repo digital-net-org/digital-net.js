@@ -1,4 +1,4 @@
-import type { IDbConfig } from './types';
+import type { IDbConfig } from './IDbConfig';
 
 export class IDbAccessor {
     public static initDatabase(config: IDbConfig): Promise<IDBDatabase> {

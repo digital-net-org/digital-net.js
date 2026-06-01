@@ -1,24 +1,23 @@
 import * as React from 'react';
 import { matchPath, useLocation, useNavigate } from 'react-router';
 import { css, styled } from '@mui/material/styles';
-import { DnAppBar, DnAppDrawer } from '../ui';
-import { DnAppLayoutNav, type DnAppLayoutNavProps } from './DnAppLayoutNav';
-import { DnErrorBoundary } from './DnErrorBoundary';
-import { useDnApp } from './DnAppProvider';
-import { useDnUser } from '../user';
+import { ErrorBoundary, LayoutNav, type LayoutNavProps } from './components';
+import { useLayout } from './LayoutProvider';
+import { DnAppBar, DnAppDrawer } from '../../ui';
+import { useDigitalNetUser } from '../user';
 
-export interface DnAppLayoutProps {
-    navigation: DnAppLayoutNavProps['navigation'];
+interface Props {
+    navigation: LayoutNavProps['navigation'];
     routePatterns?: string[];
     children?: React.ReactNode;
 }
 
-export function DnAppLayout({ navigation, routePatterns, children }: DnAppLayoutProps) {
+export function Layout({ navigation, routePatterns, children }: Props) {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { isDrawerOpen, toggleDrawer } = useDnApp();
-    const { user, isLogged, isLoading, isAdmin, logout } = useDnUser();
+    const { isDrawerOpen, toggleDrawer } = useLayout();
+    const { user, isLogged, isLoading, isAdmin, logout } = useDigitalNetUser();
 
     const isPathClickable = React.useCallback(
         (path: string) => (routePatterns ?? []).some(p => matchPath(p, path) !== null),
@@ -26,13 +25,13 @@ export function DnAppLayout({ navigation, routePatterns, children }: DnAppLayout
     );
 
     return (
-        <Layout>
+        <App>
             {isLogged ? (
                 <DnAppDrawer open={isDrawerOpen}>
-                    <DnAppLayoutNav navigation={navigation} />
+                    <LayoutNav navigation={navigation} />
                 </DnAppDrawer>
             ) : null}
-            <MainWrapper>
+            <AppViewWrapper>
                 <DnAppBar
                     slots={{
                         menu: {
@@ -58,15 +57,15 @@ export function DnAppLayout({ navigation, routePatterns, children }: DnAppLayout
                         breadcrumb: !isLogged,
                     }}
                 />
-                <Main>
-                    <DnErrorBoundary key={location.pathname}>{children}</DnErrorBoundary>
-                </Main>
-            </MainWrapper>
-        </Layout>
+                <AppView>
+                    <ErrorBoundary key={location.pathname}>{children}</ErrorBoundary>
+                </AppView>
+            </AppViewWrapper>
+        </App>
     );
 }
 
-const Layout = styled('div')(
+const App = styled('div')(
     () => css`
         display: flex;
         flex-direction: row;
@@ -75,7 +74,7 @@ const Layout = styled('div')(
     `
 );
 
-const MainWrapper = styled('div')(
+const AppViewWrapper = styled('div')(
     () => css`
         display: flex;
         flex-direction: column;
@@ -85,7 +84,7 @@ const MainWrapper = styled('div')(
     `
 );
 
-const Main = styled('main')(
+const AppView = styled('main')(
     () => css`
         width: 100%;
         height: 100%;

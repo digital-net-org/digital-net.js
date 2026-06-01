@@ -16,7 +16,7 @@ export function DnBaseInputCount({ value, max }: DnBaseInputCountProps) {
     ) : null;
 }
 
-export const Count = styled(Typography)(
+const Count = styled(Typography)(
     ({ theme }) => css`
         position: absolute;
         top: -0.75rem;

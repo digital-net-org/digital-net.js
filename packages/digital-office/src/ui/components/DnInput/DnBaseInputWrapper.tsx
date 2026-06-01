@@ -1,6 +1,11 @@
+import * as React from 'react';
 import { css, styled } from '@mui/material/styles';
 
-export const DnBaseInputWrapper = styled('div')(
+export function DnBaseInputWrapper({ children }: React.PropsWithChildren) {
+    return <InputWrapper>{children}</InputWrapper>;
+}
+
+const InputWrapper = styled('div')(
     () => css`
         position: relative;
         width: 100%;

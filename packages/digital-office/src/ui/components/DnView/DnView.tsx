@@ -1,26 +1,63 @@
 import * as React from 'react';
 import { Divider, Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
+import { DnViewTabs } from './DnViewTabs';
+
+export interface DnViewTab {
+    key: string;
+    label: string;
+    content: React.ReactNode;
+    disabled?: boolean;
+}
 
 export interface DnViewProps {
     title: string;
     description?: string;
+    /** Shows a pending changes badge next to the title. */
+    isDirty?: boolean;
+    /** Rendered in the actions area of the tab bar. */
+    renderActions?: React.ReactNode;
+    /** Rendered full-width between the tab bar and the active panel. */
+    renderBanner?: React.ReactNode;
+    /** When provided, the view renders a tab bar instead of `children`. The active tab is synced to the URL internally. */
+    tabs?: DnViewTab[];
     children?: React.ReactNode;
 }
 
-export function DnView({ title, description, children }: DnViewProps) {
+export function DnView({
+    title,
+    description,
+    isDirty = false,
+    renderActions,
+    renderBanner,
+    tabs,
+    children,
+}: DnViewProps) {
     return (
         <View>
-            <Stack sx={{ pb: 2 }}>
-                <Typography variant="h2">{title}</Typography>
-                {description ? (
-                    <Typography variant="body2" sx={{ ml: 0.35, mt: 1 }}>
-                        {description}
-                    </Typography>
-                ) : null}
+            <Stack>
+                <Stack sx={{ pb: 2 }}>
+                    <Stack direction="row" sx={{ alignItems: 'baseline', gap: 2 }}>
+                        <Typography variant="h2">{title}</Typography>
+                        {isDirty ? (
+                            <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'warning.main' }}>
+                                (changements non sauvegardés)
+                            </Typography>
+                        ) : null}
+                    </Stack>
+                    {description ? (
+                        <Typography variant="body2" sx={{ ml: 0.35, mt: 1 }}>
+                            {description}
+                        </Typography>
+                    ) : null}
+                </Stack>
+                <Divider />
             </Stack>
-            <Divider />
-            {children}
+            {tabs?.length ? (
+                <DnViewTabs items={tabs} renderActions={renderActions} renderBanner={renderBanner} />
+            ) : (
+                children
+            )}
         </View>
     );
 }

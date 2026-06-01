@@ -1,2 +1,1 @@
-export { DnEntityView, type DnEntityViewProps } from './DnEntityView';
-export { DnEntityViewTabs, type DnEntityViewTab, type DnEntityViewTabsProps } from './DnEntityViewTabs';
+export { DnEntityView, type DnEntityViewProps, type DnEntityViewTab } from './DnEntityView';

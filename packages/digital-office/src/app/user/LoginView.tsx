@@ -2,16 +2,16 @@ import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { DnInput, DnButton } from '../ui';
-import { useDnApp } from './DnAppProvider';
-import { useDnApi } from '../api';
+import { DnInput, DnButton } from '../../ui';
+import { useDnApi } from '../../api';
+import { useLayout } from '../layout';
 
 const IS_LOCKED_KEY = 'dn_is_locked';
 const PING_KEY = 'dn_ping';
 const PING_INTERVAL_MS = 30000;
 
 export function LoginView() {
-    const { AppLogo } = useDnApp();
+    const { AppLogo } = useLayout();
     const api = useDnApi();
     const queryClient = useQueryClient();
 

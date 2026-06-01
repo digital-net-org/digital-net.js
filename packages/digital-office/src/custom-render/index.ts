@@ -1,1 +1,1 @@
-export * from './DnCustomRenderProvider';
+export * from './CustomRenderProvider';

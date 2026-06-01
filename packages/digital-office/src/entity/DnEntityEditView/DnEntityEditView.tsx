@@ -8,10 +8,10 @@ import { useEntityDraft } from '../useEntityDraft';
 import { useEntityFormState } from '../useEntityFormState';
 import { useEntitySchema } from '../useEntitySchema';
 import { type DnEntityName } from '../DnEntitySchemaProvider';
-import { useRouterBlocker } from '../../router';
+import { useRouterBlocker } from '../../navigation';
+import type { DRAFT_STORES } from '../../storage';
 import { DnDialog, DnLoadingView } from '../../ui';
 import { NotFoundView, useDnToast } from '../../app';
-import { type DnDraftStoreName } from '../../constants';
 import { type EntityIdentifier } from '../types';
 import {
     buildCreateErrorToast,
@@ -26,7 +26,7 @@ export interface DnEntityEditViewProps<T extends Entity> {
     entityName: DnEntityName;
     identifier: EntityIdentifier;
     identifierAccessor: keyof T;
-    draftStoreName: DnDraftStoreName;
+    draftStoreName: (typeof DRAFT_STORES)[number];
     tabs: DnEntityViewTab[];
     description?: string;
     onGet: (_id: string) => Promise<Result<T>>;

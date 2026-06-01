@@ -1,23 +1,22 @@
 import * as React from 'react';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router';
-import { AdminGuard, AuthGuard, GuestGuard } from './guards';
-import { DnAppLayout } from '../app';
-import { useDnUser } from '../user';
+import { Layout, useDigitalNetUser } from '../app';
+import { Guards, AuthGuard, GuestGuard } from './guards';
 import { APP_ROUTES, ADMIN_ROUTES, CMS_ROUTES } from './routes';
 import type { DigitalOfficeRoute } from './types';
 
-export interface DnOfficeRouterProps {
+export interface DigitalOfficeRouterProps {
     routes?: DigitalOfficeRoute[];
 }
 
 function guardFor(route: DigitalOfficeRoute): React.ReactNode {
     if (route.isPublic) return <GuestGuard>{route.element}</GuestGuard>;
-    if (route.isAdmin) return <AdminGuard>{route.element}</AdminGuard>;
+    if (route.isAdmin) return <Guards>{route.element}</Guards>;
     return <AuthGuard>{route.element}</AuthGuard>;
 }
 
 function RouterLayout({ allRoutes }: { allRoutes: DigitalOfficeRoute[] }) {
-    const { isAdmin } = useDnUser();
+    const { isAdmin } = useDigitalNetUser();
 
     const navigation = React.useMemo(
         () =>
@@ -35,14 +34,14 @@ function RouterLayout({ allRoutes }: { allRoutes: DigitalOfficeRoute[] }) {
     const routePatterns = React.useMemo(() => allRoutes.map(r => r.path).filter(p => !p.includes('*')), [allRoutes]);
 
     return (
-        <DnAppLayout navigation={navigation} routePatterns={routePatterns}>
+        <Layout navigation={navigation} routePatterns={routePatterns}>
             <Outlet />
-        </DnAppLayout>
+        </Layout>
     );
 }
 
-export function DnOfficeRouter({ routes }: DnOfficeRouterProps) {
-    const { isLoading } = useDnUser();
+export function DigitalOfficeRouter({ routes }: DigitalOfficeRouterProps) {
+    const { isLoading } = useDigitalNetUser();
 
     const router = React.useMemo(() => {
         const allRoutes: DigitalOfficeRoute[] = [...APP_ROUTES, ...ADMIN_ROUTES, ...CMS_ROUTES, ...(routes ?? [])];

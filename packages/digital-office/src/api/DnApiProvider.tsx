@@ -1,16 +1,19 @@
 import * as React from 'react';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
-import { dnQueryClient } from './dnQueryClient';
+
+const dnQueryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 5 * 60 * 1000,
+            retry: 1,
+        },
+    },
+});
 
 const DnApiContext = React.createContext<DigitalApi | null>(null);
 
-export interface DnApiProviderProps {
-    api: DigitalApi;
-    children: React.ReactNode;
-}
-
-export function DnApiProvider({ api, children }: DnApiProviderProps) {
+export function DnApiProvider({ api, children }: { api: DigitalApi; children: React.ReactNode }) {
     return (
         <DnApiContext.Provider value={api}>
             <QueryClientProvider client={dnQueryClient}>{children}</QueryClientProvider>

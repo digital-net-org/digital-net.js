@@ -2,16 +2,14 @@ import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { alpha, MenuItem as MuiMenuItem, MenuList as MuiMenuList, Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { DnCollapsibleBlock } from '../ui';
+import { DnCollapsibleBlock } from '../../../ui';
 
-export type NavGroupContent = { label: string; path: string }[];
-
-export interface DnAppLayoutNavProps {
-    navigation: Record<string, NavGroupContent>;
+export interface LayoutNavProps {
+    navigation: Record<string, Array<{ label: string; path: string }>>;
     children?: React.ReactNode;
 }
 
-export function DnAppLayoutNav({ navigation }: DnAppLayoutNavProps) {
+export function LayoutNav({ navigation }: LayoutNavProps) {
     const location = useLocation();
     const navigate = useNavigate();
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Entity, JsonPatchOp } from '@digital-net-org/digital-api-sdk';
-import { DnIdbContext, IDbStore, JsonPatch } from '../storage';
+import { IdbContext, IDbStore, JsonPatch } from '../storage';
 import type { EntityDraftRecord } from './types';
 
 const PERSIST_DEBOUNCE_MS = 500;
@@ -33,7 +33,7 @@ export function useEntityDraft<T extends Entity>(
     options: UseEntityDraftOptions = {}
 ): UseEntityDraftResult<T> {
     const enabled = options.enabled ?? true;
-    const { database, notifyDraftChange } = React.useContext(DnIdbContext);
+    const { database, notifyDraftChange } = React.useContext(IdbContext);
     const [ops, setOps] = React.useState<JsonPatchOp[]>([]);
     const [baselineUpdatedAt, setBaseline] = React.useState<string | null>(null);
 

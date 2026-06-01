@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { css, styled } from '@mui/material/styles';
 import { Button, Stack, Typography } from '@mui/material';
 import { HttpClientError } from '@digital-net-org/digital-api-sdk';
-import { DnView } from '../ui';
+import { DnView } from '../../../ui';
 
 export interface ErrorViewProps {
     statusCode?: number | string;

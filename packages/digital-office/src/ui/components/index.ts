@@ -13,6 +13,7 @@ export * from './DnExternalButton';
 export * from './DnImport';
 export * from './DnInput';
 export * from './DnLoadingView';
+export * from './DnLogo';
 export * from './DnDialog';
 export * from './DnDialogConfirmPassword';
 export * from './DnIconButton';

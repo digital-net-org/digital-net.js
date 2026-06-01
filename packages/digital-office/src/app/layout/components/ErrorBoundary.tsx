@@ -1,20 +1,16 @@
 import * as React from 'react';
+import { NotFoundException } from '../../exceptions';
 import { ErrorView } from './ErrorView';
-import { NotFoundException } from './NotFoundException';
 import { NotFoundView } from './NotFoundView';
 
-export interface DnErrorBoundaryProps {
-    children?: React.ReactNode;
-}
-
-interface DnErrorBoundaryState {
+interface ErrorBoundaryState {
     error: Error | null;
 }
 
-export class DnErrorBoundary extends React.Component<DnErrorBoundaryProps, DnErrorBoundaryState> {
-    public state: DnErrorBoundaryState = { error: null };
+export class ErrorBoundary extends React.Component<React.PropsWithChildren, ErrorBoundaryState> {
+    public state: ErrorBoundaryState = { error: null };
 
-    public static getDerivedStateFromError(error: Error): DnErrorBoundaryState {
+    public static getDerivedStateFromError(error: Error): ErrorBoundaryState {
         return { error };
     }
 

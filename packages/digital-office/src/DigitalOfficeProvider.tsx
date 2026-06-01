@@ -1,48 +1,39 @@
 import * as React from 'react';
 import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
-import { DnThemeProvider } from './ui';
+import { DnLogo, DnThemeProvider } from './ui';
 import { DnApiProvider } from './api';
-import { DnUserProvider } from './user';
 import { DnEntitySchemaProvider, DnEntityVariablesProvider, DnOgSchemaProvider } from './entity';
-import { DigitalNetLogo, DnAppProvider, DnToastProvider } from './app';
-import { DnIdbProvider } from './storage';
-import { DnCustomRenderProvider, type DnCustomRenderFn } from './custom-render';
-import { DRAFTS_DB_CONFIG } from './constants';
+import { DigitalNetUserProvider, LayoutProvider, DnToastProvider } from './app';
+import { IdbProvider } from './storage';
+import { CustomRenderProvider, type DnCustomViewDict } from './custom-render';
 
 export interface DigitalOfficeProviderProps {
     api: DigitalApi;
     children: React.ReactNode;
     appLogo?: React.ReactNode;
-    onCustomRender?: DnCustomRenderFn;
+    customRender?: DnCustomViewDict;
 }
 
-/**
- * Provides the dependencies and contexts for the digital-office library.
- *
- * Note: router context is provided by `DigitalOfficeRouter` (which uses
- * `createBrowserRouter` + `<RouterProvider>`), so it lives as a child
- * of these providers — none of the providers below need router hooks.
- */
-export function DigitalOfficeProvider({ api, appLogo, onCustomRender, children }: DigitalOfficeProviderProps) {
+export function DigitalOfficeProvider({ api, appLogo, customRender, children }: DigitalOfficeProviderProps) {
     return (
         <DnApiProvider api={api}>
             <DnThemeProvider>
                 <DnToastProvider>
-                    <DnUserProvider>
-                        <DnIdbProvider config={DRAFTS_DB_CONFIG}>
+                    <DigitalNetUserProvider>
+                        <IdbProvider>
                             <DnEntitySchemaProvider>
                                 <DnOgSchemaProvider>
                                     <DnEntityVariablesProvider>
-                                        <DnAppProvider appLogo={appLogo ?? <DigitalNetLogo />}>
-                                            <DnCustomRenderProvider onCustomRender={onCustomRender}>
+                                        <LayoutProvider appLogo={appLogo ?? <DnLogo />}>
+                                            <CustomRenderProvider customRender={customRender}>
                                                 {children}
-                                            </DnCustomRenderProvider>
-                                        </DnAppProvider>
+                                            </CustomRenderProvider>
+                                        </LayoutProvider>
                                     </DnEntityVariablesProvider>
                                 </DnOgSchemaProvider>
                             </DnEntitySchemaProvider>
-                        </DnIdbProvider>
-                    </DnUserProvider>
+                        </IdbProvider>
+                    </DigitalNetUserProvider>
                 </DnToastProvider>
             </DnThemeProvider>
         </DnApiProvider>

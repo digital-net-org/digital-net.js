@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 
-export function DigitalNetLogo() {
+export function DnLogo() {
     return (
         <Container>
             <svg width="314" height="69" viewBox="0 0 314 69" fill="none" xmlns="http://www.w3.org/2000/svg">

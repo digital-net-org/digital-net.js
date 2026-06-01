@@ -2,7 +2,7 @@ import * as React from 'react';
 import { type QueryKey, useQuery } from '@tanstack/react-query';
 import { type Entity, type QueryResult } from '@digital-net-org/digital-api-sdk';
 import { type DnFilterDefinition, type DnPaginationState } from '../ui';
-import { type UrlParam, UrlParamBuilder, useUrlQueryState } from '../router';
+import { type UrlParam, UrlParamBuilder, useUrlQueryState } from '../navigation';
 import { useDnApi } from '../api';
 import { DN_QUERY_KEY_LIST } from './DnQueryKeys';
 

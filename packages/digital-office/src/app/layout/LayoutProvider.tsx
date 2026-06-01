@@ -2,23 +2,14 @@ import * as React from 'react';
 
 const DRAWER_STORAGE_KEY = 'DN_DRAWER_OPEN';
 
-export interface DnAppContextValue {
-    /** The navigation panel drawer state **/
+interface LayoutContextValue {
     isDrawerOpen: boolean;
-    /** Toggle the state of the navigation panel drawer **/
     toggleDrawer: () => void;
-    /** Set the state of the navigation panel drawer **/
     setIsDrawerOpen: (_isOpen: boolean) => void;
-    /** Render the application logo **/
     AppLogo: React.ReactNode;
 }
 
-const DnAppContext = React.createContext<DnAppContextValue | null>(null);
-
-export interface DnAppProviderProps {
-    appLogo: React.ReactNode;
-    children: React.ReactNode;
-}
+const LayoutContext = React.createContext<LayoutContextValue | null>(null);
 
 function readDrawerOpen(): boolean {
     try {
@@ -34,7 +25,7 @@ function writeDrawerOpen(value: boolean) {
     } catch {}
 }
 
-export function DnAppProvider({ children, appLogo }: DnAppProviderProps) {
+export function LayoutProvider({ children, appLogo }: { appLogo: React.ReactNode; children: React.ReactNode }) {
     const [isDrawerOpen, setIsDrawerOpenState] = React.useState<boolean>(readDrawerOpen);
 
     const setIsDrawerOpen = React.useCallback((next: boolean) => {
@@ -51,7 +42,7 @@ export function DnAppProvider({ children, appLogo }: DnAppProviderProps) {
     }, []);
 
     return (
-        <DnAppContext.Provider
+        <LayoutContext.Provider
             value={{
                 isDrawerOpen,
                 toggleDrawer,
@@ -60,14 +51,14 @@ export function DnAppProvider({ children, appLogo }: DnAppProviderProps) {
             }}
         >
             {children}
-        </DnAppContext.Provider>
+        </LayoutContext.Provider>
     );
 }
 
-export function useDnApp(): DnAppContextValue {
-    const context = React.useContext(DnAppContext);
+export function useLayout(): LayoutContextValue {
+    const context = React.useContext(LayoutContext);
     if (!context) {
-        throw new Error('useDnUser must be used within a DnUserProvider.');
+        throw new Error('useLayout must be used within a LayoutProvider.');
     }
     return context;
 }

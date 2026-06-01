@@ -1,32 +1,22 @@
 import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { UserDto } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../api';
+import { type UserDto } from '@digital-net-org/digital-api-sdk';
+import { useDnApi } from '../../api';
 
 const USER_QUERY_KEY = ['dn-user', 'self'] as const;
 
-export interface DnUserContextValue {
-    /** The currently authenticated user, or `null` when not logged in. */
+interface UserContextValue {
     user: UserDto | null | undefined;
-    /** `true` when a valid session exists and the user profile has been fetched. */
     isLogged: boolean;
-    /** `true` when the authenticated user has admin privileges. */
     isAdmin: boolean;
-    /** `true` during initial session restoration or while the user profile is loading. */
     isLoading: boolean;
-    /** Force a refetch of the current user profile. */
     refresh: () => Promise<void>;
-    /** Logout the current user **/
     logout: () => Promise<void>;
 }
 
-const DnUserContext = React.createContext<DnUserContextValue | null>(null);
+const UserContext = React.createContext<UserContextValue | null>(null);
 
-export interface DnUserProviderProps {
-    children: React.ReactNode;
-}
-
-export function DnUserProvider({ children }: DnUserProviderProps) {
+export function DigitalNetUserProvider({ children }: React.PropsWithChildren) {
     const api = useDnApi();
     const queryClient = useQueryClient();
 
@@ -86,7 +76,7 @@ export function DnUserProvider({ children }: DnUserProviderProps) {
     );
 
     return (
-        <DnUserContext.Provider
+        <UserContext.Provider
             value={{
                 user,
                 isLoading,
@@ -97,14 +87,14 @@ export function DnUserProvider({ children }: DnUserProviderProps) {
             }}
         >
             {children}
-        </DnUserContext.Provider>
+        </UserContext.Provider>
     );
 }
 
-export function useDnUser(): DnUserContextValue {
-    const context = React.useContext(DnUserContext);
+export function useDigitalNetUser(): UserContextValue {
+    const context = React.useContext(UserContext);
     if (!context) {
-        throw new Error('useDnUser must be used within a DnUserProvider.');
+        throw new Error('useDigitalNetUser must be used within a UserProvider.');
     }
     return context;
 }

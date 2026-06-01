@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { Divider, Stack, Typography } from '@mui/material';
-import { styled, css } from '@mui/material/styles';
-import { UrlParamBuilder, useUrlQueryState } from '../../router';
-import { DnEntityViewTabs, type DnEntityViewTab } from './DnEntityViewTabs';
+import { Alert, CircularProgress, Link, Typography } from '@mui/material';
+import { Delete as DeleteIcon, Refresh as RefreshIcon, Save as SaveIcon } from '@mui/icons-material';
+import { DnDialog, DnIconButton, DnView, formatDate, type DnViewTab } from '../../ui';
 
-export type { DnEntityViewTab };
+export type DnEntityViewTab = DnViewTab;
 
 export interface DnEntityViewProps {
     title: string;
@@ -22,6 +21,11 @@ export interface DnEntityViewProps {
     onReload?: () => void | Promise<void>;
 }
 
+/**
+ * Entity-edit preset of {@link DnView}: builds the save/reload/delete action bar
+ * and the optimistic-conflict banner, and owns the reload confirmation dialog.
+ * The generic layout, tabs and URL-synced navigation live in `DnView`.
+ */
 export function DnEntityView({
     title,
     description,
@@ -37,64 +41,80 @@ export function DnEntityView({
     onDelete,
     onReload,
 }: DnEntityViewProps) {
-    const [{ tab }, setState] = useUrlQueryState({
-        tab: UrlParamBuilder.buildString(tabs?.length ? tabs[0].key : '', 'tab'),
-    });
-    const activeTab = tabs?.length ? (tabs.find(t => t.key === tab) ?? tabs[0]) : null;
-    const [isPending, startTransition] = React.useTransition();
+    const [reloadDialogOpen, setReloadDialogOpen] = React.useState(false);
 
-    React.useEffect(
-        () => (tabs?.length && activeTab && activeTab.key !== tab ? setState({ tab: activeTab.key }) : void 0),
-        [activeTab, tab, setState, tabs?.length]
-    );
+    const confirmReload = React.useCallback(async () => {
+        setReloadDialogOpen(false);
+        if (onReload) await onReload();
+    }, [onReload]);
+
+    const hasActions = Boolean(onSave || onDelete || onReload);
+    const saveDisabled = !isDirty || hasConflict || isSaving;
+    const discardDisabled = !isDirty || isSaving;
+
+    const renderActions = hasActions ? (
+        <React.Fragment>
+            {isSaving ? <CircularProgress size={20} /> : null}
+            {onSave ? (
+                <DnIconButton tooltip="Enregistrer" disabled={saveDisabled} onClick={() => void onSave()}>
+                    <SaveIcon />
+                </DnIconButton>
+            ) : null}
+            {onReload ? (
+                <DnIconButton
+                    tooltip="Annuler les modifications locales"
+                    disabled={discardDisabled}
+                    onClick={() => setReloadDialogOpen(true)}
+                >
+                    <RefreshIcon />
+                </DnIconButton>
+            ) : null}
+            {onDelete && !isNew ? (
+                <DnIconButton tooltip="Supprimer" disabled={isSaving} onClick={() => void onDelete()}>
+                    <DeleteIcon />
+                </DnIconButton>
+            ) : null}
+        </React.Fragment>
+    ) : null;
+
+    const banner = hasConflict ? (
+        <Alert severity="warning" variant="outlined" sx={{ mt: 1 }}>
+            <Typography variant="body2">
+                Ce formulaire a été modifié depuis le début de votre édition locale.
+            </Typography>
+            <Typography variant="caption" component="div" sx={{ mt: 0.5 }}>
+                Modifiée côté serveur : {formatDate(apiUpdatedAt)} · Vos modifications depuis :{' '}
+                {formatDate(baselineUpdatedAt)}
+            </Typography>
+            {onReload ? (
+                <Link component="button" type="button" onClick={() => setReloadDialogOpen(true)} sx={{ mt: 0.5 }}>
+                    Recharger les données
+                </Link>
+            ) : null}
+        </Alert>
+    ) : null;
 
     return (
-        <View>
-            <Stack>
-                <Stack sx={{ pb: 2 }}>
-                    <Stack direction="row" sx={{ alignItems: 'baseline', gap: 2 }}>
-                        <Typography variant="h2">{title}</Typography>
-                        {isDirty ? (
-                            <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'warning.main' }}>
-                                (changements non sauvegardés)
-                            </Typography>
-                        ) : null}
-                    </Stack>
-                    {description ? (
-                        <Typography variant="body2" sx={{ ml: 0.35, mt: 1 }}>
-                            {description}
-                        </Typography>
-                    ) : null}
-                </Stack>
-                <Divider />
-            </Stack>
-            {tabs?.length && activeTab ? (
-                <DnEntityViewTabs
-                    tabs={tabs}
-                    activeTab={activeTab}
-                    onTabChange={key => startTransition(() => setState({ tab: key }))}
-                    isPending={isPending}
-                    isNew={isNew}
-                    isSaving={isSaving}
-                    isDirty={isDirty}
-                    hasConflict={hasConflict}
-                    baselineUpdatedAt={baselineUpdatedAt}
-                    apiUpdatedAt={apiUpdatedAt}
-                    onSave={onSave}
-                    onDelete={onDelete}
-                    onReload={onReload}
-                />
-            ) : (
-                children
-            )}
-        </View>
+        <React.Fragment>
+            <DnView
+                title={title}
+                description={description}
+                isDirty={isDirty}
+                tabs={tabs}
+                renderActions={renderActions}
+                renderBanner={banner}
+            >
+                {children}
+            </DnView>
+            <DnDialog
+                open={reloadDialogOpen}
+                onClose={() => setReloadDialogOpen(false)}
+                onConfirm={confirmReload}
+                confirmLabel="Recharger"
+                title="Recharger les données"
+            >
+                Attention, vos modifications locales seront perdues. Continuer ?
+            </DnDialog>
+        </React.Fragment>
     );
 }
-
-const View = styled(Stack)(
-    () => css`
-        width: 100%;
-        height: 100%;
-        overflow-y: hidden;
-    `
-);
