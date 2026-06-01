@@ -21,6 +21,16 @@ export class ConfigValueCatalog {
         );
     }
 
+    /** GET `admin/config-value` — paginated list (filter by `name`, …); `index` defaults to 1. — JWT/ApiKey (admin) */
+    public async list(
+        query: { name?: string; index?: number; size?: number } = {},
+        options: CatalogCallbacks<ConfigValueDto[]> = {}
+    ): Promise<Result<ConfigValueDto[]>> {
+        const params: Record<string, unknown> = { index: query.index ?? 1, size: query.size ?? 50 };
+        if (query.name) params.name = query.name;
+        return CatalogRunner.run<ConfigValueDto[]>(this.http, { path: DN_API_CONFIG_VALUE, params }, options);
+    }
+
     /** POST `admin/config-value` — body accepts `{ name, value?, type? }`. Returns the new id. — JWT/ApiKey (admin) */
     public async create(payload: ConfigValuePayload, options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         return CatalogRunner.run<string>(
