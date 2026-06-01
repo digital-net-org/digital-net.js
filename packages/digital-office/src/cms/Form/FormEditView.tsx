@@ -8,10 +8,10 @@ import {
     type JsonPatchOp,
     type Result,
     defaultResult,
+    JsonPatch,
 } from '@digital-net-org/digital-api-sdk';
 import { DnEntityEditView } from '../../entity';
 import { useDnApi } from '../../api';
-import { JsonPatch } from '../../storage';
 import { FormTabFields, FormTabGeneral, FormTabSubmissions } from './Tabs';
 
 const FIELD_PAYLOAD_KEYS = [

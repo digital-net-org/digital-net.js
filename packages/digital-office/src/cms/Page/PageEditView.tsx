@@ -1,8 +1,7 @@
 import * as React from 'react';
-import type { JsonPatchOp, PageDto } from '@digital-net-org/digital-api-sdk';
+import { JsonPatch, type JsonPatchOp, type PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityEditView } from '../../entity';
 import { useDnApi } from '../../api';
-import { JsonPatch } from '../../storage';
 import { PageTabGeneral, PageTabJsonLd, PageTabOpenGraph, PageTabSheets } from './Tabs';
 
 export function PageEditView() {

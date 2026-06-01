@@ -1,4 +1,4 @@
-import type { JsonPatchOp } from '@digital-net-org/digital-api-sdk';
+import type { JsonPatchOp } from '../types';
 
 export class JsonPatch {
     private static pathSegments(path: string): string[] {

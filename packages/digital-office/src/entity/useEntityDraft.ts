@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Entity, JsonPatchOp } from '@digital-net-org/digital-api-sdk';
-import { IdbContext, IDbStore, JsonPatch } from '../storage';
+import { JsonPatch, type Entity, type JsonPatchOp } from '@digital-net-org/digital-api-sdk';
+import { IdbContext, IDbStore } from '../storage';
 import type { EntityDraftRecord } from './types';
 
 const PERSIST_DEBOUNCE_MS = 500;
