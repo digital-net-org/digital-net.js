@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 import { DN_QUERY_KEY_GET } from '../../entity';
 import { MediaPreviewDialog } from './MediaPreviewDialog';
 
@@ -28,7 +28,7 @@ const VARIANT_CONFIG: Record<MediaPreviewVariant, VariantConfig> = {
 
 export function MediaPreview({ mediaId, extension, alt = '', variant = 'default' }: MediaPreviewProps) {
     const config = VARIANT_CONFIG[variant];
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const queryClient = useQueryClient();
     const [blobUrl, setBlobUrl] = React.useState<string | null>(null);
     const [dialogOpen, setDialogOpen] = React.useState(false);

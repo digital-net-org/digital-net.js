@@ -4,9 +4,9 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Box, Breadcrumbs, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { ArrowBack as ArrowBackIcon, DeleteOutlined as DeleteIcon } from '@mui/icons-material';
 import type { FormDto, FormFieldDto, FormSubmissionDto } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 import { DnLoadingView, DnView } from '../../ui';
-import { NotFoundView, useDnToast } from '../../app';
+import { NotFoundView, useDigitalToast } from '../../app';
 import { DN_QUERY_KEY_GET } from '../../entity';
 
 const DATE_FORMAT = new Intl.DateTimeFormat('fr-FR', {
@@ -54,9 +54,9 @@ function renderValue(field: FormFieldDto, raw: string | null | undefined): React
 export function FormSubmissionDetailView() {
     const { formId, id } = useParams<{ formId: string; id: string }>();
     const navigate = useNavigate();
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const queryClient = useQueryClient();
-    const { showToast } = useDnToast();
+    const { showToast } = useDigitalToast();
 
     const submissionQuery = useQuery<FormSubmissionDto | undefined>({
         queryKey: [DN_QUERY_KEY_GET, 'formSubmission', id],

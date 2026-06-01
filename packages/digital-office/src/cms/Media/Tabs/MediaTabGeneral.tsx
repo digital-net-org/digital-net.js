@@ -2,7 +2,7 @@ import { Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import type { MediaDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
-import { useCustomNode } from '../../../custom-render';
+import { useCustomNode } from '../../../app';
 import { formatDate, formatDimensions, formatFileSize } from '../../../ui';
 import { MediaPreview } from '../MediaPreview';
 

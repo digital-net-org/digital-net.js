@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../api';
+import { useDigitalNetApi } from '../api';
 
 export type DnEntityName =
     | 'page'
@@ -43,7 +43,7 @@ export interface DnEntitySchemaProviderProps {
 }
 
 export function DnEntitySchemaProvider({ children }: DnEntitySchemaProviderProps) {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const [schemas, setSchemas] = React.useState<Partial<Record<DnEntityName, SchemaProperty[]>>>({});
     const [errors, setErrors] = React.useState<Partial<Record<DnEntityName, Error>>>({});
     const [loadingEntities, setLoadingEntities] = React.useState<ReadonlySet<DnEntityName>>(() => new Set());

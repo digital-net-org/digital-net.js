@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { HttpClientError, type Result } from '@digital-net-org/digital-api-sdk';
 import { NotFoundException } from '../app';
-import { useDnApi } from '../api';
+import { useDigitalNetApi } from '../api';
 import { DN_QUERY_KEY_GET } from './DnQueryKeys';
 
 export interface UseEntityGetResult<T> {
@@ -19,7 +19,7 @@ function unwrapResult<T>(body: unknown): T | undefined {
 }
 
 export function useEntityGet<T>(entityPath: string, id: string | undefined): UseEntityGetResult<T> {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const isNew = !id;
 
     const { data, isLoading, isFetching, error } = useQuery<T | undefined>({

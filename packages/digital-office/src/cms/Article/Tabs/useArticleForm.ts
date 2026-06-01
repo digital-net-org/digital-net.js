@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { StringResolver } from '@digital-net-org/digital-core';
 import type { ArticleDto, PageDto, QueryResult } from '@digital-net-org/digital-api-sdk';
 import { DN_QUERY_KEY_LIST, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
-import { useDnApi } from '../../../api';
+import { useDigitalNetApi } from '../../../api';
 
 const SLUG_HELPER = 'Segment d\'URL public de l\'article (ex: "mon-article").';
 const SLUG_AVAILABILITY_ERROR = "Ce segment d'URL est déjà utilisé.";
@@ -31,7 +31,7 @@ const baseFieldProps: DnEntityFormProps['fieldProps'] = {
 };
 
 export function useArticleForm(articleId: string | undefined) {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const { schemas } = useEntitySchema('article');
     const { values, apiData, setField } = useDnEntityFormContext<ArticleDto>();
 

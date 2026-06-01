@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { type UserDto } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 
 const USER_QUERY_KEY = ['dn-user', 'self'] as const;
 
@@ -17,7 +17,7 @@ interface UserContextValue {
 const UserContext = React.createContext<UserContextValue | null>(null);
 
 export function DigitalNetUserProvider({ children }: React.PropsWithChildren) {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const queryClient = useQueryClient();
 
     const [hasToken, setHasToken] = React.useState(() => api.http.getToken() != null);

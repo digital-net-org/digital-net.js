@@ -5,8 +5,8 @@ import { ArrayBuilder } from '@digital-net-org/digital-core';
 import { type DnEntityFailureDialogContentProps } from './DnEntityListView/DnEntityDialogFailure';
 import { resolveDeleteLabel } from './DnEntityListView/identifier';
 import { type EntityIdentifier } from './types';
-import { useDnApi } from '../api';
-import { useDnToast } from '../app';
+import { useDigitalNetApi } from '../api';
+import { useDigitalToast } from '../app';
 
 const CHUNK_SIZE = 5;
 
@@ -49,9 +49,9 @@ export function useEntityDelete<T extends Entity>({
     identifierAccessor,
     protectedDelete,
 }: UseEntityDeleteOptions<T>): UseEntityDeleteResult {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const queryClient = useQueryClient();
-    const { showToast } = useDnToast();
+    const { showToast } = useDigitalToast();
 
     const [passwordDialogOpen, setPasswordDialogOpen] = React.useState(false);
     const [passwordError, setPasswordError] = React.useState(false);

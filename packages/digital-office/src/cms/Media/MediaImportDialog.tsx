@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Typography } from '@mui/material';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 import { DnImportDialog, formatFileSize } from '../../ui';
 
 export interface MediaImportDialogProps {
@@ -10,7 +10,7 @@ export interface MediaImportDialogProps {
 }
 
 export function MediaImportDialog({ open, onClose, onUploaded }: MediaImportDialogProps) {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
 
     const [contentTypes, setContentTypes] = React.useState<readonly string[]>([]);
     const [maxSize, setMaxSize] = React.useState<number | null>(null);

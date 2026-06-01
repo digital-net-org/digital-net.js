@@ -11,20 +11,20 @@ const dnQueryClient = new QueryClient({
     },
 });
 
-const DnApiContext = React.createContext<DigitalApi | null>(null);
+const DigitalNetApiContext = React.createContext<DigitalApi | null>(null);
 
-export function DnApiProvider({ api, children }: { api: DigitalApi; children: React.ReactNode }) {
+export function DigitalNetApiProvider({ api, children }: { api: DigitalApi; children: React.ReactNode }) {
     return (
-        <DnApiContext.Provider value={api}>
+        <DigitalNetApiContext.Provider value={api}>
             <QueryClientProvider client={dnQueryClient}>{children}</QueryClientProvider>
-        </DnApiContext.Provider>
+        </DigitalNetApiContext.Provider>
     );
 }
 
-export function useDnApi(): DigitalApi {
-    const context = React.useContext(DnApiContext);
+export function useDigitalNetApi(): DigitalApi {
+    const context = React.useContext(DigitalNetApiContext);
     if (!context) {
-        throw new Error('useDnApi must be used within a DnApiProvider.');
+        throw new Error('useDigitalNetApi must be used within a DigitalNetApiProvider.');
     }
     return context;
 }

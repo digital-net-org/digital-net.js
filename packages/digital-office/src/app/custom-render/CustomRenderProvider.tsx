@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { DnEntityName } from '../entity';
+import type { DnEntityName } from '../../entity';
 
 export type DnCustomView = 'edit:tab:general:before' | 'edit:tab:general:after';
 export type DnCustomViewDict = Partial<Record<DnEntityName, Partial<Record<DnCustomView, React.ReactNode>>>>;

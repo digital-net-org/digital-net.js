@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { ArticleDto, QueryResult, TagDto } from '@digital-net-org/digital-api-sdk';
 import { DN_QUERY_KEY_LIST, useDnEntityFormContext } from '../../../entity';
-import { useDnApi } from '../../../api';
+import { useDigitalNetApi } from '../../../api';
 import { useArticleAutocomplete } from './useArticleAutocomplete';
 
 export type TagOption = Omit<TagDto, 'id' | 'createdAt' | 'updatedAt'> & {
@@ -26,7 +26,7 @@ export interface UseArticleFormTagsResult {
 }
 
 export function useArticleFormTags(): UseArticleFormTagsResult {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const { values, setField } = useDnEntityFormContext<ArticleDto>();
     const { inputValue, search, onInputChange } = useArticleAutocomplete();
 

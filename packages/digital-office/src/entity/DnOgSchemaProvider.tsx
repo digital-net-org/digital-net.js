@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { OpenGraphPropertySchema } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../api';
+import { useDigitalNetApi } from '../api';
 
 export interface DnOgSchemaContextValue {
     schema: OpenGraphPropertySchema[] | null;
@@ -17,7 +17,7 @@ export interface DnOgSchemaProviderProps {
 }
 
 export function DnOgSchemaProvider({ children }: DnOgSchemaProviderProps) {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const [schema, setSchema] = React.useState<OpenGraphPropertySchema[] | null>(null);
     const [error, setError] = React.useState<Error | null>(null);
     const [loading, setLoading] = React.useState(false);

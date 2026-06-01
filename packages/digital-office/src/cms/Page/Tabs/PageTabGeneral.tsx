@@ -4,8 +4,8 @@ import { Stack } from '@mui/material';
 import { PathAnalyzer } from '@digital-net-org/digital-core';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
-import { useCustomNode } from '../../../custom-render';
-import { useDnApi } from '../../../api';
+import { useCustomNode } from '../../../app';
+import { useDigitalNetApi } from '../../../api';
 import { DnInputDebounced } from '../../../ui';
 import { usePageVariables } from './usePageVariables';
 
@@ -49,7 +49,7 @@ const baseFieldProps: DnEntityFormProps['fieldProps'] = {
 };
 
 export function PageTabGeneral() {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const { id } = useParams<{ id: string }>();
     const { schemas } = useEntitySchema('page');
     const { values, apiData, setField, errors, disabled } = useDnEntityFormContext<PageDto>();

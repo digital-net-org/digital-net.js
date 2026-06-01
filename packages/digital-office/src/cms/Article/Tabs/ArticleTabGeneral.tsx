@@ -4,7 +4,7 @@ import { Stack } from '@mui/material';
 import { AutoAwesome as AutoAwesomeIcon } from '@mui/icons-material';
 import type { ArticleDto, ArticleRefDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityForm, useDnEntityFormContext, useEntitySchema } from '../../../entity';
-import { useCustomNode } from '../../../custom-render';
+import { useCustomNode } from '../../../app';
 import {
     DnButton,
     DnIconButton,

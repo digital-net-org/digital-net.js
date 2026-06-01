@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Alert as MuiAlert, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import type { OpenGraphEntry, PageDto } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../../../api';
+import { useDigitalNetApi } from '../../../api';
 import { useDnEntityFormContext, useEntitySchema, DnEntityTabHelper, DN_QUERY_KEY_GET } from '../../../entity';
 import { DnButton, DnDraggableList, DnExternalButton, DnLoadingView } from '../../../ui';
 import { useOgState } from './useOgState';
@@ -13,7 +13,7 @@ const OG_DOC_URL = 'https://ogp.me/';
 
 export function PageTabOpenGraph() {
     const { values, setField, disabled, errors, resetSignal, registerSubValidator } = useDnEntityFormContext<PageDto>();
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const pageId = values.id;
 
     const { schemas: ogEntrySchemas, loading: ogEntrySchemaLoading } = useEntitySchema('openGraphEntry');

@@ -13,17 +13,17 @@ import {
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { useQueryClient } from '@tanstack/react-query';
 import type { MediaDto, MediaVariantDto } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../../../api';
-import { useDnToast } from '../../../app';
+import { useDigitalNetApi } from '../../../api';
+import { useDigitalToast } from '../../../app';
 import { DN_QUERY_KEY_GET, useDnEntityFormContext } from '../../../entity';
 import { DnButton, DnDialog, formatDate, formatDimensions, formatFileSize } from '../../../ui';
 
 type ConfirmTarget = { kind: 'all' } | { kind: 'one'; variantId: string } | null;
 
 export function MediaTabVariants() {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const queryClient = useQueryClient();
-    const { showToast } = useDnToast();
+    const { showToast } = useDigitalToast();
     const { values } = useDnEntityFormContext<MediaDto>();
 
     const [confirmTarget, setConfirmTarget] = React.useState<ConfirmTarget>(null);

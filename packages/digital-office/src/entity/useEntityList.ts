@@ -3,7 +3,7 @@ import { type QueryKey, useQuery } from '@tanstack/react-query';
 import { type Entity, type QueryResult } from '@digital-net-org/digital-api-sdk';
 import { type DnFilterDefinition, type DnPaginationState } from '../ui';
 import { type UrlParam, UrlParamBuilder, useUrlQueryState } from '../navigation';
-import { useDnApi } from '../api';
+import { useDigitalNetApi } from '../api';
 import { DN_QUERY_KEY_LIST } from './DnQueryKeys';
 
 export type SortDirection = 'asc' | 'desc' | '';
@@ -31,7 +31,7 @@ export function useEntityList<T extends Entity>(
     listPath: string,
     filters?: DnFilterDefinition[]
 ): UseEntityListResult<T> {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const [query, setQuery] = useUrlQueryState({
         page: UrlParamBuilder.buildInt(1, 'page'),
         row: UrlParamBuilder.buildInt(25, 'row'),

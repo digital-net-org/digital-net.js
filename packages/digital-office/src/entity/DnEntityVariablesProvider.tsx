@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { Result, TemplateVariable } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../api';
+import { useDigitalNetApi } from '../api';
 
 export type DnEntityVariableKey = 'page:article';
 
@@ -20,7 +20,7 @@ export interface DnEntityVariablesProviderProps {
 }
 
 export function DnEntityVariablesProvider({ children }: DnEntityVariablesProviderProps) {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const [variables, setVariables] = React.useState<Partial<Record<DnEntityVariableKey, TemplateVariable[]>>>({});
     const [errors, setErrors] = React.useState<Partial<Record<DnEntityVariableKey, Error>>>({});
     const [loadingKeys, setLoadingKeys] = React.useState<ReadonlySet<DnEntityVariableKey>>(() => new Set());

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import type { JsonPatchOp } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 import { DnEntityEditView } from '../../entity';
 import { MediaTabGeneral, MediaTabVariants } from './Tabs';
 
 export function MediaEditView() {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
 
     const handleGet = React.useCallback((id: string) => api.catalog.media.getById(id), [api.catalog.media]);
 

@@ -3,14 +3,14 @@ import { Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import type { PageDto, PageSheet } from '@digital-net-org/digital-api-sdk';
 import { useDnEntityFormContext, useEntitySchema, DN_QUERY_KEY_GET, DnEntityTabHelper } from '../../../entity';
-import { useDnApi } from '../../../api';
+import { useDigitalNetApi } from '../../../api';
 import { DnDraggableList, DnLoadingView } from '../../../ui';
 import { EditSheetRow } from './EditSheetRow';
 import { useSheetsState } from './useSheetsState';
 
 export function PageTabSheets() {
     const { values, setField, disabled, errors, resetSignal, registerSubValidator } = useDnEntityFormContext<PageDto>();
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const pageId = values.id;
 
     const { schemas: sheetSchemas, loading: sheetSchemaLoading } = useEntitySchema('pageSheet');

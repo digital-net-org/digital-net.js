@@ -3,7 +3,7 @@ import { Box, CircularProgress, Dialog, DialogContent, IconButton } from '@mui/m
 import { Close as CloseIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { useQueryClient } from '@tanstack/react-query';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 import { DN_QUERY_KEY_GET } from '../../entity';
 
 export interface MediaPreviewDialogProps {
@@ -14,7 +14,7 @@ export interface MediaPreviewDialogProps {
 }
 
 export function MediaPreviewDialog({ open, onClose, mediaId, alt = '' }: MediaPreviewDialogProps) {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const queryClient = useQueryClient();
     const [blobUrl, setBlobUrl] = React.useState<string | null>(null);
     const [isZoomed, setIsZoomed] = React.useState(false);

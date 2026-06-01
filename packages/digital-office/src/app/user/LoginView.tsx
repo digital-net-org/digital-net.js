@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import { DnInput, DnButton } from '../../ui';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 import { useLayout } from '../layout';
 
 const IS_LOCKED_KEY = 'dn_is_locked';
@@ -12,7 +12,7 @@ const PING_INTERVAL_MS = 30000;
 
 export function LoginView() {
     const { AppLogo } = useLayout();
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const queryClient = useQueryClient();
 
     const [loginInput, setLoginInput] = React.useState('');

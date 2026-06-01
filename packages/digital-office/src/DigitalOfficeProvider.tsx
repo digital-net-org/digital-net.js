@@ -1,11 +1,16 @@
 import * as React from 'react';
 import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
 import { DnLogo, DnThemeProvider } from './ui';
-import { DnApiProvider } from './api';
-import { DnEntitySchemaProvider, DnEntityVariablesProvider, DnOgSchemaProvider } from './entity';
-import { DigitalNetUserProvider, LayoutProvider, DnToastProvider } from './app';
+import { DigitalNetApiProvider } from './api';
 import { IdbProvider } from './storage';
-import { CustomRenderProvider, type DnCustomViewDict } from './custom-render';
+import { DnEntitySchemaProvider, DnEntityVariablesProvider, DnOgSchemaProvider } from './entity';
+import {
+    DigitalNetUserProvider,
+    LayoutProvider,
+    ToastProvider,
+    CustomRenderProvider,
+    type DnCustomViewDict,
+} from './app';
 
 export interface DigitalOfficeProviderProps {
     api: DigitalApi;
@@ -16,9 +21,9 @@ export interface DigitalOfficeProviderProps {
 
 export function DigitalOfficeProvider({ api, appLogo, customRender, children }: DigitalOfficeProviderProps) {
     return (
-        <DnApiProvider api={api}>
+        <DigitalNetApiProvider api={api}>
             <DnThemeProvider>
-                <DnToastProvider>
+                <ToastProvider>
                     <DigitalNetUserProvider>
                         <IdbProvider>
                             <DnEntitySchemaProvider>
@@ -34,8 +39,8 @@ export function DigitalOfficeProvider({ api, appLogo, customRender, children }: 
                             </DnEntitySchemaProvider>
                         </IdbProvider>
                     </DigitalNetUserProvider>
-                </DnToastProvider>
+                </ToastProvider>
             </DnThemeProvider>
-        </DnApiProvider>
+        </DigitalNetApiProvider>
     );
 }

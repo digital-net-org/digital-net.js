@@ -1,11 +1,11 @@
 import * as React from 'react';
 import type { JsonPatchOp, TagDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityEditView } from '../../entity';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 import { TagFormGeneral } from './TagFormGeneral';
 
 export function TagEditView() {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
 
     const handleGet = React.useCallback((id: string) => api.catalog.tag.getById(id), [api.catalog.tag]);
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import type { MediaDto, QueryResult } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 import { DN_QUERY_KEY_LIST } from '../../entity';
 import { DnButton, DnInputAutocomplete } from '../../ui';
 import { MediaPreview } from './MediaPreview';
@@ -20,7 +20,7 @@ export interface MediaPickerProps {
 }
 
 export function MediaPicker({ value, label, disabled, error, helperText, onChange }: MediaPickerProps) {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const [inputText, setInputText] = React.useState('');
     const [search, setSearch] = React.useState('');
     const [size, setSize] = React.useState(PAGE_SIZE);

@@ -1,1 +1,1 @@
-export { DnApiProvider, useDnApi } from './DnApiProvider';
+export { DigitalNetApiProvider, useDigitalNetApi } from './DigitalNetApiProvider';

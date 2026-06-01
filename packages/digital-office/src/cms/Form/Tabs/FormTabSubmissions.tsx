@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Stack } from '@mui/material';
 import type { FormDto, FormSubmissionDto } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../../../api';
-import { useDnToast } from '../../../app';
+import { useDigitalNetApi } from '../../../api';
+import { useDigitalToast } from '../../../app';
 import { DN_QUERY_KEY_GET, useDnEntityFormContext } from '../../../entity';
 import {
     type DnColumnDefinition,
@@ -24,9 +24,9 @@ export function FormTabSubmissions() {
     const navigate = useNavigate();
     const { values } = useDnEntityFormContext<FormDto>();
     const formId = values.id;
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const queryClient = useQueryClient();
-    const { showToast } = useDnToast();
+    const { showToast } = useDigitalToast();
 
     const [pagination, setPagination] = React.useState<DnPaginationState>({
         page: 0,

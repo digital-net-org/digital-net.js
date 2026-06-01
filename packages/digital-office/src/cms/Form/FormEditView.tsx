@@ -11,7 +11,7 @@ import {
     JsonPatch,
 } from '@digital-net-org/digital-api-sdk';
 import { DnEntityEditView } from '../../entity';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 import { FormTabFields, FormTabGeneral, FormTabSubmissions } from './Tabs';
 
 const FIELD_PAYLOAD_KEYS = [
@@ -27,7 +27,7 @@ const FIELD_PAYLOAD_KEYS = [
 ] as const satisfies readonly (keyof FormFieldPayload)[];
 
 export function FormEditView() {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const { id } = useParams<{ id: string }>();
     const initialFieldsRef = React.useRef<FormFieldDto[]>([]);
 

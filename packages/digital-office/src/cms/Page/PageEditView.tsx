@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { JsonPatch, type JsonPatchOp, type PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityEditView } from '../../entity';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 import { PageTabGeneral, PageTabJsonLd, PageTabOpenGraph, PageTabSheets } from './Tabs';
 
 export function PageEditView() {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
 
     const handleGet = React.useCallback((id: string) => api.catalog.page.getById(id), [api.catalog.page]);
 

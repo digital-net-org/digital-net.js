@@ -2,13 +2,13 @@ import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { ArticleDto, ArticleListDto, ArticleRefDto, QueryResult } from '@digital-net-org/digital-api-sdk';
 import { DN_QUERY_KEY_LIST, useDnEntityFormContext } from '../../../entity';
-import { useDnApi } from '../../../api';
+import { useDigitalNetApi } from '../../../api';
 import { useArticleAutocomplete } from './useArticleAutocomplete';
 
 const RELATED_PAGE_SIZE = 20;
 
 export function useArticleFormRelated(articleId: string | undefined) {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const { values, setField } = useDnEntityFormContext<ArticleDto>();
     const { inputValue, search, onInputChange } = useArticleAutocomplete();
 

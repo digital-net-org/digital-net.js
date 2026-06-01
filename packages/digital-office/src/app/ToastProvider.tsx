@@ -2,10 +2,8 @@ import * as React from 'react';
 import { Alert, Snackbar } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 
-export interface DnToastContextValue {
-    /** Display a toast. Replaces the current toast if one is visible. */
+export interface ToastContextValue {
     showToast: (_message: string, _variant?: ToastVariant) => void;
-    /** Dismiss the current toast immediately. */
     hide: () => void;
 }
 
@@ -18,13 +16,9 @@ interface ActiveToast {
 }
 
 const DEFAULT_DURATION = 7000;
-const DnToastContext = React.createContext<DnToastContextValue | null>(null);
+const ToastContext = React.createContext<ToastContextValue | null>(null);
 
-export interface DnToastProviderProps {
-    children: React.ReactNode;
-}
-
-export function DnToastProvider({ children }: DnToastProviderProps) {
+export function ToastProvider({ children }: React.PropsWithChildren) {
     const [toast, setToast] = React.useState<ActiveToast | null>(null);
 
     const hide = React.useCallback(() => setToast(null), []);
@@ -38,7 +32,7 @@ export function DnToastProvider({ children }: DnToastProviderProps) {
     }, []);
 
     return (
-        <DnToastContext.Provider value={{ showToast, hide }}>
+        <ToastContext.Provider value={{ showToast, hide }}>
             {children}
             <Snackbar
                 key={toast?.key}
@@ -59,7 +53,7 @@ export function DnToastProvider({ children }: DnToastProviderProps) {
                     </CustomAlert>
                 ) : undefined}
             </Snackbar>
-        </DnToastContext.Provider>
+        </ToastContext.Provider>
     );
 }
 
@@ -80,10 +74,10 @@ const CustomAlert = styled(Alert)(
     `
 );
 
-export function useDnToast(): DnToastContextValue {
-    const context = React.useContext(DnToastContext);
+export function useDigitalToast(): ToastContextValue {
+    const context = React.useContext(ToastContext);
     if (!context) {
-        throw new Error('useDnToast must be used within a DnToastProvider.');
+        throw new Error('useDigitalToast must be used within a ToastProvider.');
     }
     return context;
 }

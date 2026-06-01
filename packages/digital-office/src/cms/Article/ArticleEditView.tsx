@@ -2,14 +2,14 @@ import * as React from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { ObjectMapper } from '@digital-net-org/digital-core';
 import { JsonPatch, type ArticleDto, type JsonPatchOp, type SchemaProperty } from '@digital-net-org/digital-api-sdk';
-import { useDnApi } from '../../api';
+import { useDigitalNetApi } from '../../api';
 import { DN_QUERY_KEY_LIST, DnEntityEditView, defaultValidate } from '../../entity';
 import { ArticleTabContent, ArticleTabGeneral } from './Tabs';
 
 const DEFAULT_CONTENT = '<p class="paragraph"></p>';
 
 export function ArticleEditView() {
-    const api = useDnApi();
+    const api = useDigitalNetApi();
     const queryClient = useQueryClient();
 
     const handleGet = React.useCallback((id: string) => api.catalog.article.getById(id), [api.catalog.article]);

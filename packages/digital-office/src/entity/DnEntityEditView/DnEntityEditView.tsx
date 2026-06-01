@@ -11,7 +11,7 @@ import { type DnEntityName } from '../DnEntitySchemaProvider';
 import { useRouterBlocker } from '../../navigation';
 import type { DRAFT_STORES } from '../../storage';
 import { DnDialog, DnLoadingView } from '../../ui';
-import { NotFoundView, useDnToast } from '../../app';
+import { NotFoundView, useDigitalToast } from '../../app';
 import { type EntityIdentifier } from '../types';
 import {
     buildCreateErrorToast,
@@ -70,7 +70,7 @@ export function DnEntityEditView<T extends Entity>({
     const isNew = !id;
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { showToast } = useDnToast();
+    const { showToast } = useDigitalToast();
 
     const {
         data: entity,
