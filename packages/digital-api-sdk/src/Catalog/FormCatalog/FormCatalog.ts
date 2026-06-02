@@ -9,14 +9,7 @@ import {
 } from '../../routes';
 import { CatalogRunner } from '../CatalogRunner';
 import type { HttpClient } from '../../HttpClient';
-import type {
-    FormDto,
-    FormSubmissionDto,
-    JsonPatchOp,
-    QueryResult,
-    Result,
-    SchemaProperty,
-} from '../../types';
+import type { FormDto, FormSubmissionDto, JsonPatchOp, QueryResult, Result, SchemaProperty } from '../../types';
 import type { CatalogCallbacks } from '../types';
 import type { FormCreatePayload, FormFieldPayload, FormQuery, FormSubmissionQuery } from './types';
 
@@ -32,28 +25,25 @@ export class FormCatalog {
         return CatalogRunner.run<FormDto>(this.http, { path: DN_API_FORM_BY_ID, slugs: { id } }, options);
     }
 
-    /** GET `cms/forms` — paginated list — JWT/ApiKey */
-    public async getList(
-        query: FormQuery = {},
-        options: CatalogCallbacks<QueryResult<FormDto>> = {}
-    ): Promise<Result<QueryResult<FormDto>>> {
-        return CatalogRunner.run<QueryResult<FormDto>>(
-            this.http,
-            { path: DN_API_FORM, params: query as Record<string, unknown> },
-            options
-        );
+    /**
+     * GET `cms/forms` — paginated list — JWT/ApiKey
+     *
+     * The paginated endpoint returns a *flat* `QueryResult` (server-side it derives from
+     * `Result`), so the body is read directly — it is NOT wrapped in an extra `Result<…>`
+     * envelope. `value` is the page of items; `total`/`index`/`size` sit alongside it.
+     * Mirrors `useEntityList`'s consumption of the same contract.
+     */
+    public async getList(query: FormQuery = {}): Promise<QueryResult<FormDto>> {
+        const res = await this.http.request<QueryResult<FormDto>>({
+            path: DN_API_FORM,
+            params: query as Record<string, unknown>,
+        });
+        return res.data;
     }
 
     /** POST `cms/forms` — Returns the new form id. — JWT/ApiKey */
-    public async create(
-        payload: FormCreatePayload,
-        options: CatalogCallbacks<string> = {}
-    ): Promise<Result<string>> {
-        return CatalogRunner.run<string>(
-            this.http,
-            { method: 'POST', path: DN_API_FORM, body: payload },
-            options
-        );
+    public async create(payload: FormCreatePayload, options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
+        return CatalogRunner.run<string>(this.http, { method: 'POST', path: DN_API_FORM, body: payload }, options);
     }
 
     /** PATCH `cms/forms/:id` — body = JSON Patch (RFC 6902) — JWT/ApiKey */
@@ -81,9 +71,7 @@ export class FormCatalog {
     }
 
     /** GET `cms/forms/fields/schema` — Returns the FormField schema. — JWT/ApiKey */
-    public async getFieldSchema(
-        options: CatalogCallbacks<SchemaProperty[]> = {}
-    ): Promise<Result<SchemaProperty[]>> {
+    public async getFieldSchema(options: CatalogCallbacks<SchemaProperty[]> = {}): Promise<Result<SchemaProperty[]>> {
         return CatalogRunner.run<SchemaProperty[]>(this.http, { path: DN_API_FORM_FIELDS_SCHEMA }, options);
     }
 
@@ -126,11 +114,7 @@ export class FormCatalog {
     }
 
     /** DELETE `cms/forms/:formId/fields/:fieldId` — JWT/ApiKey */
-    public async deleteField(
-        formId: string,
-        fieldId: string,
-        options: CatalogCallbacks<null> = {}
-    ): Promise<Result> {
+    public async deleteField(formId: string, fieldId: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
             {
@@ -142,16 +126,18 @@ export class FormCatalog {
         );
     }
 
-    /** GET `cms/forms/submissions?formId=...` — JWT/ApiKey */
-    public async getSubmissions(
-        query: FormSubmissionQuery = {},
-        options: CatalogCallbacks<QueryResult<FormSubmissionDto>> = {}
-    ): Promise<Result<QueryResult<FormSubmissionDto>>> {
-        return CatalogRunner.run<QueryResult<FormSubmissionDto>>(
-            this.http,
-            { path: DN_API_FORM_SUBMISSIONS, params: query as Record<string, unknown> },
-            options
-        );
+    /**
+     * GET `cms/forms/submissions?formId=...` — JWT/ApiKey
+     *
+     * Returns the *flat* `QueryResult` directly (see `getList`): `value` is the page of
+     * submissions, `total` the row count — there is no enclosing `Result<…>` level.
+     */
+    public async getSubmissions(query: FormSubmissionQuery = {}): Promise<QueryResult<FormSubmissionDto>> {
+        const res = await this.http.request<QueryResult<FormSubmissionDto>>({
+            path: DN_API_FORM_SUBMISSIONS,
+            params: query as Record<string, unknown>,
+        });
+        return res.data;
     }
 
     /** GET `cms/forms/submissions/:id` — JWT/ApiKey */

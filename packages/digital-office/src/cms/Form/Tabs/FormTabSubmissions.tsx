@@ -51,10 +51,10 @@ export function FormTabSubmissions() {
                 index: pagination.page + 1,
                 size: pagination.rowsPerPage,
             });
-            if (result.hasError) {
-                throw new Error(result.errors?.[0]?.message ?? 'Failed to fetch submissions');
+            if (result.errors?.length) {
+                throw new Error(result.errors[0]?.message ?? 'Failed to fetch submissions');
             }
-            return result.value;
+            return result;
         },
         enabled: !!formId,
     });
