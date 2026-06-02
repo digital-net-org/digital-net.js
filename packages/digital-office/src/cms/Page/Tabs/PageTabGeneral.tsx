@@ -8,6 +8,7 @@ import { useCustomNode } from '../../../app';
 import { useDigitalNetApi } from '../../../api';
 import { DnInputDebounced } from '../../../ui';
 import { usePageVariables } from './usePageVariables';
+import { DnEntityAuditBlock } from '../../../entity/DnEntityAuditBlock';
 
 const ENTITY_TYPE_HELPER = "Définit l'entité DB associée au dernier slug dynamique du chemin.";
 const ENTITY_TYPE_LOCKED_HELPER = 'Ajoutez un slug dynamique (:xxx) dans le chemin pour activer ce champ.';
@@ -123,6 +124,7 @@ export function PageTabGeneral() {
                 variables={variables}
             />
             {renderCustomNode({ entity: 'page', view: 'edit:tab:general:after' })}
+            <DnEntityAuditBlock entity={values} />
         </Stack>
     );
 }

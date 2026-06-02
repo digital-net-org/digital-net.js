@@ -16,6 +16,7 @@ import {
 import { useArticleForm } from './useArticleForm';
 import { useArticleFormTags, type TagOption } from './useArticleFormTags';
 import { useArticleFormRelated } from './useArticleFormRelated';
+import { DnEntityAuditBlock } from '../../../entity/DnEntityAuditBlock';
 
 export function ArticleTabGeneral() {
     const { id } = useParams<{ id: string }>();
@@ -125,6 +126,7 @@ export function ArticleTabGeneral() {
                 loading={related.isFetching}
             />
             {renderCustomNode({ entity: 'article', view: 'edit:tab:general:after' })}
+            <DnEntityAuditBlock entity={values} />
         </Stack>
     );
 }

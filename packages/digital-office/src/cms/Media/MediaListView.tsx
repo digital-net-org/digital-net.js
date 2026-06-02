@@ -35,7 +35,6 @@ export function MediaListView() {
             compute: row => <MediaPreview variant="list" mediaId={row.id} alt={row.alt ?? ''} />,
         },
         { key: 'name', label: 'Nom' },
-        { key: 'alt', label: 'Alt' },
         {
             kind: 'computed',
             key: 'dimensions',
@@ -49,7 +48,6 @@ export function MediaListView() {
             compute: row => formatFileSize(row.fileSize),
         },
         { key: 'published', label: 'Publié' },
-        { key: 'updatedAt', label: 'Modifié le' },
     ];
 
     return (

@@ -10,7 +10,6 @@ const staticProps: DnEntityListViewProps<TagDto> = {
     columns: [
         { key: 'name', label: 'Nom' },
         { key: 'color', label: 'Couleur' },
-        { key: 'updatedAt', label: 'Modifié le' },
     ],
     entityName: 'tag',
     listPath: 'cms/tags',

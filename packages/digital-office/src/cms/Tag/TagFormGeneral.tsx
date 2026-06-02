@@ -1,5 +1,7 @@
+import * as React from 'react';
 import type { TagDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../entity';
+import { DnEntityAuditBlock } from '../../entity/DnEntityAuditBlock';
 
 const fieldProps: DnEntityFormProps['fieldProps'] = {
     Name: {
@@ -17,13 +19,16 @@ export function TagFormGeneral() {
     const { values, setField, errors, disabled } = useDnEntityFormContext<TagDto>();
 
     return (
-        <DnEntityForm
-            schemas={schemas}
-            fieldProps={fieldProps}
-            values={values as Record<string, unknown>}
-            onFieldChange={setField}
-            errors={errors}
-            disabled={disabled}
-        />
+        <React.Fragment>
+            <DnEntityForm
+                schemas={schemas}
+                fieldProps={fieldProps}
+                values={values}
+                onFieldChange={setField}
+                errors={errors}
+                disabled={disabled}
+            />
+            <DnEntityAuditBlock entity={values} />
+        </React.Fragment>
     );
 }

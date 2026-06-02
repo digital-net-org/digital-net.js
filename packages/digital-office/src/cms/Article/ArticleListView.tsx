@@ -42,8 +42,6 @@ const columns: DnColumnDefinition<ArticleListDto>[] = [
                 '—'
             ),
     },
-    { key: 'publishedAt', label: 'Publié le' },
-    { key: 'updatedAt', label: 'Modifié le' },
 ];
 
 export function ArticleListView() {

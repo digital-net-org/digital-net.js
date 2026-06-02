@@ -1,6 +1,8 @@
 import { Stack } from '@mui/material';
 import type { FormDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
+import { DnEntityAuditBlock } from '../../../entity/DnEntityAuditBlock';
+import * as React from 'react';
 
 const fieldProps: DnEntityFormProps['fieldProps'] = {
     Name: {
@@ -17,12 +19,12 @@ const fieldProps: DnEntityFormProps['fieldProps'] = {
     },
     SubmitLabel: {
         label: 'Libellé du bouton',
-        helperText: "Texte affiché sur le bouton de soumission côté visiteur.",
+        helperText: 'Texte affiché sur le bouton de soumission côté visiteur.',
     },
     Path: {
         label: 'Chemin associé',
         helperText:
-            "Lien indicatif vers une page du site (ex. /contact). Sert au binding côté client, pas de relation forte avec une Page.",
+            'Lien indicatif vers une page du site (ex. /contact). Sert au binding côté client, pas de relation forte avec une Page.',
     },
 };
 
@@ -40,6 +42,7 @@ export function FormTabGeneral() {
                 errors={errors}
                 disabled={disabled}
             />
+            <DnEntityAuditBlock entity={values} />
         </Stack>
     );
 }

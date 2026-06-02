@@ -23,7 +23,6 @@ const columns: DnColumnDefinition<FormDto>[] = [
     { key: 'name', label: 'Nom' },
     { key: 'published', label: 'Publié' },
     { key: 'path', label: 'Chemin' },
-    { key: 'updatedAt', label: 'Modifié le' },
 ];
 
 export function FormListView() {

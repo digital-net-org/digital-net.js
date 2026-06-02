@@ -5,6 +5,8 @@ import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntity
 import { useCustomNode } from '../../../app';
 import { formatDate, formatDimensions, formatFileSize } from '../../../ui';
 import { MediaPreview } from '../MediaPreview';
+import { DnEntityAuditBlock } from '../../../entity/DnEntityAuditBlock';
+import * as React from 'react';
 
 const fieldProps: DnEntityFormProps['fieldProps'] = {
     Name: {
@@ -49,6 +51,7 @@ export function MediaTabGeneral() {
                 disabled={disabled}
             />
             {renderCustomNode({ entity: 'media', view: 'edit:tab:general:after' })}
+            <DnEntityAuditBlock entity={values} />
         </Stack>
     );
 }
