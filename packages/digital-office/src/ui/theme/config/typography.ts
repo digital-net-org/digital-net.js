@@ -1,7 +1,15 @@
 import { type TypographyVariantsOptions } from '@mui/material/styles';
 
 export const typography: TypographyVariantsOptions = {
-    fontFamily: 'Roboto',
+    fontFamily: [
+        'Roboto',
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+    ].join(','),
     fontWeightLight: 300,
     fontWeightRegular: 400,
     fontWeightMedium: 500,
