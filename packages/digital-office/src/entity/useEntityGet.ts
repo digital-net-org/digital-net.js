@@ -11,7 +11,7 @@ export interface UseEntityGetResult<T> {
     isNew: boolean;
 }
 
-function unwrapResult<T>(body: unknown): T | undefined {
+export function unwrapResult<T>(body: unknown): T | undefined {
     if (body && typeof body === 'object' && 'value' in body && 'hasError' in body) {
         return (body as Result<T>).value;
     }

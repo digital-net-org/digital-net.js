@@ -1,3 +1,4 @@
+export * from './AdminCatalog';
 export * from './ApplicationCatalog';
 export * from './ArticleCatalog';
 export * from './AuthCatalog';
