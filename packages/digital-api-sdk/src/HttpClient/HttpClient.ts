@@ -9,6 +9,7 @@ import type { Result } from '../types';
 export class HttpClient {
     private readonly baseUrl: string;
     private readonly apiKey?: string;
+    private readonly applicationKey?: string;
     private readonly storageKey: string;
     private readonly apiKeyHeader: string;
 
@@ -21,12 +22,18 @@ export class HttpClient {
     public constructor(config: HttpClientConfig) {
         this.baseUrl = config.baseUrl;
         this.apiKey = config.apiKey;
+        this.applicationKey = config.applicationKey;
         this.storageKey = (config.keyPrefix ?? '') + DN_STORAGE_KEY;
         this.apiKeyHeader = (config.keyPrefix ?? '') + DN_API_KEY_HEADER;
     }
 
     public getBaseUrl(): string {
         return this.baseUrl;
+    }
+
+    /** The shared application key, if configured. Sent raw (no `keyPrefix`) by consumers like the SSE stream. */
+    public getApplicationKey(): string | undefined {
+        return this.applicationKey;
     }
 
     public async request<T = any, B = any>(config: HttpRequestConfig<B>): Promise<HttpResponse<T>> {

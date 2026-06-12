@@ -9,6 +9,11 @@ export interface HttpClientConfig {
      */
     apiKey?: string;
     /**
+     * Optional shared application key. Stored on the client and exposed via `getApplicationKey()` for
+     * consumers that need it. It is NOT prefixed by `keyPrefix` and NOT attached automatically to regular requests.
+     */
+    applicationKey?: string;
+    /**
      * Optional prefix prepended as-is to both:
      *
      * - `DN_STORAGE_KEY` (the localStorage bucket used for the access token)

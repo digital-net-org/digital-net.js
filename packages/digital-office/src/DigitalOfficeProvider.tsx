@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
 import { DnLogo, DnThemeProvider } from './ui';
-import { DigitalNetApiProvider } from './api';
+import { DigitalNetApiProvider, DnMutationStreamProvider } from './api';
 import { IdbProvider } from './storage';
 import { DnEntitySchemaProvider, DnEntityVariablesProvider, DnOgSchemaProvider } from './entity';
 import {
@@ -25,19 +25,21 @@ export function DigitalOfficeProvider({ api, appLogo, customRender, children }: 
             <DnThemeProvider>
                 <ToastProvider>
                     <DigitalNetUserProvider>
-                        <IdbProvider>
-                            <DnEntitySchemaProvider>
-                                <DnOgSchemaProvider>
-                                    <DnEntityVariablesProvider>
-                                        <LayoutProvider appLogo={appLogo ?? <DnLogo />}>
-                                            <CustomRenderProvider customRender={customRender}>
-                                                {children}
-                                            </CustomRenderProvider>
-                                        </LayoutProvider>
-                                    </DnEntityVariablesProvider>
-                                </DnOgSchemaProvider>
-                            </DnEntitySchemaProvider>
-                        </IdbProvider>
+                        <DnMutationStreamProvider>
+                            <IdbProvider>
+                                <DnEntitySchemaProvider>
+                                    <DnOgSchemaProvider>
+                                        <DnEntityVariablesProvider>
+                                            <LayoutProvider appLogo={appLogo ?? <DnLogo />}>
+                                                <CustomRenderProvider customRender={customRender}>
+                                                    {children}
+                                                </CustomRenderProvider>
+                                            </LayoutProvider>
+                                        </DnEntityVariablesProvider>
+                                    </DnOgSchemaProvider>
+                                </DnEntitySchemaProvider>
+                            </IdbProvider>
+                        </DnMutationStreamProvider>
                     </DigitalNetUserProvider>
                 </ToastProvider>
             </DnThemeProvider>

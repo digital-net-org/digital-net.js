@@ -2,6 +2,7 @@ export * from './admin';
 export * from './article';
 export * from './auth';
 export * from './configValue';
+export * from './events';
 export * from './form';
 export * from './media';
 export * from './page';
