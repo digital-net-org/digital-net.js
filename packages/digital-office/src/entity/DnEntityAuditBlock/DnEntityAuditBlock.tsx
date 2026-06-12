@@ -9,7 +9,7 @@ export interface DnEntityAuditBlockProps {
 
 export function DnEntityAuditBlock({ entity }: DnEntityAuditBlockProps) {
     const updatedAt = React.useMemo(() => (entity.updatedAt ? formatDate(entity.updatedAt) : null), [entity.updatedAt]);
-    const createdAt = React.useMemo(() => formatDate(entity.createdAt), [entity.updatedAt]);
+    const createdAt = React.useMemo(() => formatDate(entity.createdAt), [entity.createdAt]);
 
     return (
         <Stack sx={{ pt: 4 }}>

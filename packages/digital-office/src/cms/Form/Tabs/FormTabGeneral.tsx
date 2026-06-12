@@ -1,8 +1,14 @@
+import * as React from 'react';
 import { Stack } from '@mui/material';
 import type { FormDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
-import { DnEntityAuditBlock } from '../../../entity/DnEntityAuditBlock';
-import * as React from 'react';
+import {
+    DnEntityForm,
+    DnEntityAuditBlock,
+    type DnEntityFormProps,
+    useDnEntityFormContext,
+    useEntitySchema,
+} from '../../../entity';
+import { useCustomNode } from '../../../app';
 
 const fieldProps: DnEntityFormProps['fieldProps'] = {
     Name: {
@@ -31,9 +37,11 @@ const fieldProps: DnEntityFormProps['fieldProps'] = {
 export function FormTabGeneral() {
     const { schemas } = useEntitySchema('form');
     const { values, setField, errors, disabled } = useDnEntityFormContext<FormDto>();
+    const { renderCustomNode } = useCustomNode();
 
     return (
         <Stack spacing={2}>
+            {renderCustomNode({ entity: 'form', view: 'edit:tab:general:before' })}
             <DnEntityForm
                 schemas={schemas}
                 fieldProps={fieldProps}
@@ -42,6 +50,7 @@ export function FormTabGeneral() {
                 errors={errors}
                 disabled={disabled}
             />
+            {renderCustomNode({ entity: 'form', view: 'edit:tab:general:after' })}
             <DnEntityAuditBlock entity={values} />
         </Stack>
     );

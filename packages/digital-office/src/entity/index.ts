@@ -1,5 +1,6 @@
 export * from './types';
 export * from './DnQueryKeys';
+export * from './DnEntityAuditBlock';
 export * from './DnEntityTabHelper';
 export * from './DnEntityInput';
 export * from './DnEntityForm';

@@ -3,12 +3,17 @@ import { useParams } from 'react-router';
 import { Stack } from '@mui/material';
 import { PathAnalyzer } from '@digital-net-org/digital-core';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
+import {
+    DnEntityForm,
+    DnEntityAuditBlock,
+    type DnEntityFormProps,
+    useDnEntityFormContext,
+    useEntitySchema,
+} from '../../../entity';
 import { useCustomNode } from '../../../app';
 import { useDigitalNetApi } from '../../../api';
 import { DnInputDebounced } from '../../../ui';
 import { usePageVariables } from './usePageVariables';
-import { DnEntityAuditBlock } from '../../../entity/DnEntityAuditBlock';
 
 const ENTITY_TYPE_HELPER = "Définit l'entité DB associée au dernier slug dynamique du chemin.";
 const ENTITY_TYPE_LOCKED_HELPER = 'Ajoutez un slug dynamique (:xxx) dans le chemin pour activer ce champ.';

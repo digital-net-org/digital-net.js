@@ -1,7 +1,13 @@
 import * as React from 'react';
 import type { TagDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../entity';
-import { DnEntityAuditBlock } from '../../entity/DnEntityAuditBlock';
+import { useCustomNode } from '../../app';
+import {
+    DnEntityForm,
+    DnEntityAuditBlock,
+    type DnEntityFormProps,
+    useDnEntityFormContext,
+    useEntitySchema,
+} from '../../entity';
 
 const fieldProps: DnEntityFormProps['fieldProps'] = {
     Name: {
@@ -17,9 +23,11 @@ const fieldProps: DnEntityFormProps['fieldProps'] = {
 export function TagFormGeneral() {
     const { schemas } = useEntitySchema('tag');
     const { values, setField, errors, disabled } = useDnEntityFormContext<TagDto>();
+    const { renderCustomNode } = useCustomNode();
 
     return (
         <React.Fragment>
+            {renderCustomNode({ entity: 'tag', view: 'edit:tab:general:before' })}
             <DnEntityForm
                 schemas={schemas}
                 fieldProps={fieldProps}
@@ -28,6 +36,7 @@ export function TagFormGeneral() {
                 errors={errors}
                 disabled={disabled}
             />
+            {renderCustomNode({ entity: 'tag', view: 'edit:tab:general:after' })}
             <DnEntityAuditBlock entity={values} />
         </React.Fragment>
     );

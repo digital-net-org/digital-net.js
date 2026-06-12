@@ -1,8 +1,8 @@
 import * as React from 'react';
-import type { DnEntityName } from '../../entity';
 
+export type DnCustomViewEntity = 'page' | 'user' | 'tag' | 'media' | 'article' | 'form';
 export type DnCustomView = 'edit:tab:general:before' | 'edit:tab:general:after';
-export type DnCustomViewDict = Partial<Record<DnEntityName, Partial<Record<DnCustomView, React.ReactNode>>>>;
+export type DnCustomViewDict = Partial<Record<DnCustomViewEntity, Partial<Record<DnCustomView, React.ReactNode>>>>;
 
 const CustomRenderContext = React.createContext<DnCustomViewDict>({});
 
@@ -19,7 +19,7 @@ export function CustomRenderProvider({
 export function useCustomNode() {
     const dict = React.useContext(CustomRenderContext);
     const renderCustomNode = React.useCallback(
-        ({ entity, view }: { entity: DnEntityName; view: DnCustomView }) => dict[entity]?.[view],
+        ({ entity, view }: { entity: DnCustomViewEntity; view: DnCustomView }) => dict[entity]?.[view],
         [dict]
     );
     return {

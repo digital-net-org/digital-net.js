@@ -1,8 +1,9 @@
+import * as React from 'react';
 import { FormControlLabel, Stack, Typography } from '@mui/material';
 import { type useUserData } from '../useUserData';
-import { DnEntityAuditBlock } from '../../entity/DnEntityAuditBlock';
-import * as React from 'react';
+import { DnEntityAuditBlock } from '../../entity';
 import { DnSwitch } from '../../ui';
+import { useCustomNode } from '../../app';
 
 type ReadOnlyData = ReturnType<typeof useUserData>['readOnlyData'];
 
@@ -20,9 +21,12 @@ const readOnlyLabels: Record<keyof Omit<ReadOnlyData, 'updatedAt' | 'createdAt'>
 };
 
 export function UserIdentityTab({ readOnlyData, formState, setFormState, disabled }: UserIdentityTabProps) {
+    const { renderCustomNode } = useCustomNode();
     const { updatedAt, createdAt, ...identityInfo } = readOnlyData;
+
     return (
         <Stack spacing={2} sx={{ maxWidth: 720 }}>
+            {renderCustomNode({ entity: 'user', view: 'edit:tab:general:before' })}
             <Stack sx={{ gap: 2 }}>
                 {Object.entries(identityInfo).map(([key, value]) => (
                     <Stack key={key}>
@@ -59,6 +63,7 @@ export function UserIdentityTab({ readOnlyData, formState, setFormState, disable
                     </Stack>
                 ))}
             </Stack>
+            {renderCustomNode({ entity: 'page', view: 'edit:tab:general:after' })}
             <DnEntityAuditBlock entity={{ updatedAt, createdAt }} />
         </Stack>
     );

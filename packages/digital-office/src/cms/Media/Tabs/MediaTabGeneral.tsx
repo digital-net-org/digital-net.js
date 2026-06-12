@@ -1,12 +1,17 @@
+import * as React from 'react';
 import { Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import type { MediaDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityForm, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
+import {
+    DnEntityForm,
+    DnEntityAuditBlock,
+    type DnEntityFormProps,
+    useDnEntityFormContext,
+    useEntitySchema,
+} from '../../../entity';
 import { useCustomNode } from '../../../app';
 import { formatDate, formatDimensions, formatFileSize } from '../../../ui';
 import { MediaPreview } from '../MediaPreview';
-import { DnEntityAuditBlock } from '../../../entity/DnEntityAuditBlock';
-import * as React from 'react';
 
 const fieldProps: DnEntityFormProps['fieldProps'] = {
     Name: {

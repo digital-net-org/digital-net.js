@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import { Stack } from '@mui/material';
 import { AutoAwesome as AutoAwesomeIcon } from '@mui/icons-material';
 import type { ArticleDto, ArticleRefDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityForm, useDnEntityFormContext, useEntitySchema } from '../../../entity';
+import { DnEntityForm, DnEntityAuditBlock, useDnEntityFormContext, useEntitySchema } from '../../../entity';
 import { useCustomNode } from '../../../app';
 import {
     DnButton,
@@ -16,7 +16,6 @@ import {
 import { useArticleForm } from './useArticleForm';
 import { useArticleFormTags, type TagOption } from './useArticleFormTags';
 import { useArticleFormRelated } from './useArticleFormRelated';
-import { DnEntityAuditBlock } from '../../../entity/DnEntityAuditBlock';
 
 export function ArticleTabGeneral() {
     const { id } = useParams<{ id: string }>();

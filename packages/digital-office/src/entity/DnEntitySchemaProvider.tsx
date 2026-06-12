@@ -16,8 +16,8 @@ export type DnEntityName =
     | 'formField';
 
 const DN_ENTITY_API_PATH: Record<DnEntityName, string> = {
-    page: 'cms/pages',
     user: 'user',
+    page: 'cms/pages',
     pageSheet: 'cms/pages/sheet',
     pageMedia: 'cms/pages/media',
     openGraphEntry: 'cms/pages/open-graph-entry',
