@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { type Entity, type QueryResult, type EntityName, resolveEntityPath } from '@digital-net-org/digital-api-sdk';
 import { type DnFilterDefinition, type DnPaginationState } from '../ui';
 import { type UrlParam, UrlParamBuilder, useUrlQueryState } from '../navigation';
@@ -70,6 +70,9 @@ export function useEntityList<T extends Entity>(
             });
             return result.data;
         },
+        // Keep the current page's rows (and total) visible while the next page/sort/filter loads
+        // instead of flashing an empty table.
+        placeholderData: keepPreviousData,
     });
 
     const pagination = React.useMemo<DnPaginationState>(
