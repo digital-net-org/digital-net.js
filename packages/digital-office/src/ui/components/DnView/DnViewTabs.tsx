@@ -17,6 +17,11 @@ export function DnViewTabs({ items, renderActions, renderBanner }: DnViewTabsPro
     const activeTab = items.find(t => t.key === tab) ?? items[0];
     const [isPending, startTransition] = React.useTransition();
 
+    const [visited, setVisited] = React.useState<ReadonlySet<string>>(() => new Set(activeTab ? [activeTab.key] : []));
+    if (activeTab && !visited.has(activeTab.key)) {
+        setVisited(prev => new Set(prev).add(activeTab.key));
+    }
+
     React.useEffect(
         () => (activeTab && activeTab.key !== tab ? setState({ tab: activeTab.key }) : void 0),
         [activeTab, tab, setState]
@@ -39,6 +44,7 @@ export function DnViewTabs({ items, renderActions, renderBanner }: DnViewTabsPro
             </TabsWrapper>
             {renderBanner}
             {items.map(t => {
+                if (!visited.has(t.key)) return null;
                 const isActive = t.key === activeTab.key;
                 return (
                     <ContentWrapper

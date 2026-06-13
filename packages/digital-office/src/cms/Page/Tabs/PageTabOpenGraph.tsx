@@ -12,11 +12,11 @@ import { EditOpenGraphRow } from './EditOpenGraphRow';
 const OG_DOC_URL = 'https://ogp.me/';
 
 export function PageTabOpenGraph() {
-    const { values, setField, disabled, errors, resetSignal, registerSubValidator } = useDnEntityFormContext<PageDto>();
+    const { values, setField, disabled, errors, resetSignal } = useDnEntityFormContext<PageDto>();
     const api = useDigitalNetApi();
     const pageId = values.id;
 
-    const { schemas: ogEntrySchemas, loading: ogEntrySchemaLoading } = useEntitySchema('openGraphEntry');
+    const { schemas: ogEntrySchemas } = useEntitySchema('openGraphEntry');
     const { data: initialEntries, isLoading: isLoadingEntries } = useQuery<OpenGraphEntry[] | undefined>({
         queryKey: [...buildKeyFromId('page', pageId!), 'openGraph'],
         queryFn: async () => {
@@ -37,17 +37,6 @@ export function PageTabOpenGraph() {
     const { loading: loadingSchema, error, reload } = useOgSchema();
 
     const showErrors = errors?.has('openGraph') ?? false;
-
-    const validityRef = React.useRef({ isValid: state.isValid, schemaLoading: ogEntrySchemaLoading });
-    React.useEffect(() => {
-        validityRef.current = { isValid: state.isValid, schemaLoading: ogEntrySchemaLoading };
-    }, [state.isValid, ogEntrySchemaLoading]);
-    React.useEffect(() => {
-        if (!registerSubValidator) return;
-        return registerSubValidator('openGraph', () =>
-            validityRef.current.schemaLoading || !validityRef.current.isValid ? new Set(['openGraph']) : new Set()
-        );
-    }, [registerSubValidator]);
 
     const renderBody = () => {
         if (loadingSchema || isLoadingEntries) {

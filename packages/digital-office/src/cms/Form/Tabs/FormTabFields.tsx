@@ -9,8 +9,7 @@ import { useFieldSchema } from './useFieldSchema';
 
 export function FormTabFields() {
     const { schemas, loading: schemasLoading } = useFieldSchema();
-    const { values, apiData, setField, disabled, errors, resetSignal, registerSubValidator } =
-        useDnEntityFormContext<FormDto>();
+    const { values, apiData, setField, disabled, errors, resetSignal } = useDnEntityFormContext<FormDto>();
 
     const initialFields = React.useMemo<FormFieldDto[] | undefined>(
         () => (values.fields as FormFieldDto[] | undefined) ?? apiData?.fields,
@@ -19,17 +18,6 @@ export function FormTabFields() {
 
     const state = useFieldsState(initialFields, entries => setField('/fields', entries), resetSignal, schemas);
     const showErrors = errors?.has('fields') ?? false;
-
-    const validityRef = React.useRef({ isValid: state.isValid, schemasLoading });
-    React.useEffect(() => {
-        validityRef.current = { isValid: state.isValid, schemasLoading };
-    }, [state.isValid, schemasLoading]);
-    React.useEffect(() => {
-        if (!registerSubValidator) return;
-        return registerSubValidator('fields', () =>
-            validityRef.current.schemasLoading || !validityRef.current.isValid ? new Set(['fields']) : new Set()
-        );
-    }, [registerSubValidator]);
 
     if (schemasLoading) return <DnLoadingView />;
     return (

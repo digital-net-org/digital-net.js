@@ -19,3 +19,4 @@ export * from './useEntitySchema';
 export * from './useEntityVariables';
 export * from './useEntityRowsState';
 export * from './computeRowErrors';
+export * from './isCollectionValid';

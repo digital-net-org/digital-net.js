@@ -7,10 +7,12 @@ import {
     type FormFieldPayload,
     type JsonPatchOp,
     type Result,
+    type SchemaProperty,
     defaultResult,
     JsonPatch,
+    schemaValidation,
 } from '@digital-net-org/digital-api-sdk';
-import { DnEntityEditView } from '../../entity';
+import { DnEntityEditView, isCollectionValid, useEntitySchema } from '../../entity';
 import { useDigitalNetApi } from '../../api';
 import { FormTabFields, FormTabGeneral, FormTabSubmissions } from './Tabs';
 
@@ -30,6 +32,17 @@ export function FormEditView() {
     const api = useDigitalNetApi();
     const { id } = useParams<{ id: string }>();
     const initialFieldsRef = React.useRef<FormFieldDto[]>([]);
+
+    const { schemas: fieldSchemas, loading: fieldSchemaLoading } = useEntitySchema('formField');
+    const validate = React.useCallback(
+        (values: Partial<FormDto>, formSchemas: SchemaProperty[]) => {
+            const missing = schemaValidation(values, formSchemas);
+            if (values.fields?.length && (fieldSchemaLoading || !isCollectionValid(values.fields, fieldSchemas)))
+                missing.add('fields');
+            return missing;
+        },
+        [fieldSchemas, fieldSchemaLoading]
+    );
 
     const handleGet = React.useCallback(
         async (id: string) => {
@@ -137,6 +150,7 @@ export function FormEditView() {
                     disabled: !id,
                 },
             ]}
+            validate={validate}
             onGet={handleGet}
             onUpdate={handleUpdate}
             onCreate={handleCreate}

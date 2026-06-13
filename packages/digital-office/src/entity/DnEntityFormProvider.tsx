@@ -8,7 +8,6 @@ export interface DnEntityFormBinding<T> {
     errors?: ReadonlySet<string>;
     disabled?: boolean;
     resetSignal?: number;
-    registerSubValidator?: (_key: string, _validate: () => Set<string>) => () => void;
 }
 
 const DnEntityFormContext = React.createContext<DnEntityFormBinding<unknown> | null>(null);
