@@ -26,28 +26,31 @@ export function MediaListView() {
     const queryClient = useQueryClient();
     const [importOpen, setImportOpen] = React.useState(false);
 
-    const columns: DnColumnDefinition<MediaDto>[] = [
-        {
-            kind: 'computed',
-            key: 'preview',
-            label: 'Aperçu',
-            compute: row => <MediaPreview variant="list" mediaId={row.id} alt={row.alt ?? ''} />,
-        },
-        { key: 'name', label: 'Nom' },
-        {
-            kind: 'computed',
-            key: 'dimensions',
-            label: 'Dimensions',
-            compute: row => formatDimensions(row.width, row.height),
-        },
-        {
-            kind: 'computed',
-            key: 'fileSize',
-            label: 'Taille',
-            compute: row => formatFileSize(row.fileSize),
-        },
-        { key: 'published', label: 'Publié' },
-    ];
+    const columns = React.useMemo<DnColumnDefinition<MediaDto>[]>(
+        () => [
+            {
+                kind: 'computed',
+                key: 'preview',
+                label: 'Aperçu',
+                compute: row => <MediaPreview variant="list" mediaId={row.id} alt={row.alt ?? ''} />,
+            },
+            { key: 'name', label: 'Nom' },
+            {
+                kind: 'computed',
+                key: 'dimensions',
+                label: 'Dimensions',
+                compute: row => formatDimensions(row.width, row.height),
+            },
+            {
+                kind: 'computed',
+                key: 'fileSize',
+                label: 'Taille',
+                compute: row => formatFileSize(row.fileSize),
+            },
+            { key: 'published', label: 'Publié' },
+        ],
+        []
+    );
 
     return (
         <React.Fragment>
@@ -60,9 +63,7 @@ export function MediaListView() {
             <MediaImportDialog
                 open={importOpen}
                 onClose={() => setImportOpen(false)}
-                onUploaded={() =>
-                    queryClient.invalidateQueries({ queryKey: buildListKey('media'), refetchType: 'all' })
-                }
+                onUploaded={() => queryClient.invalidateQueries({ queryKey: buildListKey('media') })}
             />
         </React.Fragment>
     );

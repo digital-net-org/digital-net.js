@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Box } from '@mui/material';
-import { useQueryClient } from '@tanstack/react-query';
-import { buildKeyFromId, useDigitalNetApi } from '../../api';
+import { BlobImage } from './BlobImage';
 import { MediaPreviewDialog } from './MediaPreviewDialog';
+import { useMediaImageBlob } from './useMediaImageBlob';
 
 export type MediaPreviewVariant = 'default' | 'list';
 
@@ -27,38 +27,17 @@ const VARIANT_CONFIG: Record<MediaPreviewVariant, VariantConfig> = {
 
 export function MediaPreview({ mediaId, extension, alt = '', variant = 'default' }: MediaPreviewProps) {
     const config = VARIANT_CONFIG[variant];
-    const api = useDigitalNetApi();
-    const queryClient = useQueryClient();
-    const [blobUrl, setBlobUrl] = React.useState<string | null>(null);
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
     const isClickable = variant === 'default';
 
-    React.useEffect(() => {
-        let cancelled = false;
-        let currentUrl: string | null = null;
+    const { data: blob } = useMediaImageBlob(mediaId, {
+        width: config.size * 2,
+        quality: config.quality,
+        extension,
+    });
 
-        (async () => {
-            const result = await api.catalog.media.getImageBlob(mediaId, {
-                width: config.size * 2,
-                quality: config.quality,
-                extension,
-            });
-            if (cancelled || result.hasError || !result.value) return;
-            currentUrl = URL.createObjectURL(result.value);
-            setBlobUrl(currentUrl);
-            // The fetch may have triggered backend lazy variant generation; refresh the cached
-            // MediaDto so `values.variants` reflects the new entry in MediaTabVariants.
-            await queryClient.invalidateQueries({ queryKey: buildKeyFromId('media', mediaId) });
-        })();
-
-        return () => {
-            cancelled = true;
-            if (currentUrl) URL.revokeObjectURL(currentUrl);
-        };
-    }, [api, queryClient, mediaId, extension, config.size, config.quality]);
-
-    if (!blobUrl) {
+    if (!blob) {
         return (
             <Box
                 sx={{
@@ -74,9 +53,8 @@ export function MediaPreview({ mediaId, extension, alt = '', variant = 'default'
 
     return (
         <React.Fragment>
-            <Box
-                component="img"
-                src={blobUrl}
+            <BlobImage
+                blob={blob}
                 alt={alt}
                 loading="lazy"
                 decoding="async"

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Box, CircularProgress, Dialog, DialogContent, IconButton } from '@mui/material';
+import { CircularProgress, Dialog, DialogContent, IconButton } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
-import { useQueryClient } from '@tanstack/react-query';
-import { buildKeyFromId, useDigitalNetApi } from '../../api';
+import { BlobImage } from './BlobImage';
+import { useMediaImageBlob } from './useMediaImageBlob';
 
 export interface MediaPreviewDialogProps {
     open: boolean;
@@ -13,35 +13,18 @@ export interface MediaPreviewDialogProps {
 }
 
 export function MediaPreviewDialog({ open, onClose, mediaId, alt = '' }: MediaPreviewDialogProps) {
-    const api = useDigitalNetApi();
-    const queryClient = useQueryClient();
-    const [blobUrl, setBlobUrl] = React.useState<string | null>(null);
     const [isZoomed, setIsZoomed] = React.useState(false);
 
-    React.useEffect(() => {
-        if (!open) return;
-        let cancelled = false;
-        let currentUrl: string | null = null;
+    const { data: blob } = useMediaImageBlob(mediaId, { enabled: open });
 
-        (async () => {
-            const result = await api.catalog.media.getImageBlob(mediaId);
-            if (cancelled || result.hasError || !result.value) return;
-            currentUrl = URL.createObjectURL(result.value);
-            setBlobUrl(currentUrl);
-            await queryClient.invalidateQueries({ queryKey: buildKeyFromId('media', mediaId) });
-        })();
-
-        return () => {
-            cancelled = true;
-            if (currentUrl) URL.revokeObjectURL(currentUrl);
-            setBlobUrl(null);
-            setIsZoomed(false);
-        };
-    }, [open, api, queryClient, mediaId]);
+    const handleClose = React.useCallback(() => {
+        setIsZoomed(false);
+        onClose();
+    }, [onClose]);
 
     return (
-        <Dialog open={open} onClose={onClose} fullScreen>
-            <CloseButton onClick={onClose} aria-label="Fermer" sx={{ marginRight: 2 }}>
+        <Dialog open={open} onClose={handleClose} fullScreen>
+            <CloseButton onClick={handleClose} aria-label="Fermer" sx={{ marginRight: 2 }}>
                 <CloseIcon />
             </CloseButton>
             <DialogContent
@@ -55,10 +38,9 @@ export function MediaPreviewDialog({ open, onClose, mediaId, alt = '' }: MediaPr
                     bgcolor: 'background.default',
                 }}
             >
-                {blobUrl ? (
-                    <Box
-                        component="img"
-                        src={blobUrl}
+                {open && blob ? (
+                    <BlobImage
+                        blob={blob}
                         alt={alt}
                         onClick={() => setIsZoomed(z => !z)}
                         sx={{
