@@ -26,7 +26,6 @@ export function DnInputDate({ type = 'date', value, defaultValue, onChange, onBl
     const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
         setIsEmpty(event.target.value === '');
         onBlur?.(event);
-        console.log('blur');
     };
 
     return (
