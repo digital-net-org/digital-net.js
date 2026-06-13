@@ -10,10 +10,12 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html';
-import { $getRoot, $insertNodes, type EditorState } from 'lexical';
+import { $getRoot, $insertNodes, BLUR_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
 import { LEXICAL_NODES, LEXICAL_THEME } from './lexicalConfig';
 import { LexicalToolbar } from './LexicalToolbar';
 import { LexicalRoot } from './LexicalRoot';
+
+const SERIALIZE_DEBOUNCE_MS = 300;
 
 export interface LexicalRichEditorProps {
     value: string;
@@ -57,6 +59,12 @@ interface EditorBodyProps {
 function EditorBody({ initialValue, onChange, disabled }: EditorBodyProps) {
     const [editor] = useLexicalComposerContext();
     const initRef = React.useRef(false);
+    const serializeTimerRef = React.useRef<number | null>(null);
+
+    const onChangeRef = React.useRef(onChange);
+    React.useEffect(() => {
+        onChangeRef.current = onChange;
+    }, [onChange]);
 
     // Hydrate the editor once with the initial HTML.
     React.useEffect(() => {
@@ -79,14 +87,38 @@ function EditorBody({ initialValue, onChange, disabled }: EditorBodyProps) {
         editor.setEditable(!disabled);
     }, [editor, disabled]);
 
-    const handleChange = React.useCallback(
-        (_state: EditorState) => {
-            editor.read(() => {
-                const html = $generateHtmlFromNodes(editor, null);
-                onChange(html);
-            });
+    const serializeNow = React.useCallback(() => {
+        if (serializeTimerRef.current !== null) {
+            window.clearTimeout(serializeTimerRef.current);
+            serializeTimerRef.current = null;
+        }
+        editor.read(() => onChangeRef.current($generateHtmlFromNodes(editor, null)));
+    }, [editor]);
+
+    const handleChange = React.useCallback(() => {
+        if (serializeTimerRef.current !== null) window.clearTimeout(serializeTimerRef.current);
+        serializeTimerRef.current = window.setTimeout(serializeNow, SERIALIZE_DEBOUNCE_MS);
+    }, [serializeNow]);
+
+    React.useEffect(
+        () =>
+            editor.registerCommand(
+                BLUR_COMMAND,
+                () => {
+                    serializeNow();
+                    return false;
+                },
+                COMMAND_PRIORITY_LOW
+            ),
+        [editor, serializeNow]
+    );
+
+    // Drop any pending timer on unmount blur has already flushed the latest value
+    React.useEffect(
+        () => () => {
+            if (serializeTimerRef.current !== null) window.clearTimeout(serializeTimerRef.current);
         },
-        [editor, onChange]
+        []
     );
 
     return (
