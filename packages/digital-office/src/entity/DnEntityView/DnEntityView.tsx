@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Alert, CircularProgress, Link, Typography } from '@mui/material';
 import { Delete as DeleteIcon, Refresh as RefreshIcon, Save as SaveIcon } from '@mui/icons-material';
-import { type Entity } from '@digital-net-org/digital-api-sdk';
 import { DnDialog, DnIconButton, DnView, formatDate, type DnViewTab } from '../../ui';
 
 export type DnEntityViewTab = DnViewTab;

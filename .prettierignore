@@ -1,0 +1,11 @@
+.github/
+eslint/
+/node_modules/
+*/**/node_modules/
+*/**/dist/
+
+*.js
+*.mjs
+*.yml
+*.yaml
+*.md

@@ -10,7 +10,7 @@ export interface DnDraggableRowProps {
     id: string;
     disabled?: boolean;
     children?: React.ReactNode;
-    onDelete?: (id: string) => void;
+    onDelete?: (_id: string) => void;
 }
 
 export function DnDraggableRow({ id, disabled = false, onDelete = undefined, children }: DnDraggableRowProps) {

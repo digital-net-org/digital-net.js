@@ -12,7 +12,7 @@ import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrate
 
 export interface DnDraggableContext {
     rows: string[] | Array<{ id: string }>;
-    onSort: (active: string, over: string) => void;
+    onSort: (_active: string, _over: string) => void;
     children: React.ReactNode;
 }
 

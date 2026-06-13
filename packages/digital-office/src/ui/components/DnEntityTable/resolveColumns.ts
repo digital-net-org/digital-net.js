@@ -19,10 +19,7 @@ export type ResolvedColumn<T = unknown> =
           compute: (_row: T) => React.ReactNode;
       };
 
-export function resolveColumns<T>(
-    schema: SchemaProperty[],
-    columns?: DnColumnDefinition<T>[]
-): ResolvedColumn<T>[] {
+export function resolveColumns<T>(schema: SchemaProperty[], columns?: DnColumnDefinition<T>[]): ResolvedColumn<T>[] {
     const base: ResolvedColumn<T>[] = schema
         .filter(prop => !prop.isSecret && !prop.isIdentity)
         .map(prop => ({

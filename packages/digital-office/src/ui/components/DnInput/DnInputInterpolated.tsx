@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Chip, Stack, Tooltip, Typography } from '@mui/material';
 import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { DnInput, type DnInputProps } from './DnInput';
 import { DnInputInterpolatedPopover } from './DnInputInterpolatedPopover';

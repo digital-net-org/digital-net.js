@@ -25,10 +25,7 @@ export interface UseRouterBlockerResult {
 export function useRouterBlocker({ when }: UseRouterBlockerOptions): UseRouterBlockerResult {
     const shouldBlock = React.useCallback<
         (_args: { currentLocation: { pathname: string }; nextLocation: { pathname: string } }) => boolean
-    >(
-        ({ currentLocation, nextLocation }) => when && currentLocation.pathname !== nextLocation.pathname,
-        [when]
-    );
+    >(({ currentLocation, nextLocation }) => when && currentLocation.pathname !== nextLocation.pathname, [when]);
     const blocker = useBlocker(shouldBlock);
 
     React.useEffect(() => {

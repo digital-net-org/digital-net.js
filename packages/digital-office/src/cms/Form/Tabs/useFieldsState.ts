@@ -96,10 +96,7 @@ export function useFieldsState(
     resetSignal: number | undefined,
     schemas: SchemaProperty[]
 ) {
-    const computeErrors = React.useCallback(
-        (rows: FieldRow[]) => computeRowErrors(rows, schemas),
-        [schemas]
-    );
+    const computeErrors = React.useCallback((rows: FieldRow[]) => computeRowErrors(rows, schemas), [schemas]);
     const base = useEntityRowsState<FieldRow, FormFieldDto>({
         initial: initialEntries,
         onChange,

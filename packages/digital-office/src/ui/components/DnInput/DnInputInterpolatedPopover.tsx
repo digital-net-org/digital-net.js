@@ -9,7 +9,7 @@ export interface DnInputInterpolatedPopoverProps {
     anchorPosition: { top: number; left: number } | null;
     query: string;
     variables: TemplateVariable[];
-    onSelect: (token: string) => void;
+    onSelect: (_token: string) => void;
     onClose: () => void;
 }
 

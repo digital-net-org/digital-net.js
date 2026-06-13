@@ -3,7 +3,7 @@ import type { Query } from '@tanstack/react-query';
 
 export interface InvalidationFilter {
     queryKey?: readonly unknown[];
-    predicate?: (query: Query) => boolean;
+    predicate?: (_query: Query) => boolean;
 }
 
 export function resolveInvalidations(signal: MutationSignal, currentUserId?: string): InvalidationFilter[] {

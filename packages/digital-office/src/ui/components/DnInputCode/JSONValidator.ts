@@ -315,10 +315,14 @@ export class JSONValidator {
                     if (innerType && JSONLD_TYPES[innerType]) {
                         this.walkObject(item, { type: innerType, relativePath: [] }, errors);
                     } else {
-                        this.walkObject(item, {
-                            type: anchor.type,
-                            relativePath: [...anchor.relativePath, key],
-                        }, errors);
+                        this.walkObject(
+                            item,
+                            {
+                                type: anchor.type,
+                                relativePath: [...anchor.relativePath, key],
+                            },
+                            errors
+                        );
                     }
                 }
             }
@@ -330,7 +334,10 @@ export class JSONValidator {
     // -----------------------
 
     private validateValue(node: JsonNode, valueType: string, enumValues: string[] | undefined): string | null {
-        const alternatives = valueType.split('|').map(s => s.trim()).filter(Boolean);
+        const alternatives = valueType
+            .split('|')
+            .map(s => s.trim())
+            .filter(Boolean);
         for (const alt of alternatives) {
             if (this.matchesType(node, alt, enumValues)) return null;
         }

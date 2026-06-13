@@ -7,9 +7,9 @@ import { DnButton } from '../DnButton';
 
 export interface DnDraggableListProps<T extends { id: string }> {
     rows: T[];
-    onSort: (active: string, over: string) => void;
+    onSort: (_active: string, _over: string) => void;
     onCreate?: () => void;
-    renderRow: (row: T) => React.ReactNode;
+    renderRow: (_row: T) => React.ReactNode;
     disabled?: boolean;
 }
 

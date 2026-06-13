@@ -11,6 +11,6 @@ export interface MutationSignal {
 export type MutationStreamState = 'connecting' | 'open' | 'closed';
 
 export interface MutationStreamConnectOptions {
-    onSignal: (signal: MutationSignal) => void;
-    onStateChange?: (state: MutationStreamState) => void;
+    onSignal: (_signal: MutationSignal) => void;
+    onStateChange?: (_state: MutationStreamState) => void;
 }
