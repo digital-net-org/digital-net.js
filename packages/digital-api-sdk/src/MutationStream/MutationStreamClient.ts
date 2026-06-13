@@ -3,15 +3,13 @@ import { DN_APPLICATION_KEY_HEADER, type HttpClient } from '../HttpClient';
 import type { MutationSignal, MutationStreamConnectOptions, MutationStreamState } from './types';
 import { SseParser } from './SseParser';
 import { StreamRequestError } from './StreamRequestError';
+import { computeBackoffDelay, isConnectionStable } from './backoff';
 
 const DN_API_EVENTS_MUTATION_STREAM = 'events/mutation/stream' as const;
 const MUTATION_EVENT_TYPE = 'mutation';
-const BASE_RETRY_DELAY_MS = 1_000;
-const MAX_RETRY_DELAY_MS = 30_000;
 
 /**
- * Consumes the API mutation stream (`GET events/mutation/stream`, Server-Sent Events) over
- * `fetch` + `ReadableStream` — `EventSource` cannot send auth headers. Authenticates with the
+ * Consumes the API mutation stream `ReadableStream`, `EventSource` cannot send auth headers. Authenticates with the
  * shared application key (mandatory: throws without one). Reconnects automatically with exponential
  * backoff and resumes from the last received cursor (`?lastEventId=`): missed signals are replayed
  * by the server catch-up, so no invalidation is ever lost.
@@ -61,9 +59,10 @@ export class MutationStreamClient {
 
         while (!signal.aborted) {
             this.setState('connecting', options);
+            let openedAt: number | null = null;
             try {
                 await this.streamOnce(options, signal, () => {
-                    attempt = 0;
+                    openedAt = Date.now();
                     this.setState('open', options);
                 });
             } catch {
@@ -75,14 +74,19 @@ export class MutationStreamClient {
             if (signal.aborted) {
                 break;
             }
-            attempt += 1;
-            await this.delay(Math.min(MAX_RETRY_DELAY_MS, BASE_RETRY_DELAY_MS * 2 ** (attempt - 1)), signal);
+            // Reset the backoff only after a stable connection. Otherwise an accept-then-close server would
+            // reconnect in a ~1s tight loop forever instead of backing off.
+            attempt = isConnectionStable(openedAt, Date.now()) ? 0 : attempt + 1;
+            await this.delay(computeBackoffDelay(attempt), signal);
         }
 
-        if (this.abortController === abortController) {
+        const isCurrent = this.abortController === abortController;
+        if (isCurrent) {
             this.abortController = null;
         }
-        this.setState('closed', options);
+        if (isCurrent || this.abortController === null) {
+            this.setState('closed', options);
+        }
     }
 
     private async streamOnce(
