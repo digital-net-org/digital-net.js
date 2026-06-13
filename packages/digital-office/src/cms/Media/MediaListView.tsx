@@ -2,7 +2,8 @@ import * as React from 'react';
 import { useNavigate } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import type { MediaDto } from '@digital-net-org/digital-api-sdk';
-import { DN_QUERY_KEY_LIST, DnEntityListView, type DnEntityListViewProps } from '../../entity';
+import { DnEntityListView, type DnEntityListViewProps } from '../../entity';
+import { buildListKey } from '../../api';
 import { type DnColumnDefinition, formatFileSize, formatDimensions } from '../../ui';
 import { MediaImportDialog } from './MediaImportDialog';
 import { MediaPreview } from './MediaPreview';
@@ -13,8 +14,6 @@ const staticProps: DnEntityListViewProps<MediaDto> = {
     identifier: { singular: 'média', plural: 'médias', gender: 'm' },
     identifierAccessor: 'name',
     entityName: 'media',
-    listPath: 'cms/media',
-    deletePath: 'cms/media/:id',
     draftStoreName: 'media',
     filters: [
         { type: 'like', key: 'name', label: 'Nom', placeholder: 'logo, banner…' },
@@ -62,10 +61,7 @@ export function MediaListView() {
                 open={importOpen}
                 onClose={() => setImportOpen(false)}
                 onUploaded={() =>
-                    queryClient.invalidateQueries({
-                        queryKey: [DN_QUERY_KEY_LIST, staticProps.listPath],
-                        refetchType: 'all',
-                    })
+                    queryClient.invalidateQueries({ queryKey: buildListKey('media'), refetchType: 'all' })
                 }
             />
         </React.Fragment>

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
-import { useDigitalNetApi } from '../../api';
-import { DN_QUERY_KEY_GET } from '../../entity';
+import { buildKeyFromId, useDigitalNetApi } from '../../api';
 import { MediaPreviewDialog } from './MediaPreviewDialog';
 
 export type MediaPreviewVariant = 'default' | 'list';
@@ -50,7 +49,7 @@ export function MediaPreview({ mediaId, extension, alt = '', variant = 'default'
             setBlobUrl(currentUrl);
             // The fetch may have triggered backend lazy variant generation; refresh the cached
             // MediaDto so `values.variants` reflects the new entry in MediaTabVariants.
-            await queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_GET, 'media', mediaId] });
+            await queryClient.invalidateQueries({ queryKey: buildKeyFromId('media', mediaId) });
         })();
 
         return () => {

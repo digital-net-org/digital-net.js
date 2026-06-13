@@ -1,15 +1,7 @@
 import * as React from 'react';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
-
-const dnQueryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            staleTime: 5 * 60 * 1000,
-            retry: 1,
-        },
-    },
-});
+import { dnQueryClient } from './queryClient';
 
 const DigitalNetApiContext = React.createContext<DigitalApi | null>(null);
 

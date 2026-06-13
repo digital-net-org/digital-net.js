@@ -1,13 +1,19 @@
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import type { Entity, JsonPatchOp, Result, SchemaProperty } from '@digital-net-org/digital-api-sdk';
+import {
+    type Entity,
+    type CrudEntityName,
+    type JsonPatchOp,
+    type Result,
+    type SchemaProperty,
+    schemaValidation,
+} from '@digital-net-org/digital-api-sdk';
 import { DnEntityView, type DnEntityViewTab } from '../DnEntityView';
 import { DnEntityFormProvider, type DnEntityFormBinding } from '../DnEntityFormProvider';
 import { useEntityDraft } from '../useEntityDraft';
 import { useEntityFormState } from '../useEntityFormState';
 import { useEntitySchema } from '../useEntitySchema';
-import { type DnEntityName } from '../DnEntitySchemaProvider';
 import { useRouterBlocker } from '../../navigation';
 import type { DRAFT_STORES } from '../../storage';
 import { DnDialog, DnLoadingView } from '../../ui';
@@ -20,35 +26,21 @@ import {
     buildDeleteTitle,
     buildDeletedToast,
 } from './identifier';
-import { DN_QUERY_KEY_GET, DN_QUERY_KEY_LIST } from '../DnQueryKeys';
+import { buildKeyFromId, buildListKey, useDigitalNetApi } from '../../api';
 
 export interface DnEntityEditViewProps<T extends Entity> {
-    entityName: DnEntityName;
+    entityName: CrudEntityName;
     identifier: EntityIdentifier;
     identifierAccessor: keyof T;
     draftStoreName: (typeof DRAFT_STORES)[number];
     tabs: DnEntityViewTab[];
     description?: string;
-    onGet: (_id: string) => Promise<Result<T>>;
+    onGet?: (_id: string) => Promise<Result<T>>;
     onCreate?: (_values: Partial<T>) => Promise<Result<string>>;
-    onUpdate: (_id: string, _ops: JsonPatchOp[]) => Promise<Result<unknown>>;
-    onDelete: (_id: string) => Promise<Result<unknown>>;
+    onUpdate?: (_id: string, _ops: JsonPatchOp[]) => Promise<Result<unknown>>;
+    onDelete?: (_id: string) => Promise<Result<unknown>>;
     redirectPath: string;
-    listPath: string;
     validate?: (_values: Partial<T>, _schemas: SchemaProperty[]) => Set<string>;
-}
-
-export function defaultValidate<T>(values: Partial<T>, schemas: SchemaProperty[]): Set<string> {
-    const missing = new Set<string>();
-    const record = values as Record<string, unknown>;
-    for (const s of schemas) {
-        if (!s.isRequired || s.isReadOnly || s.isIdentity) continue;
-        const accessor = `${s.name.charAt(0).toLowerCase()}${s.name.slice(1)}`;
-        const v = record[accessor];
-        const isEmpty = v === undefined || v === null || (typeof v === 'string' && v.trim() === '');
-        if (isEmpty) missing.add(accessor);
-    }
-    return missing;
 }
 
 export function DnEntityEditView<T extends Entity>({
@@ -63,13 +55,15 @@ export function DnEntityEditView<T extends Entity>({
     onUpdate,
     onDelete,
     redirectPath,
-    listPath,
     validate,
 }: DnEntityEditViewProps<T>) {
     const { id } = useParams<{ id: string }>();
     const isNew = !id;
+
     const navigate = useNavigate();
+    const api = useDigitalNetApi();
     const queryClient = useQueryClient();
+
     const { showToast } = useDigitalToast();
 
     const {
@@ -78,9 +72,9 @@ export function DnEntityEditView<T extends Entity>({
         isFetching,
         isError,
     } = useQuery<T | undefined>({
-        queryKey: [DN_QUERY_KEY_GET, entityName, id],
+        queryKey: buildKeyFromId(entityName, id!),
         queryFn: async () => {
-            const result = await onGet(id!);
+            const result = onGet ? await onGet(id!) : await api.catalog.crud.getById<T>(entityName, id!);
             if (result.hasError) {
                 throw new Error(result.errors?.[0]?.message ?? `Failed to fetch ${entityName}`);
             }
@@ -108,7 +102,6 @@ export function DnEntityEditView<T extends Entity>({
     }, []);
 
     const blocker = useRouterBlocker({ when: isNew && create.isDirty && !isSaving });
-
     const inputsDisabled = isSaving || isDeleting || (!isNew && isFetching);
 
     const rawSetField = isNew ? create.setField : edit.setField;
@@ -148,12 +141,12 @@ export function DnEntityEditView<T extends Entity>({
           };
 
     const invalidateList = React.useCallback(
-        () => queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_LIST, listPath] }),
-        [queryClient, listPath]
+        () => queryClient.invalidateQueries({ queryKey: buildListKey(entityName) }),
+        [entityName, queryClient]
     );
 
     const invalidateGet = React.useCallback(
-        () => queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_GET, entityName, id] }),
+        () => queryClient.invalidateQueries({ queryKey: buildKeyFromId(entityName, id!) }),
         [queryClient, entityName, id]
     );
 
@@ -170,7 +163,7 @@ export function DnEntityEditView<T extends Entity>({
     const handleSave = React.useCallback(async () => {
         if (isSaving) return;
         const values = (isNew ? create.values : edit.values) as Partial<T>;
-        const missing = new Set((validate ?? defaultValidate)(values, schemas));
+        const missing = new Set((validate ?? schemaValidation)(values, schemas));
         for (const fn of subValidatorsRef.current.values()) {
             for (const key of fn()) missing.add(key);
         }
@@ -197,7 +190,9 @@ export function DnEntityEditView<T extends Entity>({
                 navigate(`${redirectPath}/${created.value}`);
                 return;
             }
-            const updated = await onUpdate(id!, edit.ops);
+            const updated = onUpdate
+                ? await onUpdate(id, edit.ops)
+                : await api.catalog.crud.patchById(entityName, id, edit.ops);
             if (updated.hasError) {
                 showToast('Erreur lors de la sauvegarde', 'error');
                 return;
@@ -210,8 +205,10 @@ export function DnEntityEditView<T extends Entity>({
             setIsSaving(false);
         }
     }, [
+        api.catalog,
         create.values,
         edit,
+        entityName,
         id,
         identifier,
         invalidateGet,
@@ -232,7 +229,7 @@ export function DnEntityEditView<T extends Entity>({
         if (!id) return;
         setIsDeleting(true);
         try {
-            const result = await onDelete(id);
+            const result = onDelete ? await onDelete(id) : await api.catalog.crud.deleteById(entityName, id);
             if (result.hasError) {
                 showToast('Erreur lors de la suppression', 'error');
                 return;
@@ -244,7 +241,7 @@ export function DnEntityEditView<T extends Entity>({
         } finally {
             setIsDeleting(false);
         }
-    }, [edit, id, identifier, invalidateList, navigate, onDelete, redirectPath, showToast]);
+    }, [api.catalog, edit, entityName, id, identifier, invalidateList, navigate, onDelete, redirectPath, showToast]);
 
     if (!isNew && isLoading) return <DnLoadingView />;
     if (!isNew && isError) return <NotFoundView />;

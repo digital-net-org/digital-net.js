@@ -12,8 +12,6 @@ const staticProps: DnEntityListViewProps<TagDto> = {
         { key: 'color', label: 'Couleur' },
     ],
     entityName: 'tag',
-    listPath: 'cms/tags',
-    deletePath: 'cms/tags/:id',
     draftStoreName: 'tags',
     filters: [{ type: 'like', key: 'name', label: 'Nom', placeholder: 'marketing, design...' }],
 };

@@ -13,9 +13,9 @@ import {
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { useQueryClient } from '@tanstack/react-query';
 import type { MediaDto, MediaVariantDto } from '@digital-net-org/digital-api-sdk';
-import { useDigitalNetApi } from '../../../api';
+import { buildKeyFromId, useDigitalNetApi } from '../../../api';
 import { useDigitalToast } from '../../../app';
-import { DN_QUERY_KEY_GET, useDnEntityFormContext } from '../../../entity';
+import { useDnEntityFormContext } from '../../../entity';
 import { DnButton, DnDialog, formatDate, formatDimensions, formatFileSize } from '../../../ui';
 
 type ConfirmTarget = { kind: 'all' } | { kind: 'one'; variantId: string } | null;
@@ -34,7 +34,7 @@ export function MediaTabVariants() {
 
     const refresh = React.useCallback(() => {
         if (!mediaId) return;
-        return queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_GET, 'media', mediaId] });
+        return queryClient.invalidateQueries({ queryKey: buildKeyFromId('media', mediaId) });
     }, [queryClient, mediaId]);
 
     const handleConfirm = async () => {

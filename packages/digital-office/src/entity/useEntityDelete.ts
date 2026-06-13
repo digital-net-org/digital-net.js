@@ -1,11 +1,17 @@
 import * as React from 'react';
-import { type QueryKey, useQueryClient } from '@tanstack/react-query';
-import { HttpClientError, type Entity, type QueryResult } from '@digital-net-org/digital-api-sdk';
-import { ArrayBuilder } from '@digital-net-org/digital-core';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+    HttpClientError,
+    resolveEntityPath,
+    type Entity,
+    type EntityName,
+    type QueryResult,
+} from '@digital-net-org/digital-api-sdk';
+import { ArrayBuilder, URLResolver } from '@digital-net-org/digital-core';
 import { type DnEntityFailureDialogContentProps } from './DnEntityListView/DnEntityDialogFailure';
 import { resolveDeleteLabel } from './DnEntityListView/identifier';
 import { type EntityIdentifier } from './types';
-import { useDigitalNetApi } from '../api';
+import { buildListKey, useDigitalNetApi } from '../api';
 import { useDigitalToast } from '../app';
 
 const CHUNK_SIZE = 5;
@@ -18,8 +24,7 @@ interface DeleteTarget {
 type DeleteResult = { success: true; target: DeleteTarget } | { success: false; target: DeleteTarget; error: unknown };
 
 export interface UseEntityDeleteOptions<T extends Entity> {
-    deletePath: string;
-    listQueryKey: QueryKey;
+    entityName: EntityName;
     entitiesResult: QueryResult<T> | undefined;
     identifier: EntityIdentifier;
     identifierAccessor: keyof T;
@@ -42,13 +47,17 @@ export interface UseEntityDeleteResult {
 }
 
 export function useEntityDelete<T extends Entity>({
-    deletePath,
-    listQueryKey,
     entitiesResult,
+    entityName,
     identifier,
     identifierAccessor,
     protectedDelete,
 }: UseEntityDeleteOptions<T>): UseEntityDeleteResult {
+    const apiPath = resolveEntityPath(entityName);
+    if (!apiPath) {
+        throw new Error('useEntityList: could not resolve entity list API path.');
+    }
+
     const api = useDigitalNetApi();
     const queryClient = useQueryClient();
     const { showToast } = useDigitalToast();
@@ -80,7 +89,7 @@ export function useEntityDelete<T extends Entity>({
             try {
                 await api.http.request({
                     method: 'DELETE',
-                    path: deletePath,
+                    path: URLResolver.resolve(apiPath, ':id'),
                     slugs: { id: target.id },
                     ...(password ? { body: { password } } : {}),
                 });
@@ -89,7 +98,7 @@ export function useEntityDelete<T extends Entity>({
                 return { success: false, target, error };
             }
         },
-        [api, deletePath]
+        [api.http, apiPath]
     );
 
     const showFeedback = React.useCallback(
@@ -134,13 +143,13 @@ export function useEntityDelete<T extends Entity>({
                 for (const r of results) if (!r.success) failures.push(r.target);
             }
 
-            await queryClient.invalidateQueries({ queryKey: listQueryKey });
+            await queryClient.invalidateQueries({ queryKey: buildListKey(entityName) });
             setPasswordDialogOpen(false);
             setIsDeleting(false);
             showFeedback(failures, targets.length);
             return true;
         },
-        [buildTargets, deleteOne, listQueryKey, protectedDelete, queryClient, showFeedback]
+        [buildTargets, deleteOne, entityName, protectedDelete, queryClient, showFeedback]
     );
 
     const handleConfirmPassword = React.useCallback(

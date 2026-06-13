@@ -9,8 +9,6 @@ const staticProps: DnEntityListViewProps<FormDto> = {
     identifier: { singular: 'formulaire', plural: 'formulaires', gender: 'm' },
     identifierAccessor: 'name',
     entityName: 'form',
-    listPath: 'cms/forms',
-    deletePath: 'cms/forms/:id',
     draftStoreName: 'forms',
     filters: [
         { type: 'like', key: 'name', label: 'Nom', placeholder: 'rechercher…' },

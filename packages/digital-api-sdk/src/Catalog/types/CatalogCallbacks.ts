@@ -1,5 +1,5 @@
-import type { ResultMessage } from '../../types';
-import type { HttpRequestConfig, HttpResponse } from '../../HttpClient/types';
+import type { ResultMessage } from '../../Result';
+import type { HttpRequestConfig, HttpResponse } from '../../HttpClient';
 import type { CatalogError } from './CatalogError';
 
 export interface CatalogCallbacks<T = unknown> {

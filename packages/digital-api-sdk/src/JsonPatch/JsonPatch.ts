@@ -1,4 +1,4 @@
-import type { JsonPatchOp } from '../types';
+import type { JsonPatchOp } from './JsonPatchOp';
 
 export class JsonPatch {
     private static pathSegments(path: string): string[] {

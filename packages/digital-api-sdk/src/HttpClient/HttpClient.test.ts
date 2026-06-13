@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpClient } from './HttpClient';
 import { HttpClientError } from './HttpClientError';
-import { DN_API_AUTH_USER_REFRESH } from '../routes';
 import { DN_STORAGE_KEY } from './constants';
+import { DN_API_AUTH_USER_REFRESH } from '../Catalog';
 
 const BASE_URL = 'https://api.example.test';
 

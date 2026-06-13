@@ -1,20 +1,11 @@
 import * as React from 'react';
-import { JsonPatch, type JsonPatchOp, type PageDto } from '@digital-net-org/digital-api-sdk';
+import { JsonPatch, type PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityEditView } from '../../entity';
 import { useDigitalNetApi } from '../../api';
 import { PageTabGeneral, PageTabJsonLd, PageTabOpenGraph, PageTabSheets } from './Tabs';
 
 export function PageEditView() {
     const api = useDigitalNetApi();
-
-    const handleGet = React.useCallback((id: string) => api.catalog.page.getById(id), [api.catalog.page]);
-
-    const handleDelete = React.useCallback((id: string) => api.catalog.page.delete(id), [api.catalog.page]);
-
-    const handleUpdate = React.useCallback(
-        (id: string, ops: JsonPatchOp[]) => api.catalog.page.update(id, ops),
-        [api.catalog.page]
-    );
 
     const handleCreate = React.useCallback(
         async (values: Partial<PageDto>) => {
@@ -28,12 +19,11 @@ export function PageEditView() {
     );
 
     return (
-        <DnEntityEditView
+        <DnEntityEditView<PageDto>
             entityName="page"
             identifier={{ singular: 'page', plural: 'pages', gender: 'f' }}
             identifierAccessor="path"
             draftStoreName="pages"
-            listPath="cms/pages"
             redirectPath="/content-manager/pages"
             tabs={[
                 {
@@ -57,9 +47,6 @@ export function PageEditView() {
                     content: <PageTabSheets />,
                 },
             ]}
-            onGet={handleGet}
-            onDelete={handleDelete}
-            onUpdate={handleUpdate}
             onCreate={handleCreate}
         />
     );

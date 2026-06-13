@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import type { MediaDto, QueryResult } from '@digital-net-org/digital-api-sdk';
-import { useDigitalNetApi } from '../../api';
-import { DN_QUERY_KEY_LIST } from '../../entity';
+import { buildListKey, useDigitalNetApi } from '../../api';
 import { DnButton, DnInputAutocomplete } from '../../ui';
 import { MediaPreview } from './MediaPreview';
 
@@ -44,7 +43,7 @@ export function MediaPicker({ value, label, disabled, error, helperText, onChang
         isLoading,
         isFetching,
     } = useQuery<QueryResult<MediaDto>>({
-        queryKey: [DN_QUERY_KEY_LIST, 'cms/media', { name: search, size }],
+        queryKey: [...buildListKey('media'), { name: search, size }],
         queryFn: async () => {
             const params: Record<string, unknown> = { size, index: 1 };
             if (search) params.name = search;

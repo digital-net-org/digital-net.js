@@ -1,9 +1,15 @@
 import * as React from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { ObjectMapper } from '@digital-net-org/digital-core';
-import { JsonPatch, type ArticleDto, type JsonPatchOp, type SchemaProperty } from '@digital-net-org/digital-api-sdk';
-import { useDigitalNetApi } from '../../api';
-import { DN_QUERY_KEY_LIST, DnEntityEditView, defaultValidate } from '../../entity';
+import {
+    JsonPatch,
+    schemaValidation,
+    type ArticleDto,
+    type JsonPatchOp,
+    type SchemaProperty,
+} from '@digital-net-org/digital-api-sdk';
+import { buildListKey, useDigitalNetApi } from '../../api';
+import { DnEntityEditView } from '../../entity';
 import { ArticleTabContent, ArticleTabGeneral } from './Tabs';
 
 const DEFAULT_CONTENT = '<p class="paragraph"></p>';
@@ -12,9 +18,6 @@ export function ArticleEditView() {
     const api = useDigitalNetApi();
     const queryClient = useQueryClient();
 
-    const handleGet = React.useCallback((id: string) => api.catalog.article.getById(id), [api.catalog.article]);
-    const handleDelete = React.useCallback((id: string) => api.catalog.article.delete(id), [api.catalog.article]);
-
     const handleUpdate = React.useCallback(
         async (id: string, ops: JsonPatchOp[]) => {
             const patched = ops.map(op =>
@@ -22,7 +25,7 @@ export function ArticleEditView() {
             );
             const result = await api.catalog.article.update(id, patched);
             if (!result.hasError && patched.some(op => op.path.startsWith('/tags')))
-                await queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_LIST, 'cms/tags'] });
+                await queryClient.invalidateQueries({ queryKey: buildListKey('tag') });
             return result;
         },
         [api.catalog.article, queryClient]
@@ -30,7 +33,7 @@ export function ArticleEditView() {
 
     const validate = React.useCallback(
         (values: Partial<ArticleDto>, schemas: SchemaProperty[]) =>
-            defaultValidate(
+            schemaValidation(
                 values,
                 schemas.filter(s => s.name !== 'Content')
             ),
@@ -50,19 +53,18 @@ export function ArticleEditView() {
             const extraOps = JsonPatch.fromValues(ObjectMapper.pick(values, ['tags', 'related']));
             if (extraOps.length > 0) await api.catalog.article.update(created.value, extraOps);
             if (extraOps.some(op => op.path.startsWith('/tags')))
-                await queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_LIST, 'cms/tags'] });
+                await queryClient.invalidateQueries({ queryKey: buildListKey('tag') });
             return created;
         },
         [api.catalog.article, queryClient]
     );
 
     return (
-        <DnEntityEditView
+        <DnEntityEditView<ArticleDto>
             entityName="article"
             identifier={{ singular: 'article', plural: 'articles', gender: 'm' }}
             identifierAccessor="title"
             draftStoreName="articles"
-            listPath="cms/articles"
             redirectPath="/content-manager/articles"
             tabs={[
                 {
@@ -76,8 +78,6 @@ export function ArticleEditView() {
                     content: <ArticleTabContent />,
                 },
             ]}
-            onGet={handleGet}
-            onDelete={handleDelete}
             onUpdate={handleUpdate}
             onCreate={handleCreate}
             validate={validate}

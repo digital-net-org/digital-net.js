@@ -8,6 +8,7 @@ describe('URLResolver', () => {
             { paths: ['https://example.com', 'auth', 'login'], expected: 'https://example.com/auth/login' },
             { paths: ['https://example.com', '/auth', '/login/'], expected: 'https://example.com/auth/login' },
             { paths: ['https://example.com', '/auth', 'login'], expected: 'https://example.com/auth/login' },
+            { paths: ['https://example.com', '/user', ':id'], expected: 'https://example.com/user/:id' },
         ])('should resolve $paths to $expected', ({ paths, expected }) => {
             expect(URLResolver.resolve(...paths)).toBe(expected);
         });

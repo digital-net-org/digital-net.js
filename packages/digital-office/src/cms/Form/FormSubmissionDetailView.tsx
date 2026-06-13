@@ -3,25 +3,10 @@ import { useNavigate, useParams } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Box, Breadcrumbs, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { ArrowBack as ArrowBackIcon, DeleteOutlined as DeleteIcon } from '@mui/icons-material';
-import type { FormDto, FormFieldDto, FormSubmissionDto } from '@digital-net-org/digital-api-sdk';
-import { useDigitalNetApi } from '../../api';
-import { DnLoadingView, DnView } from '../../ui';
+import type { FormDto, FormFieldDto } from '@digital-net-org/digital-api-sdk';
+import { buildKeyFromId, useDigitalNetApi } from '../../api';
+import { DnLoadingView, DnView, formatDate } from '../../ui';
 import { NotFoundView, useDigitalToast } from '../../app';
-import { DN_QUERY_KEY_GET } from '../../entity';
-
-const DATE_FORMAT = new Intl.DateTimeFormat('fr-FR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-});
-
-function formatDate(value: string | undefined): string {
-    if (!value) return '—';
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? '—' : DATE_FORMAT.format(date);
-}
 
 function parseValues(json: string): Record<string, string | null> {
     try {
@@ -58,8 +43,8 @@ export function FormSubmissionDetailView() {
     const queryClient = useQueryClient();
     const { showToast } = useDigitalToast();
 
-    const submissionQuery = useQuery<FormSubmissionDto | undefined>({
-        queryKey: [DN_QUERY_KEY_GET, 'formSubmission', id],
+    const submissionQuery = useQuery({
+        queryKey: buildKeyFromId('formSubmission', id!),
         queryFn: async () => {
             const result = await api.catalog.form.getSubmissionById(id!);
             if (result.hasError) throw new Error(result.errors?.[0]?.message ?? 'Failed to fetch submission');
@@ -69,10 +54,10 @@ export function FormSubmissionDetailView() {
         retry: false,
     });
 
-    const formQuery = useQuery<FormDto | undefined>({
-        queryKey: [DN_QUERY_KEY_GET, 'form', formId],
+    const formQuery = useQuery({
+        queryKey: buildKeyFromId('form', formId!),
         queryFn: async () => {
-            const result = await api.catalog.form.getById(formId!);
+            const result = await api.catalog.crud.getById<FormDto>('form', formId!);
             if (result.hasError) throw new Error(result.errors?.[0]?.message ?? 'Failed to fetch form');
             return result.value;
         },
@@ -88,9 +73,9 @@ export function FormSubmissionDetailView() {
             return;
         }
         showToast('Soumission supprimée', 'info');
-        await queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_GET, 'form', formId, 'submissions'] });
+        await queryClient.invalidateQueries({ queryKey: buildKeyFromId('formSubmission', id) });
         navigate(`/content-manager/forms/${formId}`);
-    }, [api.catalog.form, formId, id, navigate, queryClient, showToast]);
+    }, [api.catalog, formId, id, navigate, queryClient, showToast]);
 
     if (submissionQuery.isLoading || formQuery.isLoading) return <DnLoadingView />;
     if (submissionQuery.isError || formQuery.isError || !submissionQuery.data || !formQuery.data) {

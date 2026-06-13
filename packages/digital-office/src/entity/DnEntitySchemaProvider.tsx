@@ -1,39 +1,12 @@
 import * as React from 'react';
-import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
+import type { EntityName, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { useDigitalNetApi } from '../api';
 
-export type DnEntityName =
-    | 'page'
-    | 'user'
-    | 'pageSheet'
-    | 'pageMedia'
-    | 'openGraphEntry'
-    | 'tag'
-    | 'media'
-    | 'article'
-    | 'articleMedia'
-    | 'form'
-    | 'formField';
-
-const DN_ENTITY_API_PATH: Record<DnEntityName, string> = {
-    user: 'user',
-    page: 'cms/pages',
-    pageSheet: 'cms/pages/sheet',
-    pageMedia: 'cms/pages/media',
-    openGraphEntry: 'cms/pages/open-graph-entry',
-    tag: 'cms/tags',
-    media: 'cms/media',
-    article: 'cms/articles',
-    articleMedia: 'cms/articles/media',
-    form: 'cms/forms',
-    formField: 'cms/forms/fields',
-};
-
 export interface DnEntitySchemaContextValue {
-    schemas: Partial<Record<DnEntityName, SchemaProperty[]>>;
-    errors: Partial<Record<DnEntityName, Error>>;
-    loadingEntities: ReadonlySet<DnEntityName>;
-    loadSchema: (_entityName: DnEntityName) => void;
+    schemas: Partial<Record<EntityName, SchemaProperty[]>>;
+    errors: Partial<Record<EntityName, Error>>;
+    loadingEntities: ReadonlySet<EntityName>;
+    loadSchema: (_entityName: EntityName) => void;
 }
 
 const DnEntitySchemaContext = React.createContext<DnEntitySchemaContextValue | null>(null);
@@ -44,14 +17,14 @@ export interface DnEntitySchemaProviderProps {
 
 export function DnEntitySchemaProvider({ children }: DnEntitySchemaProviderProps) {
     const api = useDigitalNetApi();
-    const [schemas, setSchemas] = React.useState<Partial<Record<DnEntityName, SchemaProperty[]>>>({});
-    const [errors, setErrors] = React.useState<Partial<Record<DnEntityName, Error>>>({});
-    const [loadingEntities, setLoadingEntities] = React.useState<ReadonlySet<DnEntityName>>(() => new Set());
-    const inFlightRef = React.useRef<Set<DnEntityName>>(new Set());
-    const loadedRef = React.useRef<Set<DnEntityName>>(new Set());
+    const [schemas, setSchemas] = React.useState<Partial<Record<EntityName, SchemaProperty[]>>>({});
+    const [errors, setErrors] = React.useState<Partial<Record<EntityName, Error>>>({});
+    const [loadingEntities, setLoadingEntities] = React.useState<ReadonlySet<EntityName>>(() => new Set());
+    const inFlightRef = React.useRef<Set<EntityName>>(new Set());
+    const loadedRef = React.useRef<Set<EntityName>>(new Set());
 
     const loadSchema = React.useCallback(
-        (entityName: DnEntityName) => {
+        (entityName: EntityName) => {
             if (loadedRef.current.has(entityName) || inFlightRef.current.has(entityName)) return;
             inFlightRef.current.add(entityName);
             setLoadingEntities(prev => {
@@ -60,7 +33,7 @@ export function DnEntitySchemaProvider({ children }: DnEntitySchemaProviderProps
                 return next;
             });
             (async () => {
-                const result = await api.catalog.getSchema(DN_ENTITY_API_PATH[entityName]);
+                const result = await api.catalog.crud.getSchema(entityName);
                 loadedRef.current.add(entityName);
                 inFlightRef.current.delete(entityName);
                 if (result.hasError) {

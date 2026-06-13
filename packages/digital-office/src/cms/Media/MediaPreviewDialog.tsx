@@ -3,8 +3,7 @@ import { Box, CircularProgress, Dialog, DialogContent, IconButton } from '@mui/m
 import { Close as CloseIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { useQueryClient } from '@tanstack/react-query';
-import { useDigitalNetApi } from '../../api';
-import { DN_QUERY_KEY_GET } from '../../entity';
+import { buildKeyFromId, useDigitalNetApi } from '../../api';
 
 export interface MediaPreviewDialogProps {
     open: boolean;
@@ -29,7 +28,7 @@ export function MediaPreviewDialog({ open, onClose, mediaId, alt = '' }: MediaPr
             if (cancelled || result.hasError || !result.value) return;
             currentUrl = URL.createObjectURL(result.value);
             setBlobUrl(currentUrl);
-            await queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_GET, 'media', mediaId] });
+            await queryClient.invalidateQueries({ queryKey: buildKeyFromId('media', mediaId) });
         })();
 
         return () => {

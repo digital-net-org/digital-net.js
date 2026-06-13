@@ -1,5 +1,4 @@
 export * from './types';
-export * from './DnQueryKeys';
 export * from './DnEntityAuditBlock';
 export * from './DnEntityTabHelper';
 export * from './DnEntityInput';
@@ -15,7 +14,6 @@ export * from './useEntityDelete';
 export * from './useEntityDraft';
 export * from './useEntityDraftIndex';
 export * from './useEntityFormState';
-export * from './useEntityGet';
 export * from './useEntityList';
 export * from './useEntitySchema';
 export * from './useEntityVariables';

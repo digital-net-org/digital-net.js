@@ -33,14 +33,12 @@ export function FormEditView() {
 
     const handleGet = React.useCallback(
         async (id: string) => {
-            const result = await api.catalog.form.getById(id);
+            const result = await api.catalog.crud.getById<FormDto>('form', id);
             if (result.value) initialFieldsRef.current = result.value.fields ?? [];
             return result;
         },
-        [api.catalog.form]
+        [api.catalog]
     );
-
-    const handleDelete = React.useCallback((id: string) => api.catalog.form.delete(id), [api.catalog.form]);
 
     const syncFields = React.useCallback(
         async (id: string, newFields: FormFieldDto[]): Promise<Result<any>> => {
@@ -123,12 +121,11 @@ export function FormEditView() {
     );
 
     return (
-        <DnEntityEditView
+        <DnEntityEditView<FormDto>
             entityName="form"
             identifier={{ singular: 'formulaire', plural: 'formulaires', gender: 'm' }}
             identifierAccessor="name"
             draftStoreName="forms"
-            listPath="cms/forms"
             redirectPath="/content-manager/forms"
             tabs={[
                 { key: 'general', label: 'Général', content: <FormTabGeneral /> },
@@ -141,7 +138,6 @@ export function FormEditView() {
                 },
             ]}
             onGet={handleGet}
-            onDelete={handleDelete}
             onUpdate={handleUpdate}
             onCreate={handleCreate}
         />

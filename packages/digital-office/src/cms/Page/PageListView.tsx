@@ -14,8 +14,6 @@ const staticProps: DnEntityListViewProps<PageDto> = {
         { key: 'published', label: 'Publiée' },
     ],
     entityName: 'page',
-    listPath: 'cms/pages',
-    deletePath: 'cms/pages/:id',
     draftStoreName: 'pages',
     filters: [
         { type: 'like', key: 'path', label: 'Chemin', placeholder: '/blog/...' },

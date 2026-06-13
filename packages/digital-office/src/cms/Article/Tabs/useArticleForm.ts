@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { StringResolver } from '@digital-net-org/digital-core';
 import type { ArticleDto, PageDto, QueryResult } from '@digital-net-org/digital-api-sdk';
-import { DN_QUERY_KEY_LIST, type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
-import { useDigitalNetApi } from '../../../api';
+import { type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
+import { buildListKey, useDigitalNetApi } from '../../../api';
 
 const SLUG_HELPER = 'Segment d\'URL public de l\'article (ex: "mon-article").';
 const SLUG_AVAILABILITY_ERROR = "Ce segment d'URL est déjà utilisé.";
@@ -70,7 +70,7 @@ export function useArticleForm(articleId: string | undefined) {
         isLoading: pagesLoading,
         isFetching: pagesFetching,
     } = useQuery<QueryResult<PageDto>>({
-        queryKey: [DN_QUERY_KEY_LIST, 'cms/pages', { entityType: 'Article', size: pagesSize }],
+        queryKey: [...buildListKey('page'), { entityType: 'Article', size: pagesSize }],
         queryFn: async () => {
             const result = await api.http.request<QueryResult<PageDto>>({
                 path: 'cms/pages',

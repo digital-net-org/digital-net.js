@@ -1,23 +1,19 @@
 import * as React from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { type UserDto } from '@digital-net-org/digital-api-sdk';
-import { useDigitalNetApi } from '../api';
+import { type UserDto, unwrapResult } from '@digital-net-org/digital-api-sdk';
+import { buildKeyFromId, useDigitalNetApi } from '../api';
 import { NotFoundException, useDigitalToast } from '../app';
-import { DN_QUERY_KEY_GET, unwrapResult } from '../entity';
-
-const API_PATH = '/admin/user/:id';
 
 export function useUserData(id: string | undefined) {
     const api = useDigitalNetApi();
     const queryClient = useQueryClient();
     const { showToast } = useDigitalToast();
 
-    const queryKey = React.useMemo(() => [DN_QUERY_KEY_GET, API_PATH, id], [id]);
     const { data, isLoading, error } = useQuery<UserDto | undefined>({
-        queryKey,
+        queryKey: buildKeyFromId('user', id!),
         queryFn: async () => {
             const response = await api.http.request<unknown>({
-                path: API_PATH,
+                path: 'user/:id',
                 slugs: { id: id! },
             });
             const result = unwrapResult<UserDto>(response.data);
@@ -32,7 +28,7 @@ export function useUserData(id: string | undefined) {
     });
 
     if (error || !Boolean(id)) {
-        throw new NotFoundException(`Utilisateur introuvable (${API_PATH}, id=${id})`);
+        throw new NotFoundException(`Utilisateur introuvable`);
     }
 
     const [dataInit, setDataInit] = React.useState<boolean>(false);
@@ -61,14 +57,14 @@ export function useUserData(id: string | undefined) {
 
         const promises: Promise<any>[] = [];
         if (data.isAdmin !== formState.isAdmin) {
-            promises.push(api.catalog.admin.updateUserRole({ isAdmin: formState.isAdmin }, id));
+            promises.push(api.catalog.user.updateUserRole({ isAdmin: formState.isAdmin }, id));
         }
         if (data.isActive !== formState.isActive) {
-            promises.push(api.catalog.admin.updateUserStatus({ isActive: formState.isActive }, id));
+            promises.push(api.catalog.user.updateUserStatus({ isActive: formState.isActive }, id));
         }
         try {
             await Promise.all(promises);
-            await queryClient.invalidateQueries({ queryKey });
+            await queryClient.invalidateQueries({ queryKey: buildKeyFromId('user', id!) });
         } catch {
             showToast('Une erreur est survenue lors de la sauvegarde des modifications.', 'error');
         }
@@ -76,7 +72,7 @@ export function useUserData(id: string | undefined) {
         // TODO: handle 403 on status change => If admin cannot set inactive, should be toasted
         // TODO: handle password prompt on Admin status change, try to use existing logic
         setIsSaving(false);
-    }, [api.catalog.admin, data, formState.isActive, formState.isAdmin, id, queryClient, queryKey, showToast]);
+    }, [api.catalog.user, data, formState.isActive, formState.isAdmin, id, queryClient, showToast]);
 
     return {
         readOnlyData,

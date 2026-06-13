@@ -14,8 +14,6 @@ const staticProps: DnEntityListViewProps<UserDto> = {
         { key: 'isAdmin', label: 'Administrateur' },
     ],
     entityName: 'user',
-    listPath: 'admin/user',
-    deletePath: 'admin/user/:id',
     filters: [
         { type: 'boolean', key: 'isactive', label: 'Actif uniquement' },
         { type: 'like', key: 'username', label: "Nom d'utilisateur", placeholder: 'Benoit...' },

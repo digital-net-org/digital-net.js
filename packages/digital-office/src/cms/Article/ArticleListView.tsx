@@ -10,8 +10,6 @@ const staticProps: DnEntityListViewProps<ArticleListDto> = {
     identifier: { singular: 'article', plural: 'articles', gender: 'm' },
     identifierAccessor: 'title',
     entityName: 'article',
-    listPath: 'cms/articles',
-    deletePath: 'cms/articles/:id',
     draftStoreName: 'articles',
     filters: [
         { type: 'like', key: 'name', label: 'Titre', placeholder: 'rechercher…' },

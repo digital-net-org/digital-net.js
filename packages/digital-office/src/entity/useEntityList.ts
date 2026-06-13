@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { type QueryKey, useQuery } from '@tanstack/react-query';
-import { type Entity, type QueryResult } from '@digital-net-org/digital-api-sdk';
+import { useQuery } from '@tanstack/react-query';
+import { type Entity, type QueryResult, type EntityName, resolveEntityPath } from '@digital-net-org/digital-api-sdk';
 import { type DnFilterDefinition, type DnPaginationState } from '../ui';
 import { type UrlParam, UrlParamBuilder, useUrlQueryState } from '../navigation';
-import { useDigitalNetApi } from '../api';
-import { DN_QUERY_KEY_LIST } from './DnQueryKeys';
+import { useDigitalNetApi, buildListKey } from '../api';
 
 export type SortDirection = 'asc' | 'desc' | '';
 
@@ -18,7 +17,6 @@ export interface UseEntityListResult<T extends Entity> {
     isLoading: boolean;
     pagination: DnPaginationState;
     setPagination: (_next: DnPaginationState) => void;
-    listQueryKey: QueryKey;
     sort: SortState;
     toggleSort: (_accessor: string) => void;
     filterValues: Record<string, string>;
@@ -28,9 +26,14 @@ export interface UseEntityListResult<T extends Entity> {
 }
 
 export function useEntityList<T extends Entity>(
-    listPath: string,
+    entityName: EntityName,
     filters?: DnFilterDefinition[]
 ): UseEntityListResult<T> {
+    const apiPath = resolveEntityPath(entityName);
+    if (!apiPath) {
+        throw new Error('useEntityList: could not resolve entity list API path.');
+    }
+
     const api = useDigitalNetApi();
     const [query, setQuery] = useUrlQueryState({
         page: UrlParamBuilder.buildInt(1, 'page'),
@@ -47,8 +50,6 @@ export function useEntityList<T extends Entity>(
     const [filterValues, setFilterValues] = useUrlQueryState(filterSchema);
 
     const urlPage = React.useMemo(() => Math.max(0, query.page - 1), [query.page]);
-    const listQueryKey = React.useMemo<QueryKey>(() => [DN_QUERY_KEY_LIST, listPath], [listPath]);
-
     const activeFilters = React.useMemo(() => {
         const out: Record<string, string> = {};
         for (const [k, v] of Object.entries(filterValues)) if (v !== '') out[k] = v;
@@ -56,10 +57,10 @@ export function useEntityList<T extends Entity>(
     }, [filterValues]);
 
     const { data: entitiesResult, isLoading } = useQuery<QueryResult<T>>({
-        queryKey: [...listQueryKey, urlPage, query.row, query.orderBy, query.order, activeFilters],
+        queryKey: [...buildListKey(entityName), urlPage, query.row, query.orderBy, query.order, activeFilters],
         queryFn: async () => {
             const result = await api.http.request<QueryResult<T>>({
-                path: listPath,
+                path: apiPath,
                 params: {
                     index: urlPage + 1,
                     size: query.row,
@@ -116,7 +117,6 @@ export function useEntityList<T extends Entity>(
         isLoading,
         pagination,
         setPagination,
-        listQueryKey,
         sort,
         toggleSort,
         filterValues,

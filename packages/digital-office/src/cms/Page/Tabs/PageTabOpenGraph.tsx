@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Alert as MuiAlert, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import type { OpenGraphEntry, PageDto } from '@digital-net-org/digital-api-sdk';
-import { useDigitalNetApi } from '../../../api';
-import { useDnEntityFormContext, useEntitySchema, DnEntityTabHelper, DN_QUERY_KEY_GET } from '../../../entity';
+import { buildKeyFromId, useDigitalNetApi } from '../../../api';
+import { useDnEntityFormContext, useEntitySchema, DnEntityTabHelper } from '../../../entity';
 import { DnButton, DnDraggableList, DnExternalButton, DnLoadingView } from '../../../ui';
 import { useOgState } from './useOgState';
 import { useOgSchema } from './useOgSchema';
@@ -18,7 +18,7 @@ export function PageTabOpenGraph() {
 
     const { schemas: ogEntrySchemas, loading: ogEntrySchemaLoading } = useEntitySchema('openGraphEntry');
     const { data: initialEntries, isLoading: isLoadingEntries } = useQuery<OpenGraphEntry[] | undefined>({
-        queryKey: [DN_QUERY_KEY_GET, 'page', pageId, 'openGraph'],
+        queryKey: [...buildKeyFromId('page', pageId!), 'openGraph'],
         queryFn: async () => {
             const result = await api.catalog.page.getOpenGraphForEdit(pageId!);
             if (result.hasError) {

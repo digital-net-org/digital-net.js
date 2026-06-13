@@ -13,59 +13,56 @@ function fakeQuery(queryKey: readonly unknown[]): Query {
 
 describe('resolveInvalidations', () => {
     it.each([
-        ['Article', 'cms/articles', 'article'],
-        ['Page', 'cms/pages', 'page'],
-        ['Media', 'cms/media', 'media'],
-        ['Tag', 'cms/tags', 'tag'],
-        ['Form', 'cms/forms', 'form'],
-    ])('maps %s to its list prefix and its get key', (entity, listPath, getName) => {
-        const filters = resolveInvalidations(signal(entity, 'abc'));
-
-        expect(filters).toEqual([
-            { queryKey: ['dn-entity-list', listPath] },
-            { queryKey: ['dn-entity-get', getName, 'abc'] },
-        ]);
+        ['Article', 'article'],
+        ['Page', 'page'],
+        ['Media', 'media'],
+        ['Tag', 'tag'],
+        ['Form', 'form'],
+    ])('maps %s to its single entity prefix', (entity, entityName) => {
+        expect(resolveInvalidations(signal(entity, 'abc'))).toEqual([{ queryKey: [entityName] }]);
     });
 
-    it('maps FormField to the forms list only (the parent-touch covers the form detail)', () => {
-        expect(resolveInvalidations(signal('FormField'))).toEqual([{ queryKey: ['dn-entity-list', 'cms/forms'] }]);
+    it('maps FormField to the form prefix (fields are embedded in the FormDto)', () => {
+        expect(resolveInvalidations(signal('FormField'))).toEqual([{ queryKey: ['form'] }]);
     });
 
-    it('maps FormSubmission to its detail key and the submissions tabs of any form', () => {
+    it('maps FormSubmission to its prefix and the submissions tabs of any form', () => {
         const filters = resolveInvalidations(signal('FormSubmission', 'sub-1'));
 
-        expect(filters[0]).toEqual({ queryKey: ['dn-entity-get', 'formSubmission', 'sub-1'] });
+        expect(filters[0]).toEqual({ queryKey: ['formSubmission'] });
         const predicate = filters[1].predicate!;
-        expect(predicate(fakeQuery(['dn-entity-get', 'form', 'f1', 'submissions', 1, 25]))).toBe(true);
-        expect(predicate(fakeQuery(['dn-entity-get', 'form', 'f1']))).toBe(false);
-        expect(predicate(fakeQuery(['dn-entity-list', 'cms/forms']))).toBe(false);
+        expect(predicate(fakeQuery(['form', 'dn-entity-get', 'f1', 'submissions', 1, 25]))).toBe(true);
+        expect(predicate(fakeQuery(['form', 'dn-entity-get', 'f1']))).toBe(false);
+        expect(predicate(fakeQuery(['form', 'dn-entity-list']))).toBe(false);
+        expect(predicate(fakeQuery(['formSubmission', 'dn-entity-get', 'sub-1']))).toBe(false);
     });
 
-    it('maps User to the admin get key', () => {
-        expect(resolveInvalidations(signal('User', 'u1'), 'someone-else')).toEqual([
-            { queryKey: ['dn-entity-get', '/admin/user', 'u1'] },
-        ]);
+    it('maps User to the user prefix only when the mutation targets someone else', () => {
+        expect(resolveInvalidations(signal('User', 'u1'), 'someone-else')).toEqual([{ queryKey: ['user'] }]);
     });
 
     it('also invalidates the self user when the mutation targets the current user', () => {
-        const filters = resolveInvalidations(signal('User', 'u1'), 'u1');
-
-        expect(filters).toContainEqual({ queryKey: ['dn-user', 'self'] });
+        expect(resolveInvalidations(signal('User', 'u1'), 'u1')).toEqual([
+            { queryKey: ['user'] },
+            { queryKey: ['dn-user'] },
+        ]);
     });
 
-    it('maps ConfigValue to the config-value prefix', () => {
-        expect(resolveInvalidations(signal('ConfigValue'))).toEqual([{ queryKey: ['config-value'] }]);
+    it('maps ConfigValue to its prefix and the legacy config-value convention', () => {
+        expect(resolveInvalidations(signal('ConfigValue'))).toEqual([
+            { queryKey: ['configValue'] },
+            { queryKey: ['config-value'] },
+        ]);
     });
 
-    it('ignores unmapped entities (Document, unknown types)', () => {
+    it('ignores backend types without an SDK entity (Document, ApiKey, unknown)', () => {
         expect(resolveInvalidations(signal('Document'))).toEqual([]);
+        expect(resolveInvalidations(signal('ApiKey'))).toEqual([]);
         expect(resolveInvalidations(signal('SomethingNew'))).toEqual([]);
     });
 
     it('matches entity names case-insensitively', () => {
-        expect(resolveInvalidations(signal('page', 'p1'))).toEqual([
-            { queryKey: ['dn-entity-list', 'cms/pages'] },
-            { queryKey: ['dn-entity-get', 'page', 'p1'] },
-        ]);
+        expect(resolveInvalidations(signal('page', 'p1'))).toEqual([{ queryKey: ['page'] }]);
+        expect(resolveInvalidations(signal('FORMFIELD'))).toEqual([{ queryKey: ['form'] }]);
     });
 });

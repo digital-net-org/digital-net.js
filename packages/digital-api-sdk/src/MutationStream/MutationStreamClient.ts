@@ -1,10 +1,10 @@
 import { URLResolver } from '@digital-net-org/digital-core';
 import { DN_APPLICATION_KEY_HEADER, type HttpClient } from '../HttpClient';
-import { DN_API_EVENTS_MUTATION_STREAM } from '../routes';
 import type { MutationSignal, MutationStreamConnectOptions, MutationStreamState } from './types';
 import { SseParser } from './SseParser';
 import { StreamRequestError } from './StreamRequestError';
 
+const DN_API_EVENTS_MUTATION_STREAM = 'events/mutation/stream' as const;
 const MUTATION_EVENT_TYPE = 'mutation';
 const BASE_RETRY_DELAY_MS = 1_000;
 const MAX_RETRY_DELAY_MS = 30_000;

@@ -1,4 +1,4 @@
-import type { Result, ResultMessage } from '../../types';
+import type { Result, ResultMessage } from '../../Result';
 
 export interface CatalogError<T = unknown> {
     /** HTTP status code returned by the server. */

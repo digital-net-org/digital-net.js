@@ -1,13 +1,13 @@
 import * as React from 'react';
-import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
-import { type DnEntityName, useDnEntitySchemaContext } from './DnEntitySchemaProvider';
+import type { SchemaProperty, EntityName } from '@digital-net-org/digital-api-sdk';
+import { useDnEntitySchemaContext } from './DnEntitySchemaProvider';
 
 export interface UseEntitySchemaResult {
     schemas: SchemaProperty[];
     loading: boolean;
 }
 
-export function useEntitySchema(entityName: DnEntityName): UseEntitySchemaResult {
+export function useEntitySchema(entityName: EntityName): UseEntitySchemaResult {
     const { schemas, errors, loadingEntities, loadSchema } = useDnEntitySchemaContext();
 
     React.useEffect(() => loadSchema(entityName), [entityName, loadSchema]);

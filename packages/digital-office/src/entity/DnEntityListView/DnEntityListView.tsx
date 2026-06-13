@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { type Entity } from '@digital-net-org/digital-api-sdk';
+import type { Entity, EntityName } from '@digital-net-org/digital-api-sdk';
 import {
     type DnColumnDefinition,
     type DnFilterDefinition,
@@ -11,7 +11,6 @@ import {
 } from '../../ui';
 import { DnEntityDialogFailure } from './DnEntityDialogFailure';
 import { type EntityIdentifier } from '../types';
-import { type DnEntityName } from '../DnEntitySchemaProvider';
 import { useEntityList } from '../useEntityList';
 import { useEntitySchema } from '../useEntitySchema';
 import { useEntityDelete } from '../useEntityDelete';
@@ -32,14 +31,7 @@ export interface DnEntityListViewProps<T extends Entity> {
     description: string;
     identifier: EntityIdentifier;
     identifierAccessor: keyof T;
-    entityName: DnEntityName;
-    listPath: string;
-    deletePath: string;
-    /**
-     * Name of the draft store, used to highlight rows that have local unsaved
-     * changes. Should match the key used by `useEntityDraft`, e.g. `"pages"`.
-     * Omit to disable the draft indicator.
-     */
+    entityName: EntityName;
     draftStoreName?: string;
     columns?: DnColumnDefinition<T>[];
     filters?: DnFilterDefinition[];
@@ -54,8 +46,6 @@ export function DnEntityListView<T extends Entity>({
     identifier,
     identifierAccessor,
     entityName,
-    listPath,
-    deletePath,
     draftStoreName,
     columns,
     filters,
@@ -64,22 +54,22 @@ export function DnEntityListView<T extends Entity>({
     onCreate,
 }: DnEntityListViewProps<T>) {
     const { schemas, loading: isSchemaLoading } = useEntitySchema(entityName);
+
     const {
         entitiesResult,
         isLoading,
         pagination,
         setPagination,
-        listQueryKey,
         sort,
         toggleSort,
         filterValues,
         setFilterValues,
         resetFilters,
         activeFilterCount,
-    } = useEntityList<T>(listPath, filters);
+    } = useEntityList<T>(entityName, filters);
+
     const { handleDelete, passwordDialog, failureDialog } = useEntityDelete<T>({
-        deletePath,
-        listQueryKey,
+        entityName,
         entitiesResult,
         identifier,
         identifierAccessor,

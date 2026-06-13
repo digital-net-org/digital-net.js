@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Stack } from '@mui/material';
 import type { FormDto, FormSubmissionDto } from '@digital-net-org/digital-api-sdk';
-import { useDigitalNetApi } from '../../../api';
+import { buildKeyFromId, useDigitalNetApi } from '../../../api';
 import { useDigitalToast } from '../../../app';
-import { DN_QUERY_KEY_GET, useDnEntityFormContext } from '../../../entity';
+import { useDnEntityFormContext } from '../../../entity';
 import {
     type DnColumnDefinition,
     type DnPaginationState,
@@ -34,17 +34,8 @@ export function FormTabSubmissions() {
         totalRows: 0,
     });
 
-    const queryKey = [
-        DN_QUERY_KEY_GET,
-        'form',
-        formId,
-        'submissions',
-        pagination.page,
-        pagination.rowsPerPage,
-    ] as const;
-
     const { data, isLoading } = useQuery({
-        queryKey,
+        queryKey: [...buildKeyFromId('form', formId!), 'submissions', pagination.page, pagination.rowsPerPage],
         queryFn: async () => {
             const result = await api.catalog.form.getSubmissions({
                 formId,
@@ -67,7 +58,7 @@ export function FormTabSubmissions() {
                 return false;
             }
             showToast(`${ids.size} soumission${ids.size > 1 ? 's' : ''} supprimée${ids.size > 1 ? 's' : ''}`, 'info');
-            await queryClient.invalidateQueries({ queryKey: [DN_QUERY_KEY_GET, 'form', formId, 'submissions'] });
+            await queryClient.invalidateQueries({ queryKey: [...buildKeyFromId('form', formId!), 'submissions'] });
             return true;
         },
         [api.catalog.form, formId, queryClient, showToast]

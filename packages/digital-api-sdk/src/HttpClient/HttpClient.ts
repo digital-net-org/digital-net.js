@@ -1,10 +1,10 @@
 import { DigitalEvent, Env, URLResolver } from '@digital-net-org/digital-core';
 import { DN_API_KEY_HEADER, DN_DEFAULT_HEADERS, DN_STORAGE_KEY } from './constants';
-import { DN_API_AUTH_USER_REFRESH } from '../routes';
+import { DN_API_AUTH_USER_REFRESH } from '../Catalog';
 import { HttpClientError } from './HttpClientError';
 import { HttpSerializer } from './HttpSerializer';
 import type { HttpClientConfig, HttpRequestConfig, HttpResponse } from './types';
-import type { Result } from '../types';
+import type { Result } from '../Result';
 
 export class HttpClient {
     private readonly baseUrl: string;
