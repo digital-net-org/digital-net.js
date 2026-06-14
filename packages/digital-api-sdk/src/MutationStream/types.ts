@@ -4,7 +4,7 @@ export interface MutationSignal {
     type: MutationChangeType;
     entity: string;
     entityId: string;
-    isSelf?: boolean;
+    originClientId?: string;
 }
 
 export type MutationStreamState = 'connecting' | 'open' | 'reconnecting' | 'closed';

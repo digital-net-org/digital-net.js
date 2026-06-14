@@ -1,5 +1,5 @@
 import { DigitalEvent, Env, URLResolver } from '@digital-net-org/digital-core';
-import { DN_API_KEY_HEADER, DN_DEFAULT_HEADERS, DN_STORAGE_KEY } from './constants';
+import { DN_API_KEY_HEADER, DN_CLIENT_ID_HEADER, DN_DEFAULT_HEADERS, DN_STORAGE_KEY } from './constants';
 import { DN_API_AUTH_USER_REFRESH } from '../Catalog';
 import { HttpClientError } from './HttpClientError';
 import { HttpSerializer } from './HttpSerializer';
@@ -12,6 +12,7 @@ export class HttpClient {
     private readonly applicationKey?: string;
     private readonly storageKey: string;
     private readonly apiKeyHeader: string;
+    private readonly clientId: string = HttpClient.generateClientId();
 
     private readonly tokenChangeEvent: DigitalEvent<string | undefined> = new DigitalEvent();
     private readonly authErrorEvent: DigitalEvent<void> = new DigitalEvent();
@@ -34,6 +35,19 @@ export class HttpClient {
     /** The shared application key, if configured. Sent raw (no `keyPrefix`) by consumers like the SSE stream. */
     public getApplicationKey(): string | undefined {
         return this.applicationKey;
+    }
+
+    /** This client's per-tab id — compare against a mutation signal's `originClientId` to detect own echoes. */
+    public getClientId(): string {
+        return this.clientId;
+    }
+
+    private static generateClientId(): string {
+        try {
+            return globalThis.crypto.randomUUID();
+        } catch {
+            return `dn-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+        }
     }
 
     public async request<T = any, B = any>(config: HttpRequestConfig<B>): Promise<HttpResponse<T>> {
@@ -164,6 +178,7 @@ export class HttpClient {
 
     private resolveHeaders<B>(config: HttpRequestConfig<B>): Record<string, string> {
         const headers: Record<string, string> = { ...DN_DEFAULT_HEADERS, ...(config.headers ?? {}) };
+        headers[DN_CLIENT_ID_HEADER] = this.clientId;
         if (!config.skipAuth) {
             if (this.apiKey !== undefined) {
                 headers[this.apiKeyHeader] = this.apiKey;

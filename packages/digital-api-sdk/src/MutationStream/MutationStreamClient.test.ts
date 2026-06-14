@@ -91,7 +91,7 @@ describe('MutationStreamClient', () => {
         expect(signals[0]).toEqual({ type: 'Updated', entity: 'Page', entityId: 'x' });
     });
 
-    it('parses the server-computed isSelf flag', async () => {
+    it('parses the origin client id of a signal', async () => {
         const stream = sseStream();
         fetchMock.mockResolvedValueOnce(stream.response);
         const client = new MutationStreamClient(http);
@@ -100,11 +100,11 @@ describe('MutationStreamClient', () => {
         disconnect = client.connect({ onSignal: signal => signals.push(signal) });
         await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
         stream.push(
-            'id: 2:a\nevent: mutation\ndata: {"type":"Updated","entity":"Page","entityId":"x","isSelf":true}\n\n'
+            'id: 2:a\nevent: mutation\ndata: {"type":"Updated","entity":"Page","entityId":"x","originClientId":"tab-7"}\n\n'
         );
 
         await vi.waitFor(() => expect(signals).toHaveLength(1));
-        expect(signals[0]).toEqual({ type: 'Updated', entity: 'Page', entityId: 'x', isSelf: true });
+        expect(signals[0]).toEqual({ type: 'Updated', entity: 'Page', entityId: 'x', originClientId: 'tab-7' });
     });
 
     it('reconnects with the last received event id', async () => {
