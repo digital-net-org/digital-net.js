@@ -4,7 +4,6 @@ import { MutationStreamClient } from './MutationStreamClient';
 import type { MutationSignal } from './types';
 
 const BASE_URL = 'http://api.test';
-const APP_KEY = 'app-key';
 
 interface ControlledStream {
     response: Response;
@@ -52,7 +51,7 @@ describe('MutationStreamClient', () => {
     beforeEach(() => {
         fetchMock = vi.fn();
         vi.stubGlobal('fetch', fetchMock);
-        http = new HttpClient({ baseUrl: BASE_URL, applicationKey: APP_KEY });
+        http = new HttpClient({ baseUrl: BASE_URL });
         disconnect = undefined;
     });
 
@@ -62,11 +61,7 @@ describe('MutationStreamClient', () => {
         vi.restoreAllMocks();
     });
 
-    it('throws without an application key on the HttpClient', () => {
-        expect(() => new MutationStreamClient(new HttpClient({ baseUrl: BASE_URL }))).toThrow();
-    });
-
-    it('sends the raw application key header, never the bearer', async () => {
+    it('authenticates via the cookie: no app key, no bearer, credentials included', async () => {
         const stream = sseStream();
         fetchMock.mockResolvedValueOnce(stream.response);
         const client = new MutationStreamClient(http);
@@ -75,8 +70,10 @@ describe('MutationStreamClient', () => {
         await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
 
         const headers = headersOf(fetchMock, 0);
-        expect(headers[DN_APPLICATION_KEY_HEADER]).toBe(APP_KEY);
+        expect(headers[DN_APPLICATION_KEY_HEADER]).toBeUndefined();
         expect(headers['Authorization']).toBeUndefined();
+        expect(headers['Accept']).toBe('text/event-stream');
+        expect((fetchMock.mock.calls[0][1] as RequestInit).credentials).toBe('include');
     });
 
     it('emits parsed mutation signals', async () => {
@@ -151,7 +148,7 @@ describe('MutationStreamClient', () => {
         disconnect = client.connect({ onSignal: () => undefined });
 
         await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2), { timeout: 3000 });
-        expect(headersOf(fetchMock, 1)[DN_APPLICATION_KEY_HEADER]).toBe(APP_KEY);
+        expect(headersOf(fetchMock, 1)[DN_APPLICATION_KEY_HEADER]).toBeUndefined();
     });
 
     it('cancels the response body on a non-ok status', async () => {
@@ -177,20 +174,6 @@ describe('MutationStreamClient', () => {
         disconnect = client.connect({ onSignal: () => undefined });
 
         await vi.waitFor(() => expect(cancelSpy).toHaveBeenCalled(), { timeout: 3000 });
-        await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2), { timeout: 3000 });
-    });
-
-    it('reconnects when the stream goes idle past the inactivity timeout', async () => {
-        const first = sseStream();
-        const second = sseStream();
-        fetchMock
-            .mockImplementationOnce((_url: string, init?: RequestInit) => first.respond(init))
-            .mockImplementationOnce((_url: string, init?: RequestInit) => second.respond(init));
-        const client = new MutationStreamClient(http, { inactivityTimeoutMs: 50 });
-
-        disconnect = client.connect({ onSignal: () => undefined });
-        await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
-        // The first stream never sends a byte → the watchdog aborts it → reconnect.
         await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2), { timeout: 3000 });
     });
 

@@ -20,7 +20,6 @@ import { HttpClient } from '../HttpClient';
 import { MutationStreamClient } from './MutationStreamClient';
 
 const BASE_URL = 'http://api.test';
-const APP_KEY = 'app-key';
 
 function eventStreamResponse(body: ReadableStream<Uint8Array>): Response {
     return new Response(body, { status: 200, headers: { 'Content-Type': 'text/event-stream' } });
@@ -68,7 +67,7 @@ describe('MutationStreamClient — deferred backoff reset (integration)', () => 
         recordedAttempts.length = 0;
         fetchMock = vi.fn();
         vi.stubGlobal('fetch', fetchMock);
-        http = new HttpClient({ baseUrl: BASE_URL, applicationKey: APP_KEY });
+        http = new HttpClient({ baseUrl: BASE_URL });
         disconnect = undefined;
     });
 

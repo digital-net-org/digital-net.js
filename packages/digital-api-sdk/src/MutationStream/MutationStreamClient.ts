@@ -1,5 +1,5 @@
 import { URLResolver } from '@digital-net-org/digital-core';
-import { DN_APPLICATION_KEY_HEADER, type HttpClient } from '../HttpClient';
+import type { HttpClient } from '../HttpClient';
 import type { MutationSignal, MutationStreamConnectOptions, MutationStreamState } from './types';
 import { SseParser } from './SseParser';
 import { StreamRequestError } from './StreamRequestError';
@@ -10,26 +10,19 @@ const MUTATION_EVENT_TYPE = 'mutation';
 const INACTIVITY_TIMEOUT_MS = 60_000;
 
 /**
- * Consumes the API mutation stream `ReadableStream`, `EventSource` cannot send auth headers. Authenticates with the
- * shared application key (mandatory: throws without one). Reconnects automatically with exponential
- * backoff and resumes from the last received cursor (`?lastEventId=`): missed signals are replayed
- * by the server catch-up, so no invalidation is ever lost.
+ * Consumes the API mutation stream. Authentication relies entirely on the refresh-token cookie.
+ * Reconnects automatically with exponential backoff and resumes from the last received cursor
+ * (`?lastEventId=`): missed signals are replayed by the server catch-up (up to 1000 mutations).
  */
 export class MutationStreamClient {
     private readonly http: HttpClient;
-    private readonly applicationKey: string;
 
     private abortController: AbortController | null = null;
     private lastEventId: string | undefined;
     private state: MutationStreamState = 'closed';
 
     public constructor(http: HttpClient) {
-        const applicationKey = http.getApplicationKey();
-        if (!applicationKey) {
-            throw new Error('MutationStreamClient requires an application key (set HttpClient `applicationKey`).');
-        }
         this.http = http;
-        this.applicationKey = applicationKey;
     }
 
     public getState(): MutationStreamState {
@@ -117,7 +110,7 @@ export class MutationStreamClient {
         try {
             armWatchdog();
             const response = await fetch(this.resolveUrl(), {
-                headers: this.resolveHeaders(),
+                headers: { Accept: 'text/event-stream' },
                 credentials: 'include',
                 signal: inner.signal,
             });
@@ -172,14 +165,6 @@ export class MutationStreamClient {
             params['lastEventId'] = this.lastEventId;
         }
         return Object.keys(params).length > 0 ? URLResolver.buildQuery(url, params) : url;
-    }
-
-    private resolveHeaders(): Record<string, string> {
-        return {
-            Accept: 'text/event-stream',
-            // Always the raw backend header: the HttpClient keyPrefix must not leak into it.
-            [DN_APPLICATION_KEY_HEADER]: this.applicationKey,
-        };
     }
 
     private setState(state: MutationStreamState, options: MutationStreamConnectOptions): void {

@@ -43,15 +43,7 @@ export function DnMutationStreamProvider({ children }: { children: React.ReactNo
     );
 
     React.useEffect(() => {
-        // Server resolves `isSelf` from the refresh cookie, whose identity (userId) is stable across token
-        // rotations. Mutation Stream is not needed on public views.
         if (userId == null) return;
-        if (!api.http.getApplicationKey()) {
-            console.error(
-                '[digital-office] mutation stream disabled: a mandatory application key is missing from the HttpClient config.'
-            );
-            return;
-        }
         const client = new MutationStreamClient(api.http);
         const stop = client.connect({
             onSignal: handleSignal,
