@@ -153,4 +153,60 @@ describe('MutationStreamClient', () => {
         await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2), { timeout: 3000 });
         expect(headersOf(fetchMock, 1)[DN_APPLICATION_KEY_HEADER]).toBe(APP_KEY);
     });
+
+    it('cancels the response body on a non-ok status', async () => {
+        const failed = new Response(new ReadableStream<Uint8Array>({ start: () => undefined }), { status: 500 });
+        const cancelSpy = vi.spyOn(failed.body!, 'cancel');
+        fetchMock.mockResolvedValueOnce(failed).mockResolvedValueOnce(sseStream().response);
+        const client = new MutationStreamClient(http);
+
+        disconnect = client.connect({ onSignal: () => undefined });
+
+        await vi.waitFor(() => expect(cancelSpy).toHaveBeenCalled(), { timeout: 3000 });
+    });
+
+    it('rejects a 200 response that is not an event-stream (and reconnects)', async () => {
+        const html = new Response('<html>proxy error</html>', {
+            status: 200,
+            headers: { 'Content-Type': 'text/html' },
+        });
+        const cancelSpy = vi.spyOn(html.body!, 'cancel');
+        fetchMock.mockResolvedValueOnce(html).mockResolvedValueOnce(sseStream().response);
+        const client = new MutationStreamClient(http);
+
+        disconnect = client.connect({ onSignal: () => undefined });
+
+        await vi.waitFor(() => expect(cancelSpy).toHaveBeenCalled(), { timeout: 3000 });
+        await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2), { timeout: 3000 });
+    });
+
+    it('reconnects when the stream goes idle past the inactivity timeout', async () => {
+        const first = sseStream();
+        const second = sseStream();
+        fetchMock
+            .mockImplementationOnce((_url: string, init?: RequestInit) => first.respond(init))
+            .mockImplementationOnce((_url: string, init?: RequestInit) => second.respond(init));
+        const client = new MutationStreamClient(http, { inactivityTimeoutMs: 50 });
+
+        disconnect = client.connect({ onSignal: () => undefined });
+        await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+        // The first stream never sends a byte → the watchdog aborts it → reconnect.
+        await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2), { timeout: 3000 });
+    });
+
+    it('reports failures via onError and transitions through reconnecting', async () => {
+        fetchMock.mockResolvedValueOnce(new Response(null, { status: 401 })).mockResolvedValueOnce(sseStream().response);
+        const errors: number[] = [];
+        const states: string[] = [];
+        const client = new MutationStreamClient(http);
+
+        disconnect = client.connect({
+            onSignal: () => undefined,
+            onError: (_error, attempt) => errors.push(attempt),
+            onStateChange: state => states.push(state),
+        });
+
+        await vi.waitFor(() => expect(errors).toContain(1), { timeout: 3000 });
+        expect(states).toContain('reconnecting');
+    });
 });

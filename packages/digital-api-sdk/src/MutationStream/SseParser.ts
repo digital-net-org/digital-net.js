@@ -4,11 +4,25 @@ export interface SseEvent {
     data: string;
 }
 
+const MAX_BUFFER_LENGTH = 1_000_000;
+
 export class SseParser {
     private buffer = '';
+    private ignoreNextLf = false;
 
     public push(chunk: string): SseEvent[] {
-        this.buffer += chunk.replace(/\r\n/g, '\n');
+        let text = chunk;
+        if (this.ignoreNextLf && text.startsWith('\n')) {
+            text = text.slice(1);
+        }
+        this.ignoreNextLf = text.endsWith('\r');
+        this.buffer += text.replace(/\r\n|\r/g, '\n');
+
+        if (this.buffer.length > MAX_BUFFER_LENGTH) {
+            this.buffer = '';
+            throw new Error('SseParser: buffer exceeded the maximum size without an event separator');
+        }
+
         const events: SseEvent[] = [];
 
         let separatorIndex = this.buffer.indexOf('\n\n');

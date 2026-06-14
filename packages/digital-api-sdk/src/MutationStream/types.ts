@@ -1,6 +1,5 @@
 export type MutationChangeType = 'Created' | 'Updated' | 'Deleted';
 
-/** One entity mutation broadcast by the API (`event: mutation` SSE frames). */
 export interface MutationSignal {
     type: MutationChangeType;
     entity: string;
@@ -8,9 +7,10 @@ export interface MutationSignal {
     isSelf?: boolean;
 }
 
-export type MutationStreamState = 'connecting' | 'open' | 'closed';
+export type MutationStreamState = 'connecting' | 'open' | 'reconnecting' | 'closed';
 
 export interface MutationStreamConnectOptions {
     onSignal: (_signal: MutationSignal) => void;
     onStateChange?: (_state: MutationStreamState) => void;
+    onError?: (_error: unknown, _attempt: number) => void;
 }

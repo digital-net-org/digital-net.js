@@ -7,6 +7,7 @@ import { computeBackoffDelay, isConnectionStable } from './backoff';
 
 const DN_API_EVENTS_MUTATION_STREAM = 'events/mutation/stream' as const;
 const MUTATION_EVENT_TYPE = 'mutation';
+const INACTIVITY_TIMEOUT_MS = 60_000;
 
 /**
  * Consumes the API mutation stream `ReadableStream`, `EventSource` cannot send auth headers. Authenticates with the
@@ -60,16 +61,20 @@ export class MutationStreamClient {
         while (!signal.aborted) {
             this.setState('connecting', options);
             let openedAt: number | null = null;
+            let failure: unknown;
+            let threw = false;
             try {
                 await this.streamOnce(options, signal, () => {
                     openedAt = Date.now();
                     this.setState('open', options);
                 });
-            } catch {
+            } catch (error) {
                 if (signal.aborted) {
                     break;
                 }
                 // Including 401s (invalid/rotated key): keep retrying with backoff.
+                threw = true;
+                failure = error;
             }
             if (signal.aborted) {
                 break;
@@ -77,6 +82,10 @@ export class MutationStreamClient {
             // Reset the backoff only after a stable connection. Otherwise an accept-then-close server would
             // reconnect in a ~1s tight loop forever instead of backing off.
             attempt = isConnectionStable(openedAt, Date.now()) ? 0 : attempt + 1;
+            if (threw) {
+                options.onError?.(failure, attempt);
+            }
+            this.setState('reconnecting', options);
             await this.delay(computeBackoffDelay(attempt), signal);
         }
 
@@ -94,33 +103,57 @@ export class MutationStreamClient {
         signal: AbortSignal,
         onOpen: () => void
     ): Promise<void> {
-        const response = await fetch(this.resolveUrl(), {
-            headers: this.resolveHeaders(),
-            credentials: 'include',
-            signal,
-        });
-        if (!response.ok || !response.body) {
-            throw new StreamRequestError(response.status);
-        }
-        onOpen();
+        const inner = new AbortController();
+        const onOuterAbort = (): void => inner.abort(signal.reason);
+        if (signal.aborted) inner.abort(signal.reason);
+        else signal.addEventListener('abort', onOuterAbort, { once: true });
 
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        const parser = new SseParser();
+        let watchdog: ReturnType<typeof setTimeout> | null = null;
+        const armWatchdog = (): void => {
+            if (watchdog !== null) clearTimeout(watchdog);
+            watchdog = setTimeout(() => inner.abort(new Error('SSE inactivity timeout')), INACTIVITY_TIMEOUT_MS);
+        };
 
-        for (;;) {
-            const { done, value } = await reader.read();
-            if (done) {
-                return; // Server closed the stream: the run loop reconnects from the last cursor.
+        try {
+            armWatchdog();
+            const response = await fetch(this.resolveUrl(), {
+                headers: this.resolveHeaders(),
+                credentials: 'include',
+                signal: inner.signal,
+            });
+            if (!response.ok || !response.body) {
+                void response.body?.cancel(); // free the socket instead of leaking it to GC
+                throw new StreamRequestError(response.status);
             }
-            for (const event of parser.push(decoder.decode(value, { stream: true }))) {
-                if (event.id) {
-                    this.lastEventId = event.id;
+            if (!(response.headers.get('content-type') ?? '').toLowerCase().includes('text/event-stream')) {
+                void response.body.cancel();
+                throw new Error('Mutation stream returned a non-SSE content-type');
+            }
+            onOpen();
+            armWatchdog();
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            const parser = new SseParser();
+
+            for (;;) {
+                const { done, value } = await reader.read();
+                if (done) {
+                    return;
                 }
-                if (event.event === MUTATION_EVENT_TYPE && event.data) {
-                    this.emitSignal(event.data, options);
+                armWatchdog();
+                for (const event of parser.push(decoder.decode(value, { stream: true }))) {
+                    if (event.id) {
+                        this.lastEventId = event.id;
+                    }
+                    if (event.event === MUTATION_EVENT_TYPE && event.data) {
+                        this.emitSignal(event.data, options);
+                    }
                 }
             }
+        } finally {
+            if (watchdog !== null) clearTimeout(watchdog);
+            signal.removeEventListener('abort', onOuterAbort);
         }
     }
 

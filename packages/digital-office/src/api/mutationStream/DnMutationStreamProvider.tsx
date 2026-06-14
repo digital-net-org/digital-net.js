@@ -53,7 +53,14 @@ export function DnMutationStreamProvider({ children }: { children: React.ReactNo
             return;
         }
         const client = new MutationStreamClient(api.http);
-        const stop = client.connect({ onSignal: handleSignal });
+        const stop = client.connect({
+            onSignal: handleSignal,
+            onError: (error, attempt) => {
+                if (attempt >= 3) {
+                    console.warn(`[digital-office] mutation stream reconnect failing (attempt ${attempt})`, error);
+                }
+            },
+        });
 
         return () => {
             stop();
