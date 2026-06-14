@@ -1,11 +1,15 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { type UserDto, unwrapResult } from '@digital-net-org/digital-api-sdk';
-import { buildKeyFromId, useDigitalNetApi } from '../api';
+import { buildKeyFromId, buildListKey, useDigitalNetApi } from '../api';
 import { NotFoundException, useDigitalToast } from '../app';
+
+type PendingAction = 'save' | 'delete';
 
 export function useUserData(id: string | undefined) {
     const api = useDigitalNetApi();
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { showToast } = useDigitalToast();
 
@@ -34,6 +38,9 @@ export function useUserData(id: string | undefined) {
     const [dataInit, setDataInit] = React.useState<boolean>(false);
     const [formState, setFormState] = React.useState({ isAdmin: false, isActive: false });
     const [isSaving, setIsSaving] = React.useState(false);
+    const [passwordDialogOpen, setPasswordDialogOpen] = React.useState(false);
+    const [passwordError, setPasswordError] = React.useState(false);
+    const pendingActionRef = React.useRef<PendingAction | null>(null);
 
     const isDirty = React.useMemo(
         () => Boolean(data && (data.isAdmin !== formState.isAdmin || data.isActive !== formState.isActive)),
@@ -51,28 +58,129 @@ export function useUserData(id: string | undefined) {
         [data]
     );
 
+    const applyChanges = React.useCallback(
+        async (password?: string): Promise<boolean> => {
+            if (!data || !id) return true;
+            setIsSaving(true);
+            setPasswordError(false);
+
+            let passwordWrong = false;
+            let demoteForbidden = false;
+            let deactivateForbidden = false;
+            let otherError = false;
+
+            if (data.isAdmin !== formState.isAdmin) {
+                const result = await api.catalog.user.updateUserRole(
+                    { isAdmin: formState.isAdmin, password: password ?? '' },
+                    id,
+                    {
+                        onStatus: {
+                            401: () => void (passwordWrong = true),
+                            403: () => void (demoteForbidden = true),
+                        },
+                    }
+                );
+                if (passwordWrong) {
+                    setPasswordError(true);
+                    setIsSaving(false);
+                    return false;
+                }
+                if (result.hasError && !demoteForbidden) otherError = true;
+            }
+
+            if (data.isActive !== formState.isActive) {
+                const result = await api.catalog.user.updateUserStatus({ isActive: formState.isActive }, id, {
+                    onStatus: { 403: () => void (deactivateForbidden = true) },
+                });
+                if (result.hasError && !deactivateForbidden) otherError = true;
+            }
+
+            if (demoteForbidden) showToast('Un administrateur ne peut pas être rétrogradé.', 'error');
+            if (deactivateForbidden) showToast('Un administrateur ne peut pas être désactivé.', 'error');
+            if (otherError) showToast('Une erreur est survenue lors de la sauvegarde des modifications.', 'error');
+
+            await queryClient.invalidateQueries({ queryKey: buildKeyFromId('user', id) });
+            setPasswordDialogOpen(false);
+            setIsSaving(false);
+            return true;
+        },
+        [api.catalog.user, data, formState.isActive, formState.isAdmin, id, queryClient, showToast]
+    );
+
+    const applyDelete = React.useCallback(
+        async (password: string): Promise<boolean> => {
+            if (!id) return true;
+            setIsSaving(true);
+            setPasswordError(false);
+
+            let passwordWrong = false;
+            let forbidden = false;
+            const result = await api.catalog.user.deleteById(id, password, {
+                onStatus: {
+                    401: () => void (passwordWrong = true),
+                    403: () => void (forbidden = true),
+                },
+            });
+
+            if (passwordWrong) {
+                setPasswordError(true);
+                setIsSaving(false);
+                return false;
+            }
+
+            if (forbidden) {
+                showToast('Un administrateur ne peut pas être supprimé.', 'error');
+                setPasswordDialogOpen(false);
+                setIsSaving(false);
+                return true;
+            }
+            if (result.hasError) {
+                showToast("Une erreur est survenue lors de la suppression de l'utilisateur.", 'error');
+                setPasswordDialogOpen(false);
+                setIsSaving(false);
+                return true;
+            }
+
+            await queryClient.invalidateQueries({ queryKey: buildListKey('user') });
+            showToast('Utilisateur supprimé.', 'info');
+            navigate('/admin/user');
+            return true;
+        },
+        [api.catalog.user, id, navigate, queryClient, showToast]
+    );
+
     const save = React.useCallback(async () => {
-        if (!data || !id) return;
-        setIsSaving(true);
-
-        const promises: Promise<any>[] = [];
+        if (!data || !id || !isDirty) return;
         if (data.isAdmin !== formState.isAdmin) {
-            promises.push(api.catalog.user.updateUserRole({ isAdmin: formState.isAdmin }, id));
+            pendingActionRef.current = 'save';
+            setPasswordError(false);
+            setPasswordDialogOpen(true);
+            return;
         }
-        if (data.isActive !== formState.isActive) {
-            promises.push(api.catalog.user.updateUserStatus({ isActive: formState.isActive }, id));
-        }
-        try {
-            await Promise.all(promises);
-            await queryClient.invalidateQueries({ queryKey: buildKeyFromId('user', id!) });
-        } catch {
-            showToast('Une erreur est survenue lors de la sauvegarde des modifications.', 'error');
-        }
+        await applyChanges();
+    }, [applyChanges, data, formState.isAdmin, id, isDirty]);
 
-        // TODO: handle 403 on status change => If admin cannot set inactive, should be toasted
-        // TODO: handle password prompt on Admin status change, try to use existing logic
-        setIsSaving(false);
-    }, [api.catalog.user, data, formState.isActive, formState.isAdmin, id, queryClient, showToast]);
+    const requestDelete = React.useCallback(() => {
+        if (!id) return;
+        pendingActionRef.current = 'delete';
+        setPasswordError(false);
+        setPasswordDialogOpen(true);
+    }, [id]);
+
+    const confirmPassword = React.useCallback(
+        async (password: string) => {
+            const ok =
+                pendingActionRef.current === 'delete' ? await applyDelete(password) : await applyChanges(password);
+            if (ok) pendingActionRef.current = null;
+        },
+        [applyChanges, applyDelete]
+    );
+
+    const closePasswordDialog = React.useCallback(() => {
+        pendingActionRef.current = null;
+        setPasswordDialogOpen(false);
+        setPasswordError(false);
+    }, []);
 
     return {
         readOnlyData,
@@ -82,5 +190,13 @@ export function useUserData(id: string | undefined) {
         isLoading,
         isDirty,
         save,
+        requestDelete,
+        passwordDialog: {
+            open: passwordDialogOpen,
+            loading: isSaving,
+            showError: passwordError,
+            onClose: closePasswordDialog,
+            onConfirm: confirmPassword,
+        },
     };
 }

@@ -110,4 +110,18 @@ export class UserCatalog {
             options
         );
     }
+
+    /** DELETE `user/:id` — Requires admin's password — 401 if wrong, 403 if target is admin — JWT/ApiKey */
+    public async deleteById(id: string, password: string, options: CatalogCallbacks = {}): Promise<Result> {
+        return CatalogRunner.run<null>(
+            this.http,
+            {
+                method: 'DELETE',
+                path: DN_API_USER_BY_ID,
+                slugs: { id },
+                body: { password },
+            },
+            options
+        );
+    }
 }
