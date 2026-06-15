@@ -82,10 +82,7 @@ function EditorBody({ initialValue, onChange, disabled }: EditorBodyProps) {
         });
     }, [editor, initialValue]);
 
-    // Reflect the `disabled` prop on the editor instance.
-    React.useEffect(() => {
-        editor.setEditable(!disabled);
-    }, [editor, disabled]);
+    React.useEffect(() => void editor.setEditable(!disabled), [editor, disabled]);
 
     const serializeNow = React.useCallback(() => {
         if (serializeTimerRef.current !== null) {
@@ -115,9 +112,7 @@ function EditorBody({ initialValue, onChange, disabled }: EditorBodyProps) {
 
     // Drop any pending timer on unmount blur has already flushed the latest value
     React.useEffect(
-        () => () => {
-            if (serializeTimerRef.current !== null) window.clearTimeout(serializeTimerRef.current);
-        },
+        () => () => (serializeTimerRef.current !== null ? window.clearTimeout(serializeTimerRef.current) : void 0),
         []
     );
 

@@ -1,1 +1,2 @@
-export { LexicalRichEditor, type LexicalRichEditorProps } from './LexicalRichEditor';
+export { LexicalRichEditor } from './LexicalRichEditorLazy';
+export type { LexicalRichEditorProps } from './LexicalRichEditor';

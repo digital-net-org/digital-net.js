@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router';
 import { Layout, useDigitalNetUser } from '../app';
+import { DnLoadingView } from '../ui';
 import { Guards, AuthGuard, GuestGuard } from './guards';
 import { APP_ROUTES, ADMIN_ROUTES, CMS_ROUTES } from './routes';
 import type { DigitalOfficeRoute } from './types';
@@ -35,7 +36,9 @@ function RouterLayout({ allRoutes }: { allRoutes: DigitalOfficeRoute[] }) {
 
     return (
         <Layout navigation={navigation} routePatterns={routePatterns}>
-            <Outlet />
+            <React.Suspense fallback={<DnLoadingView />}>
+                <Outlet />
+            </React.Suspense>
         </Layout>
     );
 }

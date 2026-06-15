@@ -1,19 +1,22 @@
 import * as React from 'react';
-import {
-    ArticleEditView,
-    ArticleListView,
-    FormEditView,
-    FormListView,
-    FormSubmissionDetailView,
-    MediaEditView,
-    MediaListView,
-    PageEditView,
-    PageListView,
-    TagEditView,
-    TagListView,
-} from '../../cms';
+import { lazyView } from '../lazyView';
 import { DigitalOfficeNavGroup } from '../navGroups';
 import type { DigitalOfficeRoute } from '../types';
+
+const PageListView = lazyView(() => import('../../cms/Page/PageListView'), 'PageListView');
+const PageEditView = lazyView(() => import('../../cms/Page/PageEditView'), 'PageEditView');
+const ArticleListView = lazyView(() => import('../../cms/Article/ArticleListView'), 'ArticleListView');
+const ArticleEditView = lazyView(() => import('../../cms/Article/ArticleEditView'), 'ArticleEditView');
+const FormListView = lazyView(() => import('../../cms/Form/FormListView'), 'FormListView');
+const FormEditView = lazyView(() => import('../../cms/Form/FormEditView'), 'FormEditView');
+const FormSubmissionDetailView = lazyView(
+    () => import('../../cms/Form/FormSubmissionDetailView'),
+    'FormSubmissionDetailView'
+);
+const MediaListView = lazyView(() => import('../../cms/Media/MediaListView'), 'MediaListView');
+const MediaEditView = lazyView(() => import('../../cms/Media/MediaEditView'), 'MediaEditView');
+const TagListView = lazyView(() => import('../../cms/Tag/TagListView'), 'TagListView');
+const TagEditView = lazyView(() => import('../../cms/Tag/TagEditView'), 'TagEditView');
 
 export const CMS_ROUTES: DigitalOfficeRoute[] = [
     {
