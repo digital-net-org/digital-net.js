@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router';
-import type { PageDto } from '@digital-net-org/digital-api-sdk';
+import type { PageListDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityListView, type DnEntityListViewProps } from '../../entity';
 
-const staticProps: DnEntityListViewProps<PageDto> = {
+const staticProps: DnEntityListViewProps<PageListDto> = {
     title: 'Pages',
     description: 'Gérez les méta-données, les redirections, les scripts ou feuilles de style des pages du site.',
     identifier: { singular: 'page', plural: 'pages', gender: 'f' },

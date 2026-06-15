@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { StringResolver } from '@digital-net-org/digital-core';
-import type { ArticleDto, PageDto, QueryResult } from '@digital-net-org/digital-api-sdk';
+import type { ArticleDto, PageListDto, QueryResult } from '@digital-net-org/digital-api-sdk';
 import { type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
 import { buildListKey, useDigitalNetApi } from '../../../api';
 
@@ -69,10 +69,10 @@ export function useArticleForm(articleId: string | undefined) {
         data: pagesResult,
         isLoading: pagesLoading,
         isFetching: pagesFetching,
-    } = useQuery<QueryResult<PageDto>>({
+    } = useQuery<QueryResult<PageListDto>>({
         queryKey: [...buildListKey('page'), { entityType: 'Article', size: pagesSize }],
         queryFn: async () => {
-            const result = await api.http.request<QueryResult<PageDto>>({
+            const result = await api.http.request<QueryResult<PageListDto>>({
                 path: 'cms/pages',
                 params: { size: pagesSize, index: 1, entityType: 'Article' },
             });

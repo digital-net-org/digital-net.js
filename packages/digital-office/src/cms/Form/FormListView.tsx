@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router';
-import type { FormDto } from '@digital-net-org/digital-api-sdk';
+import type { FormListDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityListView, type DnEntityListViewProps } from '../../entity';
 import type { DnColumnDefinition } from '../../ui';
 
-const staticProps: DnEntityListViewProps<FormDto> = {
+const staticProps: DnEntityListViewProps<FormListDto> = {
     title: 'Formulaires',
     description: 'Gérez les formulaires du site et consultez les réponses des visiteurs.',
     identifier: { singular: 'formulaire', plural: 'formulaires', gender: 'm' },
@@ -17,7 +17,7 @@ const staticProps: DnEntityListViewProps<FormDto> = {
     ],
 };
 
-const columns: DnColumnDefinition<FormDto>[] = [
+const columns: DnColumnDefinition<FormListDto>[] = [
     { key: 'name', label: 'Nom' },
     { key: 'published', label: 'Publié' },
     { key: 'path', label: 'Chemin' },

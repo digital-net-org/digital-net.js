@@ -1,6 +1,6 @@
 import { CatalogRunner } from '../../CatalogRunner';
 import type { HttpClient } from '../../../HttpClient';
-import type { FormDto, FormSubmissionDto } from '../../../Dto';
+import type { FormDto, FormListDto, FormSubmissionDto } from '../../../Dto';
 import type { JsonPatchOp } from '../../../JsonPatch';
 import type { QueryResult, Result } from '../../../Result';
 import type { SchemaProperty } from '../../../Schema';
@@ -35,8 +35,8 @@ export class FormCatalog {
      * envelope. `value` is the page of items; `total`/`index`/`size` sit alongside it.
      * Mirrors `useEntityList`'s consumption of the same contract.
      */
-    public async getList(query: FormQuery = {}): Promise<QueryResult<FormDto>> {
-        const res = await this.http.request<QueryResult<FormDto>>({
+    public async getList(query: FormQuery = {}): Promise<QueryResult<FormListDto>> {
+        const res = await this.http.request<QueryResult<FormListDto>>({
             path: DN_API_FORM,
             params: query as Record<string, unknown>,
         });
