@@ -1,15 +1,7 @@
 import * as React from 'react';
+import { LayoutContext } from './useLayout';
 
 const DRAWER_STORAGE_KEY = 'DN_DRAWER_OPEN';
-
-interface LayoutContextValue {
-    isDrawerOpen: boolean;
-    toggleDrawer: () => void;
-    setIsDrawerOpen: (_isOpen: boolean) => void;
-    AppLogo: React.ReactNode;
-}
-
-const LayoutContext = React.createContext<LayoutContextValue | null>(null);
 
 function readDrawerOpen(): boolean {
     try {
@@ -53,12 +45,4 @@ export function LayoutProvider({ children, appLogo }: { appLogo: React.ReactNode
             {children}
         </LayoutContext.Provider>
     );
-}
-
-export function useLayout(): LayoutContextValue {
-    const context = React.useContext(LayoutContext);
-    if (!context) {
-        throw new Error('useLayout must be used within a LayoutProvider.');
-    }
-    return context;
 }

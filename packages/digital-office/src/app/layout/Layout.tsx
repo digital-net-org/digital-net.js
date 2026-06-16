@@ -2,7 +2,7 @@ import * as React from 'react';
 import { matchPath, useLocation, useNavigate } from 'react-router';
 import { css, styled } from '@mui/material/styles';
 import { ErrorBoundary, LayoutNav, type LayoutNavProps } from './components';
-import { useLayout } from './LayoutProvider';
+import { useLayout } from './useLayout';
 import { DnAppBar, DnAppDrawer } from '../../ui';
 import { useDigitalNetUser } from '../user';
 

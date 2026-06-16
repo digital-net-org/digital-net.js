@@ -1,2 +1,3 @@
-export { DigitalNetUserProvider, useDigitalNetUser } from './DigitalNetUserProvider';
+export { DigitalNetUserProvider } from './DigitalNetUserProvider';
+export { useDigitalNetUser } from './useDigitalNetUser';
 export { LoginView } from './LoginView';

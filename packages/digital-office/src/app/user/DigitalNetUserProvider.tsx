@@ -2,19 +2,9 @@ import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { type UserDto } from '@digital-net-org/digital-api-sdk';
 import { useDigitalNetApi } from '../../api';
+import { UserContext } from './useDigitalNetUser';
 
 const USER_QUERY_KEY = ['dn-user', 'self'] as const;
-
-interface UserContextValue {
-    user: UserDto | null | undefined;
-    isLogged: boolean;
-    isAdmin: boolean;
-    isLoading: boolean;
-    refresh: () => Promise<void>;
-    logout: () => Promise<void>;
-}
-
-const UserContext = React.createContext<UserContextValue | null>(null);
 
 export function DigitalNetUserProvider({ children }: React.PropsWithChildren) {
     const api = useDigitalNetApi();
@@ -89,12 +79,4 @@ export function DigitalNetUserProvider({ children }: React.PropsWithChildren) {
             {children}
         </UserContext.Provider>
     );
-}
-
-export function useDigitalNetUser(): UserContextValue {
-    const context = React.useContext(UserContext);
-    if (!context) {
-        throw new Error('useDigitalNetUser must be used within a UserProvider.');
-    }
-    return context;
 }

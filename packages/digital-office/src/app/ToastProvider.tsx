@@ -1,13 +1,7 @@
 import * as React from 'react';
 import { Alert, Snackbar } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-
-export interface ToastContextValue {
-    showToast: (_message: string, _variant?: ToastVariant) => void;
-    hide: () => void;
-}
-
-type ToastVariant = 'info' | 'error';
+import { ToastContext, type ToastVariant } from './useDigitalToast';
 
 interface ActiveToast {
     key: number;
@@ -16,7 +10,6 @@ interface ActiveToast {
 }
 
 const DEFAULT_DURATION = 7000;
-const ToastContext = React.createContext<ToastContextValue | null>(null);
 
 export function ToastProvider({ children }: React.PropsWithChildren) {
     const [toast, setToast] = React.useState<ActiveToast | null>(null);
@@ -73,11 +66,3 @@ const CustomAlert = styled(Alert)(
         }
     `
 );
-
-export function useDigitalToast(): ToastContextValue {
-    const context = React.useContext(ToastContext);
-    if (!context) {
-        throw new Error('useDigitalToast must be used within a ToastProvider.');
-    }
-    return context;
-}
