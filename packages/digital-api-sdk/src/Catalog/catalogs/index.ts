@@ -8,3 +8,4 @@ export * from './MediaCatalog';
 export * from './PageCatalog';
 export * from './TagCatalog';
 export * from './UserCatalog';
+export * from './ValidationCatalog';

@@ -10,6 +10,7 @@ import {
     PageCatalog,
     TagCatalog,
     UserCatalog,
+    ValidationCatalog,
 } from './catalogs';
 
 /**
@@ -27,6 +28,7 @@ export class Catalog {
     public readonly page: PageCatalog;
     public readonly tag: TagCatalog;
     public readonly user: UserCatalog;
+    public readonly validation: ValidationCatalog;
 
     public constructor(http: HttpClient) {
         this.http = http;
@@ -40,5 +42,6 @@ export class Catalog {
         this.page = new PageCatalog(http);
         this.tag = new TagCatalog(http);
         this.user = new UserCatalog(http);
+        this.validation = new ValidationCatalog(http);
     }
 }
