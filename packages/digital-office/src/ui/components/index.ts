@@ -18,6 +18,7 @@ export * from './DnDialog';
 export * from './DnDialogConfirmPassword';
 export * from './DnIconButton';
 export * from './DnSwitch';
+export * from './DnTabs';
 export * from './DnMenuAccount';
 export * from './DnMenuSettings';
 export * from './DnMenuTheme';

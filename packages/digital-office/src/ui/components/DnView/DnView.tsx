@@ -1,14 +1,9 @@
 import * as React from 'react';
 import { Divider, Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { DnViewTabs } from './DnViewTabs';
+import { DnTabs, type DnTab } from '../DnTabs';
 
-export interface DnViewTab {
-    key: string;
-    label: string;
-    content: React.ReactNode;
-    disabled?: boolean;
-}
+export type DnViewTab = DnTab;
 
 export interface DnViewProps {
     title: string;
@@ -54,7 +49,7 @@ export function DnView({
                 <Divider />
             </Stack>
             {tabs?.length ? (
-                <DnViewTabs items={tabs} renderActions={renderActions} renderBanner={renderBanner} />
+                <DnTabs urlKey="tab" items={tabs} renderActions={renderActions} renderBanner={renderBanner} />
             ) : (
                 children
             )}
