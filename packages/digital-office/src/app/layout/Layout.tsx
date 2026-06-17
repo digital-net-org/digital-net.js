@@ -5,6 +5,7 @@ import { ErrorBoundary, LayoutNav, type LayoutNavProps } from './components';
 import { useLayout } from './useLayout';
 import { DnAppBar, DnAppDrawer } from '../../ui';
 import { useDigitalNetUser } from '../user';
+import { Settings } from './Settings';
 
 interface Props {
     navigation: LayoutNavProps['navigation'];
@@ -16,7 +17,7 @@ export function Layout({ navigation, routePatterns, children }: Props) {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { isDrawerOpen, toggleDrawer } = useLayout();
+    const { isDrawerOpen, toggleDrawer, setIsUserSettingsOpen } = useLayout();
     const { user, isLogged, isLoading, isAdmin, logout } = useDigitalNetUser();
 
     const isPathClickable = React.useCallback(
@@ -24,12 +25,17 @@ export function Layout({ navigation, routePatterns, children }: Props) {
         [routePatterns]
     );
 
+    const openSettings = () => setIsUserSettingsOpen(true);
+
     return (
         <App>
             {isLogged ? (
-                <DnAppDrawer open={isDrawerOpen}>
-                    <LayoutNav navigation={navigation} />
-                </DnAppDrawer>
+                <React.Fragment>
+                    <Settings />
+                    <DnAppDrawer open={isDrawerOpen}>
+                        <LayoutNav navigation={navigation} />
+                    </DnAppDrawer>
+                </React.Fragment>
             ) : null}
             <AppViewWrapper>
                 <DnAppBar
@@ -38,11 +44,16 @@ export function Layout({ navigation, routePatterns, children }: Props) {
                             open: isDrawerOpen,
                             onClick: toggleDrawer,
                         },
+                        settings: {
+                            onClick: openSettings,
+                        },
                         account: {
                             username: user?.username,
+                            imgSrc: undefined,
                             loading: isLoading,
+                            onMyAccountClick: openSettings,
                             onLogoutClick: logout,
-                            isAdmin,
+                            isAdmin: Boolean(isAdmin),
                         },
                         breadcrumbs: {
                             url: location.pathname,
@@ -54,6 +65,7 @@ export function Layout({ navigation, routePatterns, children }: Props) {
                     disableSlots={{
                         account: !isLogged,
                         menu: !isLogged,
+                        settings: !isLogged,
                         breadcrumb: !isLogged,
                     }}
                 />

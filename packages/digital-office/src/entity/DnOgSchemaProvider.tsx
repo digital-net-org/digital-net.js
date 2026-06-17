@@ -1,16 +1,7 @@
 import * as React from 'react';
 import type { OpenGraphPropertySchema } from '@digital-net-org/digital-api-sdk';
 import { useDigitalNetApi } from '../api';
-
-export interface DnOgSchemaContextValue {
-    schema: OpenGraphPropertySchema[] | null;
-    error: Error | null;
-    loading: boolean;
-    loadSchema: () => void;
-    reload: () => void;
-}
-
-const DnOgSchemaContext = React.createContext<DnOgSchemaContextValue | null>(null);
+import { DnOgSchemaContext, type DnOgSchemaContextValue } from './useDnOgSchema';
 
 export interface DnOgSchemaProviderProps {
     children: React.ReactNode;
@@ -61,12 +52,4 @@ export function DnOgSchemaProvider({ children }: DnOgSchemaProviderProps) {
     );
 
     return <DnOgSchemaContext.Provider value={value}>{children}</DnOgSchemaContext.Provider>;
-}
-
-export function useDnOgSchema(): DnOgSchemaContextValue {
-    const context = React.useContext(DnOgSchemaContext);
-    if (!context) {
-        throw new Error('useDnOgSchema must be used within a DnOgSchemaProvider.');
-    }
-    return context;
 }

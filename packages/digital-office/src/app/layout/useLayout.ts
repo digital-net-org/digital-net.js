@@ -4,6 +4,8 @@ export interface LayoutContextValue {
     isDrawerOpen: boolean;
     toggleDrawer: () => void;
     setIsDrawerOpen: (_isOpen: boolean) => void;
+    isUserSettingsOpen: boolean;
+    setIsUserSettingsOpen: (_isOpen: boolean) => void;
     AppLogo: React.ReactNode;
 }
 export const LayoutContext = React.createContext<LayoutContextValue | null>(null);

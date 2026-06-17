@@ -19,6 +19,7 @@ function writeDrawerOpen(value: boolean) {
 
 export function LayoutProvider({ children, appLogo }: { appLogo: React.ReactNode; children: React.ReactNode }) {
     const [isDrawerOpen, setIsDrawerOpenState] = React.useState<boolean>(readDrawerOpen);
+    const [isUserSettingsOpen, setIsUserSettingsOpen] = React.useState<boolean>(false);
 
     const setIsDrawerOpen = React.useCallback((next: boolean) => {
         setIsDrawerOpenState(next);
@@ -39,6 +40,8 @@ export function LayoutProvider({ children, appLogo }: { appLogo: React.ReactNode
                 isDrawerOpen,
                 toggleDrawer,
                 setIsDrawerOpen,
+                isUserSettingsOpen,
+                setIsUserSettingsOpen,
                 AppLogo: appLogo,
             }}
         >

@@ -6,9 +6,17 @@ export * from './DnEntityForm';
 export * from './DnEntityEditView';
 export * from './DnEntityListView';
 export * from './DnEntityFormProvider';
+export { useDnEntityFormContext, type DnEntityFormBinding } from './useDnEntityFormContext';
 export * from './DnEntitySchemaProvider';
+export { useDnEntitySchemaContext, type DnEntitySchemaContextValue } from './useDnEntitySchemaContext';
 export * from './DnEntityVariablesProvider';
+export {
+    useDnEntityVariablesContext,
+    type DnEntityVariablesContextValue,
+    type DnEntityVariableKey,
+} from './useDnEntityVariablesContext';
 export * from './DnOgSchemaProvider';
+export { useDnOgSchema, type DnOgSchemaContextValue } from './useDnOgSchema';
 export * from './DnEntityView';
 export * from './useEntityDelete';
 export * from './useEntityDraft';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { MutationStreamClient } from '@digital-net-org/digital-api-sdk';
-import { useDigitalNetApi } from '../DigitalNetApiProvider';
+import { useDigitalNetApi } from '../useDigitalNetApi';
 import { useDigitalNetUser } from '../../app';
 import { resolveInvalidations, type InvalidationFilter } from './invalidationMap';
 import type { MutationSignal } from '@digital-net-org/digital-api-sdk';

@@ -1,19 +1,13 @@
 import * as React from 'react';
 import type { Result, TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { useDigitalNetApi } from '../api';
-
-export type DnEntityVariableKey = 'page:article';
+import {
+    DnEntityVariablesContext,
+    type DnEntityVariableKey,
+    type DnEntityVariablesContextValue,
+} from './useDnEntityVariablesContext';
 
 type Fetcher = () => Promise<Result<TemplateVariable[]>>;
-
-export interface DnEntityVariablesContextValue {
-    variables: Partial<Record<DnEntityVariableKey, TemplateVariable[]>>;
-    errors: Partial<Record<DnEntityVariableKey, Error>>;
-    loadingKeys: ReadonlySet<DnEntityVariableKey>;
-    loadVariables: (_key: DnEntityVariableKey) => void;
-}
-
-const DnEntityVariablesContext = React.createContext<DnEntityVariablesContextValue | null>(null);
 
 export interface DnEntityVariablesProviderProps {
     children: React.ReactNode;
@@ -74,12 +68,4 @@ export function DnEntityVariablesProvider({ children }: DnEntityVariablesProvide
     );
 
     return <DnEntityVariablesContext.Provider value={value}>{children}</DnEntityVariablesContext.Provider>;
-}
-
-export function useDnEntityVariablesContext(): DnEntityVariablesContextValue {
-    const context = React.useContext(DnEntityVariablesContext);
-    if (!context) {
-        throw new Error('useDnEntityVariablesContext must be used within a DnEntityVariablesProvider.');
-    }
-    return context;
 }

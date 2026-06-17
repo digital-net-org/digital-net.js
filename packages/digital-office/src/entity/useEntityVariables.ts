@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
-import { type DnEntityVariableKey, useDnEntityVariablesContext } from './DnEntityVariablesProvider';
+import { type DnEntityVariableKey, useDnEntityVariablesContext } from './useDnEntityVariablesContext';
 
 export interface UseEntityVariablesResult {
     variables: TemplateVariable[];

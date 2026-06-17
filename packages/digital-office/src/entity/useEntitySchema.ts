@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { SchemaProperty, EntityName } from '@digital-net-org/digital-api-sdk';
-import { useDnEntitySchemaContext } from './DnEntitySchemaProvider';
+import { useDnEntitySchemaContext } from './useDnEntitySchemaContext';
 
 export interface UseEntitySchemaResult {
     schemas: SchemaProperty[];

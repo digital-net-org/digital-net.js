@@ -10,10 +10,10 @@ import { DnMenuSettings, type DnMenuSettingsProps } from '../DnMenuSettings';
 import { DnMenuTheme } from '../DnMenuTheme';
 
 export interface DnAppBarProps {
-    slots?: {
-        account?: DnMenuAccountProps;
-        settings?: DnMenuSettingsProps;
-        menu?: { open?: boolean; onClick?: () => void };
+    slots: {
+        account: DnMenuAccountProps;
+        settings: DnMenuSettingsProps;
+        menu: { open?: boolean; onClick?: () => void };
         breadcrumbs?: DnBreadcrumbsProps;
     };
     disableSlots?: Partial<Record<'account' | 'settings' | 'theme' | 'menu' | 'breadcrumb', boolean>>;
@@ -31,9 +31,9 @@ export function DnAppBar({ slots, disableSlots }: DnAppBarProps) {
                 {disableSlots?.breadcrumb ? null : <DnBreadcrumbs {...(slots?.breadcrumbs ?? {})} />}
             </Stack>
             <Stack direction="row" sx={{ gap: 0.5 }}>
-                {disableSlots?.account ? null : <DnMenuAccount {...(slots?.account ?? {})} />}
+                {disableSlots?.account ? null : <DnMenuAccount {...slots.account} />}
                 {disableSlots?.theme ? null : <DnMenuTheme />}
-                {disableSlots?.settings ? null : <DnMenuSettings {...(slots?.settings ?? {})} />}
+                {disableSlots?.settings ? null : <DnMenuSettings {...slots.settings} />}
             </Stack>
         </CustomAppBar>
     );

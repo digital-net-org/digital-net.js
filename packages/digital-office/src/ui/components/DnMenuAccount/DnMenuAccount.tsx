@@ -15,13 +15,13 @@ import { DnAppBarMenu } from '../DnAppBarMenu';
 import { DnIconButton } from '../DnIconButton';
 
 export interface DnMenuAccountProps {
-    username?: string;
-    isAdmin?: boolean;
-    imgSrc?: string;
+    username: string | undefined;
+    isAdmin: boolean | undefined;
+    imgSrc: string | undefined;
     disabled?: boolean;
     loading?: boolean;
-    onMyAccountClick?: () => void;
-    onLogoutClick?: () => void;
+    onMyAccountClick: () => void;
+    onLogoutClick: () => void;
 }
 
 export function DnMenuAccount({
@@ -36,6 +36,10 @@ export function DnMenuAccount({
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
+    const handleMyAccountClick = () => {
+        onMyAccountClick();
+        setAnchorEl(null);
+    };
 
     return (
         <React.Fragment>
@@ -51,7 +55,7 @@ export function DnMenuAccount({
                     </Typography>
                 </UsernameBox>
                 <MenuList>
-                    <MenuItem disabled={loading} onClick={onMyAccountClick}>
+                    <MenuItem disabled={loading} onClick={handleMyAccountClick}>
                         <ListItemIcon>
                             <PersonIcon fontSize="small" />
                         </ListItemIcon>

@@ -3,13 +3,13 @@ import { Settings as SettingsIcon } from '@mui/icons-material';
 import { DnIconButton } from '../DnIconButton';
 
 export interface DnMenuSettingsProps {
-    disabled?: boolean;
+    onClick: () => void;
 }
 
-export function DnMenuSettings({ disabled: _disabled }: DnMenuSettingsProps) {
+export function DnMenuSettings({ onClick }: DnMenuSettingsProps) {
     return (
-        <DnIconButton disabled>
-            <SettingsIcon />
+        <DnIconButton>
+            <SettingsIcon onClick={onClick} />
         </DnIconButton>
     );
 }

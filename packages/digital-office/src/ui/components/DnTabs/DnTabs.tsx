@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Stack, Tab, Tabs } from '@mui/material';
+import { Divider, Stack, Tab, Tabs } from '@mui/material';
 import { css, keyframes, styled } from '@mui/material/styles';
 import { UrlParamBuilder, useUrlQueryState } from '../../../navigation';
 
@@ -16,6 +16,7 @@ export interface DnTabsProps {
     keepAlive?: boolean;
     renderActions?: React.ReactNode;
     renderBanner?: React.ReactNode;
+    divider?: boolean;
 }
 
 export function DnTabs({ urlKey, ...props }: DnTabsProps) {
@@ -54,7 +55,15 @@ interface TabsViewProps extends StateTabsProps {
     onChange: (_key: string) => void;
 }
 
-function TabsView({ items, activeKey, onChange, keepAlive = true, renderActions, renderBanner }: TabsViewProps) {
+function TabsView({
+    items,
+    activeKey,
+    onChange,
+    keepAlive = true,
+    renderActions,
+    renderBanner,
+    divider,
+}: TabsViewProps) {
     const [visited, setVisited] = React.useState<ReadonlySet<string>>(() => new Set(activeKey ? [activeKey] : []));
     if (keepAlive && activeKey && !visited.has(activeKey)) {
         setVisited(prev => new Set(prev).add(activeKey));
@@ -77,6 +86,7 @@ function TabsView({ items, activeKey, onChange, keepAlive = true, renderActions,
                 // `display: none` halts the fade-in animation; switching back to `flex` restarts it.
                 return (
                     <ContentWrapper key={t.key} sx={{ display: isActive ? undefined : 'none' }}>
+                        {divider ? <Divider /> : null}
                         {t.content}
                     </ContentWrapper>
                 );

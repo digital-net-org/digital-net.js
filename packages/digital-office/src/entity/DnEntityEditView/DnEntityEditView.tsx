@@ -10,7 +10,8 @@ import {
     schemaValidation,
 } from '@digital-net-org/digital-api-sdk';
 import { DnEntityView, type DnEntityViewTab } from '../DnEntityView';
-import { DnEntityFormProvider, type DnEntityFormBinding } from '../DnEntityFormProvider';
+import { DnEntityFormProvider } from '../DnEntityFormProvider';
+import type { DnEntityFormBinding } from '../useDnEntityFormContext';
 import { useEntityDraft } from '../useEntityDraft';
 import { useEntityFormState } from '../useEntityFormState';
 import { useEntitySchema } from '../useEntitySchema';

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { DnEntityFormBinding } from './DnEntityFormProvider';
+import type { DnEntityFormBinding } from './useDnEntityFormContext';
 
 /**
  * In-memory form state for create mode. No IDB persistence — values are lost
