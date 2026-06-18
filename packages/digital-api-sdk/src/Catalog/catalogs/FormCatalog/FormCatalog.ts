@@ -5,6 +5,7 @@ import type { JsonPatchOp } from '../../../JsonPatch';
 import type { QueryResult, Result } from '../../../Result';
 import type { SchemaProperty } from '../../../Schema';
 import type { CatalogCallbacks } from '../../types';
+import { FormPublicCatalog } from './FormPublicCatalog';
 import type { FormCreatePayload, FormFieldPayload, FormQuery, FormSubmissionQuery } from './types';
 
 export const DN_API_FORM = 'cms/forms' as const;
@@ -18,8 +19,12 @@ export const DN_API_FORM_SUBMISSION_BY_ID = 'cms/forms/submissions/:id' as const
 export class FormCatalog {
     private readonly http: HttpClient;
 
+    /** Public, unauthenticated-friendly form access — `cms/forms/public/*`. */
+    public readonly public: FormPublicCatalog;
+
     public constructor(http: HttpClient) {
         this.http = http;
+        this.public = new FormPublicCatalog(http);
     }
 
     /** GET `cms/forms/:id` — JWT/ApiKey */

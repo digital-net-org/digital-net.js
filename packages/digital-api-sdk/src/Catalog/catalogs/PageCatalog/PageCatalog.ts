@@ -11,6 +11,7 @@ import type {
 import type { JsonPatchOp } from '../../../JsonPatch';
 import type { Result } from '../../../Result';
 import type { CatalogCallbacks } from '../../types';
+import { PagePublicCatalog } from './PagePublicCatalog';
 import type { PagePayload } from './types';
 
 export const DN_API_PAGE = 'cms/pages' as const;
@@ -24,8 +25,12 @@ export const DN_API_PAGE_TEMPLATE_VARIABLES = 'cms/pages/template-variables/:ent
 export class PageCatalog {
     private readonly http: HttpClient;
 
+    /** Public, unauthenticated-friendly page rendering — `cms/pages/public/*`. */
+    public readonly public: PagePublicCatalog;
+
     public constructor(http: HttpClient) {
         this.http = http;
+        this.public = new PagePublicCatalog(http);
     }
 
     /** GET `cms/pages/:id` — JWT/ApiKey */

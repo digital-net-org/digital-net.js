@@ -4,6 +4,7 @@ import type { ArticleDto } from '../../../Dto';
 import type { JsonPatchOp } from '../../../JsonPatch';
 import type { Result } from '../../../Result';
 import type { CatalogCallbacks } from '../../types';
+import { ArticlePublicCatalog } from './ArticlePublicCatalog';
 import type { ArticlePayload } from './types';
 
 export const DN_API_ARTICLE = 'cms/articles' as const;
@@ -13,8 +14,12 @@ export const DN_API_ARTICLE_SLUG_AVAILABILITY = 'cms/articles/slug/availability'
 export class ArticleCatalog {
     private readonly http: HttpClient;
 
+    /** Public, unauthenticated-friendly reads — `cms/articles/public/*`. */
+    public readonly public: ArticlePublicCatalog;
+
     public constructor(http: HttpClient) {
         this.http = http;
+        this.public = new ArticlePublicCatalog(http);
     }
 
     /** GET `cms/articles/:id` — JWT/ApiKey */

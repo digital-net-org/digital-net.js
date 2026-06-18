@@ -178,7 +178,9 @@ describe('MutationStreamClient', () => {
     });
 
     it('reports failures via onError and transitions through reconnecting', async () => {
-        fetchMock.mockResolvedValueOnce(new Response(null, { status: 401 })).mockResolvedValueOnce(sseStream().response);
+        fetchMock
+            .mockResolvedValueOnce(new Response(null, { status: 401 }))
+            .mockResolvedValueOnce(sseStream().response);
         const errors: number[] = [];
         const states: string[] = [];
         const client = new MutationStreamClient(http);

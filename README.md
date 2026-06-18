@@ -20,7 +20,9 @@ backend.
 - **pnpm** 10+
 
 ### Clone
+
 This library is only provided as a Git submodule.
+
 ```bash
 git clone --recurse-submodules git@github.com:digital-net-org/digital-net.js.git
 ```

@@ -1,0 +1,57 @@
+import { CatalogRunner } from '../../CatalogRunner';
+import type { HttpClient } from '../../../HttpClient';
+import type { PagePublicDto, PageSheetInfoDto } from '../../../Dto';
+import type { Result } from '../../../Result';
+import type { CatalogCallbacks } from '../../types';
+import type { PageBuildPayload, PageSheetBuildPayload } from './types';
+
+export const DN_API_PAGE_PUBLIC_BUILD = 'cms/pages/public/build' as const;
+export const DN_API_PAGE_PUBLIC_BUILD_SHEET = 'cms/pages/public/build/sheet' as const;
+export const DN_API_PAGE_PUBLIC_SHEETS = 'cms/pages/public/:id/sheets' as const;
+
+export class PagePublicCatalog {
+    private readonly http: HttpClient;
+
+    public constructor(http: HttpClient) {
+        this.http = http;
+    }
+
+    /** POST `cms/pages/public/build` — builds a published page for the declared templated path — Application/JWT/ApiKey */
+    public async build(
+        payload: PageBuildPayload,
+        options: CatalogCallbacks<PagePublicDto> = {}
+    ): Promise<Result<PagePublicDto>> {
+        return CatalogRunner.run<PagePublicDto>(
+            this.http,
+            { method: 'POST', path: DN_API_PAGE_PUBLIC_BUILD, body: payload },
+            options
+        );
+    }
+
+    /**
+     * POST `cms/pages/public/build/sheet` — builds a published sheet resource — Application/JWT/ApiKey
+     *
+     * On success the endpoint returns the RAW sheet content with its own Content-Type
+     * (css/js/html), NOT a `Result<…>` envelope — so the body string is returned directly.
+     */
+    public async buildSheet(payload: PageSheetBuildPayload): Promise<string> {
+        const res = await this.http.request<string>({
+            method: 'POST',
+            path: DN_API_PAGE_PUBLIC_BUILD_SHEET,
+            body: payload,
+        });
+        return res.data;
+    }
+
+    /** GET `cms/pages/public/:id/sheets` — published sheet infos owned by the page (ordered) — Application/JWT/ApiKey */
+    public async getSheets(
+        id: string,
+        options: CatalogCallbacks<PageSheetInfoDto[]> = {}
+    ): Promise<Result<PageSheetInfoDto[]>> {
+        return CatalogRunner.run<PageSheetInfoDto[]>(
+            this.http,
+            { path: DN_API_PAGE_PUBLIC_SHEETS, slugs: { id } },
+            options
+        );
+    }
+}
