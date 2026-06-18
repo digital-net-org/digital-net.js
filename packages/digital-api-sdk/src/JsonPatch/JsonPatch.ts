@@ -18,26 +18,26 @@ export class JsonPatch {
     private static setAtPath(target: Record<string, unknown>, segments: string[], value: unknown): void {
         let cursor: Record<string, unknown> = target;
         for (let i = 0; i < segments.length - 1; i++) {
-            const seg = segments[i];
+            const seg = segments[i] as string;
             const next = cursor[seg];
             const cloned = JsonPatch.cloneShallow(next) ?? {};
             cursor[seg] = cloned;
             cursor = cloned as Record<string, unknown>;
         }
-        cursor[segments[segments.length - 1]] = value;
+        cursor[segments[segments.length - 1] as string] = value;
     }
 
     private static deleteAtPath(target: Record<string, unknown>, segments: string[]): void {
         let cursor: Record<string, unknown> = target;
         for (let i = 0; i < segments.length - 1; i++) {
-            const seg = segments[i];
+            const seg = segments[i] as string;
             const next = cursor[seg];
             if (next === undefined || next === null) return;
             const cloned = JsonPatch.cloneShallow(next);
             cursor[seg] = cloned;
             cursor = cloned as Record<string, unknown>;
         }
-        delete cursor[segments[segments.length - 1]];
+        delete cursor[segments[segments.length - 1] as string];
     }
 
     /** Applies an array of JSON Patch ops on top of a shallow-copy of `base`. */

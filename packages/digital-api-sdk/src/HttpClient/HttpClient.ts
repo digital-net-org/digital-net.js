@@ -1,5 +1,11 @@
 import { DigitalEvent, Env, URLResolver } from '@digital-net-org/digital-core';
-import { DN_API_KEY_HEADER, DN_CLIENT_ID_HEADER, DN_DEFAULT_HEADERS, DN_STORAGE_KEY } from './constants';
+import {
+    DN_API_KEY_HEADER,
+    DN_APPLICATION_KEY_HEADER,
+    DN_CLIENT_ID_HEADER,
+    DN_DEFAULT_HEADERS,
+    DN_STORAGE_KEY,
+} from './constants';
 import { DN_API_AUTH_USER_REFRESH } from '../Catalog';
 import { HttpClientError } from './HttpClientError';
 import { HttpSerializer } from './HttpSerializer';
@@ -10,6 +16,7 @@ export class HttpClient {
     private readonly baseUrl: string;
     private readonly apiKey?: string;
     private readonly applicationKey?: string;
+    private readonly applicationKeyAuth: boolean;
     private readonly storageKey: string;
     private readonly apiKeyHeader: string;
     private readonly clientId: string = HttpClient.generateClientId();
@@ -24,6 +31,7 @@ export class HttpClient {
         this.baseUrl = config.baseUrl;
         this.apiKey = config.apiKey;
         this.applicationKey = config.applicationKey;
+        this.applicationKeyAuth = config.applicationKeyAuth ?? false;
         this.storageKey = (config.keyPrefix ?? '') + DN_STORAGE_KEY;
         this.apiKeyHeader = (config.keyPrefix ?? '') + DN_API_KEY_HEADER;
     }
@@ -185,6 +193,9 @@ export class HttpClient {
             } else {
                 const token = this.getToken();
                 if (token) headers['Authorization'] = `Bearer ${token}`;
+            }
+            if (this.applicationKeyAuth && this.applicationKey !== undefined) {
+                headers[DN_APPLICATION_KEY_HEADER] = this.applicationKey;
             }
         }
         if (config.body instanceof FormData || config.body instanceof Blob) {

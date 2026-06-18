@@ -10,9 +10,16 @@ export interface HttpClientConfig {
     apiKey?: string;
     /**
      * Optional shared application key. Stored on the client and exposed via `getApplicationKey()` for
-     * consumers that need it. It is NOT prefixed by `keyPrefix` and NOT attached automatically to regular requests.
+     * consumers that need it. It is NOT prefixed by `keyPrefix` and NOT attached automatically to regular requests
+     * unless `applicationKeyAuth` is enabled.
      */
     applicationKey?: string;
+    /**
+     * When true and `applicationKey` is set, every request is sent with the `DN-Application-Key` header
+     * (Application auth flow), in addition to any bearer/API-key auth. Off by default. The header is sent
+     * raw — `keyPrefix` is not applied.
+     */
+    applicationKeyAuth?: boolean;
     /**
      * Optional prefix prepended as-is to both:
      *
