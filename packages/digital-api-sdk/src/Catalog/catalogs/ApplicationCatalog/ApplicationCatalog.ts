@@ -1,6 +1,11 @@
 import type { HttpClient } from '../../../HttpClient';
+import { CatalogRunner } from '../../CatalogRunner';
+import type { Result } from '../../../Result';
+import type { CatalogCallbacks } from '../../types';
+import type { ApplicationVersionDto } from '../../../Dto';
 
 export const DN_API_PING = 'ping' as const;
+export const DN_API_ROOT = '' as const;
 
 export interface PingCallbacks {
     onSuccess?: () => void | Promise<void>;
@@ -39,5 +44,21 @@ export class ApplicationCatalog {
             await options.onError?.(e);
             return false;
         }
+    }
+
+    /**
+     * GET `/` (root)
+     *
+     * Returns the application version: framework name and the build-time git
+     * branch / tag / commit injected into the backend configuration.
+     */
+    public async version(
+        options: CatalogCallbacks<ApplicationVersionDto> = {}
+    ): Promise<Result<ApplicationVersionDto>> {
+        return CatalogRunner.run<ApplicationVersionDto>(
+            this.http,
+            { method: 'GET', path: DN_API_ROOT },
+            options
+        );
     }
 }

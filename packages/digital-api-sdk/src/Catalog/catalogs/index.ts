@@ -1,6 +1,7 @@
 export * from './ApplicationCatalog';
 export * from './ArticleCatalog';
 export * from './AuthCatalog';
+export * from './CacheCatalog';
 export * from './ConfigValueCatalog';
 export * from './CrudCatalog';
 export * from './FormCatalog';

@@ -3,6 +3,7 @@ import {
     ApplicationCatalog,
     ArticleCatalog,
     AuthCatalog,
+    CacheCatalog,
     ConfigValueCatalog,
     CrudCatalog,
     FormCatalog,
@@ -22,6 +23,7 @@ export class Catalog {
     public readonly application: ApplicationCatalog;
     public readonly article: ArticleCatalog;
     public readonly auth: AuthCatalog;
+    public readonly cache: CacheCatalog;
     public readonly configValue: ConfigValueCatalog;
     public readonly crud: CrudCatalog;
     public readonly form: FormCatalog;
@@ -37,6 +39,7 @@ export class Catalog {
         this.application = new ApplicationCatalog(http);
         this.article = new ArticleCatalog(http);
         this.auth = new AuthCatalog(http);
+        this.cache = new CacheCatalog(http);
         this.configValue = new ConfigValueCatalog(http);
         this.crud = new CrudCatalog(http);
         this.form = new FormCatalog(http);

@@ -5,6 +5,7 @@ export { useLayout, useDigitalToast, useDigitalNetUser } from './app';
 export { useDigitalNetApi } from './api';
 export { DigitalOfficeRouter } from './router';
 export { DigitalOfficeProvider, type DigitalOfficeProviderProps } from './DigitalOfficeProvider';
+export { type DnVersion } from './app';
 export { DigitalOfficeNavGroup, type DigitalOfficeRoute, type DigitalOfficeRouterProps } from './router';
 
 export { DnEntityListView, type DnEntityListViewProps, useEntitySchema } from './entity';

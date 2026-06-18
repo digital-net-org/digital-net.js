@@ -9,7 +9,9 @@ import {
     LayoutProvider,
     ToastProvider,
     CustomRenderProvider,
+    VersionProvider,
     type DnCustomViewDict,
+    type DnVersion,
 } from './app';
 
 export interface DigitalOfficeProviderProps {
@@ -17,9 +19,10 @@ export interface DigitalOfficeProviderProps {
     children: React.ReactNode;
     appLogo?: React.ReactNode;
     customRender?: DnCustomViewDict;
+    version?: DnVersion;
 }
 
-export function DigitalOfficeProvider({ api, appLogo, customRender, children }: DigitalOfficeProviderProps) {
+export function DigitalOfficeProvider({ api, appLogo, customRender, version, children }: DigitalOfficeProviderProps) {
     return (
         <DigitalNetApiProvider api={api}>
             <DnThemeProvider>
@@ -31,9 +34,11 @@ export function DigitalOfficeProvider({ api, appLogo, customRender, children }: 
                                     <DnOgSchemaProvider>
                                         <DnEntityVariablesProvider>
                                             <LayoutProvider appLogo={appLogo ?? <DnLogo />}>
-                                                <CustomRenderProvider customRender={customRender}>
-                                                    {children}
-                                                </CustomRenderProvider>
+                                                <VersionProvider version={version}>
+                                                    <CustomRenderProvider customRender={customRender}>
+                                                        {children}
+                                                    </CustomRenderProvider>
+                                                </VersionProvider>
                                             </LayoutProvider>
                                         </DnEntityVariablesProvider>
                                     </DnOgSchemaProvider>
