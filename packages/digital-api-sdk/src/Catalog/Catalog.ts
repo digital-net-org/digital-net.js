@@ -8,6 +8,7 @@ import {
     FormCatalog,
     MediaCatalog,
     PageCatalog,
+    SitemapCatalog,
     TagCatalog,
     UserCatalog,
     ValidationCatalog,
@@ -26,6 +27,7 @@ export class Catalog {
     public readonly form: FormCatalog;
     public readonly media: MediaCatalog;
     public readonly page: PageCatalog;
+    public readonly sitemap: SitemapCatalog;
     public readonly tag: TagCatalog;
     public readonly user: UserCatalog;
     public readonly validation: ValidationCatalog;
@@ -40,6 +42,7 @@ export class Catalog {
         this.form = new FormCatalog(http);
         this.media = new MediaCatalog(http);
         this.page = new PageCatalog(http);
+        this.sitemap = new SitemapCatalog(http);
         this.tag = new TagCatalog(http);
         this.user = new UserCatalog(http);
         this.validation = new ValidationCatalog(http);

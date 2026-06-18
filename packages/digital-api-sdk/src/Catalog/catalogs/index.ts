@@ -6,6 +6,7 @@ export * from './CrudCatalog';
 export * from './FormCatalog';
 export * from './MediaCatalog';
 export * from './PageCatalog';
+export * from './SitemapCatalog';
 export * from './TagCatalog';
 export * from './UserCatalog';
 export * from './ValidationCatalog';

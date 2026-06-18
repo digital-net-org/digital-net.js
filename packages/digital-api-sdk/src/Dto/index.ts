@@ -28,6 +28,7 @@ export * from './PageSheetInfoDto';
 export * from './OpenGraphEntry';
 export * from './OpenGraphEntryPublicDto';
 export * from './OpenGraphPropertySchema';
+export * from './SitemapEntryDto';
 export * from './TagDto';
 export * from './TagPublicDto';
 export * from './TemplateVariable';
