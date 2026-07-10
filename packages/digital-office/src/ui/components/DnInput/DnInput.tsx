@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { type TextFieldProps, type SlotProps, type TextFieldOwnerState, Box, CircularProgress } from '@mui/material';
+import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import type { InputBaseProps } from '@mui/material/InputBase';
 import { DnBaseInput } from './DnBaseInput';
 import { DnBaseInputWrapper } from './DnBaseInputWrapper';
 import { DnBaseInputCount } from './DnBaseInputCount';
+import { DnIconButton } from '../DnIconButton';
 
 export interface DnInputProps extends Pick<
     TextFieldProps,
@@ -39,6 +41,7 @@ export interface DnInputProps extends Pick<
 }
 
 const DEFAULT_PATTERN_ERROR = 'Format invalide.';
+const PASSWORD_INPUT_PROPS = { sx: { width: '18px!important' } };
 
 export function DnInput({
     className,
@@ -54,12 +57,17 @@ export function DnInput({
     helperText,
     value,
     onChange,
+    type,
     ...muiProps
 }: DnInputProps) {
     const [uncontrolledLength, setUncontrolledLength] = React.useState(
         typeof muiProps.defaultValue === 'string' ? muiProps.defaultValue.length : 0
     );
     const [patternMismatch, setPatternMismatch] = React.useState(false);
+    const [passwordVisible, setPasswordVisible] = React.useState(false);
+
+    const isPassword = type === 'password';
+    const resolvedType = isPassword && passwordVisible ? 'text' : type;
 
     const valueLength = typeof value === 'string' ? value.length : uncontrolledLength;
     const resolvedMaxLength = max ?? (inputProps as { maxLength?: number } | undefined)?.maxLength;
@@ -82,6 +90,7 @@ export function DnInput({
             <DnBaseInputCount value={valueLength} max={max} />
             <DnBaseInput
                 {...muiProps}
+                type={resolvedType}
                 value={value ?? ''}
                 onChange={handleOnChange}
                 error={effectiveError}
@@ -102,7 +111,7 @@ export function DnInput({
                     },
                     input: {
                         endAdornment:
-                            loading || loadingNonBlocking || endAction ? (
+                            loading || loadingNonBlocking || endAction || isPassword ? (
                                 <Box
                                     sx={{
                                         position: 'absolute',
@@ -114,6 +123,21 @@ export function DnInput({
                                 >
                                     {(loading || loadingNonBlocking) && <CircularProgress size="1rem" />}
                                     {endAction}
+                                    {isPassword && (
+                                        <DnIconButton
+                                            tooltip={
+                                                passwordVisible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'
+                                            }
+                                            disabled={disabled || loading}
+                                            onClick={() => setPasswordVisible(visible => !visible)}
+                                        >
+                                            {passwordVisible ? (
+                                                <VisibilityOffIcon {...PASSWORD_INPUT_PROPS} />
+                                            ) : (
+                                                <VisibilityIcon {...PASSWORD_INPUT_PROPS} />
+                                            )}
+                                        </DnIconButton>
+                                    )}
                                 </Box>
                             ) : undefined,
                     },
