@@ -1,6 +1,6 @@
 import ace from 'ace-builds/src-noconflict/ace';
 import type { Ace } from 'ace-builds';
-import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
+import type { DnEditorTemplateVariable } from '../types';
 
 interface AceRangeCtor {
     new (_startRow: number, _startCol: number, _endRow: number, _endCol: number): Ace.Range;
@@ -16,7 +16,7 @@ interface TemplateCompletion {
     completer: { insertMatch: (_editor: Ace.Editor, _data: TemplateCompletion) => void };
 }
 
-export function createTemplateCompleter(variables: TemplateVariable[]): unknown {
+export function createTemplateCompleter(variables: DnEditorTemplateVariable[]): unknown {
     const completer = {
         identifierRegexps: [/[@a-zA-Z_0-9.{}\-:/]/],
         getCompletions(

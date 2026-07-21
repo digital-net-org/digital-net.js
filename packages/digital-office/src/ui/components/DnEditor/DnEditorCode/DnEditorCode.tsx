@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, type SxProps, type Theme, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import ace from 'ace-builds/src-noconflict/ace';
 import type { Ace } from 'ace-builds';
@@ -14,7 +14,8 @@ import 'ace-builds/src-noconflict/snippets/json';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/theme-github_light_default';
 import 'ace-builds/src-noconflict/ext-language_tools';
-import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
+import { DnEditorFrame } from '../DnEditorFrame';
+import type { DnEditorBaseProps, DnEditorLanguage, DnEditorTemplateVariable } from '../types';
 import { aceOptions, resolveEditorLanguage, resolveEditorTheme } from './ace';
 import { jsonldPlugin, templatePlugin, type EditorPlugin } from './plugins';
 import { formatCode, validateCode } from '../format';
@@ -23,16 +24,9 @@ import { useEditorCompleters } from './useEditorCompleters';
 import { useEditorMarkers } from './useEditorMarkers';
 import { useHoverErrorTooltip } from './useHoverErrorTooltip';
 
-export interface DnEditorCodeProps {
-    value: string;
-    onChange: (_value: string) => void;
-    language: 'javascript' | 'html' | 'css' | 'json' | 'jsonld';
-    disabled?: boolean;
-    sx?: SxProps<Theme>;
-    error?: boolean;
-    templateVariables?: TemplateVariable[];
-    getInitialScrollTop?: () => number;
-    onScrollTopChange?: (_top: number) => void;
+export interface DnEditorCodeProps extends DnEditorBaseProps {
+    language: DnEditorLanguage;
+    templateVariables?: DnEditorTemplateVariable[];
 }
 
 export function DnEditorCode({
@@ -149,8 +143,8 @@ export function DnEditorCode({
     const hoverError = useHoverErrorTooltip(containerRef, editor, markers);
 
     return (
-        <Wrapper
-            className="DnCodeEditor"
+        <CodeFrame
+            className="DnEditorCode"
             sx={sx}
             data-disabled={disabled || undefined}
             aria-disabled={disabled || undefined}
@@ -162,35 +156,12 @@ export function DnEditorCode({
                     {hoverError.message}
                 </HoverTooltip>
             )}
-        </Wrapper>
+        </CodeFrame>
     );
 }
 
-const Wrapper = styled(Box)(
+const CodeFrame = styled(DnEditorFrame)(
     ({ theme }) => css`
-        position: relative;
-        border: 1px solid ${theme.palette.divider};
-        border-radius: ${theme.shape.borderRadius};
-        overflow: hidden;
-        transition: border-color 0.2s ease-in-out;
-        height: 100%;
-        width: 100%;
-
-        &:focus-within {
-            border-color: ${theme.palette.primary.main};
-        }
-
-        &[data-disabled] {
-            opacity: 0.35;
-            pointer-events: none;
-            cursor: not-allowed;
-            border-color: ${theme.palette.action.disabled};
-        }
-
-        &[data-error] {
-            border-color: ${theme.palette.error.main};
-        }
-
         & .ace_editor {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         }

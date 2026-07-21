@@ -14,21 +14,18 @@ import { $getRoot, $insertNodes, $setSelection, BLUR_COMMAND, COMMAND_PRIORITY_L
 import { LEXICAL_HTML_CONFIG, LEXICAL_NODES, LEXICAL_THEME } from './lexicalConfig';
 import { LexicalToolbar } from './LexicalToolbar';
 import { LexicalRoot } from './LexicalRoot';
+import type { DnEditorBaseProps } from '../types';
 
 const SERIALIZE_DEBOUNCE_MS = 300;
 
-export interface DnEditorRichTextProps {
-    value: string;
-    onChange: (_html: string) => void;
-    disabled?: boolean;
-    getInitialScrollTop?: () => number;
-    onScrollTopChange?: (_top: number) => void;
-}
+export type DnEditorRichTextProps = DnEditorBaseProps;
 
 export function DnEditorRichText({
     value,
     onChange,
     disabled = false,
+    error,
+    sx,
     getInitialScrollTop,
     onScrollTopChange,
 }: DnEditorRichTextProps) {
@@ -47,7 +44,7 @@ export function DnEditorRichText({
     );
 
     return (
-        <LexicalRoot>
+        <LexicalRoot disabled={disabled} error={error} sx={sx}>
             <LexicalComposer initialConfig={initialConfig}>
                 <LexicalToolbar disabled={disabled} />
                 <EditorBody

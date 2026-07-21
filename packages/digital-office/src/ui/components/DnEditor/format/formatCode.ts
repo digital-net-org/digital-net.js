@@ -3,10 +3,10 @@ import pluginBabel from 'prettier/plugins/babel';
 import pluginEstree from 'prettier/plugins/estree';
 import pluginHtml from 'prettier/plugins/html';
 import pluginCss from 'prettier/plugins/postcss';
-import type { DnEditorCodeProps } from '../DnEditorCode/DnEditorCode';
+import type { DnEditorLanguage } from '../types';
 import { resolveParserName } from './resolveParserName';
 
-export async function formatCode(source: string, language: DnEditorCodeProps['language']): Promise<string> {
+export async function formatCode(source: string, language: DnEditorLanguage): Promise<string> {
     if (!source.trim()) return source;
     try {
         return await prettier.format(source, {

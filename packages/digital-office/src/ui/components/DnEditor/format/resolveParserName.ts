@@ -1,6 +1,6 @@
-import type { DnEditorCodeProps } from '../DnEditorCode/DnEditorCode';
+import type { DnEditorLanguage } from '../types';
 
-const parserMap: Record<DnEditorCodeProps['language'], string> = {
+const parserMap: Record<DnEditorLanguage, string> = {
     javascript: 'babel',
     html: 'html',
     css: 'css',
@@ -8,4 +8,4 @@ const parserMap: Record<DnEditorCodeProps['language'], string> = {
     jsonld: 'json',
 };
 
-export const resolveParserName = (str: DnEditorCodeProps['language']) => parserMap[str];
+export const resolveParserName = (str: DnEditorLanguage) => parserMap[str];

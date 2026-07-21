@@ -1,9 +1,9 @@
-import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
+import type { DnEditorTemplateVariable } from '../../types';
 import { createTemplateCompleter } from '../aceTemplateCompleter';
 import { validateInterpolatedString } from '../../../DnInput/utils/interpolated';
 import type { EditorPlugin } from './types';
 
-export function templatePlugin(variables: TemplateVariable[]): EditorPlugin {
+export function templatePlugin(variables: DnEditorTemplateVariable[]): EditorPlugin {
     return {
         id: 'template',
         validate: value =>
