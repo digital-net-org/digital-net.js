@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Stack } from '@mui/material';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
-import { DnInputCode, DnExternalButton } from '../../../ui';
+import { LazyDnEditorCode, DnExternalButton } from '../../../ui';
 import { DnEntityTabHelper, useDnEntityFormContext } from '../../../entity';
 import { usePageVariables } from './usePageVariables';
 
@@ -18,7 +18,7 @@ export function PageTabJsonLd() {
                 <DnExternalButton link={JSON_LD_TEST_URL}>Tester mon JSON</DnExternalButton>
             </DnEntityTabHelper>
             <Stack sx={{ flex: 1, minHeight: 0 }}>
-                <DnInputCode
+                <LazyDnEditorCode
                     value={values.jsonLd ?? ''}
                     onChange={value => setField('/jsonLd', value)}
                     language="jsonld"

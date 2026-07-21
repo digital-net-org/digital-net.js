@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IconButton, Stack, Tooltip } from '@mui/material';
+import { Stack } from '@mui/material';
 import {
     FormatAlignCenter as AlignCenterIcon,
     FormatAlignJustify as AlignJustifyIcon,
@@ -18,11 +18,11 @@ import {
 } from '@mui/icons-material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { createCommand } from 'lexical';
+import { DnIconButton } from '../../DnIconButton';
 import { LEXICAL_HEADING_LEVELS } from './lexicalConfig';
 import { useLexicalFormatters } from './useLexicalFormatters';
 import { useLexicalHistory } from './useLexicalHistory';
 import { LexicalToolbarDivider } from './LexicalToolbarDivider';
-import { LexicalToolbarButton } from './LexicalToolbarButton';
 
 // Placeholder pour future extension (insertion image, lien, etc.) si on veut un command dédié.
 export const INSERT_IMAGE_COMMAND = createCommand<string>('INSERT_IMAGE_COMMAND');
@@ -65,10 +65,10 @@ export function LexicalToolbar({ disabled = false }: LexicalToolbarProps) {
             {[
                 { label: 'Annuler', icon: <UndoIcon />, disabled: disabled || !canUndo, onClick: undo },
                 { label: 'Rétablir', icon: <RedoIcon />, disabled: disabled || !canRedo, onClick: redo },
-            ].map(({ icon, ...rest }) => (
-                <LexicalToolbarButton key={rest.label} {...rest}>
+            ].map(({ icon, label, ...rest }) => (
+                <DnIconButton key={label} tooltip={label} {...rest}>
                     {icon}
-                </LexicalToolbarButton>
+                </DnIconButton>
             ))}
             <LexicalToolbarDivider />
             {[
@@ -76,46 +76,35 @@ export function LexicalToolbar({ disabled = false }: LexicalToolbarProps) {
                 { label: 'Italique', icon: <ItalicIcon />, onClick: toItalic },
                 { label: 'Souligné', icon: <UnderlineIcon />, onClick: toUnderline },
                 { label: 'Barré', icon: <StrikeIcon />, onClick: toStrikethrough },
-            ].map(({ icon, ...rest }) => (
-                <LexicalToolbarButton key={rest.label} disabled={disabled} {...rest}>
+            ].map(({ icon, label, ...rest }) => (
+                <DnIconButton key={label} tooltip={label} disabled={disabled} {...rest}>
                     {icon}
-                </LexicalToolbarButton>
+                </DnIconButton>
             ))}
             <LexicalToolbarDivider />
             {LEXICAL_HEADING_LEVELS.map(tag => (
-                <Tooltip key={tag} title={tag.toUpperCase()}>
-                    <span style={{ display: 'inline-flex' }}>
-                        <IconButton
-                            size="small"
-                            disabled={disabled}
-                            onClick={() => formatHeading(tag)}
-                            sx={{ position: 'relative' }}
-                        >
-                            <TitleIcon fontSize="small" />
-                            <span
-                                style={{
-                                    position: 'absolute',
-                                    bottom: 2,
-                                    right: 2,
-                                    fontSize: 9,
-                                    fontWeight: 700,
-                                }}
-                            >
-                                {tag.slice(1)}
-                            </span>
-                        </IconButton>
+                <DnIconButton
+                    key={tag}
+                    tooltip={tag.toUpperCase()}
+                    disabled={disabled}
+                    onClick={() => formatHeading(tag)}
+                    sx={{ position: 'relative' }}
+                >
+                    <TitleIcon fontSize="small" />
+                    <span style={{ position: 'absolute', bottom: 2, right: 2, fontSize: 9, fontWeight: 700 }}>
+                        {tag.slice(1)}
                     </span>
-                </Tooltip>
+                </DnIconButton>
             ))}
             <LexicalToolbarDivider />
             {[
                 { label: 'Liste à puces', icon: <UlIcon />, onClick: toUnorderedList },
                 { label: 'Liste ordonnée', icon: <OlIcon />, onClick: toOrderedList },
                 { label: 'Citation', icon: <QuoteIcon />, onClick: formatQuote },
-            ].map(({ icon, ...rest }) => (
-                <LexicalToolbarButton key={rest.label} disabled={disabled} {...rest}>
+            ].map(({ icon, label, ...rest }) => (
+                <DnIconButton key={label} tooltip={label} disabled={disabled} {...rest}>
                     {icon}
-                </LexicalToolbarButton>
+                </DnIconButton>
             ))}
             <LexicalToolbarDivider />
             {[
@@ -123,10 +112,10 @@ export function LexicalToolbar({ disabled = false }: LexicalToolbarProps) {
                 { label: 'Centrer', icon: <AlignCenterIcon />, onClick: toAlignCenter },
                 { label: 'Aligner à droite', icon: <AlignRightIcon />, onClick: toAlignRight },
                 { label: 'Justifier', icon: <AlignJustifyIcon />, onClick: toAlignJustify },
-            ].map(({ icon, ...rest }) => (
-                <LexicalToolbarButton key={rest.label} disabled={disabled} {...rest}>
+            ].map(({ icon, label, ...rest }) => (
+                <DnIconButton key={label} tooltip={label} disabled={disabled} {...rest}>
                     {icon}
-                </LexicalToolbarButton>
+                </DnIconButton>
             ))}
         </Stack>
     );

@@ -5,11 +5,11 @@ import pluginHtml from 'prettier/plugins/html';
 import pluginCss from 'prettier/plugins/postcss';
 import { resolveParserName } from './resolveParserName';
 import type { CodeAnnotation } from './types';
-import type { DnInputCodeProps } from '../DnInputCode';
+import type { DnEditorCodeProps } from '../DnEditorCode/DnEditorCode';
 
 export async function validateCode(
     source: string,
-    language: DnInputCodeProps['language']
+    language: DnEditorCodeProps['language']
 ): Promise<CodeAnnotation | null> {
     if (!source.trim()) {
         return null;

@@ -17,13 +17,13 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { aceOptions, resolveEditorLanguage, resolveEditorTheme } from './ace';
 import { jsonldPlugin, templatePlugin, type EditorPlugin } from './plugins';
-import { formatCode, validateCode } from './prettier';
+import { formatCode, validateCode } from '../format';
 import { useEditorAutocompleteTriggers } from './useEditorAutocompleteTriggers';
 import { useEditorCompleters } from './useEditorCompleters';
 import { useEditorMarkers } from './useEditorMarkers';
 import { useHoverErrorTooltip } from './useHoverErrorTooltip';
 
-export interface DnInputCodeProps {
+export interface DnEditorCodeProps {
     value: string;
     onChange: (_value: string) => void;
     language: 'javascript' | 'html' | 'css' | 'json' | 'jsonld';
@@ -35,7 +35,7 @@ export interface DnInputCodeProps {
     onScrollTopChange?: (_top: number) => void;
 }
 
-export function DnInputCode({
+export function DnEditorCode({
     value,
     onChange,
     language,
@@ -45,7 +45,7 @@ export function DnInputCode({
     templateVariables,
     getInitialScrollTop,
     onScrollTopChange,
-}: DnInputCodeProps) {
+}: DnEditorCodeProps) {
     const theme = useTheme();
 
     const containerRef = React.useRef<HTMLDivElement>(null);

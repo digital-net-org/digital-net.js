@@ -17,7 +17,7 @@ import { LexicalRoot } from './LexicalRoot';
 
 const SERIALIZE_DEBOUNCE_MS = 300;
 
-export interface LexicalRichEditorProps {
+export interface DnEditorRichTextProps {
     value: string;
     onChange: (_html: string) => void;
     disabled?: boolean;
@@ -25,22 +25,22 @@ export interface LexicalRichEditorProps {
     onScrollTopChange?: (_top: number) => void;
 }
 
-export function LexicalRichEditor({
+export function DnEditorRichText({
     value,
     onChange,
     disabled = false,
     getInitialScrollTop,
     onScrollTopChange,
-}: LexicalRichEditorProps) {
+}: DnEditorRichTextProps) {
     const initialConfig = React.useMemo(
         () => ({
-            namespace: 'article-editor',
+            namespace: 'dn-editor-rich-text',
             theme: LEXICAL_THEME,
             nodes: LEXICAL_NODES,
             html: LEXICAL_HTML_CONFIG,
             editable: !disabled,
             onError(error: Error) {
-                console.error('[Lexical] error:', error);
+                console.error('[DnEditorRichText] error:', error);
             },
         }),
         [disabled]
@@ -65,7 +65,7 @@ export function LexicalRichEditor({
     );
 }
 
-interface EditorBodyProps extends Pick<LexicalRichEditorProps, 'getInitialScrollTop' | 'onScrollTopChange'> {
+interface EditorBodyProps extends Pick<DnEditorRichTextProps, 'getInitialScrollTop' | 'onScrollTopChange'> {
     initialValue: string;
     onChange: (_html: string) => void;
     disabled: boolean;
@@ -131,7 +131,7 @@ function EditorBody({ initialValue, onChange, disabled, getInitialScrollTop, onS
         void (async () => {
             // Lexical exports minified HTML; run it through the same Prettier pass as the
             // code editor so the persisted content stays clean regardless of the editor used.
-            const { formatCode } = await import('../../../ui/components/DnInputCode/prettier/formatCode');
+            const { formatCode } = await import('../format/formatCode');
             const formatted = await formatCode(html, 'html');
             if (seq === formatSeqRef.current) onChangeRef.current(formatted);
         })();

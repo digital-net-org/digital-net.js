@@ -3,10 +3,10 @@ import pluginBabel from 'prettier/plugins/babel';
 import pluginEstree from 'prettier/plugins/estree';
 import pluginHtml from 'prettier/plugins/html';
 import pluginCss from 'prettier/plugins/postcss';
-import type { DnInputCodeProps } from '../DnInputCode';
+import type { DnEditorCodeProps } from '../DnEditorCode/DnEditorCode';
 import { resolveParserName } from './resolveParserName';
 
-export async function formatCode(source: string, language: DnInputCodeProps['language']): Promise<string> {
+export async function formatCode(source: string, language: DnEditorCodeProps['language']): Promise<string> {
     if (!source.trim()) return source;
     try {
         return await prettier.format(source, {
@@ -17,7 +17,7 @@ export async function formatCode(source: string, language: DnInputCodeProps['lan
             printWidth: 120,
         });
     } catch (err) {
-        console.warn('[DnInputCode] Prettier format failed:', err);
+        console.warn('[DnEditor] Prettier format failed:', err);
         return source;
     }
 }

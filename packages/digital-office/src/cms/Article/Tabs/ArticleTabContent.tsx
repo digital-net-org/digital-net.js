@@ -3,9 +3,7 @@ import { css, styled } from '@mui/material/styles';
 import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import type { ArticleDto } from '@digital-net-org/digital-api-sdk';
 import { useDnEntityFormContext } from '../../../entity';
-import { DnInputCode } from '../../../ui';
-import { LexicalRichEditor } from '../LexicalEditor';
-import { useEditorScrollMemory } from './useEditorScrollMemory';
+import { LazyDnEditorCode, LazyDnEditorRichText, useEditorScrollMemory } from '../../../ui';
 
 type EditorMode = 'wysiwyg' | 'html';
 
@@ -35,7 +33,7 @@ export function ArticleTabContent() {
 
             <Stack sx={{ flex: 1, minHeight: 0 }}>
                 {mode === 'html' ? (
-                    <DnInputCode
+                    <LazyDnEditorCode
                         language="html"
                         value={values.content ?? ''}
                         onChange={handleContentChange}
@@ -43,7 +41,7 @@ export function ArticleTabContent() {
                         {...scrollMemory}
                     />
                 ) : (
-                    <LexicalRichEditor
+                    <LazyDnEditorRichText
                         value={values.content ?? ''}
                         onChange={handleContentChange}
                         disabled={disabled}
