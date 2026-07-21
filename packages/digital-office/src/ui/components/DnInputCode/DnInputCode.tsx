@@ -31,15 +31,28 @@ export interface DnInputCodeProps {
     sx?: SxProps<Theme>;
     error?: boolean;
     templateVariables?: TemplateVariable[];
+    getInitialScrollTop?: () => number;
+    onScrollTopChange?: (_top: number) => void;
 }
 
-export function DnInputCode({ value, onChange, language, disabled, error, sx, templateVariables }: DnInputCodeProps) {
+export function DnInputCode({
+    value,
+    onChange,
+    language,
+    disabled,
+    error,
+    sx,
+    templateVariables,
+    getInitialScrollTop,
+    onScrollTopChange,
+}: DnInputCodeProps) {
     const theme = useTheme();
 
     const containerRef = React.useRef<HTMLDivElement>(null);
     const [editor, setEditor] = React.useState<Ace.Editor | null>(null);
 
     const onChangeRef = React.useRef(onChange);
+    const onScrollTopChangeRef = React.useRef(onScrollTopChange);
     const formatRef = React.useRef<() => Promise<void>>(async () => void 0);
 
     const plugins = React.useMemo<EditorPlugin[]>(() => {
@@ -63,6 +76,10 @@ export function DnInputCode({ value, onChange, language, disabled, error, sx, te
     React.useEffect(() => {
         onChangeRef.current = onChange;
     }, [onChange]);
+
+    React.useEffect(() => {
+        onScrollTopChangeRef.current = onScrollTopChange;
+    }, [onScrollTopChange]);
 
     React.useEffect(() => {
         if (!editor || editor.getValue() === value) return;
@@ -102,8 +119,10 @@ export function DnInputCode({ value, onChange, language, disabled, error, sx, te
         resolveEditorTheme(ed, theme);
         (ed as unknown as { $blockScrolling: number }).$blockScrolling = Infinity;
         ed.setValue(value, 1);
+        ed.session.setScrollTop(getInitialScrollTop?.() ?? 0);
 
         ed.on('change', () => onChangeRef.current(ed.getValue()));
+        ed.session.on('changeScrollTop', top => onScrollTopChangeRef.current?.(top));
         ed.on('blur', () => {
             void formatRef.current();
         });

@@ -1,9 +1,23 @@
 import { type HeadingTagType, HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { LinkNode } from '@lexical/link';
-import type { Klass, LexicalNode } from 'lexical';
+import { type HTMLConfig, type Klass, type LexicalNode, isHTMLElement, TextNode } from 'lexical';
+import { stripWhiteSpaceStyle } from './lexicalWhiteSpace';
 
 export const LEXICAL_NODES: Array<Klass<LexicalNode>> = [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode];
+
+export const LEXICAL_HTML_CONFIG: HTMLConfig = {
+    export: new Map([
+        [
+            TextNode,
+            (editor, node) => {
+                const output = node.exportDOM(editor);
+                if (isHTMLElement(output.element)) stripWhiteSpaceStyle(output.element);
+                return output;
+            },
+        ],
+    ]),
+};
 
 export const LEXICAL_HEADING_LEVELS: HeadingTagType[] = ['h1', 'h2', 'h3', 'h4'];
 export const LEXICAL_THEME = {
