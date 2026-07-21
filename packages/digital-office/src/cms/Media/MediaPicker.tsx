@@ -3,7 +3,7 @@ import { Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import type { MediaDto, QueryResult } from '@digital-net-org/digital-api-sdk';
 import { buildListKey, useDigitalNetApi } from '../../api';
-import { DnButton, DnInputAutocomplete } from '../../ui';
+import { DnButton, DnInputAutocomplete, useDebouncedCallback } from '../../ui';
 import { MediaPreview } from './MediaPreview';
 
 const PAGE_SIZE = 12;
@@ -24,19 +24,15 @@ export function MediaPicker({ value, label, disabled, error, helperText, onChang
     const [search, setSearch] = React.useState('');
     const [size, setSize] = React.useState(PAGE_SIZE);
 
-    const debounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-    React.useEffect(
-        () => () => {
-            if (debounceRef.current) clearTimeout(debounceRef.current);
-        },
-        []
-    );
+    const applySearch = useDebouncedCallback((next: string) => setSearch(next.trim()), SEARCH_DEBOUNCE_MS);
 
-    const handleInputChange = React.useCallback((_: unknown, next: string) => {
-        setInputText(next);
-        if (debounceRef.current) clearTimeout(debounceRef.current);
-        debounceRef.current = setTimeout(() => setSearch(next.trim()), SEARCH_DEBOUNCE_MS);
-    }, []);
+    const handleInputChange = React.useCallback(
+        (_: unknown, next: string) => {
+            setInputText(next);
+            applySearch.run(next);
+        },
+        [applySearch]
+    );
 
     const {
         data: pageResult,

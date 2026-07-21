@@ -15,6 +15,7 @@ import { LEXICAL_HTML_CONFIG, LEXICAL_NODES, LEXICAL_THEME } from './lexicalConf
 import { LexicalToolbar } from './LexicalToolbar';
 import { LexicalRoot } from './LexicalRoot';
 import type { DnEditorBaseProps } from '../types';
+import { useDebouncedCallback } from '../../../hooks';
 
 const SERIALIZE_DEBOUNCE_MS = 300;
 
@@ -72,7 +73,6 @@ function EditorBody({ initialValue, onChange, disabled, getInitialScrollTop, onS
     const [editor] = useLexicalComposerContext();
     const scrollerRef = React.useRef<HTMLDivElement>(null);
     const initRef = React.useRef(false);
-    const serializeTimerRef = React.useRef<number | null>(null);
     // Guards against a slower Prettier pass overwriting the result of a newer one.
     const formatSeqRef = React.useRef(0);
 
@@ -119,10 +119,6 @@ function EditorBody({ initialValue, onChange, disabled, getInitialScrollTop, onS
     React.useEffect(() => void editor.setEditable(!disabled), [editor, disabled]);
 
     const serializeNow = React.useCallback(() => {
-        if (serializeTimerRef.current !== null) {
-            window.clearTimeout(serializeTimerRef.current);
-            serializeTimerRef.current = null;
-        }
         const html = editor.read(() => $generateHtmlFromNodes(editor, null));
         const seq = ++formatSeqRef.current;
         void (async () => {
@@ -134,28 +130,21 @@ function EditorBody({ initialValue, onChange, disabled, getInitialScrollTop, onS
         })();
     }, [editor]);
 
-    const handleChange = React.useCallback(() => {
-        if (serializeTimerRef.current !== null) window.clearTimeout(serializeTimerRef.current);
-        serializeTimerRef.current = window.setTimeout(serializeNow, SERIALIZE_DEBOUNCE_MS);
-    }, [serializeNow]);
+    const scheduleSerialize = useDebouncedCallback(serializeNow, SERIALIZE_DEBOUNCE_MS);
 
+    // Blur flushes immediately, so cancel any pending debounce first to avoid a double pass.
     React.useEffect(
         () =>
             editor.registerCommand(
                 BLUR_COMMAND,
                 () => {
+                    scheduleSerialize.cancel();
                     serializeNow();
                     return false;
                 },
                 COMMAND_PRIORITY_LOW
             ),
-        [editor, serializeNow]
-    );
-
-    // Drop any pending timer on unmount blur has already flushed the latest value
-    React.useEffect(
-        () => () => (serializeTimerRef.current !== null ? window.clearTimeout(serializeTimerRef.current) : void 0),
-        []
+        [editor, scheduleSerialize, serializeNow]
     );
 
     return (
@@ -177,7 +166,7 @@ function EditorBody({ initialValue, onChange, disabled, getInitialScrollTop, onS
                 placeholder={null}
                 ErrorBoundary={LexicalErrorBoundary}
             />
-            <OnChangePlugin onChange={handleChange} ignoreSelectionChange />
+            <OnChangePlugin onChange={scheduleSerialize.run} ignoreSelectionChange />
         </Box>
     );
 }

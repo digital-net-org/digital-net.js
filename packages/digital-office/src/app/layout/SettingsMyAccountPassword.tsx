@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Skeleton, Stack, Typography } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { DnButton, DnInput, formatRegex } from '../../ui';
+import { DnButton, DnInput, formatRegex, useDebouncedCallback } from '../../ui';
 import { useDigitalNetApi } from '../../api';
 import { useDigitalToast } from '../useDigitalToast';
 
@@ -22,24 +22,16 @@ export function SettingsMyAccountPassword() {
     const [regexError, setRegexError] = React.useState(false);
     const [mismatchError, setMismatchError] = React.useState(false);
     const [currentPasswordError, setCurrentPasswordError] = React.useState(false);
-    const debounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const { data: pattern } = useQuery({
         queryKey: ['password-validation'],
         queryFn: () => api.catalog.validation.getPasswordPattern(),
     });
 
-    React.useEffect(() => () => clearPending(), []);
-
     const isPayloadValid = React.useMemo(() => {
         if (!pattern?.value || form.newPassword !== form.repeatPassword) return false;
         return new RegExp(pattern.value).test(form.newPassword);
     }, [pattern, form.newPassword, form.repeatPassword]);
-
-    function clearPending() {
-        if (debounceRef.current) clearTimeout(debounceRef.current);
-        debounceRef.current = null;
-    }
 
     const failsPattern = (value: string) => !!pattern?.value && !new RegExp(pattern.value).test(value);
 
@@ -49,15 +41,12 @@ export function SettingsMyAccountPassword() {
         setMismatchError(hasConfirmation && newPassword !== repeatPassword);
     };
 
-    const scheduleValidate = (newPassword: string, repeatPassword: string) => {
-        clearPending();
-        debounceRef.current = setTimeout(() => validate(newPassword, repeatPassword), VALIDATION_DEBOUNCE_MS);
-    };
+    const scheduleValidate = useDebouncedCallback(validate, VALIDATION_DEBOUNCE_MS);
 
     const handleNewPasswordChange = (value: string) => {
         if (value.length === 0) {
             // Emptying the new password resets the dependent fields it gates.
-            clearPending();
+            scheduleValidate.cancel();
             setForm(EMPTY_FORM);
             setRegexError(false);
             setMismatchError(false);
@@ -65,15 +54,15 @@ export function SettingsMyAccountPassword() {
         }
         const next = { ...form, newPassword: value };
         setForm(next);
-        if (next.repeatPassword.length > 0) scheduleValidate(next.newPassword, next.repeatPassword);
+        if (next.repeatPassword.length > 0) scheduleValidate.run(next.newPassword, next.repeatPassword);
         else {
-            clearPending();
+            scheduleValidate.cancel();
             setRegexError(false);
         }
     };
 
     const handleNewPasswordBlur = () => {
-        clearPending();
+        scheduleValidate.cancel();
         if (form.newPassword.length === 0) return;
         if (form.repeatPassword.length > 0) validate(form.newPassword, form.repeatPassword);
         else setRegexError(failsPattern(form.newPassword));
@@ -83,12 +72,12 @@ export function SettingsMyAccountPassword() {
         const next = { ...form, repeatPassword: value };
         setForm(next);
         if (value.length === 0) {
-            clearPending();
+            scheduleValidate.cancel();
             setMismatchError(false);
             setRegexError(false);
             return;
         }
-        scheduleValidate(next.newPassword, next.repeatPassword);
+        scheduleValidate.run(next.newPassword, next.repeatPassword);
     };
 
     const { mutate, isPending } = useMutation({
@@ -98,7 +87,7 @@ export function SettingsMyAccountPassword() {
                 {
                     onSuccess: () => {
                         showToast('Votre mot de passe a été mis à jour.');
-                        clearPending();
+                        scheduleValidate.cancel();
                         setForm(EMPTY_FORM);
                         setRegexError(false);
                         setMismatchError(false);

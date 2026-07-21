@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Stack, Typography } from '@mui/material';
 import type { DnFilterDefinition } from '../DnEntityTable';
 import { DnInput } from '../../DnInput';
+import { useDebouncedCallback } from '../../../hooks';
 
 const DEBOUNCE_MS = 300;
 
@@ -14,21 +15,19 @@ interface LikeFilterProps {
 export function LikeFilter({ filter, value, onChange }: LikeFilterProps) {
     const [localValue, setLocalValue] = React.useState(value);
     const [prevValue, setPrevValue] = React.useState(value);
-    const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
     if (prevValue !== value) {
         setPrevValue(value);
         setLocalValue(value);
     }
 
+    const emit = useDebouncedCallback((next: string) => onChange({ [filter.key]: next }), DEBOUNCE_MS);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const next = e.target.value;
         setLocalValue(next);
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => onChange({ [filter.key]: next }), DEBOUNCE_MS);
+        emit.run(next);
     };
-
-    React.useEffect(() => () => (timeoutRef.current ? clearTimeout(timeoutRef.current) : void 0), []);
 
     return (
         <Stack sx={{ gap: 0.5 }}>

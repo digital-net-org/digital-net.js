@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
+import { useDebouncedCallback } from '../ui';
 
 export interface BaseRow {
     id: string;
@@ -41,7 +42,6 @@ export function useEntityRowsState<TRow extends BaseRow, TPayload>(
     const rowsRef = React.useRef(rows);
     const onChangeRef = React.useRef(onChange);
     const toPayloadRef = React.useRef(toPayload);
-    const flushTimerRef = React.useRef<number | null>(null);
 
     if (initial !== lastInitial) {
         setLastInitial(initial);
@@ -66,32 +66,21 @@ export function useEntityRowsState<TRow extends BaseRow, TPayload>(
         toPayloadRef.current = toPayload;
     }, [toPayload]);
 
-    React.useEffect(
-        () => () => {
-            if (flushTimerRef.current !== null) window.clearTimeout(flushTimerRef.current);
-        },
-        []
-    );
-
-    const flushNow = React.useCallback(() => {
-        if (flushTimerRef.current !== null) {
-            window.clearTimeout(flushTimerRef.current);
-            flushTimerRef.current = null;
-        }
+    const doFlush = React.useCallback(() => {
         onChangeRef.current(toPayloadRef.current(rowsRef.current));
     }, []);
 
+    const debouncedFlush = useDebouncedCallback(doFlush, debounceMs ?? 0);
+
+    const flushNow = React.useCallback(() => {
+        debouncedFlush.cancel();
+        doFlush();
+    }, [debouncedFlush, doFlush]);
+
     const flushDebounced = React.useCallback(() => {
-        if (debounceMs === undefined || debounceMs <= 0) {
-            flushNow();
-            return;
-        }
-        if (flushTimerRef.current !== null) window.clearTimeout(flushTimerRef.current);
-        flushTimerRef.current = window.setTimeout(() => {
-            flushTimerRef.current = null;
-            onChangeRef.current(toPayloadRef.current(rowsRef.current));
-        }, debounceMs);
-    }, [debounceMs, flushNow]);
+        if (debounceMs && debounceMs > 0) debouncedFlush.run();
+        else flushNow();
+    }, [debounceMs, debouncedFlush, flushNow]);
 
     const commitWith = React.useCallback(
         (updater: (_current: TRow[]) => TRow[], opts?: { debounce?: boolean }) => {
