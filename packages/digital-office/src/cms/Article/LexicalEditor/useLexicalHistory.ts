@@ -29,8 +29,8 @@ export function useLexicalHistory(editor: LexicalEditor) {
         [editor]
     );
 
-    const undo = React.useCallback(() => editor.dispatchCommand(REDO_COMMAND, undefined), [editor]);
-    const redo = React.useCallback(() => editor.dispatchCommand(UNDO_COMMAND, undefined), [editor]);
+    const undo = React.useCallback(() => editor.dispatchCommand(UNDO_COMMAND, undefined), [editor]);
+    const redo = React.useCallback(() => editor.dispatchCommand(REDO_COMMAND, undefined), [editor]);
 
     return {
         canUndo,

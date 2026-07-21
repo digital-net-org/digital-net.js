@@ -31,5 +31,5 @@ export const LEXICAL_THEME = {
         underline: 'underline',
         strikethrough: 'strikethrough',
     },
-    link: 'lexical-link',
+    link: 'link',
 };
