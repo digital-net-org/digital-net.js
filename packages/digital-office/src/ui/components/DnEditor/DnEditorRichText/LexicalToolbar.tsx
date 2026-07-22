@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Stack } from '@mui/material';
+import { Stack, styled, css } from '@mui/material';
 import {
     FormatAlignCenter as AlignCenterIcon,
     FormatAlignJustify as AlignJustifyIcon,
@@ -50,23 +50,12 @@ export function LexicalToolbar({ disabled = false }: LexicalToolbarProps) {
     } = useLexicalFormatters(editor);
 
     return (
-        <Stack
-            direction="row"
-            spacing={0.25}
-            sx={theme => ({
-                flexWrap: 'wrap',
-                gap: 0.25,
-                p: 0.5,
-                borderBottom: '1px solid',
-                borderColor: 'divider',
-                fontSize: theme.typography.fontSize * 0.75,
-            })}
-        >
+        <ToolBar>
             {[
                 { label: 'Annuler', icon: <UndoIcon />, disabled: disabled || !canUndo, onClick: undo },
                 { label: 'Rétablir', icon: <RedoIcon />, disabled: disabled || !canRedo, onClick: redo },
             ].map(({ icon, label, ...rest }) => (
-                <DnIconButton key={label} tooltip={label} {...rest}>
+                <DnIconButton key={label} tooltip={label} size="small" {...rest}>
                     {icon}
                 </DnIconButton>
             ))}
@@ -117,6 +106,23 @@ export function LexicalToolbar({ disabled = false }: LexicalToolbarProps) {
                     {icon}
                 </DnIconButton>
             ))}
-        </Stack>
+        </ToolBar>
     );
 }
+
+const ToolBar = styled(Stack)(
+    ({ theme }) => css`
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: ${theme.spacing(0.25)};
+        padding: ${theme.spacing(0.5)};
+        border-bottom: 1px solid;
+        border-color: ${theme.palette.divider};
+        font-size: ${theme.typography.fontSize * 0.75};
+
+        & .MuiIconButton-sizeSmall .MuiSvgIcon-fontSizeMedium {
+            height: 20px;
+            width: 20px;
+        }
+    `
+);
