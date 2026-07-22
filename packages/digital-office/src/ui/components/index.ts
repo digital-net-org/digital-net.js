@@ -5,6 +5,7 @@ export * from './DnBreadcrumbs';
 export * from './DnButton';
 export * from './DnEditor';
 export * from './DnCollapseBlock';
+export * from './DnContextMenu';
 export * from './DnDraggableRow';
 export * from './DnDraggableContext';
 export * from './DnDraggableList';
