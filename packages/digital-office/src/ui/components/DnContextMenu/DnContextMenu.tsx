@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
-import type { ContextMenuPosition } from '../../hooks';
+import type { ContextMenuPosition } from './useContextMenu';
 
 export interface DnContextMenuItem {
     label: string;
