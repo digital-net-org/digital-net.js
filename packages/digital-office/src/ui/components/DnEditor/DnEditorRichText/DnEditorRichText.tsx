@@ -16,6 +16,7 @@ import { LexicalToolbar } from './LexicalToolbar';
 import { LexicalRoot } from './LexicalRoot';
 import { LexicalLinkDialogPlugin } from './LexicalLinkDialogPlugin';
 import { LexicalImagePlugin } from './LexicalImagePlugin';
+import { LexicalSlashMenuPlugin } from './LexicalSlashMenuPlugin';
 import { LexicalImageContext } from './LexicalImageContext';
 import type { DnEditorRichTextImageAttrs, DnEditorRichTextImageDialogProps } from './types';
 import type { DnEditorBaseProps } from '../types';
@@ -73,6 +74,7 @@ export function DnEditorRichText({
                     <ListPlugin />
                     <LexicalLinkDialogPlugin />
                     <LexicalImagePlugin imageDialog={imageDialog} />
+                    <LexicalSlashMenuPlugin hasImageAction={!!imageDialog} />
                 </LexicalComposer>
             </LexicalImageContext.Provider>
         </LexicalRoot>
