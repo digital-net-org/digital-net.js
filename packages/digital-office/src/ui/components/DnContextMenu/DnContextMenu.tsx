@@ -27,6 +27,7 @@ export function DnContextMenu({ position, items, onClose }: DnContextMenuProps) 
             onClose={onClose}
             anchorReference="anchorPosition"
             anchorPosition={position ?? undefined}
+            disableRestoreFocus
             slotProps={{ list: { dense: true, onContextMenu: (event: React.MouseEvent) => event.preventDefault() } }}
         >
             {items.map(item => (
