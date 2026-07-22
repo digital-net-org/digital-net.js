@@ -4,8 +4,14 @@ import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import type { ArticleDto } from '@digital-net-org/digital-api-sdk';
 import { useDnEntityFormContext } from '../../../entity';
 import { LazyDnEditorCode, LazyDnEditorRichText, useEditorScrollMemory } from '../../../ui';
+import type { DnEditorRichTextImageAttrs, DnEditorRichTextImageDialogProps } from '../../../ui';
+import { MediaContentImage, MediaInsertDialog } from '../../Media';
 
 type EditorMode = 'wysiwyg' | 'html';
+
+// Business image handling lives in cms/Media and is injected into the editor (which stays generic).
+const renderImageDialog = (props: DnEditorRichTextImageDialogProps) => <MediaInsertDialog {...props} />;
+const renderContentImage = (attrs: DnEditorRichTextImageAttrs) => <MediaContentImage {...attrs} />;
 
 export function ArticleTabContent() {
     const { values, setField, disabled } = useDnEntityFormContext<ArticleDto>();
@@ -46,6 +52,8 @@ export function ArticleTabContent() {
                         onChange={handleContentChange}
                         disabled={disabled}
                         {...scrollMemory}
+                        imageDialog={renderImageDialog}
+                        renderImage={renderContentImage}
                     />
                 )}
             </Stack>
