@@ -36,23 +36,6 @@ export class UserCatalog {
         return CatalogRunner.run<UserDto>(this.http, { path: DN_API_USER_SELF }, options);
     }
 
-    /** PATCH `user/self` — body = JSON Patch (RFC 6902) — JWT/ApiKey */
-    public async patchSelf(
-        patch: Array<{ op: string; path: string; value?: unknown }>,
-        options: CatalogCallbacks<null> = {}
-    ): Promise<Result> {
-        return CatalogRunner.run<null>(
-            this.http,
-            {
-                method: 'PATCH',
-                path: DN_API_USER_SELF,
-                body: patch,
-                headers: { 'Content-Type': 'application/json-patch+json' },
-            },
-            options
-        );
-    }
-
     /** PUT `user/self/password` — JWT/ApiKey */
     public async updatePassword(payload: UpdatePasswordPayload, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
