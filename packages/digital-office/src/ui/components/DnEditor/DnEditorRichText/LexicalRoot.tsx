@@ -40,6 +40,7 @@ export function LexicalRoot({ children, disabled, error, sx }: LexicalRootProps)
                     '& ul, & ol, & .list, & .list-numbered': { pl: 4, my: 1 },
                     '& p, & .paragraph': { my: 0.5 },
                     '& a, & .link': { color: 'primary.main', textDecoration: 'underline' },
+                    '& img': { maxWidth: '100%', height: 'auto' },
                 },
                 ...(Array.isArray(sx) ? sx : [sx]),
             ]}

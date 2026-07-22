@@ -11,6 +11,7 @@ import {
     FormatListNumbered as OlIcon,
     FormatQuote as QuoteIcon,
     FormatUnderlined as UnderlineIcon,
+    Image as ImageIcon,
     InsertLink as LinkIcon,
     Redo as RedoIcon,
     StrikethroughS as StrikeIcon,
@@ -18,22 +19,19 @@ import {
     Undo as UndoIcon,
 } from '@mui/icons-material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { createCommand } from 'lexical';
 import { DnIconButton } from '../../DnIconButton';
 import { LEXICAL_HEADING_LEVELS } from './lexicalConfig';
 import { useLexicalFormatters } from './useLexicalFormatters';
 import { useLexicalHistory } from './useLexicalHistory';
 import { LexicalToolbarDivider } from './LexicalToolbarDivider';
-import { OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
-
-// Placeholder pour future extension (insertion image, lien, etc.) si on veut un command dédié.
-export const INSERT_IMAGE_COMMAND = createCommand<string>('INSERT_IMAGE_COMMAND');
+import { OPEN_IMAGE_DIALOG_COMMAND, OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
 
 interface LexicalToolbarProps {
     disabled?: boolean;
+    hasImageAction?: boolean;
 }
 
-export function LexicalToolbar({ disabled = false }: LexicalToolbarProps) {
+export function LexicalToolbar({ disabled = false, hasImageAction = false }: LexicalToolbarProps) {
     const [editor] = useLexicalComposerContext();
     const { canUndo, canRedo, undo, redo } = useLexicalHistory(editor);
     const {
@@ -116,6 +114,15 @@ export function LexicalToolbar({ disabled = false }: LexicalToolbarProps) {
             >
                 <LinkIcon />
             </DnIconButton>
+            {hasImageAction && (
+                <DnIconButton
+                    tooltip="Image"
+                    disabled={disabled}
+                    onClick={() => editor.dispatchCommand(OPEN_IMAGE_DIALOG_COMMAND, undefined)}
+                >
+                    <ImageIcon />
+                </DnIconButton>
+            )}
         </ToolBar>
     );
 }

@@ -3,8 +3,16 @@ import { ListItemNode, ListNode } from '@lexical/list';
 import { LinkNode } from '@lexical/link';
 import { type HTMLConfig, type Klass, type LexicalNode, isHTMLElement, TextNode } from 'lexical';
 import { stripWhiteSpaceStyle } from './lexicalWhiteSpace';
+import { ImageNode } from './LexicalImageNode';
 
-export const LEXICAL_NODES: Array<Klass<LexicalNode>> = [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode];
+export const LEXICAL_NODES: Array<Klass<LexicalNode>> = [
+    HeadingNode,
+    QuoteNode,
+    ListNode,
+    ListItemNode,
+    LinkNode,
+    ImageNode,
+];
 
 export const LEXICAL_HTML_CONFIG: HTMLConfig = {
     export: new Map([
@@ -32,4 +40,5 @@ export const LEXICAL_THEME = {
         strikethrough: 'strikethrough',
     },
     link: 'link',
+    image: 'image',
 };

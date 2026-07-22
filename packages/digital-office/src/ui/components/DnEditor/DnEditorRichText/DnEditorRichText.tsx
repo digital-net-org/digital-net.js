@@ -15,12 +15,20 @@ import { LEXICAL_HTML_CONFIG, LEXICAL_NODES, LEXICAL_THEME } from './lexicalConf
 import { LexicalToolbar } from './LexicalToolbar';
 import { LexicalRoot } from './LexicalRoot';
 import { LexicalLinkDialogPlugin } from './LexicalLinkDialogPlugin';
+import { LexicalImagePlugin } from './LexicalImagePlugin';
+import { LexicalImageContext } from './LexicalImageContext';
+import type { DnEditorRichTextImageAttrs, DnEditorRichTextImageDialogProps } from './types';
 import type { DnEditorBaseProps } from '../types';
 import { useDebouncedCallback } from '../../../hooks';
 
 const SERIALIZE_DEBOUNCE_MS = 300;
 
-export type DnEditorRichTextProps = DnEditorBaseProps;
+export interface DnEditorRichTextProps extends DnEditorBaseProps {
+    /** Injected image dialog; image actions are hidden when absent (keeps business logic out of ui/). */
+    imageDialog?: (_props: DnEditorRichTextImageDialogProps) => React.ReactNode;
+    /** Authenticated image renderer for the editor preview; falls back to a plain <img>. */
+    renderImage?: (_attrs: DnEditorRichTextImageAttrs) => React.ReactNode;
+}
 
 export function DnEditorRichText({
     value,
@@ -30,7 +38,10 @@ export function DnEditorRichText({
     sx,
     getInitialScrollTop,
     onScrollTopChange,
+    imageDialog,
+    renderImage,
 }: DnEditorRichTextProps) {
+    const imageContext = React.useMemo(() => ({ renderImage }), [renderImage]);
     const initialConfig = React.useMemo(
         () => ({
             namespace: 'dn-editor-rich-text',
@@ -47,20 +58,23 @@ export function DnEditorRichText({
 
     return (
         <LexicalRoot disabled={disabled} error={error} sx={sx}>
-            <LexicalComposer initialConfig={initialConfig}>
-                <LexicalToolbar disabled={disabled} />
-                <EditorBody
-                    initialValue={value}
-                    onChange={onChange}
-                    disabled={disabled}
-                    getInitialScrollTop={getInitialScrollTop}
-                    onScrollTopChange={onScrollTopChange}
-                />
-                <HistoryPlugin />
-                <LinkPlugin />
-                <ListPlugin />
-                <LexicalLinkDialogPlugin />
-            </LexicalComposer>
+            <LexicalImageContext.Provider value={imageContext}>
+                <LexicalComposer initialConfig={initialConfig}>
+                    <LexicalToolbar disabled={disabled} hasImageAction={!!imageDialog} />
+                    <EditorBody
+                        initialValue={value}
+                        onChange={onChange}
+                        disabled={disabled}
+                        getInitialScrollTop={getInitialScrollTop}
+                        onScrollTopChange={onScrollTopChange}
+                    />
+                    <HistoryPlugin />
+                    <LinkPlugin />
+                    <ListPlugin />
+                    <LexicalLinkDialogPlugin />
+                    <LexicalImagePlugin imageDialog={imageDialog} />
+                </LexicalComposer>
+            </LexicalImageContext.Provider>
         </LexicalRoot>
     );
 }
