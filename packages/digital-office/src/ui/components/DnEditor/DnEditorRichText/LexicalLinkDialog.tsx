@@ -37,7 +37,7 @@ export function LexicalLinkDialog({ open, initial, onClose, onSubmit }: LexicalL
     return (
         <DnDialog
             open={open}
-            title={initial ? 'Modifier le lien' : 'Insérer un lien'}
+            title={initial?.url ? 'Modifier le lien' : 'Insérer un lien'}
             onClose={onClose}
             onConfirm={handleConfirm}
             disabled={!url.trim()}
