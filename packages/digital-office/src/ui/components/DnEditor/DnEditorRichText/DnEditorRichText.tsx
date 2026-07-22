@@ -14,6 +14,7 @@ import { $getRoot, $insertNodes, $setSelection, BLUR_COMMAND, COMMAND_PRIORITY_L
 import { LEXICAL_HTML_CONFIG, LEXICAL_NODES, LEXICAL_THEME } from './lexicalConfig';
 import { LexicalToolbar } from './LexicalToolbar';
 import { LexicalRoot } from './LexicalRoot';
+import { LexicalLinkDialogPlugin } from './LexicalLinkDialogPlugin';
 import type { DnEditorBaseProps } from '../types';
 import { useDebouncedCallback } from '../../../hooks';
 
@@ -58,6 +59,7 @@ export function DnEditorRichText({
                 <HistoryPlugin />
                 <LinkPlugin />
                 <ListPlugin />
+                <LexicalLinkDialogPlugin />
             </LexicalComposer>
         </LexicalRoot>
     );

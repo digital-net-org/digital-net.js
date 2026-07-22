@@ -11,6 +11,7 @@ import {
     FormatListNumbered as OlIcon,
     FormatQuote as QuoteIcon,
     FormatUnderlined as UnderlineIcon,
+    InsertLink as LinkIcon,
     Redo as RedoIcon,
     StrikethroughS as StrikeIcon,
     Title as TitleIcon,
@@ -23,6 +24,7 @@ import { LEXICAL_HEADING_LEVELS } from './lexicalConfig';
 import { useLexicalFormatters } from './useLexicalFormatters';
 import { useLexicalHistory } from './useLexicalHistory';
 import { LexicalToolbarDivider } from './LexicalToolbarDivider';
+import { OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
 
 // Placeholder pour future extension (insertion image, lien, etc.) si on veut un command dédié.
 export const INSERT_IMAGE_COMMAND = createCommand<string>('INSERT_IMAGE_COMMAND');
@@ -106,6 +108,14 @@ export function LexicalToolbar({ disabled = false }: LexicalToolbarProps) {
                     {icon}
                 </DnIconButton>
             ))}
+            <LexicalToolbarDivider />
+            <DnIconButton
+                tooltip="Lien"
+                disabled={disabled}
+                onClick={() => editor.dispatchCommand(OPEN_LINK_DIALOG_COMMAND, undefined)}
+            >
+                <LinkIcon />
+            </DnIconButton>
         </ToolBar>
     );
 }
