@@ -4,8 +4,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { $getNearestNodeFromDOMNode, $getNodeByKey, type LexicalEditor, type NodeKey } from 'lexical';
 import { $isLinkNode, type LinkNode } from '@lexical/link';
 import { $findMatchingParent } from '@lexical/utils';
-import { DnContextMenu, type DnContextMenuItem } from '../../DnContextMenu';
-import { useContextMenu } from '../../../hooks';
+import { DnContextMenu, useContextMenu, type DnContextMenuItem } from '../../DnContextMenu';
 import { $isImageNode } from './LexicalImageNode';
 import { OPEN_IMAGE_DIALOG_COMMAND, OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
 

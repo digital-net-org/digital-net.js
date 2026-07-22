@@ -11,8 +11,6 @@ export interface ContextMenuHandle {
     close: () => void;
 }
 
-// Tracks the anchor position of a right-click menu. Accepts a native or React mouse event
-// (structural typing) so it works both from a DOM listener and an onContextMenu prop.
 export function useContextMenu(): ContextMenuHandle {
     const [position, setPosition] = React.useState<ContextMenuPosition | null>(null);
 

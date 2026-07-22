@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Stack } from '@mui/material';
+import { Stack, css, styled } from '@mui/material';
 import { DnInput } from '../../DnInput';
 import { DnDialog } from '../../DnDialog';
 
@@ -42,7 +42,7 @@ export function LexicalLinkDialog({ open, initial, onClose, onSubmit }: LexicalL
             onConfirm={handleConfirm}
             disabled={!url.trim()}
         >
-            <Stack sx={{ mt: 1, gap: 2 }}>
+            <DialogContent>
                 <DnInput label="URL" value={url} onChange={e => setUrl(e.target.value)} autoFocus required fullWidth />
                 <DnInput
                     label="Texte du lien"
@@ -51,7 +51,18 @@ export function LexicalLinkDialog({ open, initial, onClose, onSubmit }: LexicalL
                     helperText="Laisser vide pour afficher l'URL."
                     fullWidth
                 />
-            </Stack>
+            </DialogContent>
         </DnDialog>
     );
 }
+
+const DialogContent = styled(Stack)(
+    ({ theme }) => css`
+        margin-top: ${theme.spacing(1)};
+        gap: ${theme.spacing(2)};
+
+        & .MuiInputBase-root {
+            min-width: 350px;
+        }
+    `
+);

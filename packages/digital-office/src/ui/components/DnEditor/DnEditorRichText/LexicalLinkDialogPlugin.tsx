@@ -9,9 +9,9 @@ import { OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
 interface LinkDialogState {
     open: boolean;
     initial: LexicalLinkValue | null;
-    targetKey: string | null; // set when editing an existing link
-    selectedText: string; // selection text captured at open (insertion path)
-    canToggle: boolean; // non-collapsed selection outside any link
+    targetKey: string | null;
+    selectedText: string;
+    canToggle: boolean;
 }
 
 const CLOSED: LinkDialogState = { open: false, initial: null, targetKey: null, selectedText: '', canToggle: false };

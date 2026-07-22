@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Stack } from '@mui/material';
+import { css, Stack, styled } from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { MediaDto } from '@digital-net-org/digital-api-sdk';
 import { buildKeyFromId, buildListKey, useDigitalNetApi } from '../../api';
@@ -66,19 +66,20 @@ export function MediaInsertDialog({ open, initial, onClose, onSubmit }: MediaIns
                 onConfirm={handleSubmit}
                 disabled={!media}
             >
-                <Stack sx={{ mt: 1, gap: 2 }}>
+                <DialogContent>
                     <MediaPicker value={media} onChange={handleMediaChange} />
                     <DnButton variant="outlined" onClick={() => setImportOpen(true)}>
                         Importer un média
                     </DnButton>
                     <DnInput
+                        className="Alt-input"
                         label="Texte alternatif"
                         value={alt}
                         onChange={e => setAlt(e.target.value)}
                         helperText="Décrit l'image pour l'accessibilité et le SEO."
                         fullWidth
                     />
-                </Stack>
+                </DialogContent>
             </DnDialog>
             <MediaImportDialog
                 open={importOpen}
@@ -88,3 +89,14 @@ export function MediaInsertDialog({ open, initial, onClose, onSubmit }: MediaIns
         </React.Fragment>
     );
 }
+
+const DialogContent = styled(Stack)(
+    ({ theme }) => css`
+        margin-top: ${theme.spacing(1)};
+        gap: ${theme.spacing(2)};
+
+        & .Alt-input {
+            min-width: 400px;
+        }
+    `
+);

@@ -9,7 +9,6 @@ import { MediaContentImage, MediaInsertDialog } from '../../Media';
 
 type EditorMode = 'wysiwyg' | 'html';
 
-// Business image handling lives in cms/Media and is injected into the editor (which stays generic).
 const renderImageDialog = (props: DnEditorRichTextImageDialogProps) => <MediaInsertDialog {...props} />;
 const renderContentImage = (attrs: DnEditorRichTextImageAttrs) => <MediaContentImage {...attrs} />;
 

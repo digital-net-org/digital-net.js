@@ -26,7 +26,7 @@ import { useDebouncedCallback } from '../../../hooks';
 const SERIALIZE_DEBOUNCE_MS = 300;
 
 export interface DnEditorRichTextProps extends DnEditorBaseProps {
-    /** Injected image dialog; image actions are hidden when absent (keeps business logic out of ui/). */
+    /** Injected image dialog; image actions are hidden when absent. */
     imageDialog?: (_props: DnEditorRichTextImageDialogProps) => React.ReactNode;
     /** Authenticated image renderer for the editor preview; falls back to a plain <img>. */
     renderImage?: (_attrs: DnEditorRichTextImageAttrs) => React.ReactNode;
