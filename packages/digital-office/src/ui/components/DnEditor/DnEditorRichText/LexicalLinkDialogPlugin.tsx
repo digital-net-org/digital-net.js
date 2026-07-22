@@ -84,8 +84,11 @@ function applyLink(
             if (!$isLinkNode(link)) return;
             link.setURL(url);
             if (effectiveText !== link.getTextContent()) {
-                link.clear();
+                // Append the new text before removing the old children: an element left momentarily
+                // empty is garbage-collected along with its parent, which would drop the link.
+                const previous = link.getChildren();
                 link.append($createTextNode(effectiveText));
+                previous.forEach(child => child.remove());
             }
         });
         return;
