@@ -34,15 +34,17 @@ export function MediaPicker({ value, label, disabled, error, helperText, onChang
         [applySearch]
     );
 
+    const effectiveSearch = value && search === value.name.trim() ? '' : search;
+
     const {
         data: pageResult,
         isLoading,
         isFetching,
     } = useQuery<QueryResult<MediaDto>>({
-        queryKey: [...buildListKey('media'), { name: search, size }],
+        queryKey: [...buildListKey('media'), { name: effectiveSearch, size }],
         queryFn: async () => {
             const params: Record<string, unknown> = { size, index: 1 };
-            if (search) params.name = search;
+            if (effectiveSearch) params.name = effectiveSearch;
             const response = await api.http.request<QueryResult<MediaDto>>({ path: 'cms/media', params });
             return response.data;
         },
