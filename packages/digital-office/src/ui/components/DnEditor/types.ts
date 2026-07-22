@@ -12,7 +12,6 @@ export interface DnEditorBaseProps {
 
 export type DnEditorLanguage = 'javascript' | 'html' | 'css' | 'json' | 'jsonld';
 
-// Structural mirror of the SDK TemplateVariable so the editor stays business-agnostic.
 export interface DnEditorTemplateVariable {
     token: string;
     source: string;

@@ -6,8 +6,6 @@ import * as React from 'react';
 // reaching into it.
 export function useEditorScrollMemory<T extends string>(mode: T) {
     const scrollTops = React.useRef({} as Record<T, number>);
-
-    // Read lazily: the editors call this on mount, never during render.
     return {
         getInitialScrollTop: () => scrollTops.current[mode] ?? 0,
         onScrollTopChange: (top: number) => void (scrollTops.current[mode] = top),

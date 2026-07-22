@@ -2,11 +2,15 @@ import * as React from 'react';
 import { Box, type BoxProps } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 
+export function DnEditorFrame(props: BoxProps) {
+    return <StyledFrame {...props} />;
+}
+
 const StyledFrame = styled(Box)(
     ({ theme }) => css`
         position: relative;
         border: 1px solid ${theme.palette.divider};
-        border-radius: ${theme.shape.borderRadius}px;
+        border-radius: ${theme.shape.borderRadius};
         overflow: hidden;
         transition: border-color 0.2s ease-in-out;
         height: 100%;
@@ -28,9 +32,3 @@ const StyledFrame = styled(Box)(
         }
     `
 );
-
-// Shared editor chrome: a bordered box that reacts to focus, disabled and error state
-// through data attributes, so both the code and rich text editors read identically.
-export function DnEditorFrame(props: BoxProps) {
-    return <StyledFrame {...props} />;
-}
